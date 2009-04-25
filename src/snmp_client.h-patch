@@ -1,0 +1,40 @@
+*** /usr/include/net-snmp/library/snmp_client.h	2003-11-11 08:37:07.000000000 -0800
+--- snmp_client.h	2004-03-06 16:59:17.000000000 -0800
+***************
+*** 35,52 ****
+      struct snmp_session;
+      struct variable_list;
+  
+      struct synch_state {
+          int             waiting;
+          int             status;
+-         /*
+-          * status codes 
+-          */
+  #define STAT_SUCCESS	0
+  #define STAT_ERROR	1
+  #define STAT_TIMEOUT 2
+          int             reqid;
+          netsnmp_pdu    *pdu;
+      };
+  
+      int             snmp_set_var_value(netsnmp_variable_list *,
+                                         const u_char *, size_t);
+--- 35,51 ----
+      struct snmp_session;
+      struct variable_list;
+  
++     /*
+      struct synch_state {
+          int             waiting;
+          int             status;
+  #define STAT_SUCCESS	0
+  #define STAT_ERROR	1
+  #define STAT_TIMEOUT 2
+          int             reqid;
+          netsnmp_pdu    *pdu;
+      };
++     */
+  
+      int             snmp_set_var_value(netsnmp_variable_list *,
+                                         const u_char *, size_t);

@@ -1,0 +1,674 @@
+libguile_snmp_net_snmp_la-net-snmp_wrap.lo: net-snmp_wrap.c \
+  /usr/include/string.h /usr/include/features.h /usr/include/sys/cdefs.h \
+  /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
+  /usr/include/gnu/stubs-32.h \
+  /usr/lib/gcc/i386-redhat-linux/4.3.2/include/stddef.h \
+  /usr/include/bits/string.h /usr/include/bits/string2.h \
+  /usr/include/endian.h /usr/include/bits/endian.h \
+  /usr/include/bits/byteswap.h /usr/include/bits/types.h \
+  /usr/include/bits/typesizes.h /usr/include/stdlib.h \
+  /usr/include/libguile.h /usr/include/gmp.h /usr/include/gmp-i386.h \
+  /usr/include/libguile/__scm.h /usr/include/libguile/scmconfig.h \
+  /usr/include/libguile/scmconfig-32.h /usr/include/stdint.h \
+  /usr/include/bits/wchar.h \
+  /usr/lib/gcc/i386-redhat-linux/4.3.2/include/limits.h \
+  /usr/lib/gcc/i386-redhat-linux/4.3.2/include/syslimits.h \
+  /usr/include/limits.h /usr/include/bits/posix1_lim.h \
+  /usr/include/bits/local_lim.h /usr/include/linux/limits.h \
+  /usr/include/bits/posix2_lim.h /usr/include/sys/time.h \
+  /usr/include/time.h /usr/include/bits/time.h /usr/include/sys/select.h \
+  /usr/include/bits/select.h /usr/include/bits/sigset.h \
+  /usr/include/sys/types.h /usr/include/sys/sysmacros.h \
+  /usr/include/bits/pthreadtypes.h /usr/include/alloca.h \
+  /usr/include/libguile/tags.h /usr/include/libguile/__scm.h \
+  /usr/include/setjmp.h /usr/include/bits/setjmp.h \
+  /usr/include/libguile/alist.h /usr/include/libguile/arbiters.h \
+  /usr/include/libguile/async.h /usr/include/libguile/root.h \
+  /usr/include/libguile/debug.h /usr/include/libguile/options.h \
+  /usr/include/libguile/throw.h /usr/include/libguile/threads.h \
+  /usr/include/libguile/procs.h /usr/include/libguile/iselect.h \
+  /usr/include/libguile/dynwind.h /usr/include/libguile/continuations.h \
+  /usr/include/libguile/pthread-threads.h /usr/include/pthread.h \
+  /usr/include/sched.h /usr/include/bits/sched.h /usr/include/signal.h \
+  /usr/include/libguile/boolean.h /usr/include/libguile/chars.h \
+  /usr/include/libguile/continuations.h /usr/include/libguile/dynl.h \
+  /usr/include/libguile/dynwind.h /usr/include/libguile/eq.h \
+  /usr/include/libguile/error.h /usr/include/libguile/eval.h \
+  /usr/include/libguile/struct.h /usr/include/libguile/print.h \
+  /usr/include/libguile/evalext.h /usr/include/libguile/extensions.h \
+  /usr/include/libguile/feature.h /usr/include/libguile/filesys.h \
+  /usr/include/libguile/fluids.h /usr/include/libguile/vectors.h \
+  /usr/include/libguile/unif.h /usr/include/libguile/fports.h \
+  /usr/include/libguile/ports.h /usr/include/libguile/futures.h \
+  /usr/include/libguile/gc.h /usr/include/libguile/hooks.h \
+  /usr/include/libguile/gdbint.h /usr/include/libguile/goops.h \
+  /usr/include/libguile/validate.h /usr/include/libguile/gsubr.h \
+  /usr/include/libguile/guardians.h /usr/include/libguile/hash.h \
+  /usr/include/libguile/hashtab.h /usr/include/libguile/weaks.h \
+  /usr/include/libguile/init.h /usr/include/libguile/ioext.h \
+  /usr/include/libguile/rdelim.h /usr/include/libguile/rw.h \
+  /usr/include/libguile/keywords.h /usr/include/libguile/list.h \
+  /usr/include/libguile/load.h /usr/include/libguile/macros.h \
+  /usr/include/libguile/mallocs.h /usr/include/libguile/modules.h \
+  /usr/include/libguile/net_db.h /usr/include/libguile/numbers.h \
+  /usr/lib/gcc/i386-redhat-linux/4.3.2/include/float.h \
+  /usr/include/libguile/objects.h /usr/include/libguile/objprop.h \
+  /usr/include/libguile/options.h /usr/include/libguile/pairs.h \
+  /usr/include/libguile/ports.h /usr/include/libguile/posix.h \
+  /usr/include/libguile/print.h /usr/include/libguile/procprop.h \
+  /usr/include/libguile/properties.h /usr/include/libguile/procs.h \
+  /usr/include/libguile/ramap.h /usr/include/libguile/random.h \
+  /usr/include/libguile/read.h /usr/include/libguile/root.h \
+  /usr/include/libguile/scmsigs.h /usr/include/libguile/script.h \
+  /usr/include/libguile/simpos.h /usr/include/libguile/smob.h \
+  /usr/include/libguile/snarf.h /usr/include/libguile/socket.h \
+  /usr/include/libguile/sort.h /usr/include/libguile/srcprop.h \
+  /usr/include/libguile/stackchk.h /usr/include/libguile/stime.h \
+  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
+  /usr/include/bits/confname.h /usr/include/getopt.h \
+  /usr/include/libguile/strings.h /usr/include/libguile/srfi-13.h \
+  /usr/include/libguile/srfi-14.h /usr/include/libguile/strorder.h \
+  /usr/include/libguile/strports.h /usr/include/libguile/struct.h \
+  /usr/include/libguile/symbols.h /usr/include/libguile/tags.h \
+  /usr/include/libguile/throw.h /usr/include/libguile/unif.h \
+  /usr/include/libguile/validate.h /usr/include/libguile/values.h \
+  /usr/include/libguile/variable.h /usr/include/libguile/smob.h \
+  /usr/include/libguile/vectors.h /usr/include/libguile/srfi-4.h \
+  /usr/include/libguile/version.h /usr/include/libguile/vports.h \
+  /usr/include/libguile/weaks.h /usr/include/libguile/backtrace.h \
+  /usr/include/libguile/debug.h /usr/include/libguile/stacks.h \
+  /usr/include/libguile/threads.h /usr/include/libguile/inline.h \
+  /usr/include/stdio.h /usr/include/libio.h /usr/include/_G_config.h \
+  /usr/include/wchar.h \
+  /usr/lib/gcc/i386-redhat-linux/4.3.2/include/stdarg.h \
+  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
+  /usr/include/bits/stdio.h /usr/include/libguile/pairs.h \
+  /usr/include/libguile/gc.h /usr/include/libguile/error.h \
+  /usr/include/libguile/discouraged.h /usr/include/libguile/deprecated.h \
+  /usr/include/libguile/strings.h /usr/include/assert.h \
+  /usr/include/net-snmp/net-snmp-config.h \
+  /usr/include/net-snmp/net-snmp-config-i386.h \
+  /usr/include/net-snmp/system/linux.h \
+  /usr/include/net-snmp/system/sysv.h \
+  /usr/include/net-snmp/system/generic.h \
+  /usr/include/net-snmp/machine/generic.h \
+  /usr/include/net-snmp/net-snmp-config-i386.h \
+  /usr/include/net-snmp/net-snmp-includes.h /usr/include/netinet/in.h \
+  /usr/include/sys/socket.h /usr/include/sys/uio.h \
+  /usr/include/bits/uio.h /usr/include/bits/socket.h \
+  /usr/include/bits/sockaddr.h /usr/include/asm/socket.h \
+  /usr/include/asm/sockios.h /usr/include/bits/in.h \
+  /usr/include/net-snmp/definitions.h /usr/include/net-snmp/types.h \
+  /usr/include/inttypes.h /usr/include/net-snmp/library/snmp_api.h \
+  /usr/include/net-snmp/library/asn1.h \
+  /usr/include/net-snmp/library/snmp_impl.h \
+  /usr/include/net-snmp/library/snmp.h \
+  /usr/include/net-snmp/library/snmp-tc.h \
+  /usr/include/net-snmp/utilities.h \
+  /usr/include/net-snmp/library/snmp_client.h \
+  /usr/include/net-snmp/library/system.h \
+  /usr/include/net-snmp/library/tools.h \
+  /usr/include/net-snmp/library/int64.h \
+  /usr/include/net-snmp/library/mt_support.h \
+  /usr/include/net-snmp/library/snmp_alarm.h \
+  /usr/include/net-snmp/library/callback.h \
+  /usr/include/net-snmp/library/data_list.h \
+  /usr/include/net-snmp/library/oid_stash.h \
+  /usr/include/net-snmp/library/check_varbind.h \
+  /usr/include/net-snmp/library/container.h \
+  /usr/include/net-snmp/library/factory.h \
+  /usr/include/net-snmp/library/snmp_logging.h /usr/include/syslog.h \
+  /usr/include/sys/syslog.h /usr/include/bits/syslog-path.h \
+  /usr/include/net-snmp/library/container_binary_array.h \
+  /usr/include/net-snmp/library/container_list_ssll.h \
+  /usr/include/net-snmp/library/container_iterator.h \
+  /usr/include/net-snmp/library/container.h \
+  /usr/include/net-snmp/library/snmp_assert.h \
+  /usr/include/net-snmp/version.h /usr/include/net-snmp/session_api.h \
+  /usr/include/net-snmp/library/snmp_transport.h \
+  /usr/include/net-snmp/library/snmp_service.h \
+  /usr/include/net-snmp/library/snmpCallbackDomain.h \
+  /usr/include/net-snmp/library/snmpUnixDomain.h /usr/include/sys/un.h \
+  /usr/include/net-snmp/library/snmpUDPDomain.h \
+  /usr/include/net-snmp/library/snmpTCPDomain.h \
+  /usr/include/net-snmp/library/snmpUDPIPv6Domain.h \
+  /usr/include/net-snmp/library/snmpTCPIPv6Domain.h \
+  /usr/include/net-snmp/library/ucd_compat.h \
+  /usr/include/net-snmp/pdu_api.h /usr/include/net-snmp/mib_api.h \
+  /usr/include/net-snmp/library/mib.h \
+  /usr/include/net-snmp/library/parse.h \
+  /usr/include/net-snmp/varbind_api.h /usr/include/net-snmp/config_api.h \
+  /usr/include/net-snmp/library/read_config.h \
+  /usr/include/net-snmp/library/default_store.h \
+  /usr/include/net-snmp/library/snmp_parse_args.h \
+  /usr/include/net-snmp/library/snmp_enum.h \
+  /usr/include/net-snmp/library/vacm.h /usr/include/net-snmp/output_api.h \
+  /usr/include/net-snmp/library/snmp_debug.h \
+  /usr/include/net-snmp/snmpv3_api.h \
+  /usr/include/net-snmp/library/snmpv3.h \
+  /usr/include/net-snmp/library/transform_oids.h \
+  /usr/include/net-snmp/library/keytools.h \
+  /usr/include/net-snmp/library/scapi.h \
+  /usr/include/net-snmp/library/lcd_time.h \
+  /usr/include/net-snmp/library/snmp_secmod.h \
+  /usr/include/net-snmp/library/snmpv3-security-includes.h \
+  /usr/include/net-snmp/library/snmpusm.h /usr/include/errno.h \
+  /usr/include/bits/errno.h /usr/include/linux/errno.h \
+  /usr/include/asm/errno.h /usr/include/asm-generic/errno.h \
+  /usr/include/asm-generic/errno-base.h
+
+/usr/include/string.h:
+
+/usr/include/features.h:
+
+/usr/include/sys/cdefs.h:
+
+/usr/include/bits/wordsize.h:
+
+/usr/include/gnu/stubs.h:
+
+/usr/include/gnu/stubs-32.h:
+
+/usr/lib/gcc/i386-redhat-linux/4.3.2/include/stddef.h:
+
+/usr/include/bits/string.h:
+
+/usr/include/bits/string2.h:
+
+/usr/include/endian.h:
+
+/usr/include/bits/endian.h:
+
+/usr/include/bits/byteswap.h:
+
+/usr/include/bits/types.h:
+
+/usr/include/bits/typesizes.h:
+
+/usr/include/stdlib.h:
+
+/usr/include/libguile.h:
+
+/usr/include/gmp.h:
+
+/usr/include/gmp-i386.h:
+
+/usr/include/libguile/__scm.h:
+
+/usr/include/libguile/scmconfig.h:
+
+/usr/include/libguile/scmconfig-32.h:
+
+/usr/include/stdint.h:
+
+/usr/include/bits/wchar.h:
+
+/usr/lib/gcc/i386-redhat-linux/4.3.2/include/limits.h:
+
+/usr/lib/gcc/i386-redhat-linux/4.3.2/include/syslimits.h:
+
+/usr/include/limits.h:
+
+/usr/include/bits/posix1_lim.h:
+
+/usr/include/bits/local_lim.h:
+
+/usr/include/linux/limits.h:
+
+/usr/include/bits/posix2_lim.h:
+
+/usr/include/sys/time.h:
+
+/usr/include/time.h:
+
+/usr/include/bits/time.h:
+
+/usr/include/sys/select.h:
+
+/usr/include/bits/select.h:
+
+/usr/include/bits/sigset.h:
+
+/usr/include/sys/types.h:
+
+/usr/include/sys/sysmacros.h:
+
+/usr/include/bits/pthreadtypes.h:
+
+/usr/include/alloca.h:
+
+/usr/include/libguile/tags.h:
+
+/usr/include/libguile/__scm.h:
+
+/usr/include/setjmp.h:
+
+/usr/include/bits/setjmp.h:
+
+/usr/include/libguile/alist.h:
+
+/usr/include/libguile/arbiters.h:
+
+/usr/include/libguile/async.h:
+
+/usr/include/libguile/root.h:
+
+/usr/include/libguile/debug.h:
+
+/usr/include/libguile/options.h:
+
+/usr/include/libguile/throw.h:
+
+/usr/include/libguile/threads.h:
+
+/usr/include/libguile/procs.h:
+
+/usr/include/libguile/iselect.h:
+
+/usr/include/libguile/dynwind.h:
+
+/usr/include/libguile/continuations.h:
+
+/usr/include/libguile/pthread-threads.h:
+
+/usr/include/pthread.h:
+
+/usr/include/sched.h:
+
+/usr/include/bits/sched.h:
+
+/usr/include/signal.h:
+
+/usr/include/libguile/boolean.h:
+
+/usr/include/libguile/chars.h:
+
+/usr/include/libguile/continuations.h:
+
+/usr/include/libguile/dynl.h:
+
+/usr/include/libguile/dynwind.h:
+
+/usr/include/libguile/eq.h:
+
+/usr/include/libguile/error.h:
+
+/usr/include/libguile/eval.h:
+
+/usr/include/libguile/struct.h:
+
+/usr/include/libguile/print.h:
+
+/usr/include/libguile/evalext.h:
+
+/usr/include/libguile/extensions.h:
+
+/usr/include/libguile/feature.h:
+
+/usr/include/libguile/filesys.h:
+
+/usr/include/libguile/fluids.h:
+
+/usr/include/libguile/vectors.h:
+
+/usr/include/libguile/unif.h:
+
+/usr/include/libguile/fports.h:
+
+/usr/include/libguile/ports.h:
+
+/usr/include/libguile/futures.h:
+
+/usr/include/libguile/gc.h:
+
+/usr/include/libguile/hooks.h:
+
+/usr/include/libguile/gdbint.h:
+
+/usr/include/libguile/goops.h:
+
+/usr/include/libguile/validate.h:
+
+/usr/include/libguile/gsubr.h:
+
+/usr/include/libguile/guardians.h:
+
+/usr/include/libguile/hash.h:
+
+/usr/include/libguile/hashtab.h:
+
+/usr/include/libguile/weaks.h:
+
+/usr/include/libguile/init.h:
+
+/usr/include/libguile/ioext.h:
+
+/usr/include/libguile/rdelim.h:
+
+/usr/include/libguile/rw.h:
+
+/usr/include/libguile/keywords.h:
+
+/usr/include/libguile/list.h:
+
+/usr/include/libguile/load.h:
+
+/usr/include/libguile/macros.h:
+
+/usr/include/libguile/mallocs.h:
+
+/usr/include/libguile/modules.h:
+
+/usr/include/libguile/net_db.h:
+
+/usr/include/libguile/numbers.h:
+
+/usr/lib/gcc/i386-redhat-linux/4.3.2/include/float.h:
+
+/usr/include/libguile/objects.h:
+
+/usr/include/libguile/objprop.h:
+
+/usr/include/libguile/options.h:
+
+/usr/include/libguile/pairs.h:
+
+/usr/include/libguile/ports.h:
+
+/usr/include/libguile/posix.h:
+
+/usr/include/libguile/print.h:
+
+/usr/include/libguile/procprop.h:
+
+/usr/include/libguile/properties.h:
+
+/usr/include/libguile/procs.h:
+
+/usr/include/libguile/ramap.h:
+
+/usr/include/libguile/random.h:
+
+/usr/include/libguile/read.h:
+
+/usr/include/libguile/root.h:
+
+/usr/include/libguile/scmsigs.h:
+
+/usr/include/libguile/script.h:
+
+/usr/include/libguile/simpos.h:
+
+/usr/include/libguile/smob.h:
+
+/usr/include/libguile/snarf.h:
+
+/usr/include/libguile/socket.h:
+
+/usr/include/libguile/sort.h:
+
+/usr/include/libguile/srcprop.h:
+
+/usr/include/libguile/stackchk.h:
+
+/usr/include/libguile/stime.h:
+
+/usr/include/unistd.h:
+
+/usr/include/bits/posix_opt.h:
+
+/usr/include/bits/confname.h:
+
+/usr/include/getopt.h:
+
+/usr/include/libguile/strings.h:
+
+/usr/include/libguile/srfi-13.h:
+
+/usr/include/libguile/srfi-14.h:
+
+/usr/include/libguile/strorder.h:
+
+/usr/include/libguile/strports.h:
+
+/usr/include/libguile/struct.h:
+
+/usr/include/libguile/symbols.h:
+
+/usr/include/libguile/tags.h:
+
+/usr/include/libguile/throw.h:
+
+/usr/include/libguile/unif.h:
+
+/usr/include/libguile/validate.h:
+
+/usr/include/libguile/values.h:
+
+/usr/include/libguile/variable.h:
+
+/usr/include/libguile/smob.h:
+
+/usr/include/libguile/vectors.h:
+
+/usr/include/libguile/srfi-4.h:
+
+/usr/include/libguile/version.h:
+
+/usr/include/libguile/vports.h:
+
+/usr/include/libguile/weaks.h:
+
+/usr/include/libguile/backtrace.h:
+
+/usr/include/libguile/debug.h:
+
+/usr/include/libguile/stacks.h:
+
+/usr/include/libguile/threads.h:
+
+/usr/include/libguile/inline.h:
+
+/usr/include/stdio.h:
+
+/usr/include/libio.h:
+
+/usr/include/_G_config.h:
+
+/usr/include/wchar.h:
+
+/usr/lib/gcc/i386-redhat-linux/4.3.2/include/stdarg.h:
+
+/usr/include/bits/stdio_lim.h:
+
+/usr/include/bits/sys_errlist.h:
+
+/usr/include/bits/stdio.h:
+
+/usr/include/libguile/pairs.h:
+
+/usr/include/libguile/gc.h:
+
+/usr/include/libguile/error.h:
+
+/usr/include/libguile/discouraged.h:
+
+/usr/include/libguile/deprecated.h:
+
+/usr/include/libguile/strings.h:
+
+/usr/include/assert.h:
+
+/usr/include/net-snmp/net-snmp-config.h:
+
+/usr/include/net-snmp/net-snmp-config-i386.h:
+
+/usr/include/net-snmp/system/linux.h:
+
+/usr/include/net-snmp/system/sysv.h:
+
+/usr/include/net-snmp/system/generic.h:
+
+/usr/include/net-snmp/machine/generic.h:
+
+/usr/include/net-snmp/net-snmp-config-i386.h:
+
+/usr/include/net-snmp/net-snmp-includes.h:
+
+/usr/include/netinet/in.h:
+
+/usr/include/sys/socket.h:
+
+/usr/include/sys/uio.h:
+
+/usr/include/bits/uio.h:
+
+/usr/include/bits/socket.h:
+
+/usr/include/bits/sockaddr.h:
+
+/usr/include/asm/socket.h:
+
+/usr/include/asm/sockios.h:
+
+/usr/include/bits/in.h:
+
+/usr/include/net-snmp/definitions.h:
+
+/usr/include/net-snmp/types.h:
+
+/usr/include/inttypes.h:
+
+/usr/include/net-snmp/library/snmp_api.h:
+
+/usr/include/net-snmp/library/asn1.h:
+
+/usr/include/net-snmp/library/snmp_impl.h:
+
+/usr/include/net-snmp/library/snmp.h:
+
+/usr/include/net-snmp/library/snmp-tc.h:
+
+/usr/include/net-snmp/utilities.h:
+
+/usr/include/net-snmp/library/snmp_client.h:
+
+/usr/include/net-snmp/library/system.h:
+
+/usr/include/net-snmp/library/tools.h:
+
+/usr/include/net-snmp/library/int64.h:
+
+/usr/include/net-snmp/library/mt_support.h:
+
+/usr/include/net-snmp/library/snmp_alarm.h:
+
+/usr/include/net-snmp/library/callback.h:
+
+/usr/include/net-snmp/library/data_list.h:
+
+/usr/include/net-snmp/library/oid_stash.h:
+
+/usr/include/net-snmp/library/check_varbind.h:
+
+/usr/include/net-snmp/library/container.h:
+
+/usr/include/net-snmp/library/factory.h:
+
+/usr/include/net-snmp/library/snmp_logging.h:
+
+/usr/include/syslog.h:
+
+/usr/include/sys/syslog.h:
+
+/usr/include/bits/syslog-path.h:
+
+/usr/include/net-snmp/library/container_binary_array.h:
+
+/usr/include/net-snmp/library/container_list_ssll.h:
+
+/usr/include/net-snmp/library/container_iterator.h:
+
+/usr/include/net-snmp/library/container.h:
+
+/usr/include/net-snmp/library/snmp_assert.h:
+
+/usr/include/net-snmp/version.h:
+
+/usr/include/net-snmp/session_api.h:
+
+/usr/include/net-snmp/library/snmp_transport.h:
+
+/usr/include/net-snmp/library/snmp_service.h:
+
+/usr/include/net-snmp/library/snmpCallbackDomain.h:
+
+/usr/include/net-snmp/library/snmpUnixDomain.h:
+
+/usr/include/sys/un.h:
+
+/usr/include/net-snmp/library/snmpUDPDomain.h:
+
+/usr/include/net-snmp/library/snmpTCPDomain.h:
+
+/usr/include/net-snmp/library/snmpUDPIPv6Domain.h:
+
+/usr/include/net-snmp/library/snmpTCPIPv6Domain.h:
+
+/usr/include/net-snmp/library/ucd_compat.h:
+
+/usr/include/net-snmp/pdu_api.h:
+
+/usr/include/net-snmp/mib_api.h:
+
+/usr/include/net-snmp/library/mib.h:
+
+/usr/include/net-snmp/library/parse.h:
+
+/usr/include/net-snmp/varbind_api.h:
+
+/usr/include/net-snmp/config_api.h:
+
+/usr/include/net-snmp/library/read_config.h:
+
+/usr/include/net-snmp/library/default_store.h:
+
+/usr/include/net-snmp/library/snmp_parse_args.h:
+
+/usr/include/net-snmp/library/snmp_enum.h:
+
+/usr/include/net-snmp/library/vacm.h:
+
+/usr/include/net-snmp/output_api.h:
+
+/usr/include/net-snmp/library/snmp_debug.h:
+
+/usr/include/net-snmp/snmpv3_api.h:
+
+/usr/include/net-snmp/library/snmpv3.h:
+
+/usr/include/net-snmp/library/transform_oids.h:
+
+/usr/include/net-snmp/library/keytools.h:
+
+/usr/include/net-snmp/library/scapi.h:
+
+/usr/include/net-snmp/library/lcd_time.h:
+
+/usr/include/net-snmp/library/snmp_secmod.h:
+
+/usr/include/net-snmp/library/snmpv3-security-includes.h:
+
+/usr/include/net-snmp/library/snmpusm.h:
+
+/usr/include/errno.h:
+
+/usr/include/bits/errno.h:
+
+/usr/include/linux/errno.h:
+
+/usr/include/asm/errno.h:
+
+/usr/include/asm-generic/errno.h:
+
+/usr/include/asm-generic/errno-base.h:
