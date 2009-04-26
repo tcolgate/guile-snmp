@@ -1,7 +1,8 @@
 ;;-------------------------------------------------------------------
 ;; Copyright (C) 2009 Tristan Colgate 
 ;;
-;; goal.scm - Some info 
+;; goal.scm - This is intended to be a complex example of the ideal
+;; grammar intended for reporting.
 ;;
 ;;-------------------------------------------------------------------
 

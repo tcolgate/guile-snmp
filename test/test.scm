@@ -1,6 +1,13 @@
 #!/usr/bin/guile -s
 !#
 
+;;-------------------------------------------------------------------
+;; Copyright (C) 2009 Tristan Colgate 
+;;
+;; test.scm -  A simple example of the basic SNMP wrapper
+;;
+;;-------------------------------------------------------------------
+
 (use-modules (snmp net-snmp))
 (use-modules (oop goops))
 

@@ -1,7 +1,7 @@
 ;;-------------------------------------------------------------------
 ;; Copyright (C) 2009 Tristan Colgate 
 ;;
-;; utilities.scm - This file defines classes and utilities to provide
+;; reports.scm - This file defines classes and utilities to provide
 ;; a more expressive environment for SNMP reporting
 ;;
 ;;-------------------------------------------------------------------

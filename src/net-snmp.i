@@ -1,5 +1,10 @@
-// SWIG templates for guile-netsnmp
-//  -- based on original work by Yves Perrenoud <yves@xpand.org>
+/*-------------------------------------------------------------------
+ * Copyright (C) 2009 Tristan Colgate 
+ *
+ * net-snmp.i - SWIG templates for guile-netsnmp
+ *  based on original work by Yves Perrenoud <yves@xpand.org>
+ *
+ -------------------------------------------------------------------*/
 
 //%module net-snmp
 

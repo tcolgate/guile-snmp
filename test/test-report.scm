@@ -1,3 +1,11 @@
+;;-------------------------------------------------------------------
+;; Copyright (C) 2009 Tristan Colgate 
+;;
+;; test-report.scm -  A simple report testing various features of the
+;; reporting system.
+;;
+;;-------------------------------------------------------------------
+
 (use-modules (oop goops))
 (use-modules (snmp net-snmp))
 (use-modules (snmp reports))

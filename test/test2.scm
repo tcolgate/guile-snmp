@@ -1,6 +1,13 @@
 #!/usr/bin/guile -s
 !#
 
+;;-------------------------------------------------------------------
+;; Copyright (C) 2009 Tristan Colgate 
+;;
+;; test2.scm -  A siple test of the net-snmp bindings
+;;
+;;-------------------------------------------------------------------
+
 (use-modules (snmp net-snmp))
 (use-modules (snmp reports))
 (use-modules (oop goops))
