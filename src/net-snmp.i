@@ -1,10 +1,5 @@
-/*-------------------------------------------------------------------
- * Copyright (C) 2009 Tristan Colgate 
- *
- * net-snmp.i - SWIG templates for guile-netsnmp
- *  based on original work by Yves Perrenoud <yves@xpand.org>
- *
- -------------------------------------------------------------------*/
+// SWIG templates for guile-netsnmp
+//  -- based on original work by Yves Perrenoud <yves@xpand.org>
 
 //%module net-snmp
 
@@ -25,6 +20,12 @@ typedef unsigned short u_short;
 #include <net-snmp/library/snmp_api.h>
 #include <net-snmp/library/mib.h>
 %}
+
+%extend variable_list {
+    SCM scmoid ;
+    SCM scmtag ;
+    SCM scmiid ;
+}
 
 %include<ports.i>
 
@@ -82,6 +83,10 @@ typedef unsigned short u_short;
   free($2);
 }
 
+%apply(oid* , size_t* ){
+  (oid* objid , size_t* objidlen)
+}
+
 /* A pair of typemaps  to pass pdus for write and return the 
   value as output */
 
@@ -102,15 +107,11 @@ typedef unsigned short u_short;
 %include "asn1.h"
 
 %inline %{
-struct myoid {
-        oid *ids;
-        size_t len;
-};
-struct myoid* nyoid_from_ptr(oid* data, ssize_t len){
-struct myoid* newoid = (struct myoid*)calloc(1,sizeof(struct myoid));
-  newoid->ids = data;
-  newoid->len = len;
-  return newoid;
+int
+oid_from_varbind(netsnmp_variable_list* varbind, oid* objid, size_t* objidlen){
+  memcpy( objid, varbind->name, (varbind->name_length * sizeof(oid)));
+  *objidlen =  varbind->name_length;
+  return 1 ;
 };
 
 %}
