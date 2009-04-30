@@ -1,11 +1,4 @@
-/*-------------------------------------------------------------------
- * Copyright (C) 2009 Tristan Colgate 
- *
- * constants.i - Forces swig to provide constants for some
- * variables that are otherwise missed by the parser.
- *
- -------------------------------------------------------------------*/
-
+/* Force the definitions of some consts that swig is missing */
 %constant oid SNMP_MSG_GET = (oid) SNMP_MSG_GET;
 %constant oid SNMP_MSG_GETNEXT = (oid) SNMP_MSG_GETNEXT;
 %constant oid SNMP_MSG_RESPONSE = (oid) SNMP_MSG_RESPONSE;
@@ -15,3 +8,6 @@
 %constant oid SNMP_MSG_INFORM = (oid) SNMP_MSG_INFORM;
 %constant oid SNMP_MSG_TRAP2 = (oid) SNMP_MSG_TRAP2;
 %constant oid SNMP_MSG_REPORT = (oid) SNMP_MSG_REPORT;
+%constant int STAT_SUCCESS = 0;
+%constant int STAT_ERROR = 1;
+%constant int STAT_TIMEOUT = 2;

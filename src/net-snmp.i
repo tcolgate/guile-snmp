@@ -19,13 +19,8 @@ typedef unsigned short u_short;
 #include <net-snmp/library/transform_oids.h>
 #include <net-snmp/library/snmp_api.h>
 #include <net-snmp/library/mib.h>
-%}
 
-%extend variable_list {
-    SCM scmoid ;
-    SCM scmtag ;
-    SCM scmiid ;
-}
+%}
 
 %include<ports.i>
 
