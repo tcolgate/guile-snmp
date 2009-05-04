@@ -31,8 +31,8 @@
 (snmp-add-null-var pdu sysName.0)
 (define status (snmp-synch-response ss pdu))
 (define vals (slot-ref status 'variables))
-(print-value sysLocation.0  vals)
-(print-value sysName.0  (slot-ref vals 'next-variable))
+(display (snprint-value sysLocation.0  vals))
+(display (snprint-value sysName.0  (slot-ref vals 'next-variable)))
 
 (snmp-free-pdu status)
 (snmp-close ss)

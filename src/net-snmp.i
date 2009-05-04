@@ -82,6 +82,29 @@ typedef unsigned short u_short;
   (oid* objid , size_t* objidlen)
 }
 
+/* A pair of typemaps to pass char* for write and return the 
+  value as output */
+
+%typemap(in,numinputs=0)(char* , size_t){
+  // allocate a new string
+  $2=128; // really bad, but use an arbitrarily long string
+  $1 = (char*)calloc($2,sizeof(char));
+}
+
+%typemap(argout)(char* , size_t){
+  SCM newstring = SCM_UNSPECIFIED;
+
+  if(result){
+    newstring = scm_from_locale_string($1);
+  };
+
+  gswig_result = newstring;
+  free($1);
+}
+
+%apply(char* , size_t ){
+  (char* buf, size_t buf_len)
+}
 /* A pair of typemaps  to pass pdus for write and return the 
   value as output */
 

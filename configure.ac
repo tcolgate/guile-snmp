@@ -27,6 +27,6 @@ AC_CHECK_LIB([netsnmp], [init_snmp])
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile])
-AC_CONFIG_FILES([src/Makefile test/Makefile])
+AC_CONFIG_FILES([src/Makefile tests/Makefile])
 AC_OUTPUT
 

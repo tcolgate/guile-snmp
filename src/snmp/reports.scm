@@ -87,6 +87,7 @@
                     (display "Failed to resolve ")
                     (display (symbol->string sym))
                     (display " as oid")(newline)
+                    (error "Exitting")
                     #f)
                   (let* ((var (make-variable oid)))
                     (module-add! mod sym var)
@@ -96,10 +97,6 @@
         (set-module-uses! (current-module) 
           (append (module-uses (current-module)) (list module)))
         (init-mib)))))
-
-(define current-session #f)
-(define current-context 'ctx-snmpget)
-(define failure-continuation #f)
 
 (define-syntax session
   (syntax-rules ()
@@ -123,18 +120,13 @@
         (set! current-context 'ctx-snmpget)
         statements ...))))
 
-;; Given a varbind list and the oids requested that
-;; generated it. Tag each reult with the based oid
-;; and compute the iid.
-;; We only match the first, but should try and
-;; find the most specific match.
-;;
 (define-class <report-varlist> (<variable-list>)
   (nextvar #:init-value #f)
   (tag #:init-value #u32())
+  (base #:init-value #u32())
   (iid #:init-value #u32()))
 
-; walking variable->next_variable results in new 
+; Walking variable->next_variable results in new 
 ; SCMs being create so any tagging of the results
 ; is not persisted the next time we try and
 ; walk the list.  We create persistant SCMs for
@@ -146,7 +138,47 @@
           (change-class thisvarbind <report-varlist>)
           (slot-set! thisvarbind 'nextvar (slot-ref thisvarbind 'next-variable))
           (nextvarbind (slot-ref thisvarbind 'nextvar))))))
+
+(define (filter-valid-next result initialoids)
+  (let findnext ((thisres result)
+                 (valids (list)))
+    (if (null? thisres)
+      ; We've colalted all valid results into valids. Re join them
+      ; into one list
+      (if (not (null? valids)) 
+        (let ((first (car valids)))
+          (let  joinup ((a valids))
+            (if (not (null? a))
+              (if (not (null? (cdr a)))
+                (let ((b (cadr a)))
+                  (slot-set! (car a) 'nextvar b)
+                  (joinup (cdr a)))
+                (slot-set! (car a) 'nextvar '())))
+          first))
+          ; if the valid list is empty, just return the empty list
+          valids)
+      (begin
+        (cond
+          ((equal? (char->integer (slot-ref thisres 'type)) (SNMP-ENDOFMIBVIEW)) 
+             (display "Wandered off end of MIB"))
+          ((equal? (char->integer (slot-ref thisres 'type)) (SNMP-NOSUCHOBJECT)) 
+             (display "No Such Object"))
+          ((equal? (char->integer (slot-ref thisres 'type)) (SNMP-NOSUCHINSTANCE)) 
+             (display "No Such Instance"))
+          ; if we were unable to establish a base during tagging we
+          ; assume it was not an oid we requested
+          ((null? (slot-ref thisres 'base))(display "wandered off base"))
+          (#t (begin
+               (set! valids (cons thisres valids)))))
+        (findnext (slot-ref thisres 'nextvar) valids)))))
   
+ 
+;; Given a varbind list and the oids requested that
+;; generated it. Tag each reult with the based oid
+;; and compute the iid.
+;; We only match the first, but should try and
+;; find the most specific match.
+;;
 (define (tag-varbinds result bases)
   (let nextvarbind ((varitem result))
     (if (not (null? varitem))
@@ -155,6 +187,7 @@
           (if (equal? (netsnmp-oid-is-subtree (car baseitems) (oid-from-varbind varitem)) 0)
             (begin
               (slot-set! varitem 'tag (car baseitems))
+              (slot-set! varitem 'base (car baseitems))
               (slot-set! varitem 'iid (- (car baseitems) (oid-from-varbind varitem))))
             (if (not (equal? (cdr baseitems) '()))
               (nextbase (cdr baseitems))
@@ -162,6 +195,7 @@
                 ; fallback, if we get here (which we shouldn't!0
                 ; set the iid and tags to gueeses
                 (slot-set! varitem 'tag (oid-from-varbind varitem))
+                (slot-set! varitem 'base '())
                 (slot-set! varitem 'iid #u32())))))
         (nextvarbind (slot-ref varitem 'nextvar))))))
 
@@ -233,10 +267,33 @@
            (tag-varbinds results oids)
            (make-varbind-func results)))))))
 
+(define-syntax getnext
+  (syntax-rules ()
+    ((get oid-terms ...)
+      (let* ((oids (list oid-terms ...))
+             (newpdu (snmp-pdu-create (SNMP-MSG-GETNEXT))))
+       (for-each 
+         (lambda(oid)
+           (snmp-add-null-var newpdu oid)) 
+         oids)
+       (let ((status (snmp-synch-response current-session newpdu)))
+         (let ((results (slot-ref status 'variables)))
+           (split-varbinds results)
+           (tag-varbinds results oids)
+           (make-varbind-func results)))))))
+
+
 ; This is used to track our failure
 (define failure-cont
-  (lambda () (display "Options exhausted")))
+  (lambda () (display "Options exhausted")(newline)#f))
 
+(define-syntax all
+  (syntax-rules ()
+    ((all terms ...)
+       (begin
+         terms ...
+         (failure-cont)))))
+;;
 ;; With built in backtracking
 (define (getnext-with-failure-cont baseoids)
   (let ((old-failure-cont failure-cont))
@@ -244,19 +301,20 @@
       (lambda (continuation)
         (define (try initialoids pdu)
           (let ((status (snmp-synch-response current-session pdu)))
-            (if ((not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
+            (if (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR)))
               (begin
                 ;; we got to the end of the tree or failed somehow
+                (error "some error occurred")
                 (set! failure-cont old-failure-cont)
                 (failure-cont))
-              (begin
-                ;; we succceeded. set up next set of oids and call try
-                ;; again if we are deemed to have failed later on
-                (let ((results (slot-ref status 'variables)))
-                  (split-varbinds results)
-                  (tag-varbinds results initialoids)
+              ;; we succceeded. set up next set of oids and call try
+              ;; again if we are deemed to have failed later on
+              (let ((results (slot-ref status 'variables)))
+                (split-varbinds results)
+                (tag-varbinds results initialoids)
+                (let ((cleanresults (filter-valid-next results initialoids)))
                   (let ((nextpdu (snmp-pdu-create(SNMP-MSG-GETNEXT))))
-                    (let add-oids ((varbind results))
+                    (let add-oids ((varbind cleanresults))
                       (if (not (null? varbind))
                         (begin
                           (snmp-add-null-var nextpdu (oid-from-varbind varbind))
@@ -264,7 +322,7 @@
                     (set! failure-cont
                       (lambda () (continuation (try initialoids nextpdu))))))
                   (make-varbind-func results))))))
-        (let ((firstpdu (snmp-pdu-create(SNMP-MSG-GET))))
+        (let ((firstpdu (snmp-pdu-create(SNMP-MSG-GETNEXT))))
           (for-each 
             (lambda(oid)
               (snmp-add-null-var firstpdu oid)) 
@@ -275,13 +333,13 @@
   (syntax-rules ()
     ((walk oid-terms ...)
       (getnext-with-failure-cont (list oid-terms ...)))))
-
+;
 (define-syntax print
   (syntax-rules ()
     ((print var )
-       (print-variable (oid var) (var)))
+       (fprint-variable (current-output-port) (oid var) (var)))
     ((print var reqoid )
-       (print-variable (oid var reqoid) (var reqoid)))))
+       (fprint-variable (current-output-port) (oid var reqoid) (var reqoid)))))
 
 ; Set up the reports environement
 ;
@@ -290,8 +348,8 @@
 (set! reports:autotranslate #t)
 
 (export current-session current-context reports:autotranslate <reports-varlist>)
-(export-syntax init-reports session oid-list walk get  ids sub-objid %)
-(export-syntax oid tag iid type value nextvar print )
+(export-syntax init-reports session oid-list walk get getnext  ids sub-objid %)
+(export-syntax oid tag iid type value nextvar print all)
 (export failure-cont)
 (export getnext-with-failure-cont make-varbind-func tag-varbinds split-varbinds)
 
