@@ -137,7 +137,8 @@
         (begin
           (change-class thisvarbind <report-varlist>)
           (slot-set! thisvarbind 'nextvar (slot-ref thisvarbind 'next-variable))
-          (nextvarbind (slot-ref thisvarbind 'nextvar))))))
+          (nextvarbind (slot-ref thisvarbind 'nextvar)))
+        result)))
 
 (define (filter-valid-next result initialoids)
   (let findnext ((thisres result)
@@ -167,7 +168,7 @@
              (display "No Such Instance"))
           ; if we were unable to establish a base during tagging we
           ; assume it was not an oid we requested
-          ((null? (slot-ref thisres 'base))(display "wandered off base"))
+          ((null? (slot-ref thisres 'base)) #f)
           (#t (begin
                (set! valids (cons thisres valids)))))
         (findnext (slot-ref thisres 'nextvar) valids)))))
@@ -180,53 +181,54 @@
 ;; find the most specific match.
 ;;
 (define (tag-varbinds result bases)
-  (let nextvarbind ((varitem result))
+  (let nextvarbind ((varitem result)
+                    (baseitems bases))
     (if (not (null? varitem))
       (begin
-        (let nextbase ((baseitems bases))
-          (if (equal? (netsnmp-oid-is-subtree (car baseitems) (oid-from-varbind varitem)) 0)
-            (begin
-              (slot-set! varitem 'tag (car baseitems))
-              (slot-set! varitem 'base (car baseitems))
-              (slot-set! varitem 'iid (- (car baseitems) (oid-from-varbind varitem))))
-            (if (not (equal? (cdr baseitems) '()))
-              (nextbase (cdr baseitems))
-              (begin
-                ; fallback, if we get here (which we shouldn't!0
-                ; set the iid and tags to gueeses
-                (slot-set! varitem 'tag (oid-from-varbind varitem))
-                (slot-set! varitem 'base '())
-                (slot-set! varitem 'iid #u32())))))
-        (nextvarbind (slot-ref varitem 'nextvar))))))
+        (if (equal? (netsnmp-oid-is-subtree (car baseitems) (oid-from-varbind varitem)) 0)
+          (begin
+            (slot-set! varitem 'tag (car baseitems))
+            (slot-set! varitem 'base (car baseitems))
+            (slot-set! varitem 'iid (- (car baseitems) (oid-from-varbind varitem))))
+          (begin
+            ; fallback, if we get here (which we shouldn't!0
+            ; set the iid and tags to gueeses
+            (slot-set! varitem 'tag (oid-from-varbind varitem))
+            (slot-set! varitem 'base '())
+            (slot-set! varitem 'iid #u32())))
+        (nextvarbind (slot-ref varitem 'nextvar) (cdr baseitems))))))
 
 (define (make-varbind-func varbinds)
       (lambda( . msg)
         (if (not (null? varbinds))
           (cond
-            ((eq? msg '()) varbinds )
+            ((eq? msg '()) (snprint-value (oid-from-varbind varbinds) varbinds))
             ((uniform-vector? (car msg))
               (let nextvarbind ((var varbinds))
                 (if (null? var)
                   (display "No such oid in varbind")
                   (if (eq? (snmp-oid-compare (slot-ref var 'tag) (car msg)) 0)
                       (cond 
-                        ((equal? (cdr msg) '())   var) 
-                        ((equal? (cdr msg) (list 'oid))   (oid-from-varbind var))
-                        ((equal? (cdr msg) (list 'tag))   (slot-ref var 'tag))
-                        ((equal? (cdr msg) (list 'iid))   (slot-ref var 'iid))
-                        ((equal? (cdr msg) (list 'type))  (slot-ref var 'type))
-                        ((equal? (cdr msg) (list 'value)) var)
-                        (#t var))
-                      (nextvarbind  (slot-ref var 'nextvar))))))
-            ((equal? (car msg) 'oid) (oid-from-varbind varbinds))
-            ((equal? (car msg) 'tag) (slot-ref varbinds 'tag))
-            ((equal? (car msg) 'iid) (slot-ref varbinds 'iid))
-            ((equal? (car msg) 'type) (slot-ref varbinds 'type))
+                        ((equal? (cdr msg) '())
+                           (snprint-value var (oid-from-varbind var))) 
+                        ((equal? (cdr msg) (list 'oid))     (oid-from-varbind var))
+                        ((equal? (cdr msg) (list 'tag))     (slot-ref var 'tag))
+                        ((equal? (cdr msg) (list 'iid))     (slot-ref var 'iid))
+                        ((equal? (cdr msg) (list 'type))    (slot-ref var 'type))
+                        ((equal? (cdr msg) (list 'varbind)) var)
+                        ((equal? (cdr msg) (list 'value))   (snprint-value (oid-from-varbind var)))
+                        (#t (snprint-value (oid-from-varbind var) var)))))))
+            ((equal? (car msg) 'oid)     (oid-from-varbind varbinds))
+            ((equal? (car msg) 'tag)     (slot-ref varbinds 'tag))
+            ((equal? (car msg) 'iid)     (slot-ref varbinds 'iid))
+            ((equal? (car msg) 'type)    (slot-ref varbinds 'type))
             ((equal? (car msg) 'nextvar) (slot-ref varbinds 'nextvar))
-            ((equal? (car msg) 'value) varbinds )
-            (#t varbinds ))
-          #f)))
+            ((equal? (car msg) 'varbind) varbinds )
+            ((equal? (car msg) 'value)   (snprint-value (oid-from-varbind varbinds) varbinds))
+            (#t                          (snprint-value (oid-from-varbind varbinds))))
+          (failure-cont))))
 
+	
 (define-syntax oid
   (syntax-rules ()
     ((tag varbind args ...) (varbind args ... 'oid))))
@@ -300,28 +302,34 @@
     (call/cc
       (lambda (continuation)
         (define (try initialoids pdu)
-          (let ((status (snmp-synch-response current-session pdu)))
-            (if (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR)))
-              (begin
-                ;; we got to the end of the tree or failed somehow
-                (error "some error occurred")
-                (set! failure-cont old-failure-cont)
-                (failure-cont))
-              ;; we succceeded. set up next set of oids and call try
-              ;; again if we are deemed to have failed later on
-              (let ((results (slot-ref status 'variables)))
-                (split-varbinds results)
-                (tag-varbinds results initialoids)
-                (let ((cleanresults (filter-valid-next results initialoids)))
-                  (let ((nextpdu (snmp-pdu-create(SNMP-MSG-GETNEXT))))
-                    (let add-oids ((varbind cleanresults))
-                      (if (not (null? varbind))
-                        (begin
-                          (snmp-add-null-var nextpdu (oid-from-varbind varbind))
-                          (add-oids  (slot-ref varbind 'nextvar))))
-                    (set! failure-cont
-                      (lambda () (continuation (try initialoids nextpdu))))))
-                  (make-varbind-func results))))))
+          (if (not (equal? initialoids '()))
+            (let ((status (snmp-synch-response current-session pdu)))
+              (if (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR)))
+                (begin
+                  ;; we got to the end of the tree or failed somehow
+                  (error "some error occurred")
+                  (set! failure-cont old-failure-cont)
+                  (failure-cont))
+                ;; we succceeded. set up next set of oids and call try
+                ;; again if we are deemed to have failed later on
+                (let ((results (slot-ref status 'variables)))
+                  (split-varbinds results)
+                  (tag-varbinds results initialoids)
+                  (let ((cleanresults (filter-valid-next results initialoids)))
+                    (let ((nextpdu (snmp-pdu-create(SNMP-MSG-GETNEXT)))
+                          (nextoids (list)))
+                      (let add-oids ((varbind cleanresults))
+                        (if (not (null? varbind))
+                          (begin
+                            (snmp-add-null-var nextpdu (oid-from-varbind varbind))
+                            (set! nextoids (cons (slot-ref varbind 'base) nextoids))
+                            (add-oids  (slot-ref varbind 'nextvar))))
+                      (set! failure-cont
+                        (lambda () (continuation (try nextoids nextpdu))))))
+                    (make-varbind-func cleanresults)))))
+            (begin 
+              (set! failure-cont old-failure-cont)
+              (failure-cont))))
         (let ((firstpdu (snmp-pdu-create(SNMP-MSG-GETNEXT))))
           (for-each 
             (lambda(oid)
