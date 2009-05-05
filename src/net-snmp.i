@@ -124,6 +124,66 @@ typedef unsigned short u_short;
 %include "net-snmp-config.h"
 %include "asn1.h"
 
+%extend variable_list {
+       const SCM value;
+}
+
+// Specific implementation of set/get functions
+%{
+SCM variable_list_value_get(struct variable_list *p) {
+  SCM result = SCM_UNSPECIFIED;
+  switch(p->type){
+    case ASN_OCTET_STR: 
+      //decodeString,
+      break;
+    case ASN_BOOLEAN: 
+      //lambda pdu: pdu.val.integer.contents.value,
+      break;
+    case ASN_INTEGER: 
+      //lambda pdu: pdu.val.integer.contents.value,
+      result = scm_int2num(*((p->val).integer));
+      break;
+    case ASN_NULL: 
+      //lambda pdu: None,
+      break;
+    case ASN_OBJECT_ID: 
+      //decodeOid,
+      break;
+    case ASN_BIT_STR: 
+      //decodeString,
+      break;
+    case ASN_IPADDRESS: 
+      //decodeIp,
+      break;
+    case ASN_COUNTER: 
+      //lambda pdu: pdu.val.uinteger.contents.value,
+      result = scm_uint2num(*((p->val).integer));
+      break;
+    case ASN_GAUGE: 
+      //lambda pdu: pdu.val.integer.contents.value,
+      result = scm_int2num(*((p->val).integer));
+      break;
+    case ASN_TIMETICKS: 
+      //lambda pdu: pdu.val.uinteger.contents.value,
+      result = scm_uint2num(*((p->val).integer));
+      break;
+    case ASN_COUNTER64: 
+      //decodeBigInt,
+      break;
+    case ASN_APP_FLOAT: 
+      //lambda pdu: pdu.val.float.contents.value,
+      result = scm_float2num(*((p->val).floatVal));
+      break;
+    case ASN_APP_DOUBLE: 
+      //lambda pdu: pdu.val.double.contents.value,
+      result = scm_double2num(*((p->val).doubleVal));
+      break;
+    default: break;
+  };
+  return result;
+};
+%}
+
 %inline %{
 int
 oid_from_varbind(netsnmp_variable_list* varbind, oid* objid, size_t* objidlen){
