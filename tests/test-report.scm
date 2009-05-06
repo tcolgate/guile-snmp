@@ -4,11 +4,15 @@
 
 (init-reports)
 
+;(session "localhost" "public" 
+;   (let ((description (walk ifDescr)))
+;      (format #t "~a ~a ~%" (iid description) (description))
+;      (failure-cont)))
+
 (session "localhost" "public" 
-   (let* ((orid (walk sysORID))
-          (ordesc (get (+ sysORDescr (iid orid)))))
-      (format #t "DESCR: ~a " (ordesc))(newline)
-      (failure-cont)))
+  (all
+      (display (value (walk ifDescr)))
+      (newline)))
 
 
 

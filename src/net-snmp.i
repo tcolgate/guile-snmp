@@ -17,6 +17,7 @@ typedef unsigned short u_short;
 #include <net-snmp/net-snmp-config-i386.h>
 #include <net-snmp/net-snmp-includes.h>
 #include <net-snmp/library/transform_oids.h>
+#include <net-snmp/library/snmp_impl.h>
 #include <net-snmp/library/snmp_api.h>
 #include <net-snmp/library/mib.h>
 
@@ -134,51 +135,66 @@ SCM variable_list_value_get(struct variable_list *p) {
   SCM result = SCM_UNSPECIFIED;
   switch(p->type){
     case ASN_OCTET_STR: 
-      //decodeString,
-      break;
-    case ASN_BOOLEAN: 
-      //lambda pdu: pdu.val.integer.contents.value,
+    case ASN_BIT_STR: 
+      // These should probably be handled differently
+      result = scm_from_locale_stringn((p->val).string,p->val_len);
       break;
     case ASN_INTEGER: 
-      //lambda pdu: pdu.val.integer.contents.value,
+    case ASN_GAUGE: 
       result = scm_int2num(*((p->val).integer));
+      break;
+    case ASN_COUNTER: 
+    case ASN_TIMETICKS: 
+      result = scm_uint2num(*((p->val).integer));
       break;
     case ASN_NULL: 
       //lambda pdu: None,
+      result = SCM_EOL;
       break;
     case ASN_OBJECT_ID: 
-      //decodeOid,
-      break;
-    case ASN_BIT_STR: 
-      //decodeString,
+      {
+        // Guile wants to take ownership of the array
+        // so we copy it first.
+        oid* temp = (oid*)malloc(p->val_len);
+        memcpy(temp,(p->val).objid,p->val_len);
+        result = scm_take_u32vector(temp, (p->val_len)/sizeof(oid));
+      }; 
       break;
     case ASN_IPADDRESS: 
-      //decodeIp,
-      break;
-    case ASN_COUNTER: 
-      //lambda pdu: pdu.val.uinteger.contents.value,
-      result = scm_uint2num(*((p->val).integer));
-      break;
-    case ASN_GAUGE: 
-      //lambda pdu: pdu.val.integer.contents.value,
-      result = scm_int2num(*((p->val).integer));
-      break;
-    case ASN_TIMETICKS: 
-      //lambda pdu: pdu.val.uinteger.contents.value,
-      result = scm_uint2num(*((p->val).integer));
+      //Since snmp session takes a string we will rewturn
+      // these as strings. would prefer a proper IP object
+      {
+        char* temp = (char*)malloc(16*(sizeof(char)));
+        unsigned int a = ((unsigned char*)((p->val).bitstring))[0];
+        unsigned int b = ((unsigned char*)((p->val).bitstring))[1];
+        unsigned int c = ((unsigned char*)((p->val).bitstring))[2];
+        unsigned int d = ((unsigned char*)((p->val).bitstring))[3];
+        snprintf(temp,16,"%u.%u.%u.%u",a,b,c,d);
+        result = scm_from_locale_string(temp);
+        free(temp);
+      }
       break;
     case ASN_COUNTER64: 
-      //decodeBigInt,
+      {
+        SCM high = scm_int2num(((p->val).counter64)->high);
+        SCM low = scm_int2num(((p->val).counter64)->low);
+        result = scm_sum(
+                   scm_ash(high,scm_int2num(32)),
+                   low);
+      };
       break;
     case ASN_APP_FLOAT: 
-      //lambda pdu: pdu.val.float.contents.value,
       result = scm_float2num(*((p->val).floatVal));
       break;
     case ASN_APP_DOUBLE: 
-      //lambda pdu: pdu.val.double.contents.value,
       result = scm_double2num(*((p->val).doubleVal));
       break;
-    default: break;
+//    case ASN_BOOLEAN: 
+//      // Do not think this is a valid pdu type  
+//      break;
+    default: 
+      // use snprint_value to format the value as a string
+      break;
   };
   return result;
 };

@@ -202,7 +202,7 @@
       (lambda( . msg)
         (if (not (null? varbinds))
           (cond
-            ((eq? msg '()) (snprint-value (oid-from-varbind varbinds) varbinds))
+            ((eq? msg '()) (slot-ref varbinds 'value))
             ((uniform-vector? (car msg))
               (let nextvarbind ((var varbinds))
                 (if (null? var)
@@ -210,22 +210,22 @@
                   (if (eq? (snmp-oid-compare (slot-ref var 'tag) (car msg)) 0)
                       (cond 
                         ((equal? (cdr msg) '())
-                           (snprint-value var (oid-from-varbind var))) 
+                           (slot-ref var 'value))) 
                         ((equal? (cdr msg) (list 'oid))     (oid-from-varbind var))
                         ((equal? (cdr msg) (list 'tag))     (slot-ref var 'tag))
                         ((equal? (cdr msg) (list 'iid))     (slot-ref var 'iid))
                         ((equal? (cdr msg) (list 'type))    (slot-ref var 'type))
                         ((equal? (cdr msg) (list 'varbind)) var)
-                        ((equal? (cdr msg) (list 'value))   (snprint-value (oid-from-varbind var)))
-                        (#t (snprint-value (oid-from-varbind var) var)))))))
+                        ((equal? (cdr msg) (list 'value))   (slot-ref var 'value))
+                        (#t (slot-ref var 'value))))))
             ((equal? (car msg) 'oid)     (oid-from-varbind varbinds))
             ((equal? (car msg) 'tag)     (slot-ref varbinds 'tag))
             ((equal? (car msg) 'iid)     (slot-ref varbinds 'iid))
             ((equal? (car msg) 'type)    (slot-ref varbinds 'type))
             ((equal? (car msg) 'nextvar) (slot-ref varbinds 'nextvar))
             ((equal? (car msg) 'varbind) varbinds )
-            ((equal? (car msg) 'value)   (snprint-value (oid-from-varbind varbinds) varbinds))
-            (#t                          (snprint-value (oid-from-varbind varbinds))))
+            ((equal? (car msg) 'value)   (slot-ref varbinds 'value))
+            (#t                          (slot-ref varbinds 'value)))
           (failure-cont))))
 
 	
@@ -240,6 +240,10 @@
 (define-syntax iid
   (syntax-rules ()
     ((iid varbind args ...) (varbind args ... 'iid))))
+
+(define-syntax index
+  (syntax-rules ()
+    ((index varbind args ...) (varbind args ... 'iid))))
 
 (define-syntax type
   (syntax-rules ()
