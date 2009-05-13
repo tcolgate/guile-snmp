@@ -9,6 +9,7 @@
 (define-module (snmp reports)
   #:use-syntax (oop goops)
   #:use-syntax (ice-9 syncase)
+  #:use-syntax (ice-9 optargs)
   #:use-module (snmp net-snmp))
 
 ; This routine is lifted from guile-gnome-platform by Andy Wingo
@@ -67,7 +68,7 @@
   (sub-objid s e id))
 
 (define-method (% (s <integer>)(id <uvec>))
-  (sub-objid s s id))
+  (u32vector-ref id (- s 1)))
 
 (define (sub-objid s e id)
   (list->u32vector 
@@ -80,7 +81,7 @@
     ((init-reports)
       (begin 
         (define (oid-lazy-binder mod sym def?)
-          (if reports:autotranslate
+          (if (and reports:autotranslate (not def?))
               (let ((oid (snmp-parse-oid (symbol->string sym))))
                 (if (unspecified? oid)
                   (begin 
@@ -98,27 +99,50 @@
           (append (module-uses (current-module)) (list module)))
         (init-mib)))))
 
-(define-syntax session
-  (syntax-rules ()
-    ((session hostname hostcommunity)
-      (let ((newsession (make <snmp-session>)))
-        (snmp-sess-init newsession)
- 	(slot-set! newsession 'version (SNMP-VERSION-2c))
-	(slot-set! newsession 'peername hostname)
-	(slot-set! newsession 'community hostcommunity)
-        (slot-set! newsession 'community-len (string-length hostcommunity))
-        (snmp-open newsession)))
-    ((session hostname hostcommunity statements ...)
-      (let ((newsession (make <snmp-session>)))
-        (snmp-sess-init newsession)
- 	(slot-set! newsession 'version (SNMP-VERSION-2c))
-	(slot-set! newsession 'peername hostname)
-	(slot-set! newsession 'community hostcommunity)
-        (slot-set! newsession 'community-len (string-length hostcommunity))
-	;;; almost violently non-threadsafe
-        (set! current-session (snmp-open newsession))
-        (set! current-context 'ctx-snmpget)
-        statements ...))))
+(define current-session #f)
+; (define-syntax session
+;  (syntax-rules ()
+;    ((session hostname hostcommunity)
+;      (let ((newsession (make <snmp-session>)))
+;        (snmp-sess-init newsession)
+; 	(slot-set! newsession 'version (SNMP-VERSION-2c))
+;	(slot-set! newsession 'peername hostname)
+;	(slot-set! newsession 'community hostcommunity)
+;        (slot-set! newsession 'community-len (string-length hostcommunity))
+;        (snmp-open newsession)))
+;    ((session hostname hostcommunity statements ...)
+;      (let ((newsession (make <snmp-session>))
+;            (old-session current-session))
+;        (snmp-sess-init newsession)
+; 	(slot-set! newsession 'version (SNMP-VERSION-2c))
+;	(slot-set! newsession 'peername hostname)
+;	(slot-set! newsession 'community hostcommunity)
+;        (slot-set! newsession 'community-len (string-length hostcommunity))
+;	;;; almost violently non-threadsafe
+;        (set! current-session (snmp-open newsession))
+;        (let ((result (begin statements ...)))
+;          (set! current-session old-session)
+;          result)))))
+
+(defmacro*-public session (#:key (host      "localhost") 
+                                 (community "public")
+                                 (port      161)
+                                 (version (SNMP-VERSION-2c))
+                                (context #f)
+                           #:rest forms)
+  `(let ((newsession (make <snmp-session>))
+         (old-session current-session))
+    (snmp-sess-init newsession)
+    (slot-set! newsession 'version ,version)
+    (slot-set! newsession 'peername ,host)
+    (slot-set! newsession 'community ,community)
+    (slot-set! newsession 'community-len (string-length ,community))
+    ;;; almost violently non-threadsafe
+    (set! current-session (snmp-open newsession))
+    (let ((result (begin ,@forms )))
+      (set! current-session old-session)
+      result)))
+
 
 (define-class <report-varlist> (<variable-list>)
   (nextvar #:init-value #f)
@@ -206,18 +230,21 @@
             ((uniform-vector? (car msg))
               (let nextvarbind ((var varbinds))
                 (if (null? var)
-                  (display "No such oid in varbind")
+                  (begin
+                    (display "No such oid returned in result set")(newline)
+                    (fail))
                   (if (eq? (snmp-oid-compare (slot-ref var 'tag) (car msg)) 0)
                       (cond 
                         ((equal? (cdr msg) '())
-                           (slot-ref var 'value))) 
+                           (slot-ref var 'value))
                         ((equal? (cdr msg) (list 'oid))     (oid-from-varbind var))
                         ((equal? (cdr msg) (list 'tag))     (slot-ref var 'tag))
                         ((equal? (cdr msg) (list 'iid))     (slot-ref var 'iid))
                         ((equal? (cdr msg) (list 'type))    (slot-ref var 'type))
                         ((equal? (cdr msg) (list 'varbind)) var)
                         ((equal? (cdr msg) (list 'value))   (slot-ref var 'value))
-                        (#t (slot-ref var 'value))))))
+                        (#t (slot-ref var 'value)))
+                     (nextvarbind (slot-ref var 'nextvar))))))
             ((equal? (car msg) 'oid)     (oid-from-varbind varbinds))
             ((equal? (car msg) 'tag)     (slot-ref varbinds 'tag))
             ((equal? (car msg) 'iid)     (slot-ref varbinds 'iid))
@@ -226,7 +253,7 @@
             ((equal? (car msg) 'varbind) varbinds )
             ((equal? (car msg) 'value)   (slot-ref varbinds 'value))
             (#t                          (slot-ref varbinds 'value)))
-          (failure-cont))))
+          (fail))))
 
 	
 (define-syntax oid
@@ -258,62 +285,124 @@
 ;    ((nextvar varbind ) (make-varbind-func (varbind 'nextvar)))
 ;    ((nextvar varbind args ...) ((make-varbind-func (varbind 'nextvar)) args ...))))
 
-(define-syntax get
-  (syntax-rules ()
-    ((get oid-terms ...)
-      (let* ((oids (list oid-terms ...))
+(define (get . oid-terms)
+      (let* ((oids oid-terms)
              (newpdu (snmp-pdu-create (SNMP-MSG-GET))))
        (for-each 
          (lambda(oid)
            (snmp-add-null-var newpdu oid)) 
          oids)
        (let ((status (snmp-synch-response current-session newpdu)))
-         (let ((results (slot-ref status 'variables)))
-           (split-varbinds results)
-           (tag-varbinds results oids)
-           (make-varbind-func results)))))))
+         (if (or
+               (unspecified? status)
+               (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
+           (begin
+             ;; we got to the end of the tree or failed somehow
+             (fail))
+           (let ((results (slot-ref status 'variables)))
+             (split-varbinds results)
+             (tag-varbinds results oids)
+             (make-varbind-func results))))))
 
-(define-syntax getnext
-  (syntax-rules ()
-    ((get oid-terms ...)
-      (let* ((oids (list oid-terms ...))
+(define (getnext . oid-terms)
+      (let* ((oids oid-terms)
              (newpdu (snmp-pdu-create (SNMP-MSG-GETNEXT))))
        (for-each 
          (lambda(oid)
            (snmp-add-null-var newpdu oid)) 
          oids)
        (let ((status (snmp-synch-response current-session newpdu)))
-         (let ((results (slot-ref status 'variables)))
-           (split-varbinds results)
-           (tag-varbinds results oids)
-           (make-varbind-func results)))))))
+         (if (or
+               (unspecified? status)
+               (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
+           (begin
+             ;; we got to the end of the tree or failed somehow
+             (fail))
+           (let ((results (slot-ref status 'variables)))
+             (split-varbinds results)
+             (tag-varbinds results oids)
+             (make-varbind-func results))))))
 
 
 ; This is used to track our failure
-(define failure-cont
-  (lambda () (display "Options exhausted")(newline)#f))
+(define fail
+  (lambda () (display "Options exhausted")(newline)(exit)))
 
 (define-syntax all
   (syntax-rules ()
     ((all terms ...)
        (begin
          terms ...
-         (failure-cont)))))
+         (fail)))))
+;;
+;; With2 - simplfied version of walk without continuationsw
+;;
+(define (walk-func . baseoids)
+  (let ((curroids    baseoids)
+        (currbases   baseoids))
+    (lambda()
+      (if (not (equal? curroids '()))
+        (let ((pdu (snmp-pdu-create(SNMP-MSG-GETNEXT))))
+          (for-each 
+            (lambda(oid)
+              (snmp-add-null-var pdu oid)) 
+            curroids)
+          (let ((status (snmp-synch-response current-session pdu)))
+            (if (or
+                  (unspecified? status)
+                  (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
+              (begin
+                ;; we got to the end of the tree or failed somehow
+                (fail))
+              ;; we succceeded. set up next set of oids 
+              (let ((results (slot-ref status 'variables)))
+                (split-varbinds results)
+                (tag-varbinds results currbases)
+                (let ((cleanresults (filter-valid-next results currbases)))
+                  (let ((nextoids  (list))
+                        (nextbases (list)))
+                    (let add-oids ((varbind cleanresults))
+                      (if (not (null? varbind))
+                        (begin
+                          (set! nextoids (cons (oid-from-varbind varbind) nextoids))
+                          (set! nextbases (cons (slot-ref varbind 'base) nextbases))
+                          (add-oids  (slot-ref varbind 'nextvar)))))
+                    (set! curroids nextoids)
+                    (set! currbases nextbases))
+                  (make-varbind-func cleanresults))))))
+          (begin 
+            (fail))))))
+
+(define (one-of itemlist)
+  (let ((old-fail2 fail))
+    (call/cc
+      (lambda (continuation)
+        (define (try items)
+          (if (null? items)
+            (begin 
+              (set! fail old-fail2)
+              (fail))
+            (begin
+              (set! fail (lambda()(continuation (try (cdr items)))))
+              (car items))))
+        (try itemlist)))))
+
 ;;
 ;; With built in backtracking
-(define (getnext-with-failure-cont baseoids)
-  (let ((old-failure-cont failure-cont))
+(define (walk-on-fail baseoids)
+  (let ((old-fail fail))
     (call/cc
       (lambda (continuation)
         (define (try initialoids pdu)
           (if (not (equal? initialoids '()))
             (let ((status (snmp-synch-response current-session pdu)))
-              (if (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR)))
+              (if (or
+                    (unspecified? status)
+                    (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
                 (begin
                   ;; we got to the end of the tree or failed somehow
-                  (error "some error occurred")
-                  (set! failure-cont old-failure-cont)
-                  (failure-cont))
+                  (set! fail old-fail)
+                  (fail))
                 ;; we succceeded. set up next set of oids and call try
                 ;; again if we are deemed to have failed later on
                 (let ((results (slot-ref status 'variables)))
@@ -328,12 +417,12 @@
                             (snmp-add-null-var nextpdu (oid-from-varbind varbind))
                             (set! nextoids (cons (slot-ref varbind 'base) nextoids))
                             (add-oids  (slot-ref varbind 'nextvar))))
-                      (set! failure-cont
+                      (set! fail
                         (lambda () (continuation (try nextoids nextpdu))))))
                     (make-varbind-func cleanresults)))))
             (begin 
-              (set! failure-cont old-failure-cont)
-              (failure-cont))))
+              (set! fail old-fail)
+              (fail))))
         (let ((firstpdu (snmp-pdu-create(SNMP-MSG-GETNEXT))))
           (for-each 
             (lambda(oid)
@@ -344,7 +433,7 @@
 (define-syntax walk
   (syntax-rules ()
     ((walk oid-terms ...)
-      (getnext-with-failure-cont (list oid-terms ...)))))
+      (walk-on-fail (list oid-terms ...)))))
 ;
 (define-syntax print
   (syntax-rules ()
@@ -359,11 +448,11 @@
 (init-mib)
 (set! reports:autotranslate #t)
 
-(export current-session current-context reports:autotranslate <reports-varlist>)
-(export-syntax init-reports session oid-list walk get getnext  ids sub-objid %)
-(export-syntax oid tag iid type value nextvar print all)
-(export failure-cont)
-(export getnext-with-failure-cont make-varbind-func tag-varbinds split-varbinds)
+(export current-session old-session current-context reports:autotranslate <reports-varlist>)
+(export-syntax init-reports oid-list walk get getnext  ids sub-objid %)
+(export-syntax oid tag iid type value nextvar print all walk-on-fail walk-func)
+(export fail old-fail one-of session)
+(export make-varbind-func tag-varbinds split-varbinds filter-valid-next)
 
 (re-export-modules (oop goops) (ice-9 syncase) (snmp net-snmp))
 

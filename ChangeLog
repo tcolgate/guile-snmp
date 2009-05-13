@@ -1,3 +1,9 @@
+2009-05-13  Tristan Colgate <tcolgate@gmail.com>
+
+	* session returns last value
+	* Sub-oid referencing returns a number
+	* session takes optional arguments
+
 2009-04-26  Tristan Colgate <tcolgate@gmail.com>
 
 	* Initial release.

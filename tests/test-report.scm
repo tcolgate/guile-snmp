@@ -9,10 +9,7 @@
 ;      (format #t "~a ~a ~%" (iid description) (description))
 ;      (failure-cont)))
 
-(session "localhost" "public" 
-  (all
-      (display (value (walk ifDescr)))
-      (newline)))
+(value (session2 (get sysDescr.0)))
 
 
 
