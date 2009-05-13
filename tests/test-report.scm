@@ -9,7 +9,7 @@
 ;      (format #t "~a ~a ~%" (iid description) (description))
 ;      (failure-cont)))
 
-(value (session2 (get sysDescr.0)))
+(value (session (get sysDescr.0)))
 
 
 

@@ -41,7 +41,7 @@
     (string-join iplist ".")))
 
 (let ((router (one-of l3list)))
-  (session router "c0ntaCt546"
+  (session #:host router #:community "c0ntaCt546"
     (let* ((arp (walk ipNetToMediaPhysAddress))
            (ip (% 2 5 (iid arp)))
            (mac (arp)))
@@ -51,7 +51,7 @@
         (let* ((vlan (walk vtpVlanState))
                (vlanid (u32vector-ref (% 2 (iid vlan)) 0))
                (vlancomm (string-append "c0ntaCt546@" (number->string vlanid))))
-          (session router vlancomm
+          (session #:host router #:community vlancomm
             (let* ((mapint      (get (+ dot1dTpFdbPor (mac-as-oid mac))))
                    (validmapint (if (unspecified? (mapint))
                                   (fail)
@@ -65,7 +65,7 @@
                         (neighbourstr (ipstr-to-str (neighbour))))
                    (if (find-if (lambda(item)(equal? item neighbourstr)) l3list)
                      (fail) ; The neighbour is in the l3 list so we will check it anyway
-                     (session neighbourstr vlancomm
+                     (session #:host neighbourstr #:community vlancomm
                        (let* ((fdbport  (get (+ dot1dTpFdbPort (mac-as-oid mac))))
                               (fdbif    (get (+ dot1dBasePortIfIndex (fdbport))))
                               (port    (get (+ ifDescr (fdbif)))))
