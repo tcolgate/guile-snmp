@@ -256,29 +256,23 @@
           (fail))))
 
 	
-(define-syntax oid
-  (syntax-rules ()
-    ((tag varbind args ...) (varbind args ... 'oid))))
+(defmacro*-public oid ( varbind #:rest args )
+  `(,varbind ,@args 'oid))
 
-(define-syntax tag
-  (syntax-rules ()
-    ((tag varbind args ...) (varbind args ... 'tag))))
+(defmacro*-public tag ( varbind #:rest args )
+  `(,varbind ,@args 'tag))
 
-(define-syntax iid
-  (syntax-rules ()
-    ((iid varbind args ...) (varbind args ... 'iid))))
+(defmacro*-public iid ( varbind #:rest args )
+  `(,varbind ,@args 'iid))
 
-(define-syntax index
-  (syntax-rules ()
-    ((index varbind args ...) (varbind args ... 'iid))))
+(defmacro*-public index ( varbind #:rest args )
+  `(,varbind ,@args 'iid))
 
-(define-syntax type
-  (syntax-rules ()
-    ((type varbind args ...) (varbind args ... 'type))))
+(defmacro*-public type ( varbind #:rest args )
+  `(,varbind ,@args 'type))
 
-(define-syntax value
-  (syntax-rules ()
-    ((value varbind args ...) (varbind args ... 'value))))
+(defmacro*-public value ( varbind #:rest args )
+  `(,varbind ,@args 'value))
 
 ;(define-syntax nextvar
 ;  (syntax-rules ()
@@ -450,8 +444,8 @@
 
 (export current-session old-session current-context reports:autotranslate <reports-varlist>)
 (export-syntax init-reports oid-list walk get getnext  ids sub-objid %)
-(export-syntax oid tag iid type value nextvar print all walk-on-fail walk-func)
-(export fail old-fail one-of session)
+(export-syntax nextvar print all walk-on-fail walk-func)
+(export fail old-fail one-of session iid oid type tag value)
 (export make-varbind-func tag-varbinds split-varbinds filter-valid-next)
 
 (re-export-modules (oop goops) (ice-9 syncase) (snmp net-snmp))

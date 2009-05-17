@@ -1,3 +1,8 @@
+2009-05-17  Tristan Colgate <tcolgate@gmail.com>
+
+	* Fix for iid/value, define-syntax did not play
+	nicely with defmacro.
+
 2009-05-13  Tristan Colgate <tcolgate@gmail.com>
 
 	* session returns last value
