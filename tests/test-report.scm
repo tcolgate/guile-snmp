@@ -1,6 +1,7 @@
 (use-modules (snmp reports))
 (use-modules (ice-9 format))
 
+
 (init-reports)
 
 ;(session "localhost" "public" 
@@ -8,15 +9,12 @@
 ;      (format #t "~a ~a ~%" (iid description) (description))
 ;      (failure-cont)))
 
-(define l3list (list "localhost"))
-
-(let ((router (one-of l3list)))
-  (session #:host router #:community "public"
-    (let* ((arp (walk sysORTable))
-           (id (% 1 (iid arp)))
-           (val (iid arp)))
-     (all (display val)(newline)))))
-
+(display 
+  (value 
+    (session #:host "192.168.3.58" #:community "c0ntaCt546"
+      (let* ((ahahah 1))
+        (getnext sysDescr)))))
+(newline)
 
 
 

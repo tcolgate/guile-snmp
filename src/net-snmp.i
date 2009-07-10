@@ -19,6 +19,7 @@ typedef unsigned short u_short;
 #include <net-snmp/library/transform_oids.h>
 #include <net-snmp/library/snmp_impl.h>
 #include <net-snmp/library/snmp_api.h>
+#include <net-snmp/library/parse.h>
 #include <net-snmp/library/mib.h>
 
 %}
@@ -211,12 +212,14 @@ oid_from_varbind(netsnmp_variable_list* varbind, oid* objid, size_t* objidlen){
 %}
 
 %include "constants.i"
+%include "renames.i"
 %include "ignores.i"
 
 
 %include "snmp.h"
 %include "snmp_api.h"
 %include "snmp_client.h"
+%include "parse.h"
 %include "mib.h"
 %include "default_store.h"
 
