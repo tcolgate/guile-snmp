@@ -8,9 +8,8 @@
 
 (define-module (snmp reports)
   #:use-module (srfi srfi-39)
-  #:use-syntax (oop goops)
-  #:use-syntax (ice-9 syncase)
   #:use-module (ice-9 optargs)
+  #:use-module (oop goops)
   #:use-module (snmp net-snmp))
 
 ; This routine is lifted from guile-gnome-platform by Andy Wingo
@@ -85,19 +84,15 @@
           (if (and reports:autotranslate (not def?))
               (let ((oid (snmp-parse-oid (symbol->string sym))))
                 (if (unspecified? oid)
-                  (begin 
-                    (display "Failed to resolve ")
-                    (display (symbol->string sym))
-                    (display " as oid")(newline)
-                    (error "Exitting")
-                    #f)
+                  #f
                   (let* ((var (make-variable oid)))
                     (module-add! mod sym var)
                     var)))
               #f))
+        (oid-lazy-binder #f (string->symbol "firOidSupposedToFail") #f)
         (define module (make-module 31 '() oid-lazy-binder))
         (set-module-uses! (current-module) 
-          (append (module-uses (current-module)) (list module)))
+          (append (list module) (module-uses (current-module))))
         (init-mib)))))
 
 (define base-session (make-parameter (make <snmp-session>)))
