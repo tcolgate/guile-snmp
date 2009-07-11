@@ -15,7 +15,7 @@ libguile_snmp_net_snmp_la_CFLAGS=-I../lightning -I.
 libguile_snmp_net_snmp_la_SOURCES=net-snmp_wrap.c
 libguile_snmp_net_snmp_la_LDFLAGS=-module -lsnmp -lnetsnmp
 
-dist_bin_SCRIPTS=snmp-report
+bin_SCRIPTS=snmp-report
 EXTRA_DIST = snmp snmp/net-snmp.scm snmp/reports.scm mib.h-patch snmp_client.h-patch snmp_api.h-patch 
 guilesnmpdir =  @GUILE_SITE@/snmp
 guilesnmp_DATA = snmp/net-snmp.scm snmp/reports.scm 

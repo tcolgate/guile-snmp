@@ -1,4 +1,4 @@
-#!/usr/bin/guile -s
+#!@GUILE@ -s
 !#
 
 (define-module (snmp-report))
