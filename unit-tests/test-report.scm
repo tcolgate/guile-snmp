@@ -1,4 +1,8 @@
-(use-modules (snmp reports))
+(use-modules (snmp reports)
+             (srfi srfi-1)
+             (unit-test)
+             (oop goops))
+
 (use-modules (ice-9 format))
 
 (init-reports)
@@ -14,4 +18,5 @@
 (newline)
 
 
+(exit-with-summary (run-all-defined-test-cases))
 

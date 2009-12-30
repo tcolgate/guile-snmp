@@ -8,8 +8,9 @@
 ;;
 ;;-------------------------------------------------------------------
 
-(use-modules (snmp net-snmp))
-(use-modules (oop goops))
+(use-modules (snmp net-snmp)
+             (unit-test)
+             (oop goops))
 
 (init-snmp "tester")
 (init-mib)
@@ -33,4 +34,6 @@
 
 (snmp-free-pdu status)
 (snmp-close ss)
+
+(exit-with-summary (run-all-defined-test-cases))
 
