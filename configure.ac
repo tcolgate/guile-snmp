@@ -3,6 +3,7 @@
 
 #AC_PREREQ(2.63)
 AC_INIT([guile-snmp],[0.1],[tcolgate@gmail.com])
+AC_CONFIG_MACRO_DIR([m4/])
 
 # Checks for programs.
 AC_PROG_CC
@@ -26,6 +27,6 @@ AC_CHECK_LIB([netsnmp], [init_snmp])
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile])
-AC_CONFIG_FILES([src/Makefile src/snmp-report tests/Makefile])
+AC_CONFIG_FILES([src/Makefile unit-tests/Makefile])
 AC_OUTPUT
 
