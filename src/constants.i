@@ -1,3 +1,11 @@
+//-------------------------------------------------------------------
+// Copyright (C) 2009,2010 Tristan Colgate 
+//
+// constants.i - forces the defintiion of some consts that swig  
+// misses, usually due to "creativity" in the net-snmp headers.
+//
+//-------------------------------------------------------------------
+
 /* Force the definitions of some consts that swig is missing */
 %constant oid SNMP_MSG_GET = (oid) SNMP_MSG_GET;
 %constant oid SNMP_MSG_GETNEXT = (oid) SNMP_MSG_GETNEXT;
