@@ -1,7 +1,23 @@
-(use-modules (srfi srfi-1))
-(use-modules (ipv4-router))
-(use-modules (ice-9 debug))
-(use-modules (ice-9 pretty-print))
+(use-modules (ipv4-route)
+             (srfi srfi-1)
+             (unit-test)
+             (oop goops))
+
+(define-class <test-ipv4-route> (<test-case>)
+  (test-string #:getter test-string
+               #:init-value "The quick brown fox.")
+  ;; this answer generated with /usr/bin/md5 for comparison purposes...
+  (test-answer #:getter test-answer
+               #:init-value  "2e87284d245c2aae1c74fa4c50a74c77"))
+
+(define-method (test-default-port (self <test-md5>))
+  (assert-equal (test-answer self)
+    (with-input-from-string (test-string self)
+      (lambda () (md5)))))
+
+(define-method (test-given-port (self <test-md5>))
+  (assert-equal (test-answer self)
+    (md5 (open-input-string (test-string self)))))
 
 (define mytable (new-ipv4-table))
 
@@ -34,6 +50,4 @@
 (display (find-ipv4-route mytable (new-ip "10.0.2.1")))(newline)
 (display (find-ipv4-route mytable (new-ip "192.168.5.1")))(newline)
 
-
-;(trie-node->dot #t mytable)
-(pretty-print (gc-stats))
+(exit-with-summary (run-all-defined-test-cases))
