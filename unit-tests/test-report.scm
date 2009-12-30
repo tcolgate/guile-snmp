@@ -1,7 +1,6 @@
 (use-modules (snmp reports))
 (use-modules (ice-9 format))
 
-
 (init-reports)
 
 ;(session "localhost" "public" 
@@ -9,11 +8,10 @@
 ;      (format #t "~a ~a ~%" (iid description) (description))
 ;      (failure-cont)))
 
-(display 
-  (value 
-    (session #:host "192.168.3.58" #:community "c0ntaCt546"
-      (let* ((ahahah 1))
-        (getnext sysDescr)))))
+(session #:host "127.0.0.1" 
+     (display ((get (snmp-parse-oid "sysLocation.0")))))
+
+
 (newline)
 
 
