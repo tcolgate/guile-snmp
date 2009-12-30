@@ -8,7 +8,7 @@ SWIG_FLAGS = -D__i386__ -guile -Linkage module -package snmp -scm -proxy -emit-s
 mib.h snmp_client.h snmp_api.h: 
 	cp /usr/include/net-snmp/library/$@ . && cat $@-patch |  patch -p0
 
-net-snmp_wrap.c: net-snmp.i constants.i ignores.i mib.h snmp_client.h snmp_api.h
+net-snmp_wrap.c: net-snmp.i constants.i ignores.i renames.i mib.h snmp_client.h snmp_api.h
 	$(SWIG) $(SWIG_FLAGS) -module net-snmp -o $@ $<
 
 libguile_snmp_net_snmp_la_CFLAGS=-I../lightning -I.
