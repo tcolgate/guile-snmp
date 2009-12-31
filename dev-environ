@@ -1,0 +1,12 @@
+#!/bin/sh
+
+
+this_dir=$(cd $(dirname $0) && pwd)
+
+export LD_LIBRARY_PATH=$this_dir/src/.libs:$LD_LIBRARY_PATH
+export GUILE_LOAD_PATH=$this_dir/src:$GUILE_LOAD_PATH
+# really should be the builddir...
+export GUILE_LOAD_COMPILED_PATH=$this_dir/src:$GUILE_LOAD_COMPILED_PATH
+
+exec "$@"
+
