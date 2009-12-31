@@ -1,0 +1,128 @@
+GUILE-SNMP-TEST-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+	OBJECT-TYPE, Integer32, experimental,
+	MODULE-IDENTITY                       FROM SNMPv2-SMI
+	DisplayString                         FROM SNMPv2-TC
+	MODULE-COMPLIANCE, OBJECT-GROUP       FROM SNMPv2-CONF;
+
+--
+-- A brief description and update information about this mib.
+--
+guileSnmpTestMIB MODULE-IDENTITY
+	LAST-UPDATED "200912290000Z"
+	ORGANIZATION "guile-snmp"
+	CONTACT-INFO "postal:   Tristan Colgate-McFarlane
+                            London
+                            UK
+
+		  email:    tcolgate@gmail.com 
+                 "
+	DESCRIPTION  "A simple mib for testing guile-snmp"
+	::= { experimental 1977 }
+
+gstMibObjects     OBJECT IDENTIFIER ::= { guileSnmpTestMIB 1 }
+
+gstTestInt32  OBJECT-TYPE
+	SYNTAX      Integer32 (1..32)
+	MAX-ACCESS  read-write
+	STATUS      current
+	DESCRIPTION
+		"A test 32 bit int "
+	::= { gstMibObjects 1 }
+
+gstTestString  OBJECT-TYPE
+	SYNTAX     DisplayString 
+	MAX-ACCESS  read-write
+	STATUS      current
+	DESCRIPTION
+		"A test string"
+	::= { gstMibObjects 2 }
+
+gstTabATable  OBJECT-TYPE
+	SYNTAX      SEQUENCE OF GstTabAEntry
+	MAX-ACCESS  not-accessible
+	STATUS      current
+	DESCRIPTION
+		"A test table with a single integer index"
+	::= { gstMibObjects 3 }
+
+gstTabAEntry  OBJECT-TYPE
+	SYNTAX	GstTabAEntry
+	MAX-ACCESS  not-accessible
+	STATUS      current
+	DESCRIPTION
+		"A test table"
+	INDEX	{ gstTabAIndex }
+	::= { gstTabATable 1 }
+
+GstTabAEntry ::= SEQUENCE {
+		gstTabAIndex   Integer32,
+		gstTabAData    DisplayString,
+	}
+
+gstTabAIndex  OBJECT-TYPE
+	SYNTAX	Integer32 (0..32)
+	MAX-ACCESS  read-only
+	STATUS      current
+	DESCRIPTION
+		"A test tableA entry index"
+	::= { gstTabAEntry 1 }
+
+gstTabAData  OBJECT-TYPE
+	SYNTAX	DisplayString
+	MAX-ACCESS  read-only
+	STATUS      current
+	DESCRIPTION
+		"Test tableA entry data"
+	::= { gstTabAEntry 2 }
+
+gstTabBTable  OBJECT-TYPE
+	SYNTAX      SEQUENCE OF GstTabBEntry
+	MAX-ACCESS  not-accessible
+	STATUS      current
+	DESCRIPTION
+		"A test table with two indicies"
+	::= { gstMibObjects 4 }
+
+gstTabBEntry  OBJECT-TYPE
+	SYNTAX	GstTabBEntry
+	MAX-ACCESS  not-accessible
+	STATUS      current
+	DESCRIPTION
+		"A test table with two indicies"
+	INDEX	{ gstTabBIndex gstTabBIndex2}
+	::= { gstTabBTable 1 }
+
+GstTabBEntry ::= SEQUENCE {
+		gstTabBIndex   Integer32,
+		gstTabBIndex2  DisplayString,
+		gstTabBData    DisplayString
+	}
+
+gstTabBIndex  OBJECT-TYPE
+	SYNTAX	Integer32 (0..32)
+	MAX-ACCESS  read-only
+	STATUS      current
+	DESCRIPTION
+		"A test tableB entry index"
+	::= { gstTabBEntry 1 }
+
+gstTabBIndex2  OBJECT-TYPE
+	SYNTAX	DisplayString
+	MAX-ACCESS  read-only
+	STATUS      current
+	DESCRIPTION
+		"Test tableB entry data"
+	::= { gstTabBEntry 2 }
+
+gstTabBData OBJECT-TYPE
+	SYNTAX	DisplayString
+	MAX-ACCESS  read-only
+	STATUS      current
+	DESCRIPTION
+		"Test tableB entry data"
+	::= { gstTabBEntry 3 }
+
+END
+
