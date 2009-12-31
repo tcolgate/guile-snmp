@@ -14,7 +14,15 @@
 
 (define-method (test-minus-oids (self <test-oids>))
   (assert-equal #u32(5 6)
-                (- (oid2 self) (oid1 self))))
+                (- (oid1 self) (oid2 self))))
+
+(define-method (test-index1-oids (self <test-oids>))
+  (assert-equal 3
+                (% 3 (oid1 self))))
+
+(define-method (test-index2-oids (self <test-oids>))
+  (assert-equal #u32(3 4)
+                (% 3 4 (oid1 self))))
 
 (exit-with-summary (run-all-defined-test-cases))
 
