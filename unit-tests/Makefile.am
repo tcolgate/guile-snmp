@@ -10,4 +10,4 @@ TESTS_ENVIRONMENT=\
 
 EXTRA_DIST=$(TESTS)
 
-SUBDIRS=test-agent
+# MIBDIRS=+. snmpd -f -r -Le  -C -c ./guileSnmpTestMIB-emulation.conf 
