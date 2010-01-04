@@ -12,7 +12,7 @@
 ;      (format #t "~a ~a ~%" (iid description) (description))
 ;      (failure-cont)))
 
-(session #:host "127.0.0.1" 
+(session #:peer "127.0.0.1:10161" 
      (display ((get (snmp-parse-oid "sysLocation.0")))))
 
 (newline)
