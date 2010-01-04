@@ -224,7 +224,8 @@ oid_from_varbind(netsnmp_variable_list* varbind, oid* objid, size_t* objidlen){
 %include "default_store.h"
 
 %goops %{ 
-(load-extension "libguile_snmp_net-snmp.so" "scm_init_snmp_net_snmp_module")
+(eval-when (eval load compile)
+  (load-extension "libguile_snmp_net-snmp.so" "scm_init_snmp_net_snmp_module"))
 %}
 
 
