@@ -1,4 +1,4 @@
-TESTS=test-oids.scm
+TESTS=test-oids.scm test-net-snmp.scm test-reports.scm
 
 # This wont current set LD_LIBRARY_PATH
 TESTS_ENVIRONMENT=\
@@ -10,4 +10,3 @@ TESTS_ENVIRONMENT=\
 
 EXTRA_DIST=$(TESTS)
 
-# MIBDIRS=+. snmpd -f -r -Le  -C -c ./guileSnmpTestMIB-emulation.conf 

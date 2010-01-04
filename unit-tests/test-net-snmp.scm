@@ -12,28 +12,37 @@
              (unit-test)
              (oop goops))
 
+
 (init-snmp "tester")
 (init-mib)
 
-(define session (make <snmp-session>))
-(snmp-sess-init session)
-(slot-set! session 'version (SNMP-VERSION-2c))
-(slot-set! session 'community "public")
-(slot-set! session 'community-len 6)
-(slot-set! session 'peername "localhost")
-(define ss (snmp-open session))
-(define pdu (snmp-pdu-create (SNMP-MSG-GET)))
-(define oid (snmp-parse-oid "sysLocation.0"))
-(define oid2(snmp-parse-oid "sysName.0"))
-(snmp-add-null-var pdu oid)
-(snmp-add-null-var pdu oid2)
-(define status (snmp-synch-response ss pdu))
-(define vals (slot-ref status 'variables))
-(print-value oid  vals)
-(print-value oid2  (slot-ref vals 'next-variable))
+(define-class <test-net-snmp> (<test-case>)
+  (testsess #:accessor testsess)
+  (oid-syslocation0 #:getter oid-syslocation0
+               #:init-value #u32(1 3 6 1 2 1 1 6 0)))
 
-(snmp-free-pdu status)
-(snmp-close ss)
+(define-method (set-up-test (self <test-net-snmp>))
+  (set! (testsess self) (make <snmp-session>))
+  (snmp-sess-init (testsess self))
+  (slot-set! (testsess self) 'version (SNMP-VERSION-2c))
+  (slot-set! (testsess self) 'community "public")
+  (slot-set! (testsess self) 'community-len 6)
+  (slot-set! (testsess self) 'peername "localhost:10161"))
 
+(define-method (test-oid-resolve-oid (self <test-net-snmp>))
+  (assert-equal (oid-syslocation0 self)
+                (snmp-parse-oid "sysLocation.0")))
+
+(define-method (test-basic-get (self <test-net-snmp>))
+  (let* ((ss  (snmp-open (testsess self)))
+         (pdu (snmp-pdu-create (SNMP-MSG-GET))))
+    (snmp-add-null-var pdu (oid-syslocation0 self))
+    (let* ((status (snmp-synch-response ss pdu))
+           (vals   (slot-ref status 'variables)))
+      (assert-equal "Testing Guile SNMP"
+                    (slot-ref vals 'value))
+      (snmp-free-pdu status)
+      (snmp-close ss))))
+      
 (exit-with-summary (run-all-defined-test-cases))
 
