@@ -1,4 +1,4 @@
-TESTS=test-oids.scm test-net-snmp.scm
+TESTS=test-oids.scm test-net-snmp.scm test-reports.scm
 
 # This wont current set LD_LIBRARY_PATH
 TESTS_ENVIRONMENT=\
