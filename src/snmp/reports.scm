@@ -13,7 +13,6 @@
   #:use-module (snmp net-snmp)
   #:use-module (snmp oids)
   #:export-syntax (session init-reports)
-  #:duplicates (last)
   #:export (
     base-session current-session old-session
     current-community current-port current-peername
