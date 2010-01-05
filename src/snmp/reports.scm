@@ -50,7 +50,7 @@
                     var)))
               #f))
         (define module (make-module 31 '() oid-lazy-binder))
-        (module-define! duplicate-handlers 'snmpdupli (lambda (module name int1 val1 int2 val2 var val)
+        (define (snmpdupli module name int1 val1 int2 val2 var val)
                                                         (format (current-error-port)
                                                           "SNMPTHING ~A: ~A: `~A' imported from both ~A and ~A\n"
                                                           module
@@ -58,13 +58,14 @@
                                                           name
                                                           (module-name int1)
                                                           (module-name int2))
-                                                        #f)) 
-        (let ((ch (module-duplicates-handlers (current-module))))
-          (set-module-duplicates-handlers! (current-module) 
-                                           (append 'snmpdupli
-                                                   (if (eq? ch #f)
-                                                     (default-duplicate-binding-handler)
-                                                     ch))))
+                                                        #f) 
+;        (module-define! duplicate-handlers 'snmpdupli snmpdupli) 
+;        (let ((ch (module-duplicates-handlers (current-module))))
+;          (set-module-duplicates-handlers! (current-module) 
+;                                           (append (list 'snmpdupli)
+;                                                   (if (eq? ch #f)
+;                                                     (default-duplicate-binding-handler)
+;                                                     ch))))
         (set-module-name! module "(snmp oidbinder)")
         (set-module-uses! (current-module) 
           (append (list module) (module-uses (current-module))))))))
