@@ -16,11 +16,11 @@ SCHEMESOURCES=snmp/net-snmp.scm\
               snmp/reports.scm\
               snmp/oids.scm
 
-#if HAVE_GUILE_COMPILE
-#GOBJECTS = $(SCHEMESOURCES:%.scm=%.go)
-#else
+if HAVE_GUILE_COMPILE
+GOBJECTS = $(SCHEMESOURCES:%.scm=%.go)
+else
 GOBJECTS =
-#endif
+endif
 
 CLEANFILES = $(GOBJECTS)
 
