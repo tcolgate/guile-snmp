@@ -3,7 +3,7 @@ TESTS=test-oids.scm test-net-snmp.scm test-reports.scm
 # This wont current set LD_LIBRARY_PATH
 TESTS_ENVIRONMENT=\
 	GUILE_AUTO_COMPILE=0	\
-	$(top_srcdir)/dev-environ guile -L $(top_srcdir)/src -s
+	$(top_srcdir)/test-environ guile -L $(top_srcdir)/src -s
 
 %.check: %
 	$(TESTS_ENVIRONMENT) $(srcdir)/$*
