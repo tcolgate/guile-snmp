@@ -33,3 +33,4 @@ EXTRA_DIST = snmp $(SCHEMESOURCES) mib.h-patch snmp_client.h-patch snmp_api.h-pa
 guilesnmpdir =  /usr/local/share/guile/site/snmp
 guilesnmp_DATA = $(SCHEMESOURCES) $(GOBJECTS)
 
+bin_SCRIPTS = snmp-report

@@ -1,6 +1,9 @@
 #!@GUILE@ -s
 !#
 
+; This is intended to act as a snmp reporting shell
+; and script interpreter
+
 (define-module (snmp-report))
 (use-modules (ice-9 readline))
 
@@ -15,6 +18,44 @@
 (use-modules (snmp reports))
 (init-reports)
 
-(set-repl-prompt! "snmp-report> ")
 
-(scm-style-repl)
+; Parse standard args
+
+(define program-name    (make-parameter (basename (car (program-arguments)))))
+(define program-version (make-parameter  "1"))
+(define program-help    (make-parameter (string-append (program-name) ": version " (program-version) "\n")))
+
+(set-repl-prompt! (string-append (program-name) "> "))
+
+(define option:script #f)
+
+; main
+(args-fold (cdr (program-arguments))
+  (let ((display-and-exit-proc (lambda (msg)
+                                 (lambda (opt name arg)
+                                   (display msg)(newline) (quit) (values)))))
+    (list (option '(#\v "snmp-version") #t #f (lambda(opt name arg)
+						(current-version arg)))
+          (option '(#\h "host") #t #f (lambda(opt name arg)
+			 		 (current-peername arg)))       
+          (option '(#\c "community") #t #f (lambda(opt name arg)
+					     (current-community arg)))       
+          (option '(#\C "context") #t #f (lambda(opt name arg)
+					    (current-context arg)))       
+          (option '(#\s "script") #t #f (lambda(opt name arg)
+					     (set! option:script arg)))       
+          (option '(#\V "version") #f #f (display-and-exit-proc (program-help)))
+	  (option '(#\H "help") #f #f (display-and-exit-proc (program-help)))))
+  (lambda (opt name arg)
+    (error (format "Unrecognized option `~A'" name)))
+  (lambda(op)(display op)(newline)(values)))
+
+(current-session (new-snmp-session))
+
+; 
+
+(if option:script
+  (load option:script)
+  (scm-style-repl))
+
+; vim: ft=scheme:lisp:autoindent
