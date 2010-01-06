@@ -1,6 +1,8 @@
 #!@GUILE@ -s
 !#
 
+(display (program-arguments))(newline)
+
 ; This is intended to act as a snmp reporting shell
 ; and script interpreter
 
@@ -33,26 +35,21 @@
 (args-fold (cdr (program-arguments))
   (let ((display-and-exit-proc (lambda (msg)
                                  (lambda (opt name arg)
-                                   (display msg)(newline) (quit) (values)))))
-    (list (option '(#\v "snmp-version") #t #f (lambda(opt name arg)
-						(current-version arg)))
-          (option '(#\h "host") #t #f (lambda(opt name arg)
-			 		 (current-peername arg)))       
-          (option '(#\c "community") #t #f (lambda(opt name arg)
-					     (current-community arg)))       
-          (option '(#\C "context") #t #f (lambda(opt name arg)
-					    (current-context arg)))       
-          (option '(#\s "script") #t #f (lambda(opt name arg)
-					     (set! option:script arg)))       
+                                   (display msg)(newline) (quit) (values))))
+        (argproc (lambda(opt name arg snmpversion host community context script)
+                    (values snmpversion host community context script))))
+    (list (option '(#\v "snmp-version") #t #f argproc)
+          (option '(#\h "host") #t #f argproc)
+          (option '(#\c "community") #t #f argproc)
+          (option '(#\C "context") #t #f argproc)
+          (option '(#\s "script") #t #f argproc)
           (option '(#\V "version") #f #f (display-and-exit-proc (program-help)))
-	  (option '(#\H "help") #f #f (display-and-exit-proc (program-help)))))
+          (option '(#\H "help") #f #f (display-and-exit-proc (program-help)))))
   (lambda (opt name arg)
     (error (format "Unrecognized option `~A'" name)))
   (lambda(op)(display op)(newline)(values)))
 
 (current-session (new-snmp-session))
-
-; 
 
 (if option:script
   (load option:script)
