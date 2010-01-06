@@ -6,9 +6,9 @@
 
 (use-modules (srfi srfi-37))
 (use-modules (ice-9 threads))
-(use-modules (ice-9 format))
 (use-modules (ice-9 common-list))
 (use-modules (ice-9 session))
+(use-modules (ice-9 history))
 (activate-readline)
 
 (putenv "MIBS=all")
@@ -16,6 +16,5 @@
 (init-reports)
 
 (set-repl-prompt! "snmp-report> ")
-(set! reports:autotranslate #t)
 
 (scm-style-repl)
