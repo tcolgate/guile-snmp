@@ -50,21 +50,18 @@
               #f))
         (define module (make-module 31 '() oid-lazy-binder))
         (define (snmpdupli module name int1 val1 int2 val2 var val)
-                                                        (format (current-error-port)
-                                                          "SNMPTHING ~A: ~A: `~A' imported from both ~A and ~A\n"
-                                                          module
-                                                          (module-name module)
-                                                          name
-                                                          (module-name int1)
-                                                          (module-name int2))
-                                                        #f) 
-;        (module-define! duplicate-handlers 'snmpdupli snmpdupli) 
-;        (let ((ch (module-duplicates-handlers (current-module))))
-;          (set-module-duplicates-handlers! (current-module) 
-;                                           (append (list 'snmpdupli)
-;                                                   (if (eq? ch #f)
-;                                                     (default-duplicate-binding-handler)
-;                                                     ch))))
+                                                         (if (equal? "(snmp oidbinder)"
+                                                                     (module-name int1))
+                                                           (module-local-variable int2 name)
+                                                           #f))
+
+        (module-define! duplicate-handlers 'snmpdupli snmpdupli) 
+        (let ((dh (module-duplicates-handlers (current-module))))
+          (set-module-duplicates-handlers! (current-module)
+                                             (append (list snmpdupli)
+                                               (if (eq? dh #f)
+                                                  (default-duplicate-binding-procedures)
+                                                  dh))))
         (set-module-name! module "(snmp oidbinder)")
         (set-module-uses! (current-module) 
           (append (list module) (module-uses (current-module))))))))
