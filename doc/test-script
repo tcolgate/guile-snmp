@@ -1,0 +1,8 @@
+#!/usr/local/bin/snmp-report -s
+!#
+
+(display "hello")(newline)
+
+(display (current-community))(newline)
+
+(display (script-arguments))(newline)

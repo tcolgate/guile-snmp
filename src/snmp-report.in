@@ -1,58 +1,98 @@
 #!@GUILE@ -s
 !#
 
-(display (program-arguments))(newline)
-
 ; This is intended to act as a snmp reporting shell
 ; and script interpreter
 
 (define-module (snmp-report))
-(use-modules (ice-9 readline))
 
-(use-modules (srfi srfi-37))
 (use-modules (ice-9 threads))
+(use-modules (ice-9 getopt-long))
 (use-modules (ice-9 common-list))
+
+;Create a nice environment for the users.
 (use-modules (ice-9 session))
 (use-modules (ice-9 history))
+(use-modules (ice-9 readline))
 (activate-readline)
 
-(putenv "MIBS=all")
-(use-modules (snmp reports))
-(init-reports)
 
+(use-modules (srfi srfi-39))
+
+(use-modules (snmp reports))
+
+(init-reports)
 
 ; Parse standard args
 
-(define program-name    (make-parameter (basename (car (program-arguments)))))
+(define program-name    (make-parameter (basename (car (command-line)))))
 (define program-version (make-parameter  "1"))
 (define program-help    (make-parameter (string-append (program-name) ": version " (program-version) "\n")))
+(define script-arguments (make-parameter #f))
 
 (set-repl-prompt! (string-append (program-name) "> "))
 
-(define option:script #f)
+; process standard options
+; srfi-37 hurt my brain. getopt will do nicely.
+(let* ((option-spec '((version      (single-char #\V) (value #f))
+                      (help         (single-char #\H) (value #f))
+                      (snmp-version (single-char #\v) (value #t))
+                      (host         (single-char #\h) (value #t))
+                      (community    (single-char #\c) (value #t))
+                      (context      (single-char #\C) (value #t))
+                      (eval         (single-char #\e) (value #t))
+                      (script       (single-char #\s) (value #t))))
+       (options (getopt-long (program-arguments) option-spec))
+       (help-wanted (option-ref options 'help #f))
+       (version-wanted (option-ref options 'version #f))
+       (snmp-version (option-ref options 'snmp-version #f))
+       (host (option-ref options 'host #f))
+       (community (option-ref options 'community #f))
+       (context (option-ref options 'context #f))
+       (evalstr (option-ref options 'eval #f))
+       (script (option-ref options 'script #f))
+       (scriptargs (option-ref options '() #f)))
 
-; main
-(args-fold (cdr (program-arguments))
-  (let ((display-and-exit-proc (lambda (msg)
-                                 (lambda (opt name arg)
-                                   (display msg)(newline) (quit) (values))))
-        (argproc (lambda(opt name arg snmpversion host community context script)
-                    (values snmpversion host community context script))))
-    (list (option '(#\v "snmp-version") #t #f argproc)
-          (option '(#\h "host") #t #f argproc)
-          (option '(#\c "community") #t #f argproc)
-          (option '(#\C "context") #t #f argproc)
-          (option '(#\s "script") #t #f argproc)
-          (option '(#\V "version") #f #f (display-and-exit-proc (program-help)))
-          (option '(#\H "help") #f #f (display-and-exit-proc (program-help)))))
-  (lambda (opt name arg)
-    (error (format "Unrecognized option `~A'" name)))
-  (lambda(op)(display op)(newline)(values)))
+  (if (or version-wanted help-wanted)
+     (begin
+       (if version-wanted
+         (format #t "~A version ~A~%" (program-name) (program-version)))
+       (if help-wanted
+           (format #t "\
+~A [options] [arguments]:
+  -V, --version            Display version
+  -H, --help               Display this help
+  -v, --snmp-version       The default SNMP Version to use (1, 2c or 3)
+  -c, --community          The default SNMP community string
+  -C, --context            The default SNMP comntext
+  -h, --host               The default host (e.g. routername or routername:10161)
+  -e, --eval               A expression to evaluate
+  -s, --script             A script file to run
+" (program-name)))
+       (exit)))
 
-(current-session (new-snmp-session))
+  (if snmp-version
+    (current-version snmp-version))
+  (if host
+    (current-peername host))
+  (if community
+    (current-community community))
+  (if context
+    (current-context context))
 
-(if option:script
-  (load option:script)
-  (scm-style-repl))
+  (current-session (new-snmp-session))
+
+  (if scriptargs
+    (script-arguments scriptargs))
+
+
+  (if evalstr
+    (eval-string evalstr))
+
+  (if script
+    (load script))
+
+  (if (not (or script evalstr))
+    (scm-style-repl)))
 
 ; vim: ft=scheme:lisp:autoindent
