@@ -6,3 +6,5 @@
 (display (current-community))(newline)
 
 (display (script-arguments))(newline)
+
+(display (value (get sysLocation.0)))(newline)
