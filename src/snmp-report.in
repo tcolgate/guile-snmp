@@ -9,6 +9,7 @@
 (use-modules (ice-9 threads))
 (use-modules (ice-9 getopt-long))
 (use-modules (ice-9 common-list))
+(use-modules (srfi srfi-39))
 
 ;Create a nice environment for the users.
 (use-modules (ice-9 session))
@@ -16,11 +17,7 @@
 (use-modules (ice-9 readline))
 (activate-readline)
 
-
-(use-modules (srfi srfi-39))
-
 (use-modules (snmp reports))
-
 (init-reports)
 
 ; Parse standard args
@@ -29,8 +26,6 @@
 (define program-version (make-parameter  "1"))
 (define program-help    (make-parameter (string-append (program-name) ": version " (program-version) "\n")))
 (define script-arguments (make-parameter #f))
-
-(set-repl-prompt! (string-append (program-name) "> "))
 
 ; process standard options
 ; srfi-37 hurt my brain. getopt will do nicely.
@@ -52,6 +47,9 @@
        (evalstr (option-ref options 'eval #f))
        (script (option-ref options 'script #f))
        (scriptargs (option-ref options '() #f)))
+
+  (if script
+    (program-name (basename script)))
 
   (if (or version-wanted help-wanted)
      (begin
@@ -85,9 +83,10 @@
   (if scriptargs
     (script-arguments scriptargs))
 
+  (set-repl-prompt! (string-append (program-name) "> "))
 
   (if evalstr
-    (eval-string evalstr))
+    (format #t "~A~%" (eval-string evalstr)))
 
   (if script
     (load script))

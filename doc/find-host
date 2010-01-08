@@ -1,4 +1,4 @@
-#!/usr/bin/guile -s
+#!/usr/local/bin/snmp-report -s
 !#
 ;;-------------------------------------------------------------------
 ;; Copyright (C) 2009 Tristan Colgate 
@@ -11,17 +11,6 @@
 ;This is done purely to help us find our own module for purposes of (help)
 (set! %load-path (cons "/usr/local/bin" %load-path))
 
-(define-module (find-host))
-
-(use-modules (srfi srfi-37))
-(use-modules (ice-9 threads))
-(use-modules (ice-9 format))
-(use-modules (ice-9 common-list))
-(use-modules (ice-9 session))
-(putenv "MIBS=all")
-(use-modules (snmp reports))
-(init-reports)
-
 ;;; Commentary:
 ;;
 ;;  Useage: find-host [OPTIONS] host1 host2 ...
@@ -31,43 +20,16 @@
 ;;
 ;;; Code:
 
-
-(define community "public")
-
 ; This is a list of all the layer3 routers to query
-; Removed for confidentialitty reasons
 (define l3list (list 
-                 "192.168.0.254"))
-
-(define (mac-as-oid mac)
-  "Convert a HEXSTRING mac into an oid"
-  (let* ((len (string-length mac))
-         (oid (make-u32vector len))
-         (i 0))
-    (string-for-each 
-      (lambda(char)
-        (u32vector-set! oid i (char->integer char))
-        (set! i (+ i 1)))
-      mac)
-    oid))
-
-(define (ipstr-to-str hexipaddr)
-  "Convert a HEXSTRING ip into an ip in string form"
-  (let* ((len (string-length hexipaddr))
-         (iplist (list)))
-    (string-for-each 
-      (lambda(char)
-        (set! iplist (append iplist  (list (number->string (char->integer char))))))
-      hexipaddr)
-    (string-join iplist ".")))
-
+                 "192.168.0.254" "192.168.0.254"))
 
 (define (find-host name)
   "find-host: Track a host to the layer2 switch and port it is connected to"
   (let* ((router (one-of l3list))
          (hostipstr (inet-ntoa (car(vector-ref (gethostbyname name) 4))))
          (hostipoid (list->u32vector (map string->number (string-split hostipstr  #\. )))))
-    (session #:host router #:community community
+    (session #:host router 
       (let* ((arp (walk ipNetToMediaPhysAddress))
              (ip (% 2 5 (iid arp)))
              (mac (arp)))
@@ -75,8 +37,8 @@
           ((fail))
           (let* ((vlan (walk vtpVlanState))
                  (vlanid (% 2 (iid vlan)))
-                 (vlancomm (string-append community (string-append "@" (number->string vlanid)))))
-            (session #:host router #:community vlancomm
+                 (vlancomm (string-append (currnet-community) (string-append "@" (number->string vlanid)))))
+            (session #:community vlancomm
               (let* ((mapint      (get-or-fail (+ dot1dTpFdbPor (mac-as-oid mac))))
                      (validmapint (if (unspecified? (mapint))
                                     ((fail))
@@ -90,7 +52,7 @@
                           (neighbourstr (ipstr-to-str (neighbour))))
                      (if (find-if (lambda(item)(equal? item neighbourstr)) l3list)
                        ((fail)) ; The neighbour is in the l3 list so we will check it anyway
-                       (session #:host neighbourstr #:community vlancomm
+                       (session #:host neighbourstr 
                          (let* ((peername (get-or-fail sysName.0))
                                 (fdbport  (get-or-fail (+ dot1dTpFdbPort (mac-as-oid mac))))
                                 (fdbif    (get-or-fail (+ dot1dBasePortIfIndex (fdbport))))
@@ -98,15 +60,6 @@
                                 (podesc   (get-or-fail (+ ifAlias (fdbif)))))
                            (format #t "Host: ~a  ~% Via Router: ~A ~% VLAN: ~A ~% Neighbour: ~A ~% Name: ~A ~% Port: ~A ~% Desc: ~A ~%"  name router vlanid  neighbourstr (peername)(port)(podesc)))))))))))))))
 
-; main
-(args-fold (cdr (program-arguments))
-  (let ((display-and-exit-proc (lambda (msg)
-                                 (lambda (opt name arg)
-                                   (display msg)(newline) (quit) (values)))))
-    (list (option '(#\v "version") #f #f (display-and-exit-proc "find-host: version 0.1\n"))
-          (option '(#\h "help") #f #f (lambda(opt name arg)(help (find-host))(quit)(values)))))
-  (lambda (opt name arg)
-    (error (format "Unrecognized option `~A'" name)))
-  (lambda(op)(find-host op)(newline)(values)))
+(find-host (car (script-arguments)))
 
 ; vim: ft=scheme:lisp:autoindent
