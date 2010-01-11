@@ -7,6 +7,7 @@
 ;;-------------------------------------------------------------------
 
 (define-module (snmp reports)
+  #:use-module (srfi srfi-18)
   #:use-module (srfi srfi-39)
   #:use-module (oop goops)
   #:use-module (ice-9 optargs)
@@ -21,7 +22,7 @@
     get getnext nextvar all walk-on-fail walk-func 
     fail old-fail one-of iid oid type tag value 
     make-varbind-func tag-varbinds split-varbinds 
-    filter-valid-next new-snmp-session))
+    filter-valid-next new-snmp-session reach-each))
 
 ; This routine is lifted from guile-gnome-platform by Andy Wingo
 (define-macro (re-export-modules . args)
@@ -377,6 +378,31 @@
          terms ...
          (fail)))))
 
+; Calls the provided function in paralell with each argument and
+; returns the answer from the first thread to return.
+(define-syntax race-each
+  (syntax-rules ()
+  ((_ func parargs)
+   (let* ((result #f)
+          (result-ready (make-condition-variable))
+          (junktex (make-mutex))
+          (junk    (mutex-lock! junktex))
+          (resulttex (make-mutex))
+          (dotask (lambda(arg)
+                     (let ((thisresult (session (func arg))))
+                       (with-exception-handler
+                         (lambda(ev)
+                           (thread-terminate! (current-thread)))
+                         (lambda() (mutex-lock! resulttex)))
+                       (set! result thisresult)
+                       (condition-variable-signal! result-ready)
+                       (thread-terminate! (current-thread)))))
+          (threads (map (lambda(x)
+                          (thread-start! (make-thread (lambda()
+                                                         (dotask x))))) parargs)))
+      (mutex-unlock! junktex result-ready)
+      (map (lambda(old-thread) (thread-terminate! old-thread)) threads)
+      result))))
 
 (re-export-modules (oop goops) (srfi srfi-39) (snmp net-snmp) (snmp oids))
 

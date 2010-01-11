@@ -36,44 +36,6 @@
 (define l3list (list 
                  "192.168.0.254"))
 
-(define-macro (race-each func parargs)
-  (let ((result (make-symbol "race-result-"))
-        (result-ready (make-symbol "race-cv")))
-         `(let* ((,result #f)
-                 (,result-ready (make-condition-variable))
-                 (junktex (make-mutex))
-                 (junklock (lock-mutex junktex))
-                 (dotask (lambda(val)
-                           (let ((thisresult (,func val)))
-                             (monitor
-                               (set! ,result thisresult)
-                               (signal-condition-variable ,result-ready)))))
-                 (threads (map (lambda(x)(make-thread dotask x)) ,parargs)))
-            (wait-condition-variable ,result-ready junktex )
-      ;      (map (lambda(old-thread) (cancel-thread old-thread)) threads)
-            ,result)))
-
-(define (mac-as-oid mac)
-  (let* ((len (string-length mac))
-         (oid (make-u32vector len))
-         (i 0))
-    (string-for-each 
-      (lambda(char)
-        (u32vector-set! oid i (char->integer char))
-        (set! i (+ i 1)))
-      mac)
-    oid))
-
-(define (ipstr-to-str hexipaddr)
-  (let* ((len (string-length hexipaddr))
-         (iplist (list)))
-    (string-for-each 
-      (lambda(char)
-        (set! iplist (append iplist  (list (number->string (char->integer char))))))
-      hexipaddr)
-    (string-join iplist ".")))
-
-
 
 (define (find-host-on-port firstswitch targetname)
   " finds out an ip for any mac address on a given l2 switch port.
