@@ -18,7 +18,7 @@
     current-community current-port current-peername
     current-version current-context
     reports:autotranslate <reports-varlist> oid-list walk
-    get getnext nextvar print all walk-on-fail walk-func 
+    get getnext nextvar all walk-on-fail walk-func 
     fail old-fail one-of iid oid type tag value 
     make-varbind-func tag-varbinds split-varbinds 
     filter-valid-next new-snmp-session))
@@ -226,6 +226,8 @@
           (fail))))
 
 	
+; These are convenience macros for accessing elements of a result
+;
 (define-syntax oid
   (syntax-rules ()
     ((_ varbind args ...) (varbind args ... 'oid))))
@@ -263,7 +265,6 @@
       (if (or
             (unspecified? status)
             (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
-           ;; we got to the end of the tree or failed somehow
          (throw 'snmperror status)
          (let ((results (slot-ref status 'variables)))
            (split-varbinds results))))))
@@ -280,6 +281,8 @@
       (synch-query (SNMP-MSG-GETNEXT) oid-terms)
       oid-terms)))
 
+; This is the basic walk function and returns an iterator which returns a new element
+; each time it is called.
 (define (walk-func . baseoids)
   (let ((curroids    baseoids)
         (currbases   baseoids))
@@ -304,6 +307,7 @@
             (make-varbind-func cleanresults)))
         (throw 'walkend '())))))
 
+; This is the simplest walk to use, returning all results in a list
 (define (walk . baseoids)
   (let ((vals (apply walk-func baseoids)))
     (let loop ((result '())
@@ -320,7 +324,8 @@
 (define fail
   (lambda () (lambda() #f)))
 
-;; With built in backtracking
+;; The is a walk that uses  built in backtracking. Any call to (fail) will result
+;; in the next walk item being returned.
 (define (walk-on-fail . baseoids)
   (let ((vals (apply walk-func baseoids))
         (old-fail fail))
@@ -336,6 +341,7 @@
             result))
         (try)))))
 
+; Version of get and getnext that can be used in conjuncion with walk-on-fail
 (define (get-or-fail . oid-terms)
   (catch 'snmperror
     (lambda() (apply get oid-terms))
@@ -348,13 +354,8 @@
     (lambda(ex . args)
       (fail))))
 
-(define-syntax all
-  (syntax-rules ()
-    ((all terms ...)
-       (begin
-         terms ...
-         (fail)))))
-
+; Allows including a manual list of optional values into the walk-on-fail backtracking
+; mechanism
 (define (one-of itemlist)
   (let ((old-fail2 fail))
     (call/cc
@@ -369,12 +370,12 @@
               (car items))))
         (try itemlist)))))
 
-(define-syntax print
+(define-syntax all
   (syntax-rules ()
-    ((print var )
-       (fprint-variable (current-output-port) (oid var) (var)))
-    ((print var reqoid )
-       (fprint-variable (current-output-port) (oid var reqoid) (var reqoid)))))
+    ((all terms ...)
+       (begin
+         terms ...
+         (fail)))))
 
 
 (re-export-modules (oop goops) (srfi srfi-39) (snmp net-snmp) (snmp oids))
