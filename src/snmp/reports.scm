@@ -319,10 +319,25 @@
         result
         (loop result finished)))))
 
-
-; This is used to track our failure
+; This is used to track our failures
 (define fail
-  (lambda () (display "Options exhausted")(newline)(exit)))
+  (lambda () (lambda() #f)))
+
+;; With built in backtracking
+(define (walk-on-fail . baseoids)
+  (let ((vals (apply walk-func baseoids))
+        (old-fail fail))
+    (call/cc
+      (lambda (continuation)
+        (define (try)
+          (let ((result (catch 'walkend
+                          (lambda() (vals))
+                          (lambda(ex . args)
+                            (set! fail old-fail)
+                            (fail)))))
+            (set! fail (lambda()(continuation (try))))
+            result))
+        (try)))))
 
 (define-syntax all
   (syntax-rules ()
@@ -344,49 +359,6 @@
               (set! fail (lambda()(continuation (try (cdr items)))))
               (car items))))
         (try itemlist)))))
-
-;;
-;; With built in backtracking
-(define (walk-on-fail baseoids)
-  (let ((old-fail fail))
-    (call/cc
-      (lambda (continuation)
-        (define (try initialoids pdu)
-          (if (not (equal? initialoids '()))
-            (let ((status (snmp-sess-synch-response (current-session) pdu)))
-              (if (or
-                    (unspecified? status)
-                    (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
-                (begin
-                  ;; we got to the end of the tree or failed somehow
-                  (set! fail old-fail)
-                  (fail))
-                ;; we succceeded. set up next set of oids and call try
-                ;; again if we are deemed to have failed later on
-                (let ((results (slot-ref status 'variables)))
-                  (split-varbinds results)
-                  (tag-varbinds results initialoids)
-                  (let ((cleanresults (filter-valid-next results initialoids)))
-                    (let ((nextpdu (snmp-pdu-create(SNMP-MSG-GETNEXT)))
-                          (nextoids (list)))
-                      (let add-oids ((varbind cleanresults))
-                        (if (not (null? varbind))
-                          (begin
-                            (snmp-add-null-var nextpdu (oid-from-varbind varbind))
-                            (set! nextoids (cons (slot-ref varbind 'base) nextoids))
-                            (add-oids  (slot-ref varbind 'nextvar))))
-                      (set! fail
-                        (lambda () (continuation (try nextoids nextpdu))))))
-                    (make-varbind-func cleanresults)))))
-            (begin 
-              (set! fail old-fail)
-              (fail))))
-        (let ((firstpdu (snmp-pdu-create(SNMP-MSG-GETNEXT))))
-          (for-each 
-            (lambda(oid)
-              (snmp-add-null-var firstpdu oid)) 
-            baseoids)
-          (try baseoids firstpdu))))))
 
 (define-syntax print
   (syntax-rules ()
