@@ -3,6 +3,8 @@
              (unit-test)
              (oop goops))
 
+(putenv "MIBDIRS=+.")
+(putenv "MIBS=+GUILE-SNMP-TEST-MIB")
 (init-reports)
 
 (define-class <test-reports> (<test-case>))
@@ -20,6 +22,19 @@
   (assert-equal "Testing Guile SNMP"
                 (session #:host "127.0.0.1:10161" 
                   ((getnext (snmp-parse-oid "sysLocation"))))))
+
+(define-method (test-walk-func (self <test-reports>))
+  (assert-equal '(0 1)
+                (session #:host "127.0.0.1:10161" 
+                  (let* ((mywalk (walk-func (snmp-parse-oid "gstTabATable")))
+                         (myval1 (value (mywalk)))
+                         (myval2 (value (mywalk))))
+                    (list myval1 myval2)))))
+
+(define-method (test-walk (self <test-reports>))
+  (assert-equal '("tableA row 0" "tableA row 1" "tableA row 2" "tableA row 3" "tableA row 4" "tableA row 5")
+                (session #:host "127.0.0.1:10161" 
+                  (map (lambda(x)(value x)) (walk (snmp-parse-oid "gstTabAData"))))))
 
 (exit-with-summary (run-all-defined-test-cases))
 

@@ -190,7 +190,7 @@
             (slot-set! varitem 'base '())
             (slot-set! varitem 'iid #u32())))
         (nextvarbind (slot-ref varitem 'nextvar) (cdr baseitems)))
-      #t)))
+      result)))
 
 (define (make-varbind-func varbinds)
       (lambda( . msg)
@@ -256,43 +256,68 @@
 ;    ((nextvar varbind ) (make-varbind-func (varbind 'nextvar)))
 ;    ((nextvar varbind args ...) ((make-varbind-func (varbind 'nextvar)) args ...))))
 
-(define (get . oid-terms)
-      (let* ((oids oid-terms)
-             (newpdu (snmp-pdu-create (SNMP-MSG-GET))))
-       (for-each 
-         (lambda(oid)
-           (snmp-add-null-var newpdu oid)) 
+(define (synch-query querytype oids)
+  (let ((newpdu (snmp-pdu-create querytype)))
+    (for-each 
+      (lambda(oid)
+        (snmp-add-null-var newpdu oid)) 
          oids)
-       (let ((status (snmp-sess-synch-response (current-session) newpdu)))
-         (if (or
-               (unspecified? status)
-               (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
-           (begin
-             ;; we got to the end of the tree or failed somehow
-             (fail))
-           (let ((results (slot-ref status 'variables)))
-             (split-varbinds results)
-             (tag-varbinds results oids)
-             (make-varbind-func results))))))
+    (let ((status (snmp-sess-synch-response (current-session) newpdu)))
+      (if (or
+            (unspecified? status)
+            (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
+           ;; we got to the end of the tree or failed somehow
+         (throw 'snmperror status)
+         (let ((results (slot-ref status 'variables)))
+           (split-varbinds results))))))
+
+(define (get . oid-terms)
+  (make-varbind-func 
+    (tag-varbinds
+      (synch-query (SNMP-MSG-GET) oid-terms)
+      oid-terms)))
 
 (define (getnext . oid-terms)
-      (let* ((oids oid-terms)
-             (newpdu (snmp-pdu-create (SNMP-MSG-GETNEXT))))
-       (for-each 
-         (lambda(oid)
-           (snmp-add-null-var newpdu oid)) 
-         oids)
-       (let ((status (snmp-sess-synch-response (current-session) newpdu)))
-         (if (or
-               (unspecified? status)
-               (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
-           (begin
-             ;; we got to the end of the tree or failed somehow
-             (fail))
-           (let ((results (slot-ref status 'variables)))
-             (split-varbinds results)
-             (tag-varbinds results oids)
-             (make-varbind-func results))))))
+  (make-varbind-func 
+    (tag-varbinds
+      (synch-query (SNMP-MSG-GETNEXT) oid-terms)
+      oid-terms)))
+
+(define (walk-func . baseoids)
+  (let ((curroids    baseoids)
+        (currbases   baseoids))
+    (lambda()
+      (if (not (equal? curroids '()))
+        (let* ((results      (tag-varbinds
+                               (synch-query (SNMP-MSG-GETNEXT) curroids)
+                               currbases))
+               (cleanresults (filter-valid-next results currbases)))
+          (let ((nextoids  (list))
+                (nextbases (list)))
+            (let add-oids ((varbind cleanresults))
+              (if (not (null? varbind))
+                (begin
+                  (set! nextoids (cons (oid-from-varbind varbind) nextoids))
+                  (set! nextbases (cons (slot-ref varbind 'base) nextbases))
+                  (add-oids  (slot-ref varbind 'nextvar)))))
+            (set! curroids nextoids)
+            (set! currbases nextbases))
+          (if (equal? cleanresults '())
+            (throw 'walkend '())
+            (make-varbind-func cleanresults)))
+        (throw 'walkend '())))))
+
+(define (walk . baseoids)
+  (let ((vals (apply walk-func baseoids)))
+    (let loop ((result '())
+               (finished #f))
+      (catch 'walkend
+        (lambda() (set! result (append result (list (vals)))))
+        (lambda(ex . args)
+          (set! finished #t)))
+      (if finished
+        result
+        (loop result finished)))))
 
 
 ; This is used to track our failure
@@ -305,44 +330,6 @@
        (begin
          terms ...
          (fail)))))
-;;
-;; With2 - simplfied version of walk without continuationsw
-;;
-(define (walk-func . baseoids)
-  (let ((curroids    baseoids)
-        (currbases   baseoids))
-    (lambda()
-      (if (not (equal? curroids '()))
-        (let ((pdu (snmp-pdu-create(SNMP-MSG-GETNEXT))))
-          (for-each 
-            (lambda(oid)
-              (snmp-add-null-var pdu oid)) 
-            curroids)
-          (let ((status (snmp-sess-synch-response (current-session) pdu)))
-            (if (or
-                  (unspecified? status)
-                  (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
-              (begin
-                ;; we got to the end of the tree or failed somehow
-                (fail))
-              ;; we succceeded. set up next set of oids 
-              (let ((results (slot-ref status 'variables)))
-                (split-varbinds results)
-                (tag-varbinds results currbases)
-                (let ((cleanresults (filter-valid-next results currbases)))
-                  (let ((nextoids  (list))
-                        (nextbases (list)))
-                    (let add-oids ((varbind cleanresults))
-                      (if (not (null? varbind))
-                        (begin
-                          (set! nextoids (cons (oid-from-varbind varbind) nextoids))
-                          (set! nextbases (cons (slot-ref varbind 'base) nextbases))
-                          (add-oids  (slot-ref varbind 'nextvar)))))
-                    (set! curroids nextoids)
-                    (set! currbases nextbases))
-                  (make-varbind-func cleanresults))))))
-          (begin 
-            (fail))))))
 
 (define (one-of itemlist)
   (let ((old-fail2 fail))
@@ -401,11 +388,6 @@
             baseoids)
           (try baseoids firstpdu))))))
 
-(define-syntax walk
-  (syntax-rules ()
-    ((walk oid-terms ...)
-      (walk-on-fail (list oid-terms ...)))))
-;
 (define-syntax print
   (syntax-rules ()
     ((print var )
