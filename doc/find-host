@@ -30,12 +30,12 @@
          (hostipstr (inet-ntoa (car(vector-ref (gethostbyname name) 4))))
          (hostipoid (list->u32vector (map string->number (string-split hostipstr  #\. )))))
     (session #:host router 
-      (let* ((arp (walk ipNetToMediaPhysAddress))
+      (let* ((arp (walk-on-fail ipNetToMediaPhysAddress))
              (ip (% 2 5 (iid arp)))
              (mac (arp)))
         (if (not (equal? hostipoid ip))
           ((fail))
-          (let* ((vlan (walk vtpVlanState))
+          (let* ((vlan (walk-on-fail vtpVlanState))
                  (vlanid (% 2 (iid vlan)))
                  (vlancomm (string-append (currnet-community) (string-append "@" (number->string vlanid)))))
             (session #:community vlancomm
@@ -45,10 +45,10 @@
                                     (mapint)))
                      (intif       (get-or-fail (+ dot1dBasePortIfIndex validmapint)))
                      (intifDescr  (value (get-or-fail (+ ifDescr (intif)))))
-                     (poports     (walk pagpGroupIfIndex)))
+                     (poports     (walk-on-fail pagpGroupIfIndex)))
                  (if (not (equal? (poports) (intif)))
                    ((fail))
-                   (let* ((neighbour (walk (+ cdpCacheAddress (iid poports))))
+                   (let* ((neighbour (walk-on-fail (+ cdpCacheAddress (iid poports))))
                           (neighbourstr (ipstr-to-str (neighbour))))
                      (if (find-if (lambda(item)(equal? item neighbourstr)) l3list)
                        ((fail)) ; The neighbour is in the l3 list so we will check it anyway

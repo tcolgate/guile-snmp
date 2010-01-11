@@ -251,11 +251,8 @@
     ((_ varbind args ...) (varbind args ... 'value))))
 
 
-;(define-syntax nextvar
-;  (syntax-rules ()
-;    ((nextvar varbind ) (make-varbind-func (varbind 'nextvar)))
-;    ((nextvar varbind args ...) ((make-varbind-func (varbind 'nextvar)) args ...))))
-
+; Functions and macros for queries.
+;
 (define (synch-query querytype oids)
   (let ((newpdu (snmp-pdu-create querytype)))
     (for-each 
@@ -338,6 +335,18 @@
             (set! fail (lambda()(continuation (try))))
             result))
         (try)))))
+
+(define (get-or-fail . oid-terms)
+  (catch 'snmperror
+    (lambda() (apply get oid-terms))
+    (lambda(ex . args)
+      (fail))))
+
+(define (getnext-or-fail . oid-terms)
+  (catch 'snmperror
+    (lambda() (apply getnext oid-terms))
+    (lambda(ex . args)
+      (fail))))
 
 (define-syntax all
   (syntax-rules ()
