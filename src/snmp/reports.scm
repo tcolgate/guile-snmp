@@ -196,7 +196,8 @@
                 ((equal? (cdr msg) (list 'type))    (slot-ref (cdr var) 'type))
                 ((equal? (cdr msg) (list 'varbind)) (slot-ref (cdr var) 'rawvarbind))
                 ((equal? (cdr msg) (list 'value))   (slot-ref (cdr var) 'value))
-                (#t (slot-ref var 'value))))))
+                (#t (slot-ref (cdr var) 'value))))))
+        ((equal? (car msg) 'oidlist) (map car varbinds))
         ((equal? (car msg) 'oid)     (car (car varbinds)))
         ((equal? (car msg) 'tag)     (slot-ref (cdr (car varbinds)) 'tag))
         ((equal? (car msg) 'iid)     (slot-ref (cdr (car varbinds)) 'iid))
@@ -261,7 +262,7 @@
             ; Cache miss
             (set! cms (append cms (list oid)))
             ; Cache hist
-            (set! crs (append crs (list cr))))))
+            (set! crs (acons (slot-ref (cdr cr) 'oid) (cdr cr) crs)))))
       oids)
     (let ((qrs (let ((newpdu (snmp-pdu-create querytype)))
                  (let addoids ((qs cms))
