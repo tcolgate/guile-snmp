@@ -7,6 +7,7 @@
 ;;-------------------------------------------------------------------
 
 (define-module (snmp reports)
+  #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-18)
   #:use-module (srfi srfi-39)
   #:use-module (oop goops)
@@ -22,7 +23,8 @@
     get getnext nextvar all walk-on-fail walk-func 
     fail old-fail one-of iid oid type tag value 
     make-varbind-func tag-varbinds split-varbinds 
-    filter-valid-next new-snmp-session reach-each))
+    filter-valid-next new-snmp-session reach-each
+    cache-key query-cache-enabled report-query-cache))
 
 ; This routine is lifted from guile-gnome-platform by Andy Wingo
 (define-macro (re-export-modules . args)
@@ -113,60 +115,45 @@
                                ,@clean-forms))))))))
           (apply handler args))))
 
-
-(define-class <report-varlist> (<variable-list>)
-  (nextvar #:init-value #f)
+; This class is used to represent answers. We use our own dedicated class
+; to allow free'ing of results, avoid link lists and better allow cacheing
+(define-class <report-varlist> ()
+  (oid #:init-value #u32())
+  (type #:init-value #f)
+  (value #:init-value #f)
   (tag #:init-value #u32())
   (base #:init-value #u32())
-  (iid #:init-value #u32()))
+  (iid #:init-value #u32())
+  (rawvarbind #:init-value #f))
 
-; Walking variable->next_variable results in new 
-; SCMs being create so any tagging of the results
-; is not persisted the next time we try and
-; walk the list.  We create persistant SCMs for
-; each item here and tag that.
-(define (split-varbinds result)
-  (let nextvarbind ((thisvarbind result))
+; split the returned list of varbinds into an associated list of variables
+(define (split-varbinds input)
+  (let nextvarbind ((thisvarbind input)
+                    (result (list)))
     (if (not (null? thisvarbind))
-        (begin
-          (change-class thisvarbind <report-varlist>)
-          (slot-set! thisvarbind 'nextvar (slot-ref thisvarbind 'next-variable))
-          (nextvarbind (slot-ref thisvarbind 'nextvar)))
+          (let ((newvar (make <report-varlist>)))
+            (slot-set! newvar 'rawvarbind thisvarbind)
+            (slot-set! newvar 'oid (oid-from-varbind thisvarbind))
+            (slot-set! newvar 'type (slot-ref thisvarbind 'type))
+            (slot-set! newvar 'value (slot-ref thisvarbind 'value))
+            (set! result (acons (slot-ref newvar 'oid)  newvar result))
+            (nextvarbind (slot-ref thisvarbind 'next-variable) result))
         result)))
 
-(define (filter-valid-next result initialoids)
-  (let findnext ((thisres result)
-                 (valids (list)))
-    (if (null? thisres)
-      ; We've colalted all valid results into valids. Re join them
-      ; into one list
-      (if (not (null? valids)) 
-        (let ((first (car valids)))
-          (let  joinup ((a valids))
-            (if (not (null? a))
-              (if (not (null? (cdr a)))
-                (let ((b (cadr a)))
-                  (slot-set! (car a) 'nextvar b)
-                  (joinup (cdr a)))
-                (slot-set! (car a) 'nextvar '())))
-          first))
-          ; if the valid list is empty, just return the empty list
-          valids)
-      (begin
-        (cond
-          ((equal? (char->integer (slot-ref thisres 'type)) (SNMP-ENDOFMIBVIEW)) 
-             (display "Wandered off end of MIB"))
-          ((equal? (char->integer (slot-ref thisres 'type)) (SNMP-NOSUCHOBJECT)) 
-             (display "No Such Object"))
-          ((equal? (char->integer (slot-ref thisres 'type)) (SNMP-NOSUCHINSTANCE)) 
-             (display "No Such Instance"))
-          ; if we were unable to establish a base during tagging we
-          ; assume it was not an oid we requested
-          ((null? (slot-ref thisres 'base)) #f)
-          (#t (begin
-               (set! valids (cons thisres valids)))))
-        (findnext (slot-ref thisres 'nextvar) valids)))))
-  
+(define (filter-valid-next results)
+  (filter
+    (lambda(thisres)   
+      (cond
+        ((equal? (char->integer (slot-ref (cdr thisres) 'type)) (SNMP-ENDOFMIBVIEW)) 
+          #f)
+        ((equal? (char->integer (slot-ref (cdr thisres) 'type)) (SNMP-NOSUCHOBJECT)) 
+          #f)
+        ((equal? (char->integer (slot-ref (cdr thisres) 'type)) (SNMP-NOSUCHINSTANCE)) 
+          #f)
+        ((null? (slot-ref (cdr thisres) 'base)) 
+          #f)
+        (#t #t)))
+    results))
  
 ;; Given a varbind list and the oids requested that
 ;; generated it. Tag each result with the based oid
@@ -175,56 +162,49 @@
 ;; find the most specific match.
 ;;
 (define (tag-varbinds result bases)
-  (let nextvarbind ((varitem result)
-                    (baseitems bases))
-    (if (not (null? varitem))
-      (begin
-        (if (equal? (netsnmp-oid-is-subtree (car baseitems) (oid-from-varbind varitem)) 0)
-          (begin
-            (slot-set! varitem 'tag (car baseitems))
-            (slot-set! varitem 'iid (- (car baseitems) (oid-from-varbind varitem)))
-            (slot-set! varitem 'base (car baseitems)))
-          (begin
-            ; fallback, if we get here (which we shouldn't!0
-            ; set the iid and tags to gueeses
-            (slot-set! varitem 'tag (oid-from-varbind varitem))
-            (slot-set! varitem 'base '())
-            (slot-set! varitem 'iid #u32())))
-        (nextvarbind (slot-ref varitem 'nextvar) (cdr baseitems)))
-      result)))
+  (for-each
+    (lambda(varitem baseitem)
+      (if (equal? (netsnmp-oid-is-subtree baseitem (slot-ref (cdr varitem) 'oid)) 0)
+        (begin
+          (slot-set! (cdr varitem) 'tag baseitem)
+          (slot-set! (cdr varitem) 'iid (- baseitem (slot-ref (cdr varitem) 'oid)))
+          (slot-set! (cdr varitem) 'base baseitem))
+        (begin
+          ; fallback, if we get here (which we shouldn't!0
+          ; set the iid and tags to gueeses
+          (slot-set! (cdr varitem) 'tag (slot-ref (cdr varitem) 'oid))
+          (slot-set! (cdr varitem) 'base '())
+          (slot-set! (cdr varitem) 'iid #u32()))))
+    result bases)
+  result)
 
 (define (make-varbind-func varbinds)
-      (lambda( . msg)
-        (if (not (null? varbinds))
-          (cond
-            ((eq? msg '()) (slot-ref varbinds 'value))
-            ((uniform-vector? (car msg))
-              (let nextvarbind ((var varbinds))
-                (if (null? var)
-                  (begin
-                    (display "No such oid returned in result set")(newline)
-                    (fail))
-                  (if (eq? (snmp-oid-compare (slot-ref var 'tag) (car msg)) 0)
-                      (cond 
-                        ((equal? (cdr msg) '())
-                           (slot-ref var 'value))
-                        ((equal? (cdr msg) (list 'oid))     (oid-from-varbind var))
-                        ((equal? (cdr msg) (list 'tag))     (slot-ref var 'tag))
-                        ((equal? (cdr msg) (list 'iid))     (slot-ref var 'iid))
-                        ((equal? (cdr msg) (list 'type))    (slot-ref var 'type))
-                        ((equal? (cdr msg) (list 'varbind)) var)
-                        ((equal? (cdr msg) (list 'value))   (slot-ref var 'value))
-                        (#t (slot-ref var 'value)))
-                     (nextvarbind (slot-ref var 'nextvar))))))
-            ((equal? (car msg) 'oid)     (oid-from-varbind varbinds))
-            ((equal? (car msg) 'tag)     (slot-ref varbinds 'tag))
-            ((equal? (car msg) 'iid)     (slot-ref varbinds 'iid))
-            ((equal? (car msg) 'type)    (slot-ref varbinds 'type))
-            ((equal? (car msg) 'nextvar) (slot-ref varbinds 'nextvar))
-            ((equal? (car msg) 'varbind) varbinds )
-            ((equal? (car msg) 'value)   (slot-ref varbinds 'value))
-            (#t                          (slot-ref varbinds 'value)))
-          (fail))))
+  (lambda( . msg)
+    (if (not (null? varbinds))
+      (cond
+        ((eq? msg '()) (slot-ref (cdr (car varbinds)) 'value))
+        ((uniform-vector? (car msg))
+          (let ((var (assoc (car msg) varbinds)))
+            (if (not var)
+              (begin
+                (format #t "No such oid in result set~%") #f)
+              (cond 
+                ((equal? (cdr msg) '()) (slot-ref (cdr var) 'value))
+                ((equal? (cdr msg) (list 'oid))     (car var))
+                ((equal? (cdr msg) (list 'tag))     (slot-ref (cdr var) 'tag))
+                ((equal? (cdr msg) (list 'iid))     (slot-ref (cdr var) 'iid))
+                ((equal? (cdr msg) (list 'type))    (slot-ref (cdr var) 'type))
+                ((equal? (cdr msg) (list 'varbind)) (slot-ref (cdr var) 'rawvarbind))
+                ((equal? (cdr msg) (list 'value))   (slot-ref (cdr var) 'value))
+                (#t (slot-ref var 'value))))))
+        ((equal? (car msg) 'oid)     (car (car varbinds)))
+        ((equal? (car msg) 'tag)     (slot-ref (cdr (car varbinds)) 'tag))
+        ((equal? (car msg) 'iid)     (slot-ref (cdr (car varbinds)) 'iid))
+        ((equal? (car msg) 'type)    (slot-ref (cdr (car varbinds)) 'type))
+        ((equal? (car msg) 'varbind) (slot-ref (cdr (car varbinds)) 'rawvarbind))
+        ((equal? (car msg) 'value)   (slot-ref (cdr (car varbinds)) 'value))
+        (#t                          (slot-ref (cdr (car varbinds)) 'value)))
+      #f)))
 
 	
 ; These are convenience macros for accessing elements of a result
@@ -254,21 +234,57 @@
     ((_ varbind args ...) (varbind args ... 'value))))
 
 
+; Cache functions
+
+(define (cache-key req oid)
+  (with-output-to-string
+    (lambda ()
+      (format #t "~a!~a!~a!~a!~a!~a"
+        req
+        (current-peername)
+        (current-version)
+        (current-community)
+        (current-context)
+        oid))))
+
 ; Functions and macros for queries.
 ;
+(define query-cache-enabled (make-parameter #t)) 
+(define report-query-cache  (list))
 (define (synch-query querytype oids)
-  (let ((newpdu (snmp-pdu-create querytype)))
+  (let ((crs (list))  ; records retrived from cache
+        (cms (list))) ; records not in cache
     (for-each 
       (lambda(oid)
-        (snmp-add-null-var newpdu oid)) 
-         oids)
-    (let ((status (snmp-sess-synch-response (current-session) newpdu)))
-      (if (or
-            (unspecified? status)
-            (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
-         (throw 'snmperror status)
-         (let ((results (slot-ref status 'variables)))
-           (split-varbinds results))))))
+        (let ((cr (assoc (cache-key querytype oid) report-query-cache string=? )))
+          (if (not cr)
+            ; Cache miss
+            (set! cms (append cms (list oid)))
+            ; Cache hist
+            (set! crs (append crs (list cr))))))
+      oids)
+    (let ((qrs (let ((newpdu (snmp-pdu-create querytype)))
+                 (let addoids ((qs cms))
+                   (if (not (eq? qs '()))
+                     (begin
+                       (snmp-add-null-var newpdu (car qs))
+                       (addoids (cdr qs)))))
+                 (let ((status (snmp-sess-synch-response (current-session) newpdu)))
+                   (if (or
+                         (unspecified? status)
+                         (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
+                    (throw 'snmperror status)
+                    (let ((results (slot-ref status 'variables)))
+                      (split-varbinds results)))))))
+       (if (query-cache-enabled)
+         (for-each 
+           (lambda(cr ce)
+             (set! report-query-cache (acons
+                                        (cache-key querytype cr)
+                                        (cdr ce)
+                                        report-query-cache)))
+           (reverse cms) qrs))
+       (append crs qrs))))
 
 (define (get . oid-terms)
   (make-varbind-func 
@@ -292,15 +308,14 @@
         (let* ((results      (tag-varbinds
                                (synch-query (SNMP-MSG-GETNEXT) curroids)
                                currbases))
-               (cleanresults (filter-valid-next results currbases)))
+               (cleanresults (filter-valid-next results)))
           (let ((nextoids  (list))
                 (nextbases (list)))
-            (let add-oids ((varbind cleanresults))
-              (if (not (null? varbind))
-                (begin
-                  (set! nextoids (cons (oid-from-varbind varbind) nextoids))
-                  (set! nextbases (cons (slot-ref varbind 'base) nextbases))
-                  (add-oids  (slot-ref varbind 'nextvar)))))
+            (for-each 
+              (lambda(varbind)
+                (set! nextoids (cons (slot-ref (cdr varbind) 'oid) nextoids))
+                (set! nextbases (cons (slot-ref (cdr varbind) 'base) nextbases)))
+              cleanresults)
             (set! curroids nextoids)
             (set! currbases nextbases))
           (if (equal? cleanresults '())
