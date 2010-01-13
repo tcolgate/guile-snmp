@@ -10,18 +10,18 @@
 (define-class <test-reports> (<test-case>))
   
 (define-method (test-autoresolve (self <test-reports>))
-  (assert-equal sysLocation.0
-                #u32(1 3 6 1 2 1 1 6 0)))
+  (assert-equal gstTestString
+               #u32(1 3 6 1 3 1977 1 2)))
 
 (define-method (test-get (self <test-reports>))
-  (assert-equal "Testing Guile SNMP"
+  (assert-equal "Guile-SNMP test string"
                 (session #:host "127.0.0.1:10161" 
-                  ((get (snmp-parse-oid "sysLocation.0"))))))
+                  ((get (snmp-parse-oid "gstTestString.0"))))))
 ;
 (define-method (test-getnext (self <test-reports>))
-  (assert-equal "Testing Guile SNMP"
+  (assert-equal "Guile-SNMP test string"
                 (session #:host "127.0.0.1:10161" 
-                  ((getnext (snmp-parse-oid "sysLocation"))))))
+                  ((getnext (snmp-parse-oid "gstTestString"))))))
 
 (define-method (test-walk-func (self <test-reports>))
   (assert-equal '(0 1)

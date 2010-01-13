@@ -39,7 +39,7 @@
     (snmp-add-null-var pdu (oid-syslocation0 self))
     (let* ((status (snmp-synch-response ss pdu))
            (vals   (slot-ref status 'variables)))
-      (assert-equal "Testing Guile SNMP"
+      (assert-equal "Testing Guile-SNMP"
                     (slot-ref vals 'value))
       (snmp-free-pdu status)
       (snmp-close ss))))
