@@ -156,27 +156,29 @@
     results))
  
 ;; Given a varbind list and the oids requested that
-;; generated it. Tag each result with the based oid
-;; and compute the iid.
+;; generated it. return a copy with each result tagged
+;; with the based oid and compute the iid.
 ;; We only match the first, but should try and
 ;; find the most specific match.
+;; Currently assumes an ordered list
 ;;
-(define (tag-varbinds result bases)
-  (for-each
-    (lambda(varitem baseitem)
-      (if (equal? (netsnmp-oid-is-subtree baseitem (slot-ref (cdr varitem) 'oid)) 0)
-        (begin
-          (slot-set! (cdr varitem) 'tag baseitem)
-          (slot-set! (cdr varitem) 'iid (- baseitem (slot-ref (cdr varitem) 'oid)))
-          (slot-set! (cdr varitem) 'base baseitem))
-        (begin
-          ; fallback, if we get here (which we shouldn't!0
-          ; set the iid and tags to gueeses
-          (slot-set! (cdr varitem) 'tag (slot-ref (cdr varitem) 'oid))
-          (slot-set! (cdr varitem) 'base '())
-          (slot-set! (cdr varitem) 'iid #u32()))))
-    result bases)
-  result)
+(define (tag-varbinds data bases)
+  (let ((result (copy-tree data)))
+    (for-each
+      (lambda(varitem baseitem)
+        (if (equal? (netsnmp-oid-is-subtree baseitem (slot-ref (cdr varitem) 'oid)) 0)
+          (begin
+            (slot-set! (cdr varitem) 'tag baseitem)
+            (slot-set! (cdr varitem) 'iid (- baseitem (slot-ref (cdr varitem) 'oid)))
+            (slot-set! (cdr varitem) 'base baseitem))
+          (begin
+            ; fallback, if we get here (which we shouldn't!0
+            ; set the iid and tags to gueeses
+            (slot-set! (cdr varitem) 'tag (slot-ref (cdr varitem) 'oid))
+            (slot-set! (cdr varitem) 'base '())
+            (slot-set! (cdr varitem) 'iid #u32()))))
+      result bases)
+    result))
 
 (define (make-varbind-func varbinds)
   (lambda( . msg)
@@ -301,36 +303,30 @@
 
 ; This is the basic walk function and returns an iterator which returns a new element
 ; each time it is called.
-(define (walk-func . baseoids)
-  (let ((curroids    baseoids)
-        (currbases   baseoids))
+(define (walk-func baseoid)
+  (let ((curroid   baseoid)
+        (currbase  baseoid))
     (lambda()
-      (if (not (equal? curroids '()))
+      (if (not (equal? curroid #f))
         (let* ((results      (tag-varbinds
-                               (synch-query (SNMP-MSG-GETNEXT) curroids)
-                               currbases))
+                               (synch-query (SNMP-MSG-GETNEXT) (list curroid))
+                               (list currbase)))
                (cleanresults (filter-valid-next results)))
-          (let ((nextoids  (list))
-                (nextbases (list)))
-            (for-each 
-              (lambda(varbind)
-                (set! nextoids (cons (slot-ref (cdr varbind) 'oid) nextoids))
-                (set! nextbases (cons (slot-ref (cdr varbind) 'base) nextbases)))
-              cleanresults)
-            (set! curroids nextoids)
-            (set! currbases nextbases))
           (if (equal? cleanresults '())
             (throw 'walkend '())
-            (make-varbind-func cleanresults)))
+            (begin
+              (set! curroid (slot-ref (cdr (car cleanresults)) 'oid))
+              (set! currbase (slot-ref (cdr (car cleanresults)) 'base))
+              (make-varbind-func cleanresults))))
         (throw 'walkend '())))))
 
 ; This is the simplest walk to use, returning all results in a list
-(define (walk . baseoids)
-  (let ((vals (apply walk-func baseoids)))
+(define (walk baseoid)
+  (let ((val  (walk-func baseoid)))
     (let loop ((result '())
                (finished #f))
       (catch 'walkend
-        (lambda() (set! result (append result (list (vals)))))
+        (lambda() (set! result (append result (list (val)))))
         (lambda(ex . args)
           (set! finished #t)))
       (if finished

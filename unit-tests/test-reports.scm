@@ -36,5 +36,16 @@
                 (session #:host "127.0.0.1:10161" 
                   (map (lambda(x)(value x)) (walk (snmp-parse-oid "gstTabAData"))))))
 
+(define-method (test-walk-on-fail (self <test-reports>))
+  (assert-equal '("tableA row 0" "tableA row 1" "tableA row 2" "tableA row 3" "tableA row 4" "tableA row 5")
+                (session #:host "127.0.0.1:10161" 
+                  (let* ((result (list))
+                         (val    (walk-on-fail (snmp-parse-oid "gstTabAData"))))
+                    (if (not (equal? (val) #f))
+                      (begin
+                        (set! result (append result (list (val))))
+                        (fail))
+                      result)))))
+
 (exit-with-summary (run-all-defined-test-cases))
 
