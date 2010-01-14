@@ -250,7 +250,7 @@
     (for-each 
       (lambda(oid)
         (let ((cr (if (query-cache-enabled)
-                    (cache-lookup querytype oid)
+                    (query-cache-lookup querytype oid)
                     #f)))
           (if (not cr)
             ; Cache miss
