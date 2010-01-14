@@ -14,18 +14,23 @@
   #:use-module (ice-9 optargs)
   #:use-module (snmp net-snmp)
   #:use-module (snmp oids)
+  #:use-module (snmp reports session)
   #:use-module (snmp reports cache)
-  #:export-syntax (session init-reports)
+  #:export-syntax (init-reports)
   #:export (
-    base-session current-session old-session
-    current-community current-port current-peername
-    current-version current-context
     reports:autotranslate <reports-varlist> oid-list walk
     get getnext nextvar all walk-on-fail walk-func 
     fail old-fail one-of iid oid type tag value 
     make-varbind-func tag-varbinds split-varbinds 
-    filter-valid-next new-snmp-session reach-each)
+    filter-valid-next reach-each)
   #:re-export (
+    current-session
+    current-community
+    current-port
+    current-peername
+    current-version
+    current-context
+    new-snmp-session
     enable-query-cache
     disable-query-cache
     query-cache-enabled
@@ -73,52 +78,6 @@
           (set-module-uses! (current-module) 
             (append (list oidmodule) (module-uses (current-module)))))))))
 
-(define current-community (make-parameter "public"))
-(define current-peername (make-parameter "localhost"))
-(define current-version (make-parameter (SNMP-VERSION-2c)))
-(define current-context (make-parameter #f))
-
-(define (new-snmp-session)
-  (let* ((bs (make <snmp-session>))
-         (jn (snmp-sess-init bs)))
-    (slot-set! bs 'version (current-version))
-    (slot-set! bs 'peername (current-peername))
-    (slot-set! bs 'community (current-community))
-    (slot-set! bs 'community-len (string-length (current-community)))
-    (snmp-sess-open bs)))
-
-(define current-session (make-parameter (new-snmp-session)))
-
-(define-syntax session
-  (lambda(stx)
-    (let ((args (cdr (syntax->datum stx)))
-          (handler (lambda* (#:key (host #f)
-                                   (community #f)
-                                   (version #f)
-                                   (context #f)
-                             #:rest forms)
-                     (let* ((remove-keys (lambda(ls)
-                                           (let loop ((ls ls) (acc '()))
-                                             (if (null? ls)
-                                               (reverse acc)
-                                               (let ((kw? (keyword? (car ls))))
-                                                 (loop ((if kw? cddr cdr) ls)
-                                                   (if kw? acc (cons (car ls) acc))))))))
-                            (clean-forms (remove-keys forms)))
-                       (datum->syntax stx
-                        `(parameterize ((current-version   (if (eqv? ,version #f)
-                                                             (current-version)
-                                                             ,version))
-                                        (current-peername  (if (eqv? ,host #f)
-                                                             (current-peername)
-                                                             ,host))
-                                        (current-community (if (eqv? ,community #f)
-                                                             (current-community)
-                                                             ,community)))
-                           (parameterize ((current-session (new-snmp-session)))
-                             (begin
-                               ,@clean-forms))))))))
-          (apply handler args))))
 
 ; This class is used to represent answers. We use our own dedicated class
 ; to allow free'ing of results, avoid link lists and better allow cacheing
@@ -256,21 +215,23 @@
             ; Cache miss
             (set! cms (append cms (list oid)))
             ; Cache hist
-            (set! crs (append crs (list cr))))))
+            (set! crs (append crs cr)))))
       oids)
-    (let ((qrs (let ((newpdu (snmp-pdu-create querytype)))
-                 (let addoids ((qs cms))
-                   (if (not (eq? qs '()))
-                     (begin
-                       (snmp-add-null-var newpdu (car qs))
-                       (addoids (cdr qs)))))
-                 (let ((status (snmp-sess-synch-response (current-session) newpdu)))
-                   (if (or
-                         (unspecified? status)
-                         (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
-                    (throw 'snmperror status)
-                    (let ((results (slot-ref status 'variables)))
-                      (split-varbinds results)))))))
+    (let ((qrs (if (equal? cms '())
+                 '() ; Don't do anything if we have nothing to do
+                 (let ((newpdu (snmp-pdu-create querytype)))
+                   (let addoids ((qs cms))
+                     (if (not (eq? qs '()))
+                       (begin
+                         (snmp-add-null-var newpdu (car qs))
+                         (addoids (cdr qs)))))
+                   (let ((status (snmp-sess-synch-response (current-session) newpdu)))
+                     (if (or
+                           (unspecified? status)
+                           (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
+                      (throw 'snmperror status)
+                      (let ((results (slot-ref status 'variables)))
+                        (split-varbinds results))))))))
        (if (query-cache-enabled)
          (for-each 
            (lambda(cm qr)
@@ -405,7 +366,7 @@
       (map (lambda(old-thread) (thread-terminate! old-thread)) threads)
       result))))
 
-(re-export-modules (oop goops) (srfi srfi-39) (snmp net-snmp) (snmp oids))
+(re-export-modules (oop goops) (srfi srfi-39) (snmp reports session) (snmp net-snmp) (snmp oids))
 
 ; Set up the reports environement
 ;

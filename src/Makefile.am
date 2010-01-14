@@ -16,7 +16,8 @@ SCHEMESOURCES=snmp/net-snmp.scm\
               snmp/reports.scm\
               snmp/oids.scm
 
-SCHEMESOURCES2=snmp/reports/cache.scm
+SCHEMESOURCES2=snmp/reports/cache.scm\
+               snmp/reports/session.scm
 
 if HAVE_GUILE_COMPILE
 GOBJECTS = $(SCHEMESOURCES:%.scm=%.go)
