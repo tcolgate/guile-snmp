@@ -24,7 +24,7 @@
     fail old-fail one-of iid oid type tag value 
     make-varbind-func tag-varbinds split-varbinds 
     filter-valid-next new-snmp-session reach-each
-    cache-key query-cache-enabled report-query-cache))
+    enable-query-cache disable-query-cache clear-query-cache))
 
 ; This routine is lifted from guile-gnome-platform by Andy Wingo
 (define-macro (re-export-modules . args)
@@ -252,14 +252,25 @@
 
 ; Functions and macros for queries.
 ;
-(define query-cache-enabled (make-parameter #t)) 
+
+; Private cache interface
+(define query-cache-enabled (make-parameter #f)) 
 (define report-query-cache  (list))
+
+; Public cache interface
+(define (enable-query-cache) (query-cache-enabled #t))
+(define (disable-query-cache) (query-cache-enabled #f))
+(define (clear-query-cache) (set! report-query-cache '()))
+
+; Perform an synchronous SNMP query
 (define (synch-query querytype oids)
   (let ((crs (list))  ; records retrived from cache
         (cms (list))) ; records not in cache
     (for-each 
       (lambda(oid)
-        (let ((cr (assoc (cache-key querytype oid) report-query-cache string=? )))
+        (let ((cr (if (query-cache-enabled)
+                    (assoc (cache-key querytype oid) report-query-cache string=? )
+                    #f)))
           (if (not cr)
             ; Cache miss
             (set! cms (append cms (list oid)))
