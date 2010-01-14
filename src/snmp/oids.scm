@@ -14,6 +14,7 @@
     %
     mac-as-oid
     ipstr-to-str
+    get-oid-type
   ))
 
 (enable-primitive-generic! +)
@@ -62,6 +63,9 @@
 
 (define-method (% (s <integer>)(id <uvec>))
   (u32vector-ref id (- s 1)))
+
+(define (get-oid-type oid)
+   (slot-ref (get-tree oid (get-tree-head)) 'type))
 
 (define (sub-objid s e id)
   (list->u32vector 

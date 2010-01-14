@@ -54,5 +54,21 @@
                         (fail))
                       result)))))
 
+(define-method (test-set (self <test-reports>))
+  (assert-equal #t
+                (session #:host "127.0.0.1:10161" 
+                  (set ((snmp-parse-oid "gstTestString.0") "mystring")))))
+
+(define-method (test-set2 (self <test-reports>))
+  (assert-equal #t
+                (session #:host "127.0.0.1:10161" 
+                  (set ((snmp-parse-oid "gstTestString.0") (7 "mystring"))))))
+
+(define-method (test-set3 (self <test-reports>))
+  (assert-equal #t
+                (session #:host "127.0.0.1:10161" 
+                  (set ((snmp-parse-oid "gstTestString.0") "mystring")
+                       ((snmp-parse-oid "gstTestInt32.0") 500)))))
+
 (exit-with-summary (run-all-defined-test-cases))
 

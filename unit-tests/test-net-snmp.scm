@@ -44,5 +44,13 @@
       (snmp-free-pdu status)
       (snmp-close ss))))
       
+(define-method (test-basic-set (self <test-net-snmp>))
+  (let* ((ss  (snmp-open (testsess self)))
+         (pdu (snmp-pdu-create (SNMP-MSG-SET))))
+    (snmp-add-var pdu (oid-syslocation0 self) 4 "new string")
+    (let* ((status (snmp-synch-response ss pdu)))
+      (snmp-free-pdu status)
+      (snmp-close ss))))
+
 (exit-with-summary (run-all-defined-test-cases))
 

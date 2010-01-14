@@ -16,7 +16,7 @@
   #:use-module (snmp oids)
   #:use-module (snmp reports session)
   #:use-module (snmp reports cache)
-  #:export-syntax (init-reports)
+  #:export-syntax (init-reports set build-one build-set)
   #:export (
     reports:autotranslate <reports-varlist> oid-list walk
     get getnext nextvar all walk-on-fail walk-func 
@@ -250,6 +250,55 @@
     (tag-varbinds
       (synch-query (SNMP-MSG-GETNEXT) oid-terms)
       oid-terms)))
+
+(define (synch-set oid-value-pairs)
+  (if (equal? oid-value-pairs '())
+    #t
+    (let ((newpdu (snmp-pdu-create (SNMP-MSG-SET))))
+      (let addoids ((sos oid-value-pairs))
+        (if (not (eq? sos '()))
+          (let ((so (car sos)))
+            (if (not (pair? so))
+              (throw 'snmperror "invalid set")
+              (let ((var     (car so))
+                    (valspec (cdr so)))
+                (if (pair? valspec)
+                  ; (type value)
+                  (begin 
+                    (snmp-add-var newpdu var (car valspec) (cdr valspec))
+                    (addoids (cdr sos)))
+                  ; (value) infer type from oid
+                  (let ((type (mib-to-asn-type (get-oid-type var))))
+                    ; need to lob an exception if we don't get an type back
+                    (if (equal? 255 (char->integer type))
+                      (throw 'snmperror "could not determine type in set")
+                      (addoids (append (list (cons var (cons type valspec)))
+                                       (cdr sos)))))))))))
+      (let* ((response (snmp-sess-synch-response (current-session) newpdu))
+             (status   (slot-ref response 'errstat)))
+        (if (not (equal? status (SNMP-ERR-NOERROR)))
+          (throw 'snmperror "set caused an error")
+          #t)))))
+
+(define-syntax set
+  (syntax-rules ()
+    ((set (name1 val1)  ... )
+     (synch-set (build-set (name1 val1) ... )))))
+
+(define-syntax build-set
+  (syntax-rules ()
+    ((build-set (name1 val1))
+     (list (build-one name1 val1)))
+    ((build-set (name1 val1) (name2 val2) ...)
+     (append (list (build-one name1 val1))
+             (build-set (name2 val2) ...)))))
+
+(define-syntax build-one
+  (syntax-rules ()
+    ((build-one name1 (typ1 val1))
+     (cons name1 (cons typ1 val1)))
+    ((build-one name1 val1)
+     (cons name1 val1))))
 
 ; This is the basic walk function and returns an iterator which returns a new element
 ; each time it is called.
