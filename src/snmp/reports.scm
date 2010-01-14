@@ -14,6 +14,7 @@
   #:use-module (ice-9 optargs)
   #:use-module (snmp net-snmp)
   #:use-module (snmp oids)
+  #:use-module (snmp reports cache)
   #:export-syntax (session init-reports)
   #:export (
     base-session current-session old-session
@@ -23,8 +24,12 @@
     get getnext nextvar all walk-on-fail walk-func 
     fail old-fail one-of iid oid type tag value 
     make-varbind-func tag-varbinds split-varbinds 
-    filter-valid-next new-snmp-session reach-each
-    enable-query-cache disable-query-cache clear-query-cache))
+    filter-valid-next new-snmp-session reach-each)
+  #:re-export (
+    enable-query-cache
+    disable-query-cache
+    query-cache-enabled
+    dump-query-cache))
 
 ; This routine is lifted from guile-gnome-platform by Andy Wingo
 (define-macro (re-export-modules . args)
@@ -236,31 +241,7 @@
   (syntax-rules ()
     ((_ varbind args ...) (varbind args ... 'value))))
 
-
-; Cache functions
-
-(define (cache-key req oid)
-  (with-output-to-string
-    (lambda ()
-      (format #t "~a!~a!~a!~a!~a!~a"
-        req
-        (current-peername)
-        (current-version)
-        (current-community)
-        (current-context)
-        oid))))
-
 ; Functions and macros for queries.
-;
-
-; Private cache interface
-(define query-cache-enabled (make-parameter #f)) 
-(define report-query-cache  (list))
-
-; Public cache interface
-(define (enable-query-cache) (query-cache-enabled #t))
-(define (disable-query-cache) (query-cache-enabled #f))
-(define (clear-query-cache) (set! report-query-cache '()))
 
 ; Perform an synchronous SNMP query
 (define (synch-query querytype oids)
@@ -269,13 +250,13 @@
     (for-each 
       (lambda(oid)
         (let ((cr (if (query-cache-enabled)
-                    (assoc (cache-key querytype oid) report-query-cache string=? )
+                    (cache-lookup querytype oid)
                     #f)))
           (if (not cr)
             ; Cache miss
             (set! cms (append cms (list oid)))
             ; Cache hist
-            (set! crs (acons (slot-ref (cdr cr) 'oid) (cdr cr) crs)))))
+            (set! crs (append crs (list cr))))))
       oids)
     (let ((qrs (let ((newpdu (snmp-pdu-create querytype)))
                  (let addoids ((qs cms))
@@ -292,11 +273,8 @@
                       (split-varbinds results)))))))
        (if (query-cache-enabled)
          (for-each 
-           (lambda(cr ce)
-             (set! report-query-cache (acons
-                                        (cache-key querytype cr)
-                                        (cdr ce)
-                                        report-query-cache)))
+           (lambda(cm qr)
+             (query-cache-insert querytype cm qr))
            (reverse cms) qrs))
        (append crs qrs))))
 
