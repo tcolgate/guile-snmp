@@ -14,8 +14,6 @@
 ;Create a nice environment for the users.
 (use-modules (ice-9 session))
 (use-modules (ice-9 history))
-(use-modules (ice-9 readline))
-(activate-readline)
 
 (use-modules (snmp reports))
 (init-reports)
@@ -26,6 +24,10 @@
 (define program-version (make-parameter  "1"))
 (define program-help    (make-parameter (string-append (program-name) ": version " (program-version) "\n")))
 (define script-arguments (make-parameter #f))
+
+(putenv (string-append "GUILE_HISTORY=" (getenv "HOME") "/." (program-name) "_history"))
+(use-modules (ice-9 readline))
+(activate-readline)
 
 ; process standard options
 ; srfi-37 hurt my brain. getopt will do nicely.
