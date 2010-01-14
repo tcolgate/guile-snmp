@@ -22,7 +22,8 @@
   (assert-equal (list "Guile-SNMP test string" 499)
                 (session #:host "127.0.0.1:10161" 
                   (let ((vals (get (snmp-parse-oid "gstTestString.0") (snmp-parse-oid "gstTestInt32.0"))))
-                    (list (vals) (vals (snmp-parse-oid "gstTestInt32.0")))))))
+                    (list (vals (snmp-parse-oid "gstTestString.0")) 
+                          (vals (snmp-parse-oid "gstTestInt32.0")))))))
 ;
 (define-method (test-getnext (self <test-reports>))
   (assert-equal "Guile-SNMP test string"
