@@ -24,6 +24,19 @@
 %constant int STAT_ERROR = 1;
 %constant int STAT_TIMEOUT = 2;
 
+/*
+%{
+%}
+*/
+%constant int ASN_BOOLEAN = 1;
+%constant int ASN_INTEGER = 2;
+%constant int ASN_BIT_STR = 3;
+%constant int ASN_NULL = 0x05;
+%constant int ASN_OBJECT_ID = 0x06;
+%constant int ASN_SEQUENCE = 0x016;
+%constant int ASN_SET = 0x017;
+%constant int ASN_OCTET_STR = 0x04;
+
 %constant int ASN_IPADDRESS = (ASN_APPLICATION | 0);
 %constant int ASN_COUNTER = (ASN_APPLICATION | 1);
 %constant int ASN_GAUGE = (ASN_APPLICATION | 2);
@@ -37,4 +50,5 @@
 %constant int ASN_DOUBLE = (ASN_APPLICATION | 9);
 %constant int ASN_INTEGER64 = (ASN_APPLICATION | 10);
 %constant int ASN_UNSIGNED64 = (ASN_APPLICATION | 11);
+
 
