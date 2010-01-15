@@ -57,18 +57,18 @@
 (define-method (test-set (self <test-reports>))
   (assert-equal #t
                 (session #:host "127.0.0.1:10161" 
-                  (set ((snmp-parse-oid "gstTestString.0") "mystring")))))
+                  (set ((snmp-parse-oid "gstTestString.0") "New value set1")))))
 
 (define-method (test-set2 (self <test-reports>))
   (assert-equal #t
                 (session #:host "127.0.0.1:10161" 
-                  (set ((snmp-parse-oid "gstTestString.0") (7 "mystring"))))))
+                  (set ((snmp-parse-oid "gstTestString.0") ((ASN-OCTET-STR) "New value set2"))))))
 
 (define-method (test-set3 (self <test-reports>))
   (assert-equal #t
                 (session #:host "127.0.0.1:10161" 
-                  (set ((snmp-parse-oid "gstTestString.0") "mystring")
-                       ((snmp-parse-oid "gstTestInt32.0") 500)))))
+                  (set ((snmp-parse-oid "gstTestString.0") "New value set3")
+                       ((snmp-parse-oid "gstTestInt32.0") 31)))))
 
 (exit-with-summary (run-all-defined-test-cases))
 

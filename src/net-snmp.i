@@ -21,6 +21,7 @@ typedef unsigned short u_short;
 #include <net-snmp/library/snmp_api.h>
 #include <net-snmp/library/parse.h>
 #include <net-snmp/library/mib.h>
+#include <limits.h>
 
 %}
 
@@ -107,6 +108,126 @@ typedef unsigned short u_short;
 %apply(char* , size_t ){
   (char* buf, size_t buf_len)
 }
+
+/* A typemap to pass data to snmp_pdu_add_variable for
+  typesafe snmp set */
+
+%typemap(in)( u_char, const u_char *, size_t ) (scm_t_array_handle handle){
+  u_char typespec; 
+  SCM valscm;
+  void* pointer = NULL; 
+  size_t len = 0;
+  size_t iter = 0;
+
+  // Temporary storage
+  in_addr_t       atmp;
+  long            ltmp;
+  u_long          utmp;
+  int             itmp;
+  oid*            oidtmp;
+#ifdef NETSNMP_WITH_OPAQUE_SPECIAL_TYPES
+  double          dtmp;
+  float           ftmp;
+#endif                          /* NETSNMP_WITH_OPAQUE_SPECIAL_TYPES */
+  struct counter64 c64tmp;
+
+  if (! SCM_CONSP($input) ){
+    // signal an error
+    scm_throw(
+      scm_string_to_symbol(
+        scm_from_locale_string("snmperror")),
+      scm_from_locale_string("Malformed data passed to set"));
+  };
+  
+  typespec = SCM_CHAR(SCM_CAR($input));
+  valscm = SCM_CDR($input);
+
+  switch (typespec){
+
+    case ASN_INTEGER:
+      {
+        if ( ! scm_is_signed_integer(valscm, LONG_MIN, LONG_MAX) ){
+          scm_throw(
+            scm_string_to_symbol(
+              scm_from_locale_string("snmperror")),
+            scm_from_locale_string("Data is not a signed integer"));
+        };
+        ltmp = scm_to_long(valscm);
+        pointer = &ltmp;
+        len = sizeof(long);
+      };
+      break;
+ 
+    case ASN_UINTEGER:
+    case ASN_GAUGE:
+    case ASN_COUNTER:
+    case ASN_TIMETICKS:
+      {
+        if ( ! scm_is_unsigned_integer(valscm, LONG_MIN, LONG_MAX) ){
+          scm_throw(
+            scm_string_to_symbol(
+              scm_from_locale_string("snmperror")),
+            scm_from_locale_string("Data is not an unsuigned integer"));
+        };
+        utmp = scm_to_ulong(valscm);
+        pointer = (void*) &utmp;
+        len = sizeof(u_long);
+      };
+      break;
+ 
+    case ASN_IPADDRESS:
+    case ASN_OCTET_STR: 
+    case ASN_OPAQUE:
+    case ASN_NSAP:
+      {
+        if ( ! scm_is_string(valscm) ){
+          scm_throw(
+            scm_string_to_symbol(
+              scm_from_locale_string("snmperror")),
+            scm_from_locale_string("Data is not a string"));
+        };
+        pointer = (void*) scm_to_locale_stringn(valscm, &len);
+      }; 
+      break;
+
+    case ASN_OBJECT_ID:
+      {
+        if ( ! scm_is_true(scm_u32vector_p (valscm) )){
+          scm_throw(
+            scm_string_to_symbol(
+              scm_from_locale_string("snmperror")),
+            scm_from_locale_string("Data is not an oid"));
+        };
+        pointer = (void*) scm_u32vector_elements(valscm, &handle, &len, &iter);
+      };
+      break;
+
+    case ASN_BIT_STR:
+    case ASN_COUNTER64:
+    default:
+      { // signal an error
+        scm_throw(
+          scm_string_to_symbol(scm_from_locale_string("snmperror")),
+          scm_string_append(
+            scm_list_3(
+              scm_from_locale_string("Unhandled type("),
+              scm_number_to_string( scm_char_to_integer (SCM_CAR($input)),SCM_UNDEFINED),
+              scm_from_locale_string(") in set data"))));
+     };
+  };
+
+  $1 = typespec;
+  $2 = (u_char*) pointer;
+  $3 = len;
+}
+
+%typemap(freearg)( u_char, const u_char *, size_t ) {
+  scm_array_handle_release(&handle$argnum);
+}
+%apply( u_char, const u_char *, size_t ){
+  (u_char, const u_char *, size_t )
+}
+
 /* A pair of typemaps  to pass pdus for write and return the 
   value as output */
 
@@ -124,7 +245,6 @@ typedef unsigned short u_short;
 }
 
 %include "net-snmp-config.h"
-%include "asn1.h"
 
 %extend variable_list {
        const SCM value;
@@ -222,6 +342,7 @@ oid_from_varbind(netsnmp_variable_list* varbind, oid* objid, size_t* objidlen){
 %include "parse.h"
 %include "mib.h"
 %include "default_store.h"
+%include "asn1.h"
 
 %goops %{ 
 (eval-when (eval load compile)

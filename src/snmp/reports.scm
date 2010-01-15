@@ -265,7 +265,14 @@
                 (if (pair? valspec)
                   ; (type value)
                   (begin 
-                    (snmp-add-var newpdu var (car valspec) (cdr valspec))
+                    (let* ((ty       (car valspec))
+                           (tychar   (if (char? ty)
+                                       ty
+                                       (integer->char ty)))
+                           (val      (cdr valspec)))
+                      (snmp-pdu-add-variable newpdu 
+                                             var 
+                                             (cons tychar val)))
                     (addoids (cdr sos)))
                   ; (value) infer type from oid
                   (let ((type (mib-to-asn-type (get-oid-type var))))

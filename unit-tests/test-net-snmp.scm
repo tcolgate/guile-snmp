@@ -47,7 +47,7 @@
 (define-method (test-basic-set (self <test-net-snmp>))
   (let* ((ss  (snmp-open (testsess self)))
          (pdu (snmp-pdu-create (SNMP-MSG-SET))))
-    (snmp-add-var pdu (oid-syslocation0 self) 4 "new string")
+    (snmp-pdu-add-variable pdu (oid-syslocation0 self) (cons (integer->char (ASN-OCTET-STR)) "new string"))
     (let* ((status (snmp-synch-response ss pdu)))
       (snmp-free-pdu status)
       (snmp-close ss))))
