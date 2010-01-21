@@ -34,5 +34,5 @@ src/mib.h
 src/snmp_api.h
 src/snmp_client.h
 acinclude.m4
-src/snmp-report
+src/snmp-shell
 unit-tests/.test-agent-pid

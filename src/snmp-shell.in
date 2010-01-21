@@ -4,7 +4,7 @@
 ; This is intended to act as a snmp reporting shell
 ; and script interpreter
 
-(define-module (snmp-report))
+(define-module (snmp-shell))
 
 (use-modules (ice-9 threads))
 (use-modules (ice-9 getopt-long))
@@ -74,7 +74,7 @@
   (if snmp-version
     (current-version snmp-version))
   (if host
-    (current-peername host))
+    (current-host host))
   (if community
     (current-community community))
   (if context

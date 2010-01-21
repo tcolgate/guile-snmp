@@ -1,4 +1,4 @@
-#!/usr/local/bin/snmp-report -s
+#!/usr/local/bin/snmp-shell -s
 !#
 
 (display "hello")(newline)

@@ -1,4 +1,4 @@
-#!/usr/local/bin/snmp-report -s
+#!/usr/local/bin/snmp-shell -s
 !#
 ;;-------------------------------------------------------------------
 ;; Copyright (C) 2009 Tristan Colgate 
