@@ -39,12 +39,12 @@
                  (vlanid (% 2 (iid vlan)))
                  (vlancomm (string-append (currnet-community) (string-append "@" (number->string vlanid)))))
             (session #:community vlancomm
-              (let* ((mapint      (get-or-fail (+ dot1dTpFdbPor (mac-as-oid mac))))
-                     (validmapint (if (unspecified? (mapint))
+              (let* ((mapint      (get (+ dot1dTpFdbPor (mac-as-oid mac))))
+                     (validmapint (if (eq? (mapint) 'noSuchObject)
                                     ((fail))
                                     (mapint)))
-                     (intif       (get-or-fail (+ dot1dBasePortIfIndex validmapint)))
-                     (intifDescr  (value (get-or-fail (+ ifDescr (intif)))))
+                     (intif       (get (+ dot1dBasePortIfIndex validmapint)))
+                     (intifDescr  (value (get (+ ifDescr (intif)))))
                      (poports     (walk-on-fail pagpGroupIfIndex)))
                  (if (not (equal? (poports) (intif)))
                    ((fail))
@@ -53,11 +53,11 @@
                      (if (find-if (lambda(item)(equal? item neighbourstr)) l3list)
                        ((fail)) ; The neighbour is in the l3 list so we will check it anyway
                        (session #:host neighbourstr 
-                         (let* ((peername (get-or-fail sysName.0))
-                                (fdbport  (get-or-fail (+ dot1dTpFdbPort (mac-as-oid mac))))
-                                (fdbif    (get-or-fail (+ dot1dBasePortIfIndex (fdbport))))
-                                (port     (get-or-fail (+ ifDescr (fdbif))))
-                                (podesc   (get-or-fail (+ ifAlias (fdbif)))))
+                         (let* ((peername (get sysName.0))
+                                (fdbport  (get (+ dot1dTpFdbPort (mac-as-oid mac))))
+                                (fdbif    (get (+ dot1dBasePortIfIndex (fdbport))))
+                                (port     (get (+ ifDescr (fdbif))))
+                                (podesc   (get (+ ifAlias (fdbif)))))
                            (format #t "Host: ~a  ~% Via Router: ~A ~% VLAN: ~A ~% Neighbour: ~A ~% Name: ~A ~% Port: ~A ~% Desc: ~A ~%"  name router vlanid  neighbourstr (peername)(port)(podesc)))))))))))))))
 
 (find-host (car (script-arguments)))
