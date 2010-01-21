@@ -10,7 +10,9 @@
   #:use-module (srfi srfi-39)
   #:use-module (oop goops)
   #:use-module (snmp net-snmp)
-  #:export-syntax (session)
+  #:export-syntax (
+    session
+    default-session)
   #:export (
     current-session
     current-community 
@@ -29,12 +31,33 @@
   (let* ((bs (make <snmp-session>))
          (jn (snmp-sess-init bs)))
     (slot-set! bs 'version (current-version))
-    (slot-set! bs 'peername (current-peername))
+    (slot-set! bs 'peername (current-host))
     (slot-set! bs 'community (current-community))
     (slot-set! bs 'community-len (string-length (current-community)))
     (snmp-sess-open bs)))
 
 (define current-session (make-parameter (new-snmp-session)))
+
+(define-syntax default-session
+  (lambda(stx)
+    (let ((args (cdr (syntax->datum stx)))
+          (handler (lambda* (#:key (host #f)
+                                   (community #f)
+                                   (version #f)
+                                   (context #f))
+                     (datum->syntax stx
+                      `(begin
+                         (current-version   (if (eqv? ,version #f)
+                                              (current-version)
+                                              ,version))
+                         (current-host  (if (eqv? ,host #f)
+                                              (current-host)
+                                              ,host))
+                         (current-community (if (eqv? ,community #f)
+                                              (current-community)
+                                              ,community))
+                         (current-session (new-snmp-session)))))))
+          (apply handler args))))
 
 (define-syntax session
   (lambda(stx)
