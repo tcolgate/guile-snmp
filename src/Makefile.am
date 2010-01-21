@@ -41,4 +41,4 @@ guilesnmp_DATA = $(SCHEMESOURCES) $(GOBJECTS)
 guilereportsdir =  /usr/local/share/guile/site/snmp/reports
 guilereports_DATA = $(SCHEMESOURCES2) $(GOBJECTS2)
 
-bin_SCRIPTS = snmp-report
+bin_SCRIPTS = snmp-shell
