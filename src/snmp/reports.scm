@@ -102,7 +102,7 @@
             (slot-set! newvar 'value (slot-ref thisvarbind 'value))
             (set! result (acons (slot-ref newvar 'oid)  newvar result))
             (nextvarbind (slot-ref thisvarbind 'next-variable) result))
-        result)))
+          result)))
 
 (define (filter-valid-next results)
   (filter
