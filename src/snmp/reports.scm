@@ -27,7 +27,7 @@
     current-session
     current-community
     current-port
-    current-peername
+    current-host
     current-version
     current-context
     new-snmp-session

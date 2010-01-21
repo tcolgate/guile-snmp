@@ -31,7 +31,7 @@
     (lambda ()
       (format #t "~a!~a!~a!~a!~a!~a"
         req
-        (current-peername)
+        (current-host)
         (current-version)
         (current-community)
         (current-context)

@@ -15,13 +15,13 @@
     current-session
     current-community 
     current-port 
-    current-peername
+    current-host
     current-version 
     current-context
     new-snmp-session))
 
 (define current-community (make-parameter "public"))
-(define current-peername (make-parameter "localhost"))
+(define current-host (make-parameter "localhost"))
 (define current-version (make-parameter (SNMP-VERSION-2c)))
 (define current-context (make-parameter #f))
 
@@ -56,8 +56,8 @@
                         `(parameterize ((current-version   (if (eqv? ,version #f)
                                                              (current-version)
                                                              ,version))
-                                        (current-peername  (if (eqv? ,host #f)
-                                                             (current-peername)
+                                        (current-host  (if (eqv? ,host #f)
+                                                             (current-host)
                                                              ,host))
                                         (current-community (if (eqv? ,community #f)
                                                              (current-community)
