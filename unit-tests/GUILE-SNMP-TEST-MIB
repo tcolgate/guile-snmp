@@ -23,6 +23,11 @@ guileSnmpTestMIB MODULE-IDENTITY
 
 gstMibObjects     OBJECT IDENTIFIER ::= { guileSnmpTestMIB 1 }
 
+--
+-- We use this for testing endOfMibView
+--
+gstEndMib         OBJECT IDENTIFIER ::= { guileSnmpTestMIB 2 }
+
 gstTestInt32  OBJECT-TYPE
 	SYNTAX      Integer32 (1..32)
 	MAX-ACCESS  read-write

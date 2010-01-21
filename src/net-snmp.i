@@ -244,6 +244,36 @@ typedef unsigned short u_short;
   gswig_result = scmout;
 }
 
+
+/* Typemap for returning error strings. */
+
+
+%typemap(in,numinputs=0)(int *, int *, char **)(int* pint1, int* pint2, char **pcharp){
+  // allocate a new oid( of maximum length)
+  $1 = (int*)malloc(sizeof(int));
+  $2 = (int*)malloc(sizeof(int));
+  $3 = (char**)malloc(sizeof(char*));
+  pint1 = $1;
+  pint2 = $2;
+  pcharp = $3;
+}
+
+%typemap(argout)(int *, int *, char **){
+  SCM scmout = SCM_UNSPECIFIED;
+
+  if($3){
+    scmout = scm_from_locale_string(*$3);
+  };
+
+  gswig_result = scmout;
+}
+
+%typemap(freearg)(int *, int *, char ** ) {
+  free(pint1$argnum);
+  free(pint2$argnum);
+  free(pcharp$argnum);
+}
+
 %include "net-snmp-config.h"
 
 %extend variable_list {
@@ -313,6 +343,15 @@ SCM variable_list_value_get(struct variable_list *p) {
 //    case ASN_BOOLEAN: 
 //      // Do not think this is a valid pdu type  
 //      break;
+    case SNMP_NOSUCHOBJECT: 
+      result = scm_string_to_symbol(scm_from_locale_string("noSuchObject"));
+      break;
+    case SNMP_NOSUCHINSTANCE: 
+      result = scm_string_to_symbol(scm_from_locale_string("noSuchInstance"));
+      break;
+    case SNMP_ENDOFMIBVIEW: 
+      result = scm_string_to_symbol(scm_from_locale_string("endOfMibView"));
+      break;
     default: 
       // use snprint_value to format the value as a string
       break;

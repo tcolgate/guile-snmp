@@ -229,7 +229,7 @@
                      (if (or
                            (unspecified? status)
                            (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
-                      (throw 'snmperror status)
+                      (throw 'snmperror (snmp-sess-error (current-session)))
                       (let ((results (slot-ref status 'variables)))
                         (split-varbinds results))))))))
        (if (query-cache-enabled)
@@ -259,7 +259,7 @@
         (if (not (eq? sos '()))
           (let ((so (car sos)))
             (if (not (pair? so))
-              (throw 'snmperror "invalid set")
+              (throw 'snmperror "Invalid set")
               (let ((var     (car so))
                     (valspec (cdr so)))
                 (if (pair? valspec)
@@ -278,13 +278,13 @@
                   (let ((type (mib-to-asn-type (get-oid-type var))))
                     ; need to lob an exception if we don't get an type back
                     (if (equal? 255 (char->integer type))
-                      (throw 'snmperror "could not determine type in set")
+                      (throw 'snmperror "Could not determine type in set")
                       (addoids (append (list (cons var (cons type valspec)))
                                        (cdr sos)))))))))))
       (let* ((response (snmp-sess-synch-response (current-session) newpdu))
              (status   (slot-ref response 'errstat)))
         (if (not (equal? status (SNMP-ERR-NOERROR)))
-          (throw 'snmperror "set caused an error")
+          (throw 'snmperror (snmp-sess-error (current-session)))
           #t)))))
 
 (define-syntax set

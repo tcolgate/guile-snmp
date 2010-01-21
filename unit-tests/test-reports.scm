@@ -17,6 +17,31 @@
   (assert-equal "Guile-SNMP test string"
                 (session #:host "127.0.0.1:10161" 
                   ((get (snmp-parse-oid "gstTestString.0"))))))
+
+(define-method (test-get-error-noSuchName (self <test-reports>))
+  (assert-equal 'noSuchObject
+                (session #:host "127.0.0.1:10161" 
+                  ((get (snmp-parse-oid "ifName.1"))))))
+;
+(define-method (test-get-error-noInstance (self <test-reports>))
+  (assert-equal 'noSuchInstance
+                (session #:host "127.0.0.1:10161" 
+                  ((get (+ (snmp-parse-oid "gstTabAData") 100))))))
+;
+(define-method (test-get-error-Timeout (self <test-reports>))
+  (assert-equal #t
+                (session #:host "127.0.0.1:10163" 
+                  (let ((errstring "No error"))
+                    (catch 'snmperror
+                      (lambda()((get (snmp-parse-oid "gstEndMib"))))
+                      (lambda(x . args)(set! errstring  #t)))
+                    errstring)))) 
+;
+(define-method (test-getnext-error-endOfMibView (self <test-reports>))
+  (assert-equal 'endOfMibView
+                (session #:host "127.0.0.1:10161" 
+                  ((getnext (+ (snmp-parse-oid "gstEndMib") 1))))))
+;
 ;
 (define-method (test-get-multiple (self <test-reports>))
   (assert-equal (list "Guile-SNMP test string" 499)
