@@ -12,9 +12,9 @@ mib.h snmp_client.h snmp_api.h:
 net-snmp_wrap.c: $(SWIGSOURCES) $(NETSNMPPATCHES)
 	$(SWIG) $(SWIG_FLAGS) -module net-snmp -o $@ $<
 
-libguile_snmp_net_snmp_la_CFLAGS=-I../lightning -I.
+libguile_snmp_net_snmp_la_CFLAGS=@GUILE_CFLAGS@ -I.
 libguile_snmp_net_snmp_la_SOURCES=net-snmp_wrap.c
-libguile_snmp_net_snmp_la_LDFLAGS=-module -lsnmp -lnetsnmp
+libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module -lsnmp -lnetsnmp
 
 SCHEMESOURCES=snmp/net-snmp.scm\
               snmp/reports.scm\
@@ -39,7 +39,7 @@ SUFFIXES = .scm .go
 
 EXTRA_DIST = snmp $(SWIGSOURCES) net-snmp_wrap.c $(SCHEMESOURCES) $(SCHEMESOURCES2) $(NETSNMPPATCHES)
 
-guilesnmpdir =  @GUIEL_SITE@/snmp
+guilesnmpdir =  @GUILE_SITE@/snmp
 guilesnmp_DATA = $(SCHEMESOURCES) $(GOBJECTS)
 
 guilereportsdir =  @GUILE_SITE@/snmp/reports
