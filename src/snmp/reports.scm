@@ -19,8 +19,8 @@
   #:export-syntax (init-reports set build-one build-set)
   #:export (
     reports:autotranslate <reports-varlist> oid-list walk
-    get getnext nextvar all walk-on-fail walk-func 
-    fail old-fail one-of iid oid type tag value 
+    get getnext get-or-fail nextvar all walk-on-fail walk-func 
+    set set-or-fail fail old-fail one-of iid oid type tag value 
     make-varbind-func tag-varbinds split-varbinds 
     filter-valid-next reach-each)
   #:re-export (
