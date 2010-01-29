@@ -49,9 +49,7 @@
   (let ((rt (hash-ref report-query-cache (cache-key querytype oid))))
     (if (not rt)
       #f
-      (let ((lh (slot-ref (cdr rt) 'oid))
-            (rh (cdr rt)))
-        (acons lh rh '())))))
+      (acons (slot-ref rt 'oid) rt '()))))
 
 (define (query-cache-insert querytype oid answer)
   (hash-set! report-query-cache 
