@@ -86,7 +86,9 @@
                                                              (current-community)
                                                              ,community)))
                            (parameterize ((current-session (new-snmp-session)))
-                             (begin
-                               ,@clean-forms))))))))
+			     (let ((result (begin
+                                            ,@clean-forms)))
+			       (snmp-sess-close (current-session))
+			       result))))))))
           (apply handler args))))
 
