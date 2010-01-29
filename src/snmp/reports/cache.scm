@@ -38,15 +38,15 @@
         oid))))
 
 (define query-cache-enabled (make-parameter #t))
-(define report-query-cache  (list))
+(define report-query-cache  (make-hash-table 1024))
 
 ; Public cache interface
 (define (enable-query-cache) (query-cache-enabled #t))
 (define (disable-query-cache) (query-cache-enabled #f))
-(define (clear-query-cache) (set! report-query-cache '()))
+(define (clear-query-cache) (hash-clear! report-query-cache))
 
 (define (query-cache-lookup querytype oid)
-  (let ((rt (assoc (cache-key querytype oid) report-query-cache string=?)))
+  (let ((rt (hash-ref report-query-cache (cache-key querytype oid))))
     (if (not rt)
       #f
       (let ((lh (slot-ref (cdr rt) 'oid))
@@ -54,10 +54,9 @@
         (acons lh rh '())))))
 
 (define (query-cache-insert querytype oid answer)
-  (set! report-query-cache (acons
-                             (cache-key querytype oid)
-                             (cdr answer)
-                             report-query-cache)))
+  (hash-set! report-query-cache 
+             (cache-key querytype oid)
+             (cdr answer)))
 
 (define (query-cache-statistics)
   (format (current-output-port) ""))
