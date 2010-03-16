@@ -89,24 +89,26 @@
     ("EMBEDDED" . EMBEDDED)
     ("INSTANCE" . INSTANCE)
     ("REAL" . REAL)
-    ("WITH" . WITH)
-    ("{" . lbrace)
+    ("WITH" . WITH)))
+
+(define *asn1-punctuation           
+  '(("{" . lbrace)
     ("}" . rbrace)
     ("(" . lparen)
     (")" . rparen)
     ("[" . lbracket)
     ("]" . rbracket)
-    ("." . dot)
-    (".." . dotdot)
     ("..." . dotdotdot)
+    (".." . dotdot)
+    ("." . dot)
     (";" . semicolon)
     ("," . comma)
     ("<" . <)
     (">" . >)
     ("::=" . ::=)
     ("|" . |)))
+;
 ; Also need to recognize :identifier :string and :number
-
 
 ;; taken from SSAX, sorta
 (define (read-until delims port)
@@ -268,16 +270,13 @@
                  (column . ,(port-column port)))))
     (let ((tok 
            (case c
-             ((#\ht #\vt #\np #\space)
-                                        ; whitespace
+             ((#\ht #\vt #\np #\space) ; whitespace
               (read-char port)
               (next-token port div?))
-             ((#\newline #\cr)
-                                        ; line break
+             ((#\newline #\cr) ; line break
               (read-char port)
               (next-token port div?))
-             ((#\" #\')
-                                        ; string literal
+             ((#\" #\') ; string literal
               `(:string . ,(read-string port)))
              (else
               (cond
@@ -288,7 +287,9 @@
                 (read-identifier port))
                ((char-numeric? c)
                 ;; numeric -- also accept . FIXME, requires lookahead
-                `(:number . ,(read-numeric port))))))))
+                `(:number . ,(read-numeric port)))
+               (else
+                (read-punctuastion port))))))))
       (if (pair? tok)
           (set-source-properties! tok props))
       (display tok)(newline)tok)))
