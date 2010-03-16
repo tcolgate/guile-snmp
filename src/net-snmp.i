@@ -21,6 +21,7 @@ typedef unsigned short u_short;
 #include <net-snmp/library/snmp_api.h>
 #include <net-snmp/library/parse.h>
 #include <net-snmp/library/mib.h>
+#include <net-snmp/library/keytools.h>
 #include <limits.h>
 
 %}
@@ -53,6 +54,7 @@ typedef unsigned short u_short;
 
 %apply(const oid* , size_t ){
   (const oid* objid , size_t objidlen)
+  (const oid * hashtype, u_int hashtype_len)
 }
 
 /* A pair of typemaps  to pass oids for write and return the 
@@ -382,6 +384,7 @@ oid_from_varbind(netsnmp_variable_list* varbind, oid* objid, size_t* objidlen){
 %include "mib.h"
 %include "default_store.h"
 %include "asn1.h"
+%include "keytools.h"
 
 %goops %{ 
 (eval-when (eval load compile)
