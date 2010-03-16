@@ -46,7 +46,7 @@ snmp_shell_module (void* data)
 
   putenv(
    scm_to_locale_string(
-     (scm_c_eval_string("(string-append \"GUILE_HISTORY=\" (getenv \"HOME\") \"/.\" (program-name) \"_history\")"))));
+     scm_c_eval_string("(string-append \"GUILE_HISTORY=\" (getenv \"HOME\") \"/.\" (program-name) \"_history\")")));
 
   scm_c_use_module("ice-9 readline");
   scm_c_eval_string("(activate-readline)");
