@@ -19,6 +19,16 @@
  */
 
 #include <libguile.h>
+#include <getopt.h>
+#include <libgen.h>
+
+int verbose_flag = 0;
+char* opt_defversion = "2c";
+char* opt_defcommunity = "public";
+char* opt_defcontext = "";
+char* opt_defhost = "loclhost";
+char* opt_script = NULL;
+char* opt_eval = NULL;
 
 static void
 snmp_shell_module (void* data)
@@ -36,7 +46,7 @@ snmp_shell_module (void* data)
   scm_c_eval_string("(init-reports)");
 
   scm_c_define("program-name", 
-    scm_c_eval_string("(make-parameter (basename (car (command-line))))"));
+    scm_c_eval_string("(make-parameter  (symbol->string (car (module-name (current-module)))))"));
   scm_c_define("program-version", 
     scm_c_eval_string ("(make-parameter  \"1\")"));
   scm_c_define("program-help", 
@@ -45,11 +55,39 @@ snmp_shell_module (void* data)
     scm_c_eval_string ("(make-parameter #f)"));
 
   putenv(
-   scm_to_locale_string(
-     scm_c_eval_string("(string-append \"GUILE_HISTORY=\" (getenv \"HOME\") \"/.\" (program-name) \"_history\")")));
+    scm_to_locale_string(
+      scm_c_eval_string("(string-append \"GUILE_HISTORY=\" (getenv \"HOME\") \"/.\" (program-name) \"_history\")")));
 
   scm_c_use_module("ice-9 readline");
   scm_c_eval_string("(activate-readline)");
+
+  if(NULL != opt_defcommunity){
+    scm_apply_1(
+      scm_variable_ref(scm_c_lookup("current-community")),
+      scm_from_locale_string(opt_defcommunity),
+      SCM_EOL);
+  };
+
+  if(NULL != opt_defcontext){
+    scm_apply_1(
+      scm_variable_ref(scm_c_lookup("current-context")),
+      scm_from_locale_string(opt_defcontext),
+      SCM_EOL);
+  };
+
+  if(NULL != opt_defhost){
+    scm_apply_1(
+      scm_variable_ref(scm_c_lookup("current-host")),
+      scm_from_locale_string(opt_defhost),
+      SCM_EOL);
+  };
+
+  if(NULL != opt_defversion){
+    scm_apply_1(
+      scm_variable_ref(scm_c_lookup("current-version")),
+      scm_from_locale_string(opt_defversion),
+      SCM_EOL);
+  };
 
   scm_c_eval_string("(set-repl-prompt! (string-append (program-name) \"> \"))");
   scm_c_eval_string("(scm-style-repl)");
@@ -62,13 +100,73 @@ inner_main (void *closure, int argc, char **argv)
   /* module initializations would go here */
  // init_image_type();
   
-  scm_c_define_module(basename(argv[0]), snmp_shell_module, (void*)NULL);
+  if(NULL == opt_script){
+    scm_c_define_module(basename(argv[0]), snmp_shell_module, (void*)NULL);
+  } else {
+    scm_c_define_module(basename(opt_script), snmp_shell_module, (void*)NULL);
+  }
   return;
 }
 
 int
 main (int argc, char **argv)
 {
+  int c;
+  while(1){
+    int option_index = 0;
+    static struct option long_options[] = {
+      {"version"      ,no_argument       ,&verbose_flag ,  1},
+      {"help"         ,no_argument       ,&verbose_flag ,  1},
+      {"snmp-version" ,required_argument ,0             ,'v'},
+      {"host"         ,required_argument ,0             ,'h'},
+      {"community"    ,required_argument ,0             ,'c'},
+      {"context"      ,required_argument ,0             ,'C'},
+      {"eval"         ,required_argument ,0             ,'e'},
+      {"script"       ,required_argument ,0             ,'s'},
+      {0, 0, 0, 0}
+    }; 
+    c = getopt_long (argc,argv,"VHv:h:c:C:e:s:",long_options, &option_index);
+
+    if (c == -1) break;
+    
+    switch(c){
+      case   0:
+        break;
+
+      case 'V':
+      case 'H':
+        verbose_flag = 1;
+        break;
+
+      case 'v':
+        opt_defversion = optarg; 
+        break;
+
+      case 'h':
+        opt_defhost = optarg;
+        break;
+
+      case 'c':
+        opt_defcommunity = optarg;
+        break;
+
+      case 'C':
+        opt_defcontext = optarg;
+        break;
+
+      case 'e':
+        opt_eval = optarg;
+        break;
+
+      case 's':
+        opt_script = optarg;
+        break;
+
+      default: 
+        abort();
+    };
+  };
+
   scm_boot_guile (argc, argv, inner_main, 0);
   return 0; /* never reached */
 }
