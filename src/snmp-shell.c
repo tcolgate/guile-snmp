@@ -26,12 +26,12 @@ int verbose_flag = 0;
 char* opt_defversion = "2c";
 char* opt_defcommunity = "public";
 char* opt_defcontext = "";
-char* opt_defhost = "loclhost";
+char* opt_defhost = "localhost";
 char* opt_script = NULL;
 char* opt_eval = NULL;
 
 static void
-snmp_shell_module (void* data)
+snmp_shell_module (void* arguments)
 {
   scm_c_use_module("ice-9 threads");
   scm_c_use_module("ice-9 getopt-long");
@@ -83,14 +83,42 @@ snmp_shell_module (void* data)
   };
 
   if(NULL != opt_defversion){
+    SCM val;
+    if(!strcmp(opt_defversion, "1")){
+      val = scm_apply_0(scm_variable_ref(scm_c_lookup("SNMP-VERSION-1")), SCM_EOL);
+    } else if (!strcmp(opt_defversion, "2c")){ 
+      val = scm_apply_0(scm_variable_ref(scm_c_lookup("SNMP-VERSION-2c")), SCM_EOL);
+    } else if (!strcmp(opt_defversion, "3")){
+      val = scm_apply_0(scm_variable_ref(scm_c_lookup("SNMP-VERSION-3")), SCM_EOL);
+    } else {
+      val = scm_apply_0(scm_variable_ref(scm_c_lookup("SNMP-VERSION-2c")), SCM_EOL);
+    };
+    
     scm_apply_1(
-      scm_variable_ref(scm_c_lookup("current-version")),
-      scm_from_locale_string(opt_defversion),
-      SCM_EOL);
+      scm_variable_ref(scm_c_lookup("current-version")), val, SCM_EOL);
   };
 
+  scm_c_eval_string("(current-session (new-snmp-session))");
+  
+  scm_apply_1(scm_variable_ref(scm_c_lookup("script-arguments")), (SCM) arguments, SCM_EOL);
+  
   scm_c_eval_string("(set-repl-prompt! (string-append (program-name) \"> \"))");
-  scm_c_eval_string("(scm-style-repl)");
+
+  if(NULL != opt_script){
+    scm_c_primitive_load(opt_script);
+  };
+
+  if(NULL != opt_eval){
+    scm_simple_format(
+      scm_current_output_port(),
+      scm_from_locale_string("~A~%"),
+      scm_list_1(scm_c_eval_string(opt_eval)));
+  };
+
+  if(NULL == opt_script && NULL == opt_eval){
+    scm_c_eval_string("(scm-style-repl)");
+  };
+
   return;
 }
 
@@ -99,18 +127,7 @@ inner_main (void *closure, int argc, char **argv)
 {
   /* module initializations would go here */
  // init_image_type();
-  
-  if(NULL == opt_script){
-    scm_c_define_module(basename(argv[0]), snmp_shell_module, (void*)NULL);
-  } else {
-    scm_c_define_module(basename(opt_script), snmp_shell_module, (void*)NULL);
-  }
-  return;
-}
-
-int
-main (int argc, char **argv)
-{
+  SCM scriptargs = SCM_EOL;
   int c;
   while(1){
     int option_index = 0;
@@ -166,7 +183,28 @@ main (int argc, char **argv)
         abort();
     };
   };
+  
+  if (optind < argc){
+    while (optind < argc){
+      scriptargs = scm_append(
+       scm_list_2(
+         scriptargs,
+         scm_list_1(scm_from_locale_string(argv[optind]))));
+      optind++;
+    };
+  };
 
+  if(NULL == opt_script){
+    scm_c_define_module(basename(argv[0]), snmp_shell_module, (void*)scriptargs);
+  } else {
+    scm_c_define_module(basename(opt_script), snmp_shell_module, (void*)scriptargs);
+  }
+  return;
+}
+
+int
+main (int argc, char **argv)
+{
   scm_boot_guile (argc, argv, inner_main, 0);
   return 0; /* never reached */
 }
