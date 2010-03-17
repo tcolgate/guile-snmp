@@ -14,6 +14,7 @@
     %
     mac-as-oid
     ipstr-to-str
+    str-to-ipstr
     get-oid-type
   ))
 
@@ -91,4 +92,9 @@
       hexipaddr)
     (string-join iplist ".")))
 
+(define (str-to-ipstr stripaddr)
+  (list->string 
+    (map integer->char 
+         (map string->number 
+              (string-split stripaddr #\.)))))
 

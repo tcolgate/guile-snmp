@@ -17,9 +17,11 @@
   #:use-module (snmp reports session)
   #:use-module (snmp reports cache)
   #:export-syntax (init-reports set build-one build-set)
+;  #:re-export-syntax (session default-session)
   #:export (
     reports:autotranslate <reports-varlist> oid-list walk
     get getnext get-or-fail nextvar all walk-on-fail walk-func 
+    set set-or-fail
     fail old-fail one-of iid oid type tag value 
     make-varbind-func tag-varbinds split-varbinds 
     filter-valid-next reach-each)
@@ -284,7 +286,7 @@
       (let* ((response (snmp-sess-synch-response (current-session) newpdu))
              (status   (slot-ref response 'errstat)))
         (if (not (equal? status (SNMP-ERR-NOERROR)))
-          (throw 'snmperror (snmp-sess-error (current-session)))
+          (throw 'snmperror "error during set")
           #t)))))
 
 (define-syntax set
@@ -341,7 +343,7 @@
 
 ; This is used to track our failures
 (define fail
-  (lambda () (lambda() #f)))
+  (lambda () (lambda(args) (throw 'noMoreAlternative "No more alternative paths"))))
 
 ;; The is a walk that uses  built in backtracking. Any call to (fail) will result
 ;; in the next walk item being returned.
