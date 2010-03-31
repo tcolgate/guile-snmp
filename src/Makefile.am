@@ -6,10 +6,10 @@ NETSNMPPATCHES=mib.h-patch snmp_client.h-patch snmp_api.h-patch
 
 SWIG_FLAGS = -D__i386__ -guile -Linkage module -package snmp -scm -proxy -emit-setters -I/usr/include/net-snmp/library -I/usr/include/net-snmp
 
-mib.h snmp_client.h snmp_api.h: 
+mib.h snmp_client.h snmp_api.h: mib.h-patch snmp_client.h-patch snmp_api.h-patch
 	cp /usr/include/net-snmp/library/$@ . && cat $@-patch |  patch -p0
 
-net-snmp_wrap.c: $(SWIGSOURCES) $(NETSNMPPATCHES)
+net-snmp_wrap.c: $(SWIGSOURCES) $(NETSNMPPATCHES) mib.h snmp_client.h snmp_api.h
 	$(SWIG) $(SWIG_FLAGS) -module net-snmp -o $@ $<
 
 libguile_snmp_net_snmp_la_CFLAGS=@GUILE_CFLAGS@ -I.
