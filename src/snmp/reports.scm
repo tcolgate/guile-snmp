@@ -67,7 +67,7 @@
               (snmpdupli (lambda(module name int1 val1 int2 val2 var val)
                                                          (if (equal? oidmodule
                                                                      int1)
-                                                           (module-local-variable int2 name)
+                                                           (module-variable int2 name)
                                                            #f)))
               (dh (module-duplicates-handlers (current-module))))
           (module-define! duplicate-handlers 'snmpdupli snmpdupli) 
