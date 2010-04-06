@@ -40,7 +40,6 @@ snmp_shell_module (void* arguments)
 
   scm_c_use_module("ice-9 session");
   scm_c_use_module("ice-9 history");
-  scm_c_use_module("ice-9 readline");
 
   scm_c_define("program-name", 
     scm_c_eval_string("(make-parameter  (symbol->string (car (module-name (current-module)))))"));
@@ -54,6 +53,7 @@ snmp_shell_module (void* arguments)
     scm_to_locale_string(
       scm_c_eval_string("(string-append \"GUILE_HISTORY=\" (getenv \"HOME\") \"/.\" (program-name) \"_history\")")));
 
+  scm_c_use_module("ice-9 readline");
   scm_c_eval_string("(activate-readline)");
 
   scm_c_use_module("snmp reports");
