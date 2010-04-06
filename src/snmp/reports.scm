@@ -343,7 +343,7 @@
 
 ; This is used to track our failures
 (define fail
-  (lambda () (lambda( . args) (throw 'noMoreAlternative "No more alternative paths"))))
+  (lambda () (lambda( . args) (throw 'noMoreAlternatives "No more alternative paths"))))
 
 ;; The is a walk that uses  built in backtracking. Any call to (fail) will result
 ;; in the next walk item being returned.

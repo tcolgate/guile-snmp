@@ -73,11 +73,11 @@
                 (session #:host "127.0.0.1:10161" 
                   (let* ((result (list))
                          (val    (walk-on-fail (snmp-parse-oid "gstTabAData"))))
-                    (if (not (equal? (val) #f))
-                      (begin
-                        (set! result (append result (list (val))))
-                        (fail))
-                      result)))))
+                     (catch 'noMoreAlternatives
+                       (lambda()
+                         (set! result (append result (list (val))))
+                         (fail))
+                       (lambda(ex . args) result))))))
 
 (define-method (test-set (self <test-reports>))
   (assert-equal #t
