@@ -19,6 +19,7 @@
   #:export-syntax (init-reports set build-one build-set)
 ;  #:re-export-syntax (session default-session)
   #:export (
+    use-mibs
     reports:autotranslate <reports-varlist> oid-list walk
     get getnext get-or-fail nextvar all walk-on-fail walk-func 
     set set-or-fail
@@ -48,6 +49,15 @@
            (module-use! (module-public-interface (current-module))
                         (resolve-interface ',(car args)))
            (re-export-modules ,@(cdr args))))))
+
+(define-syntax use-mibs
+  (syntax-rules ()
+    ((_ names ...)
+     (eval-when (eval load compile)
+       (for-each 
+          (lambda(mib)
+            (read-module (symbol->string mib)))
+          '(names  ...))))))
 
 (define reports:autotranslate #t)
 (define-syntax init-reports
@@ -429,5 +439,6 @@
 ; Set up the reports environement
 ;
 (set! reports:autotranslate #t)
-(init-mib)
+(eval-when (eval load compile)
+  (init-mib))
 
