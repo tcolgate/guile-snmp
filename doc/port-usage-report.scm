@@ -1,5 +1,10 @@
-; this is a monolithic version of the switch report using threading and
-; other funky feature of the updated guile-snmp
+;;-------------------------------------------------------------------
+;; Copyright (C) 2009,2010 Tristan Colgate 
+;;
+;; port-usage-reprot: this is a monolithic version of the switch 
+;; report using threading and other features of the guile-snmp
+;;
+;;-------------------------------------------------------------------
 
 (set! %load-path (cons "/usr/local/bin" %load-path))
 (use-modules (ice-9 threads))
@@ -25,13 +30,13 @@
 
 ; This is used to convert a switch name into the list of possible l3
 ; routers, we have 12 so querying them all was out of the question
-;                                       "nhs-Pd   1   e-NSC   1   02"
-(define site-and-region-re (make-regexp "...-..([0-2]).-...([0-6]).."))
+;                                       "xxx-d   1   -rt   1   02"
+(define site-and-region-re (make-regexp "...-.([0-2])-..([0-6]).."))
 (define (possible-rtrs hostname)
   (let ((match (regexp-exec site-and-region-re hostname)))
     (list 
-      (regexp-substitute #f match "nhs-pd" 1 "e-nsc" 2 "00")
-      (regexp-substitute #f match "nhs-pd" 1 "e-nsc" 2 "01"))))
+      (regexp-substitute #f match "xxx-d" 1 "-rt" 2 "00")
+      (regexp-substitute #f match "xxx-d" 1 "-rt" 2 "01"))))
 
 (define (find-ip-from-mac comm mac)
   "This routine determines the ip for a given mac, if possible"

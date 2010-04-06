@@ -1,10 +1,9 @@
 #!/usr/bin/guile -s
 !#
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009 Tristan Colgate 
+;; Copyright (C) 2009,2010 Tristan Colgate 
 ;;
-;; goal.scm - This is intended to be a complex example of the ideal
-;; grammar intended for reporting.
+;; find-host-on-port: a more complicated example script 
 ;;
 ;;-------------------------------------------------------------------
 
@@ -22,7 +21,7 @@
 
 ;;; Commentary:
 ;;
-;;  Useage: find-host-on-port [OPTIONS] switch port
+;;  Usage: find-host-on-port [OPTIONS] switch port
 ;;    This command finds the IP associated with the hosts
 ;;  attached to a given switch and port. The port should
 ;;  be in the Cisco short port anme format (e.g. Gi1/1)

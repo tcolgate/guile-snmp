@@ -1,15 +1,11 @@
 #!/usr/local/bin/snmp-shell -s
 !#
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009 Tristan Colgate 
+;; Copyright (C) 2009,2010 Tristan Colgate 
 ;;
-;; goal.scm - This is intended to be a complex example of the ideal
-;; grammar intended for reporting.
+;; find-host -  an example of using snmp-shell
 ;;
 ;;-------------------------------------------------------------------
-
-;This is done purely to help us find our own module for purposes of (help)
-(set! %load-path (cons "/usr/local/bin" %load-path))
 
 ;;; Commentary:
 ;;
@@ -19,6 +15,10 @@
 ;;  the query.
 ;;
 ;;; Code:
+
+; You can set the MIBS used in your MIBS environment variable as per usual,
+; or explicity specify additional MIBs in here...
+(use-mibs ...)
 
 ; This is a list of all the layer3 routers to query
 (define l3list (list 
@@ -34,24 +34,24 @@
              (ip (% 2 5 (iid arp)))
              (mac (arp)))
         (if (not (equal? hostipoid ip))
-          ((fail))
+          (fail)
           (let* ((vlan (walk-on-fail vtpVlanState))
                  (vlanid (% 2 (iid vlan)))
                  (vlancomm (string-append (currnet-community) (string-append "@" (number->string vlanid)))))
             (session #:community vlancomm
               (let* ((mapint      (get (+ dot1dTpFdbPor (mac-as-oid mac))))
                      (validmapint (if (eq? (mapint) 'noSuchObject)
-                                    ((fail))
+                                    (fail)
                                     (mapint)))
                      (intif       (get (+ dot1dBasePortIfIndex validmapint)))
                      (intifDescr  (value (get (+ ifDescr (intif)))))
                      (poports     (walk-on-fail pagpGroupIfIndex)))
                  (if (not (equal? (poports) (intif)))
-                   ((fail))
+                   (fail)
                    (let* ((neighbour (walk-on-fail (+ cdpCacheAddress (iid poports))))
                           (neighbourstr (ipstr-to-str (neighbour))))
                      (if (find-if (lambda(item)(equal? item neighbourstr)) l3list)
-                       ((fail)) ; The neighbour is in the l3 list so we will check it anyway
+                       (fail) ; The neighbour is in the l3 list so we will check it anyway
                        (session #:host neighbourstr 
                          (let* ((peername (get sysName.0))
                                 (fdbport  (get (+ dot1dTpFdbPort (mac-as-oid mac))))
@@ -60,6 +60,7 @@
                                 (podesc   (get (+ ifAlias (fdbif)))))
                            (format #t "Host: ~a  ~% Via Router: ~A ~% VLAN: ~A ~% Neighbour: ~A ~% Name: ~A ~% Port: ~A ~% Desc: ~A ~%"  name router vlanid  neighbourstr (peername)(port)(podesc)))))))))))))))
 
+;main
 (find-host (car (script-arguments)))
 
 ; vim: ft=scheme:lisp:autoindent
