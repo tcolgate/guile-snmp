@@ -2,113 +2,115 @@
   #:use-module (oop goops)
   #:use-module (srfi srfi-11)
   #:export 
-    (ip new-ip
-     network new-network prefix prefix-len mask
+    (<ipv4-address> ip 
+     <ipv4-network> network prefix prefix-len mask
      prefixlen->intmask
      ip-in-network?
-     route new-route net gw
+     <ipv4-route> route net gw
+     <ipv4-table>
      add-ipv4-route
+     add-ipv4-route!
      remove-ipv4-route
+     remove-ipv4-route!
      find-ipv4-route
-     new-ipv4-table value value-length
+     value value-length
+     trie-node
+     trie-root
      trie-node->dot))
 
 ; A class to represent an ip address
-(define-class <ipv4-address> ()
-  (ip #:accessor ip #:init-value 0))
-
-(define-method (ip (this <ipv4-address>) (ip-int <integer>))
-  (slot-set! this 'ip ip-int))
-
 (define (ipv4str->ipv4int ipstr)
   (if (string? ipstr)
     (car (vector-ref (gethostbyname ipstr) 4 ))
     (error "ipstr expects a string")))
 
-(define-method (ip (this <ipv4-address>) (ip-str <string>))
-  (ip this (ipv4str->ipv4int ip-str)))
+(define-class <ipv4-address> ()
+  (int-ip #:accessor int-ip 
+          #:init-value 0
+          #:init-keyword #:int-ip)
+  (ip #:init-keyword #:ip
+      #:allocation #:virtual
+      #:slot-ref (lambda(this)(int-ip this))
+      #:slot-set! (lambda(this val)(set! (int-ip this) val))
+      #:accessor ip ))
 
-(define-method (ip (this <ipv4-address>) default)
-  (error "Can't convert to ip"))
+(define-method ((setter int-ip) (this <ipv4-address>) (ip-string <string>))
+  (slot-set! this 'int-ip (ipv4str->ipv4int ip-string)))
 
-(define-generic new-ip)
-(define-method (new-ip)
-  (let* ((new-ip (make <ipv4-address>)))
-    (ip new-ip 0)
-    new-ip))
+(define-method ((setter int-ip) (this <ipv4-address>) (ip-integer <integer>))
+  (slot-set! this 'int-ip  ip-integer))
 
-(define-method (new-ip ip-address)
-  (let* ((new-ip (make <ipv4-address>)))
-    (ip new-ip ip-address)
-    new-ip))
+(define-method ((setter int-ip) (this <ipv4-address>) default)
+  (format (current-error-port) "Cannot convert to IP: ~a~%" default)
+  (throw 'error))
 
 (define-method (display (this <ipv4-address>) port)
-  (display (inet-ntoa (ip this))))
+  (display (inet-ntoa (int-ip this))))
+
 (define-method (write (this <ipv4-address>) port)
-  (format port "#:ip(~s)" (inet-ntoa (ip this))))
-  
+  (format port "#:ip(~s)" (inet-ntoa (int-ip this))))
+
 ; Class for representing a network
-(define-generic network)
-(define-generic mask)
 (define-class <ipv4-network> ()
-  (network #:allocation #:virtual #:slot-set! network #:slot-ref network)
-  (mask #:allocation #:virtual #:slot-set! mask #:slot-ref mask)
-  (prefix #:accessor prefix #:init-value (new-ip 0))
-  (prefix-len  #:accessor prefix-len #:init-value 0))
+  (prefix #:accessor prefix 
+          #:init-value (make <ipv4-address> )
+          #:init-keyword #:prefix)
+  (prefix-len  #:accessor prefix-len 
+               #:init-value 0
+               #:init-keyword #:prefix-len)
+  (network #:allocation #:virtual 
+           #:accessor network
+           #:slot-ref (lambda(this)(prefix this))
+           #:slot-set! (lambda(this val)(set! (network this) val))
+           #:init-keyword #:network)
+  (mask #:allocation #:virtual 
+        #:accessor mask
+        #:slot-ref (lambda(this)(inet-ntoa (prefixlen->intmask (prefix-len this))))
+        #:slot-set! (lambda(this val)(set! (mask this) val))
+        #:init-keyword #:mask))
 
 ; setters
-(define-method (prefix (this <ipv4-network>) (value <ipv4-address>))
+(define-method ((setter prefix) (this <ipv4-network>) (value <ipv4-address>))
   (slot-set! this 'prefix value))
-(define-method (prefix (this <ipv4-network>) value)
-  (slot-set! this 'prefix (new-ip value)))
+(define-method ((setter prefix) (this <ipv4-network>) value)
+  (slot-set! this 'prefix (make <ipv4-address> #:ip value)))
 
-(define-method (prefix-len (this <ipv4-network>) (value <integer>))
+(define-method ((setter prefix-len) (this <ipv4-network>) (value <integer>))
   (slot-set! this 'prefix-len value))
 
-(define-method (mask (this <ipv4-network>) (value <integer>))
+(define-method ((setter mask) (this <ipv4-network>) (value <string>))
+  (set! (mask this) (inet-aton value)))
+
+(define-method ((setter mask) (this <ipv4-network>) (value <integer>))
   (let* ((intlen  (integer-length value))
          (len (- 32  (integer-length (logxor value (- (integer-expt 2 32) 1))))))
     (if (and (or (eq? intlen 0) (eq? intlen 32))
              (eq? len (logcount value)))
-     (prefix-len this len)
+     (set! (prefix-len this) len)
      (error "invalid (or discontiguous) netmask"))))
-(define-method (mask (this <ipv4-network>) (value <string>))
-  (mask this (inet-aton value)))
 
 (define (prefixlen->intmask preflen)
   (ash (- (integer-expt 2 preflen) 1) (- 32 preflen )))
  
-(define-method (mask (this <ipv4-network>))
-    (inet-ntoa ((prefixlen->intmask (prefix-len this)))))
-
-(define-method (network (this <ipv4-network>) (networkspec <string>))
+(define-method ((setter network) (this <ipv4-network>) (networkspec <string>))
   (if (string-index networkspec #\/)
     (let ((spec (string-split networkspec #\/)))
-      (network this (new-ip (car spec)) (string->number (cadr spec))))
+      (set! (network this) (list (make <ipv4-address> #:ip (car spec)) (string->number (cadr spec)))))
     (if (string-index networkspec #\ )
       (let ((spec (string-split networkspec #\ )))
-        (network this (new-ip (car spec)) (cadr spec)))
+        (set! (network this) (list (make <ipv4-address> #:ip (car spec)) (cadr spec))))
       (error "Bad network specification"))))
 
-(define-method (network (this <ipv4-network>) net (maskspec <string>))
-  (prefix this net)
-  (mask this maskspec))
-(define-method (network (this <ipv4-network>) net (preflen <integer>))
-  (prefix this net)
-  (prefix-len this preflen))
-
-;constructors
-(define-generic new-network)
-(define-method (new-network)
-  (make <ipv4-network>))
-(define-method (new-network netspec)
-  (let ((new-net (make <ipv4-network>)))
-    (network new-net netspec)
-    new-net))
-(define-method (new-network netspec maskspec)
-  (let ((new-net (make <ipv4-network>)))
-    (network new-net netspec maskspec)
-    new-net))
+(define-method ((setter network) (this <ipv4-network>) (networkspec <pair>))
+  (let ((net (car networkspec))
+        (maskspec (cadr networkspec)))
+    (set! (prefix this) net)
+    (cond 
+       ((equal? (class-of maskspec) <string>)
+        (set! (mask this) maskspec))
+       ((equal? (class-of maskspec) <integer>)
+        (set! (prefix-len this) maskspec))
+       (else (throw 'error)))))
 
 (define-method (display (this <ipv4-network>) port)
   (format port "~a/~a" (prefix this) (prefix-len this)))
@@ -121,32 +123,29 @@
 
 ; Class for representing a route
 (define-class <ipv4-route> ()
-  (net #:accessor net #:init-val (new-network "0.0.0.0/0"))
-  (gw #:accessor gw #:init-val (new-ip "0.0.0.0")))
+  (_net #:init-value (make <ipv4-network> ))
+  (_gw #:init-value (make <ipv4-network> ))
+  (net #:allocation #:virtual
+       #:accessor net 
+       #:slot-ref (lambda(this)(slot-ref this '_net))
+       #:slot-set! (lambda(this val)(set! (net this) val))
+       #:init-keyword #:net)
+  (gw #:allocation #:virtual
+      #:accessor gw 
+      #:slot-ref (lambda(this)(slot-ref this '_gw))
+      #:slot-set! (lambda(this val)(set! (gw this) val))
+      #:init-keyword #:gw))
 
 ; setters
-(define-method (net (this <ipv4-route>) (val <ipv4-network>))
-  (slot-set! this 'net val))
-(define-method (net (this <ipv4-route>) val)
-  (slot-set! this 'net (new-network val)))
-(define-method (gw (this <ipv4-route>) (val <ipv4-address>))
-  (slot-set! this 'gw val))
-(define-method (gw (this <ipv4-route>) val)
-  (slot-set! this 'gw (new-ip val)))
+(define-method ((setter net) (this <ipv4-route>) (val <ipv4-network>))
+  (slot-set! this '_net val))
+(define-method ((setter net) (this <ipv4-route>) val)
+  (slot-set! this '_net (make <ipv4-network> #:network val)))
 
-(define-generic new-route)
-(define-method (new-route)
-  (make <ipv4-route>))
-(define-method (new-route netspec gateway)
-  (let ((newroute (make <ipv4-route>)))
-    (slot-set! newroute 'net (new-network netspec))
-    (slot-set! newroute 'gw (new-ip gateway))
-    newroute))
-(define-method (new-route netspec mask gateway)
-  (let ((newroute (make <ipv4-route>)))
-    (slot-set! newroute 'net (new-network netspec mask))
-    (slot-set! newroute 'gw (new-ip gateway))
-    newroute))
+(define-method ((setter gw) (this <ipv4-route>) (val <ipv4-address>))
+  (slot-set! this '_gw val))
+(define-method ((setter gw) (this <ipv4-route>) val)
+  (slot-set! this '_gw (make <ipv4-address> #:ip val)))
 
 (define-method (display (this <ipv4-route>) port)
   (format port "~a via ~a" (net this) (gw this)))
@@ -157,27 +156,38 @@
 ;
 (define-generic value-binstr)
 (define-class <trie-node> ()
-  (value         #:accessor value         #:init-value  0)
-  (value-binstr  #:allocation #:virtual   #:slot-ref value-binstr #:slot-set! value-binstr)
-  (value-length  #:accessor value-length  #:init-value  0)
-  (left          #:accessor left          #:init-value #f)
-  (right         #:accessor right         #:init-value #f)
-  (userdata      #:accessor userdata      #:init-value #f))
+  (value         #:accessor value         
+                 #:init-value  0 
+                 #:init-keyword #:val)
+  (value-binstr  #:allocation #:virtual   
+                 #:slot-ref value-binstr 
+                 #:slot-set! value-binstr
+                 #:init-keyword #:valbin)
+  (value-length  #:accessor value-length  
+                 #:init-value 0 
+                 #:init-keyword #:len)
+  (left          #:accessor left          
+                 #:init-value nullnode 
+                 #:init-keyword #:l)
+  (right         #:accessor right         
+                 #:init-value nullnode
+                 #:init-keyword #:r)
+  (userdata      #:accessor userdata      
+                 #:init-value #f 
+                 #:init-keyword #:udata))
 (define nullnode (make <trie-node>))
-(define rootnode (make <trie-node>))
-(set! (left rootnode) nullnode)
-(set! (right rootnode) nullnode)
+(define rootnode (make <trie-node> #:l nullnode #:r nullnode))
 
 ; setters
-(define-method (value (this <trie-node>) (val <integer>))
+(define-method ((setter value) (this <trie-node>) (val <integer>))
   (slot-set! this 'value val))
-(define-method (value-length (this <trie-node>) (len <integer>))
+(define-method ((setter value-length) (this <trie-node>) (len <integer>))
   (slot-set! this 'value-length len))
-(define-method (left (this <trie-node>) (l <trie-node>))
+(define-method ((setter left) (this <trie-node>) (l <trie-node>))
   (slot-set! this 'left l))
-(define-method (right (this <trie-node>) (r <trie-node>))
+(define-method ((setter right) (this <trie-node>) (r <trie-node>))
   (slot-set! this 'right r))
-(define-method (userdata (this <trie-node>) ud)
+(define-method ((setter userdata) (this <trie-node>) ud)
   (slot-set! this 'userdata ud))
 
 ; virtual getters
@@ -190,21 +200,6 @@
             (string-append (number->string (value-length this))))
           ",'0b")
         (value this)))))
-
-; Constructor
-(define-generic new-trie-node)
-(define-method (new-trie-node (val <integer>) 
-                              (len <integer>) 
-                              (l <trie-node>) 
-                              (r <trie-node>) 
-                              udata)
-  (let ((newnode (make <trie-node>)))
-    (value newnode val)
-    (value-length newnode len)
-    (left newnode l)
-    (right newnode r)
-    (userdata newnode udata)
-    newnode))
 
 (define (shared-prefix v1 l1 v2 l2)
   "Takes two binary string (number and length) and returns, using multiple values
@@ -229,7 +224,7 @@
                               udata)
   (if (eq? root nullnode)
     ; We are being asked to add a new leaf
-    (new-trie-node val len nullnode nullnode udata)
+    (make <trie-node> #:val  val #:len len #:l nullnode #:r nullnode #:udata udata)
     ; Trying to add to an existing node
     (let-values (((common-pref common-len) (shared-prefix (value root)(value-length root)
                                             val len)))
@@ -239,11 +234,11 @@
            ; We are an exact match for this node, just return
            root
            ; Userdata is different
-           (new-trie-node (value root)
-                          (value-length root)
-                          (left root)
-                          (right root)
-                          udata))
+           (make <trie-node> #:val (value root) 
+                             #:len (value-length root) 
+                             #:l (left root) 
+                             #:r (right root)
+                             #:udata udata))
         (if (= common-len (value-length root))
           ; We are adding to a sub tree
           (if (not (logbit? (- (- len common-len) 1) val))
@@ -253,43 +248,53 @@
                    (nextnode (add-trie-node (left root) nextval nextlen udata)))
               (if (eq? nextnode (left root))
                   root
-                  (new-trie-node (value root)
-                                 (value-length root)
-                                 nextnode
-                                 (right root)
-                                 (userdata root))))
+                  (make <trie-node> #:val (value root) 
+                                    #:len (value-length root) 
+                                    #:l nextnode 
+                                    #:r (right root)
+                                    #:udata (userdata root))))
             ;add to right for a one 
             (let* ((nextval (logand val (- (integer-expt 2 (- len common-len )) 1)))
                    (nextlen (- len common-len))
                    (nextnode (add-trie-node (right root) nextval nextlen udata)))
               (if (eq? nextnode (right root))
                   root
-                  (new-trie-node (value root)
-                                 (value-length root)
-                                 (left root)
-                                 nextnode
-                                 (userdata root)))))
+                  (make <trie-node> #:val (value root) 
+                                    #:len (value-length root) 
+                                    #:l (left root) 
+                                    #:r nextnode
+                                    #:udata (userdata root)))))
           ;(< common-len (value-length root))
           ; We need to split our current node)
-          (let* ((common-remains (new-trie-node
+          (let* ((common-remains (make <trie-node> 
+                                    #:val
                                     (logand (value root) 
                                             (- (integer-expt 2 
                                                              (- (value-length root) 
                                                                 common-len)) 
                                                1))
+                                    #:len
                                     (- (value-length root) common-len)
+                                    #:l
                                     (left root)
+                                    #:r
                                     (right root)
+                                    #:udata
                                     (userdata root)))
-                 (common-newdata (new-trie-node
+                 (common-newdata (make <trie-node>
+                                    #:val
                                     (logand val
                                             (- (integer-expt 2 
                                                              (- len 
                                                                 common-len)) 
                                                1))
+                                    #:len
                                     (- len common-len)
+                                    #:l
                                     nullnode
+                                    #:r
                                     nullnode
+                                    #:udata
                                     udata))
                  (nextleft       (if (not (logbit? (+ (value-length common-remains) 1)
                                                    (value common-remains)))
@@ -298,8 +303,7 @@
                  (nextright      (if (eq? nextleft common-remains)
                                     common-newdata
                                     common-remains)))
-            (new-trie-node common-pref common-len nextleft nextright #f))
-          )))))
+            (make <trie-node> #:val common-pref #:len common-len #:l nextleft #:r nextright #:udata #f)))))))
 
 (define-generic delete-trie-node)
 (define-method (delete-trie-node (rootnode <trie-node>) (prefix <integer>)))
@@ -398,28 +402,45 @@
   (format port "}~%"))
 
 ; Wrapper around compressed radix code to support ipv4 routing table.
-(define new-ipv4-table (lambda () rootnode))
+(define-class <ipv4-table> ()
+  (trie-root #:init-value rootnode 
+             #:accessor trie-root))
 `
 (define-generic add-ipv4-route)
-(define-method (add-ipv4-route (table <trie-node>)(route <ipv4-route>))
-  (let* ((addr    (net route))
+(define-method (add-ipv4-route (table <ipv4-table>)(route <ipv4-route>))
+  (let* ((newtable    (make <ipv4-table>))
+         (addr    (net route))
          (pref    (ip (prefix addr)))
          (preflen (prefix-len addr)))
-    (add-trie-node table (ash pref (- preflen 32)) preflen (ip(gw route)))))
+    (set! (trie-root newtable) (add-trie-node (trie-root table) (ash pref (- preflen 32)) preflen (ip(gw route))))
+    newtable))
+
+(define-generic add-ipv4-route!)
+(define-method (add-ipv4-route! (table <ipv4-table>)(route <ipv4-route>))
+  (let*((addr    (net route))
+        (pref    (ip (prefix addr)))
+        (preflen (prefix-len addr))) 
+    (set! (trie-root table) (add-trie-node (trie-root table) (ash pref (- preflen 32)) preflen (ip(gw route))))))
 
 (define-generic remove-ipv4-route)
-(define-method (remove-ipv4-route (table <trie-node>)(route <ipv4-route>))
-  (remove-trie-node table (net route) (ip (gw route))))
+(define-method (remove-ipv4-route (table <ipv4-table>)(route <ipv4-route>))
+  (let ((newtable    (make <ipv4-table>)))
+    (set! (trie-root newtable) (remove-trie-node (trie-root table) (net route) (ip (gw route))))
+    newtable))
+
+(define-generic remove-ipv4-route!)
+(define-method (remove-ipv4-route! (table <ipv4-table>)(route <ipv4-route>))
+  (set! (trie-root table) (remove-trie-node (trie-root table) (net route) (ip (gw route)))))
 
 (define-generic find-ipv4-route)
-(define-method (find-ipv4-route (table <trie-node>)(route <ipv4-address>))
+(define-method (find-ipv4-route (table <ipv4-table>)(route <ipv4-address>))
   (let-values (((foundpref foundlen foundnode) 
                                   (longest-prefix-match
-                                     table
+                                     (trie-root table)
                                      (ip route)
                                      32)))
-    (let ((foundnet (new-network))
-          (foundroute (new-route)))
+    (let ((foundnet (make <ipv4-network>))
+          (foundroute (make <ipv4-route>)))
       (prefix foundnet (ash foundpref (- 32 foundlen)))
       (prefix-len foundnet foundlen)
       (net foundroute foundnet)
