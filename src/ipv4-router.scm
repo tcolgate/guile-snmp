@@ -155,6 +155,7 @@
 ; Class for implementing a compressed radix tree
 ;
 (define-generic value-binstr)
+(define nullnode)
 (define-class <trie-node> ()
   (value         #:accessor value         
                  #:init-value  0 
@@ -175,7 +176,7 @@
   (userdata      #:accessor userdata      
                  #:init-value #f 
                  #:init-keyword #:udata))
-(define nullnode (make <trie-node>))
+(set! nullnode (make <trie-node>))
 (define rootnode (make <trie-node> #:l nullnode #:r nullnode))
 
 ; setters
