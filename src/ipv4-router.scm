@@ -3,20 +3,25 @@
   #:use-module (srfi srfi-11)
   #:export 
     (<ipv4-address> ip 
-     <ipv4-network> network prefix prefix-len mask
+     <ipv4-network> network prefix prefix-length mask
      prefixlen->intmask
      ip-in-network?
-     <ipv4-route> route net gw
+     <ipv4-route> route net gw misc
      <ipv4-table>
      add-ipv4-route
      add-ipv4-route!
      remove-ipv4-route
      remove-ipv4-route!
      find-ipv4-route
-     value value-length
-     trie-node
      trie-root
-     trie-node->dot))
+     <trie-node>
+     value value-length
+     add-trie-node
+     trie-node->dot
+     rootnode
+     nullnode
+     object-equal?
+     ))
 
 ; A class to represent an ip address
 (define (ipv4str->ipv4int ipstr)
@@ -44,6 +49,9 @@
   (format (current-error-port) "Cannot convert to IP: ~a~%" default)
   (throw 'error))
 
+(define-method (object-equal? (a <ipv4-address>) (b <ipv4-address>))
+  (equal? (int-ip a) (int-ip b)))
+
 (define-method (display (this <ipv4-address>) port)
   (display (inet-ntoa (int-ip this))))
 
@@ -53,9 +61,9 @@
 ; Class for representing a network
 (define-class <ipv4-network> ()
   (prefix #:accessor prefix 
-          #:init-value (make <ipv4-address> )
+          #:init-value (make <ipv4-address>)
           #:init-keyword #:prefix)
-  (prefix-len  #:accessor prefix-len 
+  (prefix-length  #:accessor prefix-length 
                #:init-value 0
                #:init-keyword #:prefix-len)
   (network #:allocation #:virtual 
@@ -65,7 +73,7 @@
            #:init-keyword #:network)
   (mask #:allocation #:virtual 
         #:accessor mask
-        #:slot-ref (lambda(this)(inet-ntoa (prefixlen->intmask (prefix-len this))))
+        #:slot-ref (lambda(this)(inet-ntoa (prefixlen->intmask (prefix-length this))))
         #:slot-set! (lambda(this val)(set! (mask this) val))
         #:init-keyword #:mask))
 
@@ -76,7 +84,7 @@
   (slot-set! this 'prefix (make <ipv4-address> #:ip value)))
 
 (define-method ((setter prefix-len) (this <ipv4-network>) (value <integer>))
-  (slot-set! this 'prefix-len value))
+  (slot-set! this 'prefix-length value))
 
 (define-method ((setter mask) (this <ipv4-network>) (value <string>))
   (set! (mask this) (inet-aton value)))
@@ -86,7 +94,7 @@
          (len (- 32  (integer-length (logxor value (- (integer-expt 2 32) 1))))))
     (if (and (or (eq? intlen 0) (eq? intlen 32))
              (eq? len (logcount value)))
-     (set! (prefix-len this) len)
+     (set! (prefix-length this) len)
      (error "invalid (or discontiguous) netmask"))))
 
 (define (prefixlen->intmask preflen)
@@ -109,32 +117,40 @@
        ((equal? (class-of maskspec) <string>)
         (set! (mask this) maskspec))
        ((equal? (class-of maskspec) <integer>)
-        (set! (prefix-len this) maskspec))
+        (set! (prefix-length this) maskspec))
        (else (throw 'error)))))
 
+(define-method (object-equal? (a <ipv4-network>) (b <ipv4-network>))
+  (and
+    (object-equal? (prefix a) (prefix b))
+    (equal? (prefix-length a) (prefix-length b))))
+
 (define-method (display (this <ipv4-network>) port)
-  (format port "~a/~a" (prefix this) (prefix-len this)))
+  (format port "~a/~a" (prefix this) (prefix-length this)))
 (define-method (write (this <ipv4-network>) port)
-  (format port "#:net(~s/~s)" (prefix this) (prefix-len this)))
+  (format port "#:net(~s/~s)" (prefix this) (prefix-length this)))
 
 (define (ip-in-network? testip testnet)
-  (eqv? (logand (ip testip) (prefixlen->intmask (prefix-len testnet)))
+  (eqv? (logand (ip testip) (prefixlen->intmask (prefix-length testnet)))
           (ip (prefix testnet))))
 
 ; Class for representing a route
 (define-class <ipv4-route> ()
   (_net #:init-value (make <ipv4-network> ))
-  (_gw #:init-value (make <ipv4-network> ))
-  (net #:allocation #:virtual
-       #:accessor net 
-       #:slot-ref (lambda(this)(slot-ref this '_net))
-       #:slot-set! (lambda(this val)(set! (net this) val))
-       #:init-keyword #:net)
-  (gw #:allocation #:virtual
-      #:accessor gw 
-      #:slot-ref (lambda(this)(slot-ref this '_gw))
-      #:slot-set! (lambda(this val)(set! (gw this) val))
-      #:init-keyword #:gw))
+  (_gw  #:init-value (make <ipv4-address> ))
+  (misc #:init-value '()
+        #:accessor misc
+        #:init-keyword #:misc)
+  (net  #:allocation #:virtual
+        #:accessor net 
+        #:slot-ref (lambda(this)(slot-ref this '_net))
+        #:slot-set! (lambda(this val)(set! (net this) val))
+        #:init-keyword #:net)
+  (gw   #:allocation #:virtual
+        #:accessor gw 
+        #:slot-ref (lambda(this)(slot-ref this '_gw))
+        #:slot-set! (lambda(this val)(set! (gw this) val))
+        #:init-keyword #:gw))
 
 ; setters
 (define-method ((setter net) (this <ipv4-route>) (val <ipv4-network>))
@@ -146,6 +162,11 @@
   (slot-set! this '_gw val))
 (define-method ((setter gw) (this <ipv4-route>) val)
   (slot-set! this '_gw (make <ipv4-address> #:ip val)))
+
+(define-method (object-equal? (a <ipv4-route>) (b <ipv4-route>))
+  (and
+    (object-equal? (net a) (net b))
+    (object-equal? (gw a) (gw b))))
 
 (define-method (display (this <ipv4-route>) port)
   (format port "~a via ~a" (net this) (gw this)))
@@ -210,7 +231,7 @@
       (let again ((rotv1  v1)
                   (rotv2  v2)
                   (l      l1))
-        (if (eq? rotv1 rotv2)
+        (if (equal? rotv1 rotv2)
             (values rotv1 l)
             (again (ash rotv1 -1) (ash rotv2 -1) (- l 1)))))
      ((> l1 l2)
@@ -225,86 +246,82 @@
                               udata)
   (if (eq? root nullnode)
     ; We are being asked to add a new leaf
-    (make <trie-node> #:val  val #:len len #:l nullnode #:r nullnode #:udata udata)
+    (make <trie-node> #:val val #:len len #:l nullnode #:r nullnode #:udata udata)
     ; Trying to add to an existing node
-    (let-values (((common-pref common-len) (shared-prefix (value root)(value-length root)
-                                            val len)))
-      (if (eq? common-len len)
-        ; We are an exact match for this prefix
-        (if (equal? udata (userdata root))
-           ; We are an exact match for this node, just return
-           root
-           ; Userdata is different
-           (make <trie-node> #:val (value root) 
-                             #:len (value-length root) 
-                             #:l (left root) 
-                             #:r (right root)
-                             #:udata udata))
-        (if (= common-len (value-length root))
-          ; We are adding to a sub tree
-          (if (not (logbit? (- (- len common-len) 1) val))
-            ;add to left for a zero
-            (let* ((nextval (logand val (- (integer-expt 2 (- len common-len )) 1)))
-                   (nextlen (- len common-len))
-                   (nextnode (add-trie-node (left root) nextval nextlen udata)))
-              (if (eq? nextnode (left root))
-                  root
-                  (make <trie-node> #:val (value root) 
-                                    #:len (value-length root) 
-                                    #:l nextnode 
-                                    #:r (right root)
-                                    #:udata (userdata root))))
-            ;add to right for a one 
-            (let* ((nextval (logand val (- (integer-expt 2 (- len common-len )) 1)))
-                   (nextlen (- len common-len))
-                   (nextnode (add-trie-node (right root) nextval nextlen udata)))
-              (if (eq? nextnode (right root))
-                  root
-                  (make <trie-node> #:val (value root) 
-                                    #:len (value-length root) 
-                                    #:l (left root) 
-                                    #:r nextnode
-                                    #:udata (userdata root)))))
-          ;(< common-len (value-length root))
-          ; We need to split our current node)
-          (let* ((common-remains (make <trie-node> 
-                                    #:val
-                                    (logand (value root) 
-                                            (- (integer-expt 2 
-                                                             (- (value-length root) 
-                                                                common-len)) 
-                                               1))
-                                    #:len
-                                    (- (value-length root) common-len)
-                                    #:l
-                                    (left root)
-                                    #:r
-                                    (right root)
-                                    #:udata
-                                    (userdata root)))
-                 (common-newdata (make <trie-node>
-                                    #:val
-                                    (logand val
-                                            (- (integer-expt 2 
-                                                             (- len 
-                                                                common-len)) 
-                                               1))
-                                    #:len
-                                    (- len common-len)
-                                    #:l
-                                    nullnode
-                                    #:r
-                                    nullnode
-                                    #:udata
-                                    udata))
-                 (nextleft       (if (not (logbit? (+ (value-length common-remains) 1)
-                                                   (value common-remains)))
-                                    common-remains
-                                    common-newdata))
-                 (nextright      (if (eq? nextleft common-remains)
-                                    common-newdata
-                                    common-remains)))
-            (make <trie-node> #:val common-pref #:len common-len #:l nextleft #:r nextright #:udata #f)))))))
+      (let-values (((common-pref common-len) (shared-prefix (value root)(value-length root)
+                                              val len)))
+        (if (equal? common-len (value-length root) len)
+          ; We are an exact match for this prefix
+          (if (equal? udata (userdata root))
+             ; We are an exact match for this node, just return
+             root
+             ; Userdata is different
+             (make <trie-node> #:val (value root) 
+                               #:len (value-length root) 
+                               #:l (left root) 
+                               #:r (right root)
+                               #:udata udata))
+          (if (equal? common-len (value-length root))
+            ; We are alering a sub tree
+            (let* ((nextlen (- len common-len))
+                   (nextval (logand val (- (integer-expt 2 nextlen) 1))))
+              (if (not (logbit? (- nextlen 1) val))
+                ;add to left for a zero
+                (let ((nextnode (add-trie-node (left root) nextval nextlen udata)))
+                  (if (eq? nextnode (left root))
+                      root
+                      (make <trie-node> #:val (value root) 
+                                        #:len (value-length root) 
+                                        #:l nextnode 
+                                        #:r (right root)
+                                        #:udata (userdata root))))
+                ;add to right for a one 
+                (let ((nextnode (add-trie-node (right root) nextval nextlen udata)))
+                  (if (eq? nextnode (right root))
+                      root
+                      (make <trie-node> #:val (value root) 
+                                        #:len (value-length root) 
+                                        #:l (left root) 
+                                        #:r nextnode
+                                        #:udata (userdata root))))))
+            ; We need to split our current node
+            (let* ((common-remains (make <trie-node> 
+                                      #:val
+                                      (logand (value root) 
+                                              (- (integer-expt 2 
+                                                               (- (value-length root)
+                                                                  common-len)) 
+                                                 1))
+                                      #:len
+                                      (- (value-length root) common-len)
+                                      #:l (left root)
+                                      #:r (right root)
+                                      #:udata (userdata root)))
+                   (common-newdata 
+                                   (if (equal? len common-len)
+                                     nullnode
+                                     (make <trie-node>
+                                        #:val
+                                        (logand val
+                                                (- (integer-expt 2 
+                                                                 (- len 
+                                                                    common-len)) 
+                                                   1))
+                                        #:len (- len common-len)
+                                        #:l nullnode
+                                        #:r nullnode
+                                        #:udata udata)))
+                   (nextudata      (if (equal? len common-len)
+                                      udata
+                                      #f))
+                   (nextleft       (if (not (logbit? (- (value-length common-remains) 1)
+                                                     (value common-remains)))
+                                      common-remains
+                                      common-newdata))
+                   (nextright      (if (eq? nextleft common-remains)
+                                      common-newdata
+                                      common-remains)))
+              (make <trie-node> #:val common-pref #:len common-len #:l nextleft #:r nextright #:udata nextudata)))))))
 
 (define-generic delete-trie-node)
 (define-method (delete-trie-node (rootnode <trie-node>) (prefix <integer>)))
@@ -316,11 +333,11 @@
                (currlen len)
                (prevmatch 0)
                (prevmatchlen 0)
-               (prevnode #f)
+               (prevnode nullnode)
                (bestmatch 0) 
                (bestmatchlen 0) 
-               (bestmatchnode #f)) 
-   (if (eq? currnode #f)
+               (bestmatchnode nullnode)) 
+   (if (eq? currnode nullnode)
      (values bestmatch bestmatchlen bestmatchnode)
      (let-values (((common-pref common-len) (shared-prefix (value currnode)(value-length currnode)
                                              currval currlen)))
@@ -329,7 +346,7 @@
          ((< common-len (value-length currnode))
           (values bestmatch bestmatchlen bestmatchnode))
          ; This node is an exact match))) 
-         ((eq? common-len currlen) 
+         ((equal? common-len currlen) 
           (values
              (logand (ash prevmatch currlen) currval)
              (+ currlen prevmatchlen)
@@ -346,13 +363,13 @@
                  (logior (ash prevmatch (value-length currnode)) (value currnode))
                  (+ (value-length currnode) prevmatchlen)
                  currnode
-                 (if (eq? (userdata currnode) #f)
+                 (if (equal? (userdata currnode) #f)
                     bestmatch
                     (logior (ash prevmatch (value-length currnode)) (value currnode)))
-                 (if (eq? (userdata currnode) #f)
+                 (if (equal? (userdata currnode) #f)
                     bestmatchlen
                     (+ (value-length currnode) prevmatchlen))
-                 (if (eq? (userdata currnode) #f)
+                 (if (equal? (userdata currnode) #f)
                     bestmatchnode
                     currnode)))))))))
   
@@ -377,28 +394,28 @@
                  (right this)
                  (userdata this))))
 
-(define (walk-trie rootnode func)
-  (if (not (eq? #f rootnode))
+(define (walk-trie root func)
+  (if (not (eq? nullnode root))
     (begin
-      (func rootnode)
-      (walk-trie (left rootnode) func)
-      (walk-trie (right rootnode) func))))
+      (func root)
+      (walk-trie (left root) func)
+      (walk-trie (right root) func))))
 
 (define (trie-node->dot port start)
   (format port "digraph G {~%")
   (walk-trie start (lambda(node)
                      (if (not (eq? node nullnode))
                        (if (not (eq? (value-length node) 0))
-                         (format #t "~a [label=~s];~%" (object-address node)(with-output-to-string (lambda()(format #t "~a via ~a" (value-binstr node) (userdata node)))))
-                         (format #t "~a [label=\"root\"];~%" (object-address node))))))
+                         (format port "~a [label=~s];~%" (object-address node)(with-output-to-string (lambda()(format #t "~a via ~a" (value-binstr node) (userdata node)))))
+                         (format port "~a [label=\"root\"];~%" (object-address node))))))
   (walk-trie start (lambda(node)
                      (if (not (eq? node nullnode))
                        (begin
                          (if (not (eq? (left node) nullnode))
-                           (format #t "~a->~a;~%" (object-address node)
+                           (format port "~a->~a;~%" (object-address node)
                                                    (object-address (left node))))
                          (if (not (eq? (right node) nullnode))
-                           (format #t "~a->~a;~%" (object-address node)
+                           (format port "~a->~a;~%" (object-address node)
                                                    (object-address (right node))))))))
   (format port "}~%"))
 
@@ -412,45 +429,33 @@
   (let* ((newtable    (make <ipv4-table>))
          (addr    (net route))
          (pref    (ip (prefix addr)))
-         (preflen (prefix-len addr)))
-    (set! (trie-root newtable) (add-trie-node (trie-root table) (ash pref (- preflen 32)) preflen (ip(gw route))))
+         (preflen (prefix-length addr)))
+    (set! (trie-root newtable) (add-trie-node (trie-root table) (ash pref (- preflen 32)) preflen route))
     newtable))
 
 (define-generic add-ipv4-route!)
 (define-method (add-ipv4-route! (table <ipv4-table>)(route <ipv4-route>))
   (let*((addr    (net route))
         (pref    (ip (prefix addr)))
-        (preflen (prefix-len addr))) 
-    (set! (trie-root table) (add-trie-node (trie-root table) (ash pref (- preflen 32)) preflen (ip(gw route))))))
+        (preflen (prefix-length addr))) 
+    (set! (trie-root table) (add-trie-node (trie-root table) (ash pref (- preflen 32)) preflen route))))
 
 (define-generic remove-ipv4-route)
 (define-method (remove-ipv4-route (table <ipv4-table>)(route <ipv4-route>))
   (let ((newtable    (make <ipv4-table>)))
-    (set! (trie-root newtable) (remove-trie-node (trie-root table) (net route) (ip (gw route))))
+    (set! (trie-root newtable) (remove-trie-node (trie-root table) (net route) route))
     newtable))
 
 (define-generic remove-ipv4-route!)
 (define-method (remove-ipv4-route! (table <ipv4-table>)(route <ipv4-route>))
-  (set! (trie-root table) (remove-trie-node (trie-root table) (net route) (ip (gw route)))))
+  (set! (trie-root table) (remove-trie-node (trie-root table) (net route) route)))
 
 (define-generic find-ipv4-route)
 (define-method (find-ipv4-route (table <ipv4-table>)(route <ipv4-address>))
-  (let-values (((foundpref foundlen foundnode) 
+  (let-values (((foundpref foundlen foundnode)
                                   (longest-prefix-match
                                      (trie-root table)
                                      (ip route)
                                      32)))
-    (let ((foundnet (make <ipv4-network>))
-          (foundroute (make <ipv4-route>)))
-      (prefix foundnet (ash foundpref (- 32 foundlen)))
-      (prefix-len foundnet foundlen)
-      (net foundroute foundnet)
-      (gw foundroute (userdata foundnode))
-      foundroute)))
-
-
-
-
-
-
+    (userdata foundnode)))
 
