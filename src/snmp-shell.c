@@ -38,9 +38,11 @@ snmp_shell_module (void* arguments)
   scm_c_use_module("ice-9 common-list");
   scm_c_use_module("srfi srfi-39");
 
-  scm_c_use_module("ice-9 scm-style-repl");
   scm_c_use_module("ice-9 session");
   scm_c_use_module("ice-9 history");
+
+  scm_c_use_module("system repl common");
+  scm_c_use_module("system repl repl");
 
   scm_c_define("program-name", 
     scm_c_eval_string("(make-parameter  (symbol->string (car (module-name (current-module)))))"));
@@ -101,7 +103,7 @@ snmp_shell_module (void* arguments)
   
   scm_apply_1(scm_variable_ref(scm_c_lookup("script-arguments")), (SCM) arguments, SCM_EOL);
   
-  scm_c_eval_string("(set-repl-prompt! (string-append (program-name) \"> \"))");
+  scm_c_eval_string("(repl-default-prompt-set! (string-append (program-name) \"> \"))");
 
   if(NULL != opt_script){
     scm_c_primitive_load(opt_script);
@@ -115,7 +117,7 @@ snmp_shell_module (void* arguments)
   };
 
   if(NULL == opt_script && NULL == opt_eval){
-    scm_c_eval_string("(scm-style-repl)");
+    scm_c_eval_string("(start-repl #:welcome #f)");
   };
 
   return;
