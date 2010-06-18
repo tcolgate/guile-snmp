@@ -38,6 +38,7 @@ snmp_shell_module (void* arguments)
   scm_c_use_module("ice-9 common-list");
   scm_c_use_module("srfi srfi-39");
 
+  scm_c_use_module("ice-9 scm-style-repl");
   scm_c_use_module("ice-9 session");
   scm_c_use_module("ice-9 history");
 
