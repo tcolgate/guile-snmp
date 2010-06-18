@@ -29,7 +29,7 @@
   (let* ((router (one-of l3list))
          (hostipstr (inet-ntoa (car(vector-ref (gethostbyname name) 4))))
          (hostipoid (list->u32vector (map string->number (string-split hostipstr  #\. )))))
-    (session #:host router 
+    (session #:host (router)
       (let* ((arp (walk-on-fail ipNetToMediaPhysAddress))
              (ip (% 2 5 (iid arp)))
              (mac (arp)))
@@ -58,9 +58,11 @@
                                 (fdbif    (get (+ dot1dBasePortIfIndex (fdbport))))
                                 (port     (get (+ ifDescr (fdbif))))
                                 (podesc   (get (+ ifAlias (fdbif)))))
-                           (format #t "Host: ~a  ~% Via Router: ~A ~% VLAN: ~A ~% Neighbour: ~A ~% Name: ~A ~% Port: ~A ~% Desc: ~A ~%"  name router vlanid  neighbourstr (peername)(port)(podesc)))))))))))))))
+                           (format #t "Host: ~a  ~% Via Router: ~A ~% VLAN: ~A ~% Neighbour: ~A ~% Name: ~A ~% Port: ~A ~% Desc: ~A ~%"  name (router) vlanid  neighbourstr (peername)(port)(podesc)))))))))))))))
 
 ;main
-(find-host (car (script-arguments)))
+(catch 'noMoreAlternate
+  (lambda()(find-host (car (script-arguments))))
+  (lambda(ex . args)(format #t "Host not found on any layer 3 device~%")))
 
 ; vim: ft=scheme:lisp:autoindent

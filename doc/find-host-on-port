@@ -54,7 +54,7 @@
   		  (let* ((bportmac (walk dot1dTpFdbPort))
   			 (mac (iid bportmac)))
   		    (if (equal? (bportmac) (% 1 bportid))
-  	              (session #:host (one-of l3list) #:community vlancomm
+  	              (session #:host ((one-of l3list)) #:community vlancomm
 		  	(let* ((l3mac (walk ipNetToMediaPhysAddress ))
 		  	       (l3macip (% 2 5 (iid l3mac))))
 			  (if (equal? (mac-as-oid (l3mac)) mac)
