@@ -20,7 +20,7 @@
 ;  #:re-export-syntax (session default-session)
   #:export (
     use-mibs
-    reports:autotranslate <reports-varlist> oid-list walk
+    reports:autotranslate <snmp-reports-result> oid-list walk
     get getnext get-or-fail nextvar all walk-on-fail walk-func 
     set set-or-fail
     fail old-fail one-of iid oid type tag value 
@@ -93,7 +93,7 @@
 
 ; This class is used to represent answers. We use our own dedicated class
 ; to allow free'ing of results, avoid link lists and better allow cacheing
-(define-class <report-varlist> ()
+(define-class <snmp-reports-result> ()
   (oid #:init-value #u32())
   (type #:init-value #f)
   (value #:init-value #f)
@@ -102,12 +102,59 @@
   (iid #:init-value #u32())
   (rawvarbind #:init-value #f))
 
+(define-method (display (this <snmp-reports-result>) port)
+  (format port "#<snmp-reports-result>"))
+
+(define-method (write (this <snmp-reports-result>) port)
+  (format port "#<snmp-reports-result>#"))
+
+(define-class <snmp-reports-result-set> (<applicable-struct>)
+  (results #:init-value '() #:init-keyword #:results))
+
+(define-method (initialize (result-set <snmp-reports-result-set>) initargs)
+  (let ((results (get-keyword #:results initargs '())))
+    (next-method)
+    (slot-set!  result-set 'procedure
+      (lambda( . msg)
+        (if (not (null? results))
+          (cond
+            ((eq? msg '()) (slot-ref (cdr (car results)) 'value))
+          ((uniform-vector? (car msg))
+            (let ((var (assoc (car msg) results)))
+              (if (not var)
+                (begin
+                  (format #t "No such oid in result set~%") #f)
+                (cond 
+                  ((equal? (cdr msg) '()) (slot-ref (cdr var) 'value))
+                  ((equal? (cdr msg) (list 'oid))     (car var))
+                  ((equal? (cdr msg) (list 'tag))     (slot-ref (cdr var) 'tag))
+                  ((equal? (cdr msg) (list 'iid))     (slot-ref (cdr var) 'iid))
+                  ((equal? (cdr msg) (list 'type))    (slot-ref (cdr var) 'type))
+                  ((equal? (cdr msg) (list 'varbind)) (slot-ref (cdr var) 'rawvarbind))
+                  ((equal? (cdr msg) (list 'value))   (slot-ref (cdr var) 'value))
+                  (#t (slot-ref (cdr var) 'value))))))
+          ((equal? (car msg) 'oidlist) (map car results))
+          ((equal? (car msg) 'oid)     (car (car results)))
+          ((equal? (car msg) 'tag)     (slot-ref (cdr (car results)) 'tag))
+          ((equal? (car msg) 'iid)     (slot-ref (cdr (car results)) 'iid))
+          ((equal? (car msg) 'type)    (slot-ref (cdr (car results)) 'type))
+          ((equal? (car msg) 'varbind) (slot-ref (cdr (car results)) 'rawvarbind))
+          ((equal? (car msg) 'value)   (slot-ref (cdr (car results)) 'value))
+          (#t                          (slot-ref (cdr (car results)) 'value)))
+        #f)))))
+
+(define-method (display (this <snmp-reports-result-set>) port)
+  (format port "#<snmp-reports-result-set>#"))
+
+(define-method (write (this <snmp-reports-result-set>) port)
+  (format port "#<snmp-reports-result-set>#"))
+
 ; split the returned list of varbinds into an associated list of variables
 (define (split-varbinds input)
   (let nextvarbind ((thisvarbind input)
                     (result (list)))
     (if (not (null? thisvarbind))
-          (let ((newvar (make <report-varlist>)))
+          (let ((newvar (make <snmp-reports-result>)))
             (slot-set! newvar 'rawvarbind thisvarbind)
             (slot-set! newvar 'oid (oid-from-varbind thisvarbind))
             (slot-set! newvar 'type (slot-ref thisvarbind 'type))
@@ -116,8 +163,10 @@
             (nextvarbind (slot-ref thisvarbind 'next-variable) result))
           result)))
 
-(define (filter-valid-next results)
-  (filter
+(define-generic filter-valid-next)
+
+(define-method (filter-valid-next (results <snmp-reports-result-set>))
+  (make <snmp-reports-result-set> #:results (filter
     (lambda(thisres)   
       (cond
         ((equal? (char->integer (slot-ref (cdr thisres) 'type)) (SNMP-ENDOFMIBVIEW)) 
@@ -129,7 +178,11 @@
         ((null? (slot-ref (cdr thisres) 'base)) 
           #f)
         (#t #t)))
-    results))
+    (slot-ref results 'results))))
+
+(define-method (filter-valid-next any)
+  ; Dump some error
+  )
  
 ;; Given a varbind list and the oids requested that
 ;; generated it. return a copy with each result tagged
@@ -138,8 +191,10 @@
 ;; find the most specific match.
 ;; Currently assumes an ordered list
 ;;
-(define (tag-varbinds data bases)
-  (let ((result (copy-tree data)))
+(define-generic tag-varbinds)
+
+(define-method (tag-varbinds (data <snmp-reports-result-set>) bases)
+  (let ((result (copy-tree (slot-ref data 'results))))
     (for-each
       (lambda(varitem baseitem)
         (if (equal? (netsnmp-oid-is-subtree baseitem (slot-ref (cdr varitem) 'oid)) 0)
@@ -154,37 +209,11 @@
             (slot-set! (cdr varitem) 'base '())
             (slot-set! (cdr varitem) 'iid #u32()))))
       result bases)
-    result))
+    (make <snmp-reports-result-set> #:results result)))
 
-(define (make-varbind-func varbinds)
-  (lambda( . msg)
-    (if (not (null? varbinds))
-      (cond
-        ((eq? msg '()) (slot-ref (cdr (car varbinds)) 'value))
-        ((uniform-vector? (car msg))
-          (let ((var (assoc (car msg) varbinds)))
-            (if (not var)
-              (begin
-                (format #t "No such oid in result set~%") #f)
-              (cond 
-                ((equal? (cdr msg) '()) (slot-ref (cdr var) 'value))
-                ((equal? (cdr msg) (list 'oid))     (car var))
-                ((equal? (cdr msg) (list 'tag))     (slot-ref (cdr var) 'tag))
-                ((equal? (cdr msg) (list 'iid))     (slot-ref (cdr var) 'iid))
-                ((equal? (cdr msg) (list 'type))    (slot-ref (cdr var) 'type))
-                ((equal? (cdr msg) (list 'varbind)) (slot-ref (cdr var) 'rawvarbind))
-                ((equal? (cdr msg) (list 'value))   (slot-ref (cdr var) 'value))
-                (#t (slot-ref (cdr var) 'value))))))
-        ((equal? (car msg) 'oidlist) (map car varbinds))
-        ((equal? (car msg) 'oid)     (car (car varbinds)))
-        ((equal? (car msg) 'tag)     (slot-ref (cdr (car varbinds)) 'tag))
-        ((equal? (car msg) 'iid)     (slot-ref (cdr (car varbinds)) 'iid))
-        ((equal? (car msg) 'type)    (slot-ref (cdr (car varbinds)) 'type))
-        ((equal? (car msg) 'varbind) (slot-ref (cdr (car varbinds)) 'rawvarbind))
-        ((equal? (car msg) 'value)   (slot-ref (cdr (car varbinds)) 'value))
-        (#t                          (slot-ref (cdr (car varbinds)) 'value)))
-      #f)))
-
+(define-method (tag-varbinds any)
+  ; Dump some error
+  )
 	
 ; These are convenience macros for accessing elements of a result
 ;
@@ -249,19 +278,17 @@
            (lambda(cm qr)
              (query-cache-insert querytype cm qr))
            (reverse cms) qrs))
-       (append crs qrs))))
+       (make <snmp-reports-result-set> #:results (append crs qrs)))))
 
 (define (get . oid-terms)
-  (make-varbind-func 
-    (tag-varbinds
-      (synch-query (SNMP-MSG-GET) oid-terms)
-      oid-terms)))
+  (tag-varbinds
+    (synch-query (SNMP-MSG-GET) oid-terms)
+    oid-terms))
 
 (define (getnext . oid-terms)
-  (make-varbind-func 
-    (tag-varbinds
-      (synch-query (SNMP-MSG-GETNEXT) oid-terms)
-      oid-terms)))
+  (tag-varbinds
+    (synch-query (SNMP-MSG-GETNEXT) oid-terms)
+    oid-terms))
 
 (define (synch-set oid-value-pairs)
   (if (equal? oid-value-pairs '())
@@ -330,12 +357,12 @@
                                (synch-query (SNMP-MSG-GETNEXT) (list curroid))
                                (list currbase)))
                (cleanresults (filter-valid-next results)))
-          (if (equal? cleanresults '())
+          (if (equal? (slot-ref  cleanresults 'results) '())
             (throw 'walkend '())
             (begin
-              (set! curroid (slot-ref (cdr (car cleanresults)) 'oid))
-              (set! currbase (slot-ref (cdr (car cleanresults)) 'base))
-              (make-varbind-func cleanresults))))
+              (set! curroid (slot-ref (cdr (car (slot-ref cleanresults 'results))) 'oid))
+              (set! currbase (slot-ref (cdr (car (slot-ref cleanresults 'results))) 'base))
+              cleanresults)))
         (throw 'walkend '())))))
 
 ; This is the simplest walk to use, returning all results in a list
@@ -379,14 +406,6 @@
     (lambda(ex . args)
       (fail))))
 
-(define (getnext-or-fail . oid-terms)
-  (catch 'snmperror
-    (lambda() (apply getnext oid-terms))
-    (lambda(ex . args)
-      (fail))))
-
-; Allows including a manual list of optional values into the walk-on-fail backtracking
-; mechanism
 (define (one-of itemlist)
   (let ((old-fail2 fail))
     (call/cc
@@ -398,7 +417,7 @@
               (fail))
             (begin
               (set! fail (lambda()(continuation (try (cdr items)))))
-              (lambda( . args)(car items)))))
+              (car items))))
         (try itemlist)))))
 
 (define-syntax all
