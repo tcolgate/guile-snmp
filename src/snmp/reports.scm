@@ -417,7 +417,7 @@
               (fail))
             (begin
               (set! fail (lambda()(continuation (try (cdr items)))))
-              (car items))))
+              (lambda(. argv)(car items)))))
         (try itemlist)))))
 
 (define-syntax all
