@@ -294,11 +294,11 @@ SCM variable_list_value_get(struct variable_list *p) {
       break;
     case ASN_INTEGER: 
     case ASN_GAUGE: 
-      result = scm_int2num(*((p->val).integer));
+      result = scm_from_int(*((p->val).integer));
       break;
     case ASN_COUNTER: 
     case ASN_TIMETICKS: 
-      result = scm_uint2num(*((p->val).integer));
+      result = scm_from_uint(*((p->val).integer));
       break;
     case ASN_NULL: 
       //lambda pdu: None,
@@ -329,18 +329,18 @@ SCM variable_list_value_get(struct variable_list *p) {
       break;
     case ASN_COUNTER64: 
       {
-        SCM high = scm_int2num(((p->val).counter64)->high);
-        SCM low = scm_int2num(((p->val).counter64)->low);
+        SCM high = scm_from_int(((p->val).counter64)->high);
+        SCM low = scm_from_int(((p->val).counter64)->low);
         result = scm_sum(
-                   scm_ash(high,scm_int2num(32)),
+                   scm_ash(high,scm_from_int(32)),
                    low);
       };
       break;
     case ASN_APP_FLOAT: 
-      result = scm_float2num(*((p->val).floatVal));
+      result = scm_from_double((double)*((p->val).floatVal));
       break;
     case ASN_APP_DOUBLE: 
-      result = scm_double2num(*((p->val).doubleVal));
+      result = scm_from_double(*((p->val).doubleVal));
       break;
 //    case ASN_BOOLEAN: 
 //      // Do not think this is a valid pdu type  
