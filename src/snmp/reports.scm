@@ -144,10 +144,10 @@
         #f)))))
 
 (define-method (display (this <snmp-reports-result-set>) port)
-  (format port "#<snmp-reports-result-set>#"))
+  (format port "#<snmp-reports-result-set ~a: ~s~@[ ...~]>#" (this 'oid) (this 'value) (> (length (this 'oidlist)) 1)))
 
 (define-method (write (this <snmp-reports-result-set>) port)
-  (format port "#<snmp-reports-result-set>#"))
+  (format port "#<snmp-reports-result-set ~a: ~s~@[ ...~]>#" (this 'oid) (this 'value) (> (length (this 'oidlist)) 1)))
 
 ; split the returned list of varbinds into an associated list of variables
 (define (split-varbinds input)
