@@ -403,12 +403,12 @@ oid_from_varbind(netsnmp_variable_list* varbind, oid* objid, size_t* objidlen){
     
   (define-method (display (this <oid>) port)
     (if (oid-translate)
-     (format port "bleh")
+     (format port "~s" (slot-ref (get-tree (slot-ref this '_vec) (get-tree-head)) 'label))
      (format port "~{.~d~}" (uniform-vector->list (slot-ref this '_vec)))))
 
   (define-method (write (this <oid>) port)
     (if (oid-translate)
-     (format port "bleh")
+     (format port "~s" (slot-ref (get-tree (slot-ref this '_vec) (get-tree-head)) 'label))
      (format port "~{.~d~}" (uniform-vector->list (slot-ref this '_vec)))))
 
   (define-method (object-equal? (a <oid>) (b <oid>))

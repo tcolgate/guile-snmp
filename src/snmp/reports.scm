@@ -69,7 +69,7 @@
               (let ((oid (snmp-parse-oid (symbol->string sym))))
                 (if (unspecified? oid)
                   #f
-                  (let* ((var (make-variable oid)))
+                  (let* ((var (make-variable (make <oid> #:value oid))))
                     (module-add! mod sym var)
                     var)))
               #f))
