@@ -387,7 +387,41 @@ oid_from_varbind(netsnmp_variable_list* varbind, oid* objid, size_t* objidlen){
 %include "keytools.h"
 
 %goops %{ 
+
+(use-modules (oop goops))
+(use-modules (srfi srfi-39))
 (eval-when (eval load compile)
+
+  (define-class <oid> ()
+    (_vec #:init-value (make-u32vector 0)
+          #:init-keyword #:value))
+
+  (define oid-translate (make-parameter #f))
+
+  (define-method (intialize (this <oid>) args)
+     (display args))
+    
+  (define-method (display (this <oid>) port)
+    (if (oid-translate)
+     (format port "bleh")
+     (format port "~{.~d~}" (uniform-vector->list (slot-ref this '_vec)))))
+
+  (define-method (write (this <oid>) port)
+    (if (oid-translate)
+     (format port "bleh")
+     (format port "~{.~d~}" (uniform-vector->list (slot-ref this '_vec)))))
+
+  (define-method (object-equal? (a <oid>) (b <oid>))
+    (equal? (slot-ref a '_vec) (slot-ref  b '_vec)))
+
+  (define-method (object-equal? (a <oid>) b)
+    (equal? (slot-ref a '_vec) b))
+
+  (define-method (object-equal? a (b <oid>))
+    (equal? a (slot-ref  b '_vec)))
+
+  (export <oid> oid-translate)
+  
   (load-extension "libguile_snmp_net-snmp.so" "scm_init_snmp_net_snmp_module"))
 %}
 
