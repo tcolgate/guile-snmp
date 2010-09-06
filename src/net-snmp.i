@@ -24,7 +24,26 @@ typedef unsigned short u_short;
 #include <net-snmp/library/keytools.h>
 #include <limits.h>
 
+SCM scm_goops_make;
+SCM scm_class_oid;
+SCM scm_kw_value;
+SCM scm_oid_vec_slot;
+
 %}
+
+%init %{
+scm_goops_make = scm_variable_ref(
+                   scm_c_module_lookup(
+                     scm_module_goops,
+                     "make"));
+scm_kw_value = scm_from_locale_keyword("value");
+scm_class_oid = scm_variable_ref(
+                  scm_c_module_lookup(
+                    scm_c_resolve_module("snmp net-snmp"),
+                    "<oid>"));
+scm_oid_vec_slot = scm_from_locale_symbol("_vec");
+%}
+
 
 %include<ports.i>
 
@@ -36,7 +55,10 @@ typedef unsigned short u_short;
   scm_t_array_handle handle;
   size_t len,i;
   ssize_t inc;
-  const scm_t_uint32* elt = scm_u32vector_elements($input, &handle, &len, &inc);
+  const scm_t_uint32* elt = 
+    scm_u32vector_elements(
+      scm_slot_ref($input, scm_oid_vec_slot),
+      &handle, &len, &inc);
   temp_oid = (oid*)calloc(len,sizeof(oid));
   oid* oid_elt = temp_oid;
   for (i = 0; i < len; i++, elt += inc,oid_elt++)
@@ -71,14 +93,16 @@ typedef unsigned short u_short;
   int i = 0;
   SCM newoid = SCM_UNSPECIFIED;
 
+  //printf("oid: \n");
   if(result){
     newoid = scm_make_u32vector(scm_from_unsigned_integer(*$2),scm_from_unsigned_integer(0));
   
     for (i = 0; i < *$2; i++)
       scm_u32vector_set_x(newoid,scm_from_unsigned_integer(i),scm_from_unsigned_integer($1[i]));
+
+    gswig_result = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,newoid),SCM_EOL);
   };
 
-  gswig_result = newoid;
   free($1);
   free($2);
 }
@@ -388,9 +412,10 @@ oid_from_varbind(netsnmp_variable_list* varbind, oid* objid, size_t* objidlen){
 
 %goops %{ 
 
-(use-modules (oop goops))
-(use-modules (srfi srfi-39))
 (eval-when (eval load compile)
+
+  (use-modules (oop goops))
+  (use-modules (srfi srfi-39))
 
   (define-class <oid> ()
     (_vec #:init-value (make-u32vector 0)
@@ -398,18 +423,15 @@ oid_from_varbind(netsnmp_variable_list* varbind, oid* objid, size_t* objidlen){
 
   (define oid-translate (make-parameter #f))
 
-  (define-method (intialize (this <oid>) args)
-     (display args))
-    
   (define-method (display (this <oid>) port)
     (if (oid-translate)
-     (format port "~s" (slot-ref (get-tree (slot-ref this '_vec) (get-tree-head)) 'label))
+     (format port "~a" (slot-ref (get-tree this (get-tree-head)) 'label))
      (format port "~{.~d~}" (uniform-vector->list (slot-ref this '_vec)))))
 
   (define-method (write (this <oid>) port)
     (if (oid-translate)
-     (format port "~s" (slot-ref (get-tree (slot-ref this '_vec) (get-tree-head)) 'label))
-     (format port "~{.~d~}" (uniform-vector->list (slot-ref this '_vec)))))
+     (format port "#<oid: ~a>#" (slot-ref (get-tree this (get-tree-head)) 'label))
+     (format port "#<oid: ~{.~d~}>#" (uniform-vector->list (slot-ref this '_vec)))))
 
   (define-method (object-equal? (a <oid>) (b <oid>))
     (equal? (slot-ref a '_vec) (slot-ref  b '_vec)))
@@ -420,7 +442,7 @@ oid_from_varbind(netsnmp_variable_list* varbind, oid* objid, size_t* objidlen){
   (define-method (object-equal? a (b <oid>))
     (equal? a (slot-ref  b '_vec)))
 
-  (export <oid> oid-translate)
+  (export <oid> oid-translate make-oid)
   
   (load-extension "libguile_snmp_net-snmp.so" "scm_init_snmp_net_snmp_module"))
 %}

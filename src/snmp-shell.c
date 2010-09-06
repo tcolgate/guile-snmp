@@ -33,6 +33,7 @@ char* opt_eval = NULL;
 static void
 snmp_shell_module (void* arguments)
 {
+  scm_c_use_module("oop goops");
   scm_c_use_module("ice-9 threads");
   scm_c_use_module("ice-9 getopt-long");
   scm_c_use_module("ice-9 common-list");
