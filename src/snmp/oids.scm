@@ -19,30 +19,67 @@
   ))
 
 (enable-primitive-generic! +)
+
+(define-method (+ (id1 <oid>) (id2 <oid>))
+  (make <oid> #:value (list->u32vector 
+    (append 
+      (u32vector->list (slot-ref id1 '_vec)) 
+      (u32vector->list (slot-ref id2 '_vec)))))) 
+
+(define-method (+ (id1 <oid>) (id2 <uvec>))
+  (make <oid> #:value (list->u32vector 
+    (append 
+      (u32vector->list (slot-ref id1 '_vec)) 
+      (u32vector->list id2))))) 
+
+(define-method (+ (id1 <uvec>) (id2 <oid>))
+  (make <oid> #:value (list->u32vector 
+    (append 
+      (u32vector->list id1)
+      (u32vector->list (slot-ref id2 '_vec)))))) 
+
 (define-method (+ (id1 <uvec>) (id2 <uvec>))
   (list->u32vector 
     (append 
       (u32vector->list id1) 
-      (u32vector->list id2)))) 
-(define-method (+ (id1 <uvec>) (id2 <integer>))
-  (list->u32vector 
+      (u32vector->list id2))))
+
+(define-method (+ (id1 <oid>) (id2 <integer>))
+  (make <oid> #:value (list->u32vector 
     (append 
-      (u32vector->list id1) 
-      (list id2)))) 
-(define-method (+ (id1 <integer>) (id2 <uvec>))
-  (list->u32vector 
+      (u32vector->list (slot-ref id1 '_vec)) 
+      (list id2))))) 
+
+(define-method (+ (id1 <integer>) (id2 <oid>))
+  (make <oid> #:value (list->u32vector 
     (append 
       (list id1) 
-      (u32vector->list id2)))) 
-(define-method (+ (id1 <uvec>))
+      (u32vector->list (slot-ref id2 '_vec)))))) 
+
+(define-method (+ (id1 <oid>))
   id1)
+
 (define-method (+ . args)
   (+ (car args)
     (apply + (cdr args))))
+
 (define-method (+)
    0)
 
 (enable-primitive-generic! -)
+
+(define-method (- (base <oid>) (id <oid>))
+  (make <oid> #:value 
+    (- (slot-ref base '_vec) (slot-ref id '_vec))))
+
+(define-method (- (base <oid>) (id <uvec>))
+  (make <oid> #:value 
+    (- (slot-ref base '_vec) id)))
+
+(define-method (- (base <uvec>) (id <oid>))
+  (make <oid> #:value 
+    (- base (slot-ref id '_vec))))
+
 (define-method (- (base <uvec>) (id <uvec>))
   (let* ((baselist (u32vector->list base))
          (idlist (u32vector->list  id))
@@ -52,6 +89,8 @@
     (if (equal? baselist prefix)
       (list->u32vector(list-tail idlist prefixlen))
       id)))
+(define-method (- (id1 <oid>))
+  id1)
 (define-method (- (id1 <uvec>))
   id1)
 (define-method (-)
@@ -59,18 +98,18 @@
 
 (define-generic %)
 
-(define-method (% (s <integer>)(e <integer>) (id <uvec>))
+(define-method (% (s <integer>)(e <integer>) (id <oid>))
   (sub-objid s e id))
 
-(define-method (% (s <integer>)(id <uvec>))
-  (u32vector-ref id (- s 1)))
+(define-method (% (s <integer>)(id <oid>))
+  (u32vector-ref (slot-ref id '_vec) (- s 1)))
 
 (define (get-oid-type oid)
    (slot-ref (get-tree oid (get-tree-head)) 'type))
 
 (define (sub-objid s e id)
-  (list->u32vector 
-      (list-tail (list-head (u32vector->list id)  e ) (- s 1))))
+  (make <oid> #:value (list->u32vector 
+      (list-tail (list-head (u32vector->list (slot-ref id '_vec))  e ) (- s 1)))))
 
 (define (mac-as-oid mac)
   (let* ((len (string-length mac))
@@ -81,7 +120,7 @@
         (u32vector-set! oid i (char->integer char))
         (set! i (+ i 1)))
       mac)
-    oid))
+    (make <oid> #:value oid)))
 
 (define (ipstr-to-str hexipaddr)
   (let* ((len (string-length hexipaddr))
