@@ -90,12 +90,11 @@ scm_oid_vec_slot = scm_from_locale_symbol("_vec");
 }
 
 %typemap(argout)(oid* , size_t*){
-  int i = 0;
-  SCM newoid = SCM_UNSPECIFIED;
+  gswig_result = SCM_UNSPECIFIED;
 
-  //printf("oid: \n");
   if(result){
-    newoid = scm_make_u32vector(scm_from_unsigned_integer(*$2),scm_from_unsigned_integer(0));
+    int i = 0;
+    SCM newoid = scm_make_u32vector(scm_from_unsigned_integer(*$2),scm_from_unsigned_integer(0));
   
     for (i = 0; i < *$2; i++)
       scm_u32vector_set_x(newoid,scm_from_unsigned_integer(i),scm_from_unsigned_integer($1[i]));
@@ -452,13 +451,19 @@ oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
 
   (define-method (display (this <oid>) port)
     (if (oid-translate)
-     (format port "~a" (slot-ref (get-tree this (get-tree-head)) 'label))
-     (format port "~{.~d~}" (uniform-vector->list (slot-ref this '_vec)))))
+      (let* ((node     (get-tree this (get-tree-head)))
+             (basename (slot-ref node 'label))
+             (diff     (- (oid-from-tree-node node) this)))
+        (format port "~a~{.~d~}" basename (oid->list diff)))
+      (format port "~{.~d~}" (oid->list this))))
 
   (define-method (write (this <oid>) port)
     (if (oid-translate)
-     (format port "#<oid: ~a>#" (slot-ref (get-tree this (get-tree-head)) 'label))
-     (format port "#<oid: ~{.~d~}>#" (uniform-vector->list (slot-ref this '_vec)))))
+      (let* ((node     (get-tree this (get-tree-head)))
+             (basename (slot-ref node 'label))
+             (diff     (- (oid-from-tree-node node) this)))
+        (format port "#<oid: ~a~{.~d~}>#" basename (oid->list  diff)))
+      (format port "#<oid: ~{.~d~}>#" (oid->list this))))
 
   (define-method (object-equal? (a <oid>) (b <oid>))
     (equal? (slot-ref a '_vec) (slot-ref  b '_vec)))
@@ -469,7 +474,13 @@ oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
   (define-method (object-equal? a (b <oid>))
     (equal? a (slot-ref  b '_vec)))
 
-  (export <oid> oid-translate make-oid)
+  (define-method (oid->list (this <oid>))
+    (uniform-vector->list (slot-ref  this '_vec)))
+
+  (define-method (list->oid this)
+    (make <oid> #:value (list->u32vector this)))
+
+  (export <oid> oid-translate make-oid list->oid oid->list)
   
   (load-extension "libguile_snmp_net-snmp.so" "scm_init_snmp_net_snmp_module"))
 %}
