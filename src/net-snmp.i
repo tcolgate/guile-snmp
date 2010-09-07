@@ -139,8 +139,7 @@ scm_oid_vec_slot = scm_from_locale_symbol("_vec");
   typesafe snmp set */
 
 %typemap(in)( u_char, const u_char *, size_t ) (scm_t_array_handle handle){
-  u_char typespec; 
-  SCM valscm;
+  u_char typespec; SCM valscm;
   void* pointer = NULL; 
   size_t len = 0;
   size_t iter = 0;
@@ -393,6 +392,34 @@ oid_from_varbind(netsnmp_variable_list* varbind, oid* objid, size_t* objidlen){
   *objidlen =  varbind->name_length;
   return 1 ;
 };
+%}
+
+%inline %{
+int
+oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
+  struct tree *currnode = tree_node;
+  struct tree *head = get_tree_head();
+  int currid = 0;
+
+  *objidlen = 0;
+  while(currnode != head)
+  {
+    *objidlen += 1;
+    currnode = currnode->parent;
+  };
+  *objidlen += 1;
+
+  currnode = tree_node;
+  objid[0] = head->subid;
+  while(currnode != head)
+  {
+    objid[*objidlen - currid - 1] = currnode->subid;
+    currid++;
+    currnode = currnode->parent;
+  };
+  return 1;
+};
+
 
 %}
 
