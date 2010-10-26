@@ -4,16 +4,246 @@
 ;;; Do not make changes to this file unless you know what you are doing--modify
 ;;; the SWIG interface file instead.
 
-(define-module (snmp net-snmp))
+(define-module (snmp net-snmp)
+       #:use-module (oop goops)
+       #:use-module (system foreign)
+       #:export ())
  
-;(eval-when (eval load compile)
-;  (load-extension "libguile_snmp_net-snmp.so" "scm_init_snmp_net_snmp_module"))
 
+(define libsnmp (dynamic-link "libsnmp"))
+(define libnetsnmp (dynamic-link "libnetsnmp"))
 
-(use-modules (oop goops) (Swig common))
-;(use-modules ((snmp net-snmp-primitive) :renamer (symbol-prefix-proc 'primitive:)))
+;struct snmp_session {
+;    /*
+;     * Protocol-version independent fields
+;     */
+;    /** snmp version */
+;    long            version;
+;    /** Number of retries before timeout. */
+;    int             retries;
+;    /** Number of uS until first timeout, then exponential backoff */
+;    long            timeout;
+;    u_long          flags;
+;    struct snmp_session *subsession;
+;    struct snmp_session *next;
 ;
-(define oid-from-varbind primitive:oid-from-varbind)
+;    /** name or address of default peer (may include transport specifier and/or port number) */
+;    char           *peername;
+;    /** UDP port number of peer. (NO LONGER USED - USE peername INSTEAD) */
+;    u_short         remote_port;
+;    /** My Domain name or dotted IP address, 0 for default */
+;    char           *localname;
+;    /** My UDP port number, 0 for default, picked randomly */
+;    u_short         local_port;
+;    /**
+;     * Authentication function or NULL if null authentication is used 
+;     */
+;    u_char         *(*authenticator) (u_char *, size_t *, u_char *, size_t);
+;    /** Function to interpret incoming data */
+;    netsnmp_callback callback;
+;    /**
+;     * Pointer to data that the callback function may consider important 
+;     */
+;    void           *callback_magic;
+;    /** copy of system errno */
+;    int             s_errno;
+;    /** copy of library errno */
+;    int             s_snmp_errno;
+;    /** Session id - AgentX only */
+;    long            sessid;
+;
+;    /*
+;     * SNMPv1 & SNMPv2c fields
+;     */
+;    /** community for outgoing requests. */
+;    u_char         *community;
+;    /** Length of community name. */
+;    size_t          community_len;
+;    /**  Largest message to try to receive.  */
+;    size_t          rcvMsgMaxSize;
+;    /**  Largest message to try to send.  */
+;    size_t          sndMsgMaxSize;
+;
+;    /*
+;     * SNMPv3 fields
+;     */
+;    /** are we the authoritative engine? */
+;    u_char          isAuthoritative;
+;    /** authoritative snmpEngineID */
+;    u_char         *contextEngineID;
+;    /** Length of contextEngineID */
+;    size_t          contextEngineIDLen;
+;    /** initial engineBoots for remote engine */
+;    u_int           engineBoots;
+;    /** initial engineTime for remote engine */
+;    u_int           engineTime;
+;    /** authoritative contextName */
+;    char           *contextName;
+;    /** Length of contextName */
+;    size_t          contextNameLen;
+;    /** authoritative snmpEngineID */
+;    u_char         *securityEngineID;
+;    /** Length of contextEngineID */
+;    size_t          securityEngineIDLen;
+;    /** on behalf of this principal */
+;    char           *securityName;
+;    /** Length of securityName. */
+;    size_t          securityNameLen;
+;
+;    /** auth protocol oid */
+;    oid            *securityAuthProto;
+;    /** Length of auth protocol oid */
+;    size_t          securityAuthProtoLen;
+;    /** Ku for auth protocol XXX */
+;    u_char          securityAuthKey[USM_AUTH_KU_LEN];
+;    /** Length of Ku for auth protocol */
+;    size_t          securityAuthKeyLen;
+;    /** Kul for auth protocol */
+;    u_char          *securityAuthLocalKey;
+;    /** Length of Kul for auth protocol XXX */
+;    size_t          securityAuthLocalKeyLen;
+;
+;    /** priv protocol oid */
+;    oid            *securityPrivProto;
+;    /** Length of priv protocol oid */
+;    size_t          securityPrivProtoLen;
+;    u_char          securityPrivKey[USM_PRIV_KU_LEN];
+;    /** Length of Ku for priv protocol */
+;    size_t          securityPrivKeyLen;
+;    /** Kul for priv protocol */
+;    u_char          *securityPrivLocalKey;
+;    /** Length of Kul for priv protocol XXX */
+;    size_t          securityPrivLocalKeyLen;
+;
+;    /** snmp security model, v1, v2c, usm */
+;    int             securityModel;
+;    /** noAuthNoPriv, authNoPriv, authPriv */
+;    int             securityLevel;
+;    /** target param name */
+;    char           *paramName;
+;
+;    /**
+;     * security module specific 
+;     */
+;    void           *securityInfo;
+;
+;    /**
+;     * use as you want data 
+;     *
+;     *     used by 'SNMP_FLAGS_RESP_CALLBACK' handling in the agent
+;     * XXX: or should we add a new field into this structure?
+;     */
+;    void           *myvoid;
+;};
+;
+(define structdef-snmp-session
+  (list
+    long
+    int
+    long
+    unsigned-long
+    '*
+    '*
+    '*
+    uint16
+    '*
+    uint16
+    '*
+    '*
+    '*
+    int
+    int
+    long
+    '*
+    size_t
+    size_t
+    size_t
+    uint8
+    '*
+    size_t
+    unsigned-long
+    unsigned-long
+    '*
+    size_t
+    '*
+    size_t
+    '*
+    size_t
+    '*
+    size_t
+    uint8
+    size_t
+    '*
+    size_t
+    '*
+    size_t
+    uint8
+    size_t
+    '*
+    size_t
+    int
+    int
+    '*
+    '*
+    '*))
+
+(define make-new-struct-snmp-session
+       (make-c-struct structdef-snmp-session
+                      (make-list (length structdef-snmp-session)  0)))
+
+(define snmp-sess-open
+       (pointer->procedure void
+                           (dynamic-func "snmp_sess_open" libnetsnmp)
+                           (list '*)))
+
+(define snmp-sess-init
+       (pointer->procedure void
+                           (dynamic-func "snmp_sess_init" libnetsnmp)
+                           (list '*)))
+
+(define snmp-sess-close
+       (pointer->procedure int
+                           (dynamic-func "snmp_sess_close" libnetsnmp)
+                           (list '*)))
+
+(define snmp-sess-error
+       (pointer->procedure void
+                           (dynamic-func "snmp_sess_error" libnetsnmp)
+                           (list '* '* '* '*)))
+
+(define snmp-sess-synch-reponse
+       (pointer->procedure int
+                           (dynamic-func "snmp-sess_synch_reponse" libnetsnmp)
+                           (list '* '*)))
+
+(define snmp-parse-oid
+       (pointer->procedure '*
+                           (dynamic-func "snmp_parse_oid" libnetsnmp)
+                           (list '* '* '*)))
+
+(define snmp-pdu-create
+       (pointer->procedure '*
+                           (dynamic-func "snmp_pdu_create" libnetsnmp)
+                           (list int))
+
+(define snmp-pdu-create)
+       (pointer->procedure '*
+                           (dynamic-func "snmp_pdu_create" libnetsnmp)
+                           (list '* '* '*))
+
+(define snmp-pdu-add-variable)
+       (pointer->procedure '*
+                           (dynamic-func "snmp_pdu_add_variable" libnetsnmp)
+                           (list '* '* '*))
+(define snmp-add-null-var)
+       (pointer->procedure '*
+                           (dynamic-func "snmp_pdu_add_null_var" libnetsnmp)
+                           (list '* '*))
+(define snmp-add-var)
+       (pointer->procedure '*
+                           (dynamic-func "snmp_pdu_create" libnetsnmp)
+                           (list '* '* '*))
+
 
 (define SNMP-MSG-GET primitive:SNMP-MSG-GET)
 (define SNMP-MSG-GETNEXT primitive:SNMP-MSG-GETNEXT)
