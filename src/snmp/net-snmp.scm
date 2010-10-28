@@ -136,58 +136,65 @@
 ;    void           *myvoid;
 ;};
 ;
+(define arch-pointer 
+   (let ((plen (sizeof '*)))
+      (cond ((eq? plen 64) uint64)
+            ((eq? plen 32) uint32)
+            (else unsigned-long))))
+
+
 (define structdef-snmp-session
   (list
     long
     int
     long
     unsigned-long
-    '*
-    '*
-    '*
+    arch-pointer
+    arch-pointer
+    arch-pointer
     uint16
-    '*
+    arch-pointer
     uint16
-    '*
-    '*
-    '*
+    arch-pointer
+    arch-pointer
+    arch-pointer
     int
     int
     long
-    '*
+    arch-pointer
     size_t
     size_t
     size_t
     uint8
-    '*
+    arch-pointer
     size_t
     unsigned-long
     unsigned-long
-    '*
+    arch-pointer
     size_t
-    '*
+    arch-pointer
     size_t
-    '*
+    arch-pointer
     size_t
-    '*
-    size_t
-    uint8
-    size_t
-    '*
-    size_t
-    '*
+    arch-pointer
     size_t
     uint8
     size_t
-    '*
+    arch-pointer
+    size_t
+    arch-pointer
+    size_t
+    uint8
+    size_t
+    arch-pointer
     size_t
     int
     int
-    '*
-    '*
-    '*))
+    arch-pointer
+    arch-pointer
+    arch-pointer))
 
-(define make-new-struct-snmp-session
+(define (make-new-struct-snmp-session)
        (make-c-struct structdef-snmp-session
                       (make-list (length structdef-snmp-session)  0)))
 
