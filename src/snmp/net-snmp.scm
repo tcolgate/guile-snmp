@@ -149,54 +149,54 @@
     int
     long
     unsigned-long
-    arch-pointer
-    arch-pointer
-    arch-pointer
+    '*
+    '*
+    '*
     uint16
-    arch-pointer
+    '*
     uint16
-    arch-pointer
-    arch-pointer
-    arch-pointer
+    '*
+    '*
+    '*
     int
     int
     long
-    arch-pointer
+    '*
     size_t
     size_t
     size_t
     uint8
-    arch-pointer
+    '*
     size_t
     unsigned-long
     unsigned-long
-    arch-pointer
+    '*
     size_t
-    arch-pointer
+    '*
     size_t
-    arch-pointer
+    '*
     size_t
-    arch-pointer
-    size_t
-    uint8
-    size_t
-    arch-pointer
-    size_t
-    arch-pointer
+    '*
     size_t
     uint8
     size_t
-    arch-pointer
+    '*
+    size_t
+    '*
+    size_t
+    uint8
+    size_t
+    '*
     size_t
     int
     int
-    arch-pointer
-    arch-pointer
-    arch-pointer))
+    '*
+    '*
+    '*))
 
 (define (make-new-struct-snmp-session)
        (make-c-struct structdef-snmp-session
-                      (make-list (length structdef-snmp-session)  0)))
+                      (map (lambda(x)(if (eq? x '*) %null-pointer 0)) structdef-snmp-session)))
 
 (define snmp-sess-open
        (pointer->procedure void
