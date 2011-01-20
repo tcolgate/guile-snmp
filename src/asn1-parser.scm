@@ -1,5 +1,5 @@
 (define-module (asn1-parser)
-  #:use-module (text parse-lalr)
+  #:use-module (system base lalr)
   #:use-module (asn1-tokenize)
   #:export (read-asn1 asn1-parser))
 
