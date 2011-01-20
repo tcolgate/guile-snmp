@@ -289,7 +289,7 @@
                 ;; numeric -- also accept . FIXME, requires lookahead
                 `(:number . ,(read-numeric port)))
                (else
-                (read-punctuastion port))))))))
+                (read-punctuastion port)))))))
       (if (pair? tok)
           (set-source-properties! tok props))
       (display tok)(newline)tok)))
