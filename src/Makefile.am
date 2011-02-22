@@ -4,7 +4,7 @@ SWIGSOURCES=net-snmp.i constants.i ignores.i renames.i
 
 NETSNMPPATCHES=mib.h-patch snmp_client.h-patch snmp_api.h-patch
 
-SWIG_FLAGS = -D__i386__ -guile -Linkage module -package snmp -scm -proxy -emit-setters -I/usr/include/net-snmp/library -I/usr/include/net-snmp
+SWIG_FLAGS = -D__@host_cpu@__ -DNET_SNMP_CONFIG_H -guile2 -Linkage module -package snmp -proxy -emit-setters -I/usr/include
 
 mib.h snmp_client.h snmp_api.h: mib.h-patch snmp_client.h-patch snmp_api.h-patch
 	cp /usr/include/net-snmp/library/$@ . && cat $@-patch |  patch -p0

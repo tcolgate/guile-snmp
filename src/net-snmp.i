@@ -14,14 +14,17 @@ typedef unsigned short u_short;
 
 %{
 #include <net-snmp/net-snmp-config.h>
-#include <net-snmp/net-snmp-config-i386.h>
-#include <net-snmp/net-snmp-includes.h>
+#include <net-snmp//net-snmp-includes.h>
 #include <net-snmp/library/transform_oids.h>
 #include <net-snmp/library/snmp_impl.h>
-#include <net-snmp/library/snmp_api.h>
 #include <net-snmp/library/parse.h>
-#include <net-snmp/library/mib.h>
 #include <net-snmp/library/keytools.h>
+#include <net-snmp/types.h>
+#include <net-snmp/session_api.h>
+#include <net-snmp/mib_api.h>
+#include "snmp_api.h"
+#include "snmp_client.h"
+#include "mib.h"
 #include <limits.h>
 
 SCM scm_goops_make;
@@ -298,7 +301,6 @@ scm_oid_vec_slot = scm_from_locale_symbol("_vec");
   free(pcharp$argnum);
 }
 
-%include "net-snmp-config.h"
 
 %extend variable_list {
        const SCM value;
@@ -386,7 +388,7 @@ SCM variable_list_value_get(struct variable_list *p) {
 
 %inline %{
 int
-oid_from_varbind(netsnmp_variable_list* varbind, oid* objid, size_t* objidlen){
+oid_from_varbind(struct variable_list* varbind, oid* objid, size_t* objidlen){
   memcpy( objid, varbind->name, (varbind->name_length * sizeof(oid)));
   *objidlen =  varbind->name_length;
   return 1 ;
@@ -426,15 +428,20 @@ oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
 %include "renames.i"
 %include "ignores.i"
 
+%include "net-snmp/net-snmp-config.h"
+%include "net-snmp/library/snmp.h"
+%include "net-snmp/library/default_store.h"
+%include "net-snmp/library/parse.h"
+%include "net-snmp/library/asn1.h"
+%include "net-snmp/library/keytools.h"
+%include "net-snmp/types.h"
+%include "net-snmp/session_api.h"
+%include "net-snmp/mib_api.h"
 
-%include "snmp.h"
+# we use the local patched version of these
 %include "snmp_api.h"
 %include "snmp_client.h"
-%include "parse.h"
 %include "mib.h"
-%include "default_store.h"
-%include "asn1.h"
-%include "keytools.h"
 
 %goops %{ 
 

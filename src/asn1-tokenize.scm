@@ -25,7 +25,7 @@
   (apply throw 'SyntaxError message args))
 
 ; keyworkds
-(define *asn1-tokens           
+(define *asn1-tokens^           
   '(("ABSENT" . ABSENT)
     ("ENCODED" . ENCODED)
     ("INTEGER" . INTEGER)
@@ -92,24 +92,53 @@
     ("WITH" . WITH)))
 
 (define *asn1-punctuation           
-  '(("{" . lbrace)
-    ("}" . rbrace)
-    ("(" . lparen)
-    (")" . rparen)
-    ("[" . lbracket)
-    ("]" . rbracket)
-    ("..." . dotdotdot)
-    (".." . dotdot)
-    ("." . dot)
-    (";" . semicolon)
-    ("," . comma)
-    ("<" . <)
-    (">" . >)
-    ("::=" . ::=)
-    ("|" . |)))
-;
-; Also need to recognize :identifier :string and :number
+  '(; these characters require readahead
+    (#\- . minus)
+    (#\/ . forwardslash)
+    (#\: . colon)
+    (#\. . dot)
+    (#\< . langle)
+    (#\[ . lbracket)
+    (#\] . rbracket)
 
+    ; Single character punctuations
+    (#\. . comma)
+    (#\{ . lbrace)
+    (#\} . rbrace)
+    (">" . rangle)
+    (#\( . lparen)
+    (#\) . rparen)
+    (#\; . semicolon)
+    (#\@ . at)
+    (#\! . exclamation)
+    (#\^ . hat)
+    (#\| . bar)))
+
+; Single minux requires a lookahead
+(define (reader- port)
+  (let ((next-char (peak-char port)))
+    (case next-char
+      (#\- (reader-- port char next-char))
+      ((#\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9)
+       (unread-char next-char port)
+       (let ((possible-number (read port t nil t)))
+          (etypecase possible-number
+            (number (- possible-number))
+            (symbol (intern (concatenate 'string "-"
+              (symbol-name possible-number)))))))
+      (t (unread-char next-char port) '|-|))))
+
+; Double minus is definitiely a comment
+(define (reader-- port char1 char2)
+  (declare (ignore char1 char2))
+  (do ((last-char #\Null char)
+       (char (read-char port nil #\Newline t)
+             (read-char port nil #\Newline t)))
+      ((or (and (char= char #\-) (char= last-char #\-))
+           (char= char #\Newline))
+       (values))))
+
+;;
 ;; taken from SSAX, sorta
 (define (read-until delims port)
   (if (eof-object? (peek-char port))
