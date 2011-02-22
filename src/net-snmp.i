@@ -22,6 +22,8 @@ typedef unsigned short u_short;
 #include <net-snmp/types.h>
 #include <net-snmp/session_api.h>
 #include <net-snmp/mib_api.h>
+#include <net-snmp/pdu_api.h>
+#include <net-snmp/varbind_api.h>
 #include "snmp_api.h"
 #include "snmp_client.h"
 #include "mib.h"
@@ -79,7 +81,11 @@ scm_oid_vec_slot = scm_from_locale_symbol("_vec");
 
 %apply(const oid* , size_t ){
   (const oid* objid , size_t objidlen)
-  (const oid * hashtype, u_int hashtype_len)
+  (const oid* hashtype , u_int hashtype_len)
+}
+
+%apply(const oid* , size_t ){
+  (const oid* name , size_t name_length)
 }
 
 /* A pair of typemaps  to pass oids for write and return the 
@@ -436,7 +442,9 @@ oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
 %include "net-snmp/library/keytools.h"
 %include "net-snmp/types.h"
 %include "net-snmp/session_api.h"
+%include "net-snmp/varbind_api.h"
 %include "net-snmp/mib_api.h"
+%include "net-snmp/pdu_api.h"
 
 # we use the local patched version of these
 %include "snmp_api.h"
