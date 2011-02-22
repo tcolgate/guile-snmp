@@ -314,7 +314,7 @@ scm_oid_vec_slot = scm_from_locale_symbol("_vec");
 
 // Specific implementation of set/get functions
 %{
-SCM variable_list_value_get(struct variable_list *p) {
+SCM netsnmp_variable_list_value_get(struct variable_list *p) {
   SCM result = SCM_UNSPECIFIED;
   switch(p->type){
     case ASN_OCTET_STR: 
