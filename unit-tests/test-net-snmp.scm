@@ -19,7 +19,7 @@
 (define-class <test-net-snmp> (<test-case>)
   (testsess #:accessor testsess)
   (oid-syslocation0 #:getter oid-syslocation0
-               #:init-value #u32(1 3 6 1 2 1 1 6 0)))
+               #:init-value (list->oid (list 1 3 6 1 2 1 1 6 0))))
 
 (define-method (set-up-test (self <test-net-snmp>))
   (set! (testsess self) (make <snmp-session>))
