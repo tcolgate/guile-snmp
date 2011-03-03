@@ -480,13 +480,16 @@ oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
         (format port "#<oid: ~a~{.~d~}>#" basename (oid->list  diff)))
       (format port "#<oid: ~{.~d~}>#" (oid->list this))))
 
-  (define-method (object-equal? (a <oid>) (b <oid>))
+  (define-method (equal? (a <oid>) (b <oid>))
     (equal? (slot-ref a '_vec) (slot-ref  b '_vec)))
 
-  (define-method (object-equal? (a <oid>) b)
+  (define-method (equal? (a <oid>) b)
     (equal? (slot-ref a '_vec) b))
 
-  (define-method (object-equal? a (b <oid>))
+  (define-method (equal? (a <oid>) b)
+    (equal? (slot-ref a '_vec) b))
+
+  (define-method (equal? a (b <oid>))
     (equal? a (slot-ref  b '_vec)))
 
   (define-method (oid->list (this <oid>))
