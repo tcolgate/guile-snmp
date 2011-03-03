@@ -146,7 +146,7 @@ scm_oid_vec_slot = scm_from_locale_symbol("_vec");
 /* A typemap to pass data to snmp_pdu_add_variable for
   typesafe snmp set */
 
-%typemap(in)( u_char, const u_char *, size_t ) (scm_t_array_handle handle){
+%typemap(in)( u_char, const void *, size_t ) (scm_t_array_handle handle){
   u_char typespec; SCM valscm;
   void* pointer = NULL; 
   size_t len = 0;
@@ -250,15 +250,15 @@ scm_oid_vec_slot = scm_from_locale_symbol("_vec");
   };
 
   $1 = typespec;
-  $2 = (u_char*) pointer;
+  $2 = (void*) pointer;
   $3 = len;
 }
 
-%typemap(freearg)( u_char, const u_char *, size_t ) {
+%typemap(freearg)( u_char, const void *, size_t ) {
   scm_array_handle_release(&handle$argnum);
 }
-%apply( u_char, const u_char *, size_t ){
-  (u_char, const u_char *, size_t )
+%apply( u_char, const void *, size_t ){
+  (u_char type , const void * value , size_t len )
 }
 
 /* A pair of typemaps  to pass pdus for write and return the 
