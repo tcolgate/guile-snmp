@@ -60,8 +60,8 @@ scm_oid_vec_slot = scm_from_locale_symbol("_vec");
   scm_t_array_handle handle;
   size_t len,i;
   ssize_t inc;
-  const scm_t_uint32* elt = 
-    scm_u32vector_elements(
+  const scm_t_uint64* elt = 
+    scm_u64vector_elements(
       scm_slot_ref($input, scm_oid_vec_slot),
       &handle, &len, &inc);
   temp_oid = (oid*)calloc(len,sizeof(oid));
@@ -103,15 +103,12 @@ scm_oid_vec_slot = scm_from_locale_symbol("_vec");
 
   if(result){
     int i = 0;
-    SCM newoid = scm_make_u32vector(scm_from_unsigned_integer(*$2),scm_from_unsigned_integer(0));
-  
-    for (i = 0; i < *$2; i++)
-      scm_u32vector_set_x(newoid,scm_from_unsigned_integer(i),scm_from_unsigned_integer($1[i]));
-
+    SCM newoid = scm_take_u64vector((scm_t_uint64*) $1, *$2);
     gswig_result = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,newoid),SCM_EOL);
+  } else {
+    free($1);
   };
 
-  free($1);
   free($2);
 }
 
@@ -225,13 +222,13 @@ scm_oid_vec_slot = scm_from_locale_symbol("_vec");
 
     case ASN_OBJECT_ID:
       {
-        if ( ! scm_is_true(scm_u32vector_p (valscm) )){
+        if ( ! scm_is_true(scm_u64vector_p (valscm) )){
           scm_throw(
             scm_string_to_symbol(
               scm_from_locale_string("snmperror")),
             scm_from_locale_string("Data is not an oid"));
         };
-        pointer = (void*) scm_u32vector_elements(valscm, &handle, &len, &iter);
+        pointer = (void*) scm_u64vector_elements(valscm, &handle, &len, &iter);
       };
       break;
 
@@ -340,7 +337,7 @@ SCM netsnmp_variable_list_value_get(struct variable_list *p) {
         // so we copy it first.
         oid* temp = (oid*)malloc(p->val_len);
         memcpy(temp,(p->val).objid,p->val_len);
-        result = scm_take_u32vector((scm_t_uint32 *)temp, (p->val_len)/sizeof(oid));
+        result = scm_take_u64vector((scm_t_uint32 *)temp, (p->val_len)/sizeof(oid));
       }; 
       break;
     case ASN_IPADDRESS: 
@@ -459,7 +456,7 @@ oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
   (use-modules (srfi srfi-39))
 
   (define-class <oid> ()
-    (_vec #:init-value (make-u32vector 0)
+    (_vec #:init-value (make-u64vector 0)
           #:init-keyword #:value))
 
   (define oid-translate (make-parameter #f))
@@ -496,7 +493,7 @@ oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
     (uniform-vector->list (slot-ref  this '_vec)))
 
   (define-method (list->oid this)
-    (make <oid> #:value (list->u32vector this)))
+    (make <oid> #:value (list->u64vector this)))
 
   (export <oid> oid-translate make-oid list->oid oid->list)
   

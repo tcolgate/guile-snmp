@@ -11,7 +11,7 @@
   
 (define-method (test-autoresolve (self <test-reports>))
   (assert-equal gstTestString
-               #u32(1 3 6 1 3 1977 1 2)))
+               (list->oid (list 1 3 6 1 3 1977 1 2))))
 
 (define-method (test-get (self <test-reports>))
   (assert-equal "Guile-SNMP test string"
