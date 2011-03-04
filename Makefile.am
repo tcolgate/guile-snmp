@@ -2,4 +2,4 @@ ACLOCAL_AMFLAGS=-I m4
 
 SUBDIRS = src unit-tests doc
 
-EXTRA_DIST= test-environ dev-environ README.swig
+EXTRA_DIST= test-environ dev-environ README.swig guile-snmp.spec
