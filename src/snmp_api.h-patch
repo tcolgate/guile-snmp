@@ -1,46 +1,5 @@
 --- /usr/include/net-snmp/library/snmp_api.h	2009-02-16 11:24:38.000000000 +0000
 +++ snmp_api.h	2009-04-05 15:51:07.000000000 +0100
-@@ -112,10 +112,10 @@
- 
-     /**
-      * The actual transport domain.  This SHOULD NOT BE FREE()D.  
--     */
- 
-     const oid      *tDomain;
-     size_t          tDomainLen;
-+     */
- 
-     netsnmp_variable_list *variables;
- 
-@@ -209,7 +209,7 @@
-     /**
-      * Authentication function or NULL if null authentication is used 
-      */
--    u_char         *(*authenticator) (u_char *, size_t *, u_char *, size_t);
-+    /* u_char         *(*authenticator) (u_char *, size_t *, u_char *, size_t);*/
-     /** Function to interpret incoming data */
-     netsnmp_callback callback;      
-     /**
-@@ -496,8 +496,10 @@
- 
- #define SNMPERR_MAX			(-65)
- 
-+/*
- #define non_repeaters	errstat
- #define max_repetitions errindex
-+*/
- 
- typedef union {
-    long           *integer;
-@@ -539,7 +541,7 @@
-    /** (Opaque) hook for additional data */
-    void           *data;
-    /** callback to free above */
--   void            (*dataFreeHook)(void *);    
-+   /* void            (*dataFreeHook)(void *);    */
-    int             index;
- };
- 
 @@ -735,8 +737,8 @@
                                             size_t len2, size_t *offpt);
      int             netsnmp_oid_equals(const oid *, size_t, const oid *,
@@ -90,11 +49,3 @@
      void           *snmp_sess_add_ex(netsnmp_session *,
                                       struct netsnmp_transport_s *,
                                       int (*fpre_parse) (netsnmp_session *,
-@@ -971,6 +978,7 @@
-                                                                 *, void *,
-                                                                 size_t)
-         );
-+    */
- 
-     /*
-      * use return value from snmp_sess_open as void * parameter 
