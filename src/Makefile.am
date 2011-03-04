@@ -1,22 +1,24 @@
 lib_LTLIBRARIES=libguile_snmp_net-snmp.la 
 
-SWIGSOURCES=net-snmp.i constants.i ignores.i renames.i 
+BUILT_SOURCES=$(builddir)/net-snmp_wrap.c $(builddir)/snmp/net-snmp.scm 
+SWIG_SOURCES=net-snmp.i constants.i ignores.i renames.i 
 
 NETSNMPPATCHES=mib.h-patch snmp_client.h-patch snmp_api.h-patch
 
-SWIG_FLAGS = -D__@host_cpu@__ -DNET_SNMP_CONFIG_H -guile2 -Linkage module -package snmp -proxy -emit-setters -I/usr/include
+SWIG_FLAGS = -D__@host_cpu@__ -DNET_SNMP_CONFIG_H -guile2 -Linkage module -package snmp -proxy -emit-setters -I/usr/include -outdir $(builddir)
 
 mib.h snmp_client.h snmp_api.h: mib.h-patch snmp_client.h-patch snmp_api.h-patch
-	cp /usr/include/net-snmp/library/$@ . && cat $@-patch |  patch -p0
+	cp /usr/include/net-snmp/library/$@ . && cat ${top_srcdir}/src/$@-patch |  patch -p0
 
-net-snmp_wrap.c: $(SWIGSOURCES) $(NETSNMPPATCHES) mib.h snmp_client.h snmp_api.h
+$(builddir)/net-snmp_wrap.c: $(SWIG_SOURCES) $(NETSNMPPATCHES) mib.h snmp_client.h snmp_api.h
+	test -d $(builddir)/snmp || mkdir $(builddir)/snmp
 	$(SWIG) $(SWIG_FLAGS) -module net-snmp -o $@ $<
 
 libguile_snmp_net_snmp_la_CFLAGS=@GUILE_CFLAGS@ -I.
-libguile_snmp_net_snmp_la_SOURCES=net-snmp_wrap.c
+nodist_libguile_snmp_net_snmp_la_SOURCES=$(builddir)/net-snmp_wrap.c $(builddir)/snmp/net-snmp.scm\
 libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module -lsnmp -lnetsnmp
 
-SCHEMESOURCES=snmp/net-snmp.scm\
+SCHEMESOURCES=$(builddir)/snmp/net-snmp.scm\
               snmp/reports.scm\
               snmp/oids.scm
 
@@ -31,18 +33,20 @@ GOBJECTS =
 GOBJECTS2 =
 endif
 
-CLEANFILES = $(GOBJECTS) $(GOBJECTS2)
+CLEANFILES = $(GOBJECTS) $(GOBJECTS2) $(BUILT_SOURCES) *.orig mib.h snmp_client.h snmp_api.h
 
 SUFFIXES = .scm .go
 .scm.go:
-	$(top_builddir)/dev-environ $(GUILE_COMPILE) -o "$@" "$<"
+	$(top_srcdir)/dev-environ $(GUILE_COMPILE) -o "$@" "$<"
 
-EXTRA_DIST = snmp $(SWIGSOURCES) net-snmp_wrap.c $(SCHEMESOURCES) $(SCHEMESOURCES2) $(NETSNMPPATCHES)
-
-guilesnmpdir =  @GUILE_SITE@/snmp
+EXTRA_DIST = snmp $(SWIG_SOURCES) $(SCHEMESOURCES) $(SCHEMESOURCES2) $(NETSNMPPATCHES)
+guilesite = @GUILE_SITE@
+guileprefix = @GUILE_PREFIX@
+guilesitesuffix = `echo $(guilesite) | sed -e 's!^$(guileprefix)!!'`
+guilesnmpdir =  $(exec_prefix)/$(guilesitesuffix)/snmp
 guilesnmp_DATA = $(SCHEMESOURCES) $(GOBJECTS)
 
-guilereportsdir =  @GUILE_SITE@/snmp/reports
+guilereportsdir =  $(guilesnmpdir)/reports
 guilereports_DATA = $(SCHEMESOURCES2) $(GOBJECTS2)
 
 bin_PROGRAMS = snmp-shell
