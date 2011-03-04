@@ -22,6 +22,8 @@
 #include <getopt.h>
 #include <libgen.h>
 
+#include "config.h"
+
 int verbose_flag = 0;
 char* opt_defversion = "2c";
 char* opt_defcommunity = "public";
@@ -104,6 +106,10 @@ snmp_shell_module (void* arguments)
   
   scm_apply_1(scm_variable_ref(scm_c_lookup("script-arguments")), (SCM) arguments, SCM_EOL);
   
+  SCM version_sym = scm_c_lookup("*version*");
+  SCM versionstring = scm_from_locale_string( PACKAGE_STRING );
+  scm_variable_set_x(version_sym, versionstring);
+
   scm_c_eval_string("(repl-default-prompt-set! (string-append (program-name) \"> \"))");
 
   if(NULL != opt_script){
@@ -119,7 +125,7 @@ snmp_shell_module (void* arguments)
 
   if(NULL == opt_script && NULL == opt_eval){
     //scm_c_eval_string("(start-repl #:welcome #f)");
-    scm_c_eval_string("(start-repl )");
+    scm_c_eval_string("(start-repl)");
   };
 
   return;
