@@ -337,7 +337,7 @@ SCM netsnmp_variable_list_value_get(struct variable_list *p) {
         // so we copy it first.
         oid* temp = (oid*)malloc(p->val_len);
         memcpy(temp,(p->val).objid,p->val_len);
-        result = scm_take_u64vector((scm_t_uint32 *)temp, (p->val_len)/sizeof(oid));
+        result = scm_take_u64vector((scm_t_uint64 *)temp, (p->val_len)/sizeof(oid));
       }; 
       break;
     case ASN_IPADDRESS: 
