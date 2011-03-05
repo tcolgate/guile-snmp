@@ -37,6 +37,9 @@ AC_CHECK_LIB([netsnmp], [init_snmp])
 
 # Checks for typedefs, structures, and compiler characteristics.
 
+AC_CHECK_SIZEOF([oid],,[#include <net-snmp/net-snmp-config.h> 
+#include <net-snmp/types.h>])
+
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile unit-tests/Makefile])

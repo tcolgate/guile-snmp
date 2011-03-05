@@ -30,19 +30,19 @@
   (list->oid
     (append 
       (oid->list id1) 
-      (u64vector->list id2))))
+      (oidvector->list id2))))
 
 (define-method (+ (id1 <uvec>) (id2 <oid>))
   (list->oid
     (append 
-      (u64vector->list id1)
+      (oidvector->list id1)
       (oid->list id2))))
 
 (define-method (+ (id1 <uvec>) (id2 <uvec>))
-  (list->u64vector 
+  (list->oidvector 
     (append 
-      (u64vector->list id1) 
-      (u64vector->list id2))))
+      (oidvector->list id1) 
+      (oidvector->list id2))))
 
 (define-method (+ (id1 <oid>) (id2 <integer>))
   (list->oid
@@ -81,13 +81,13 @@
     (- base (slot-ref id '_vec))))
 
 (define-method (- (base <uvec>) (id <uvec>))
-  (let* ((baselist (u64vector->list base))
-         (idlist (u64vector->list  id))
+  (let* ((baselist (oidvector->list base))
+         (idlist (oidvector->list  id))
          (prefixlen (length baselist))
          (idlen (length idlist))
          (prefix    (list-head idlist prefixlen)))
     (if (equal? baselist prefix)
-      (list->u64vector(list-tail idlist prefixlen))
+      (list->oidvector(list-tail idlist prefixlen))
       id)))
 (define-method (- (id1 <oid>))
   id1)
@@ -102,7 +102,7 @@
   (sub-objid s e id))
 
 (define-method (% (s <integer>)(id <oid>))
-  (u64vector-ref (slot-ref id '_vec) (- s 1)))
+  (oidvector-ref (slot-ref id '_vec) (- s 1)))
 
 (define (get-oid-type oid)
    (slot-ref (get-tree oid (get-tree-head)) 'type))
@@ -113,11 +113,11 @@
 
 (define (mac-as-oid mac)
   (let* ((len (string-length mac))
-         (oid (make-u64vector len))
+         (oid (make-oidvector len))
          (i 0))
     (string-for-each
       (lambda(char)
-        (u64vector-set! oid i (char->integer char))
+        (oidvector-set! oid i (char->integer char))
         (set! i (+ i 1)))
       mac)
     (make <oid> #:value oid)))

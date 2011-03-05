@@ -13,6 +13,7 @@ typedef unsigned short u_short;
 // Includes for both the C code and to generate the interface
 
 %{
+#include <limits.h>
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp//net-snmp-includes.h>
 #include <net-snmp/library/transform_oids.h>
@@ -27,16 +28,39 @@ typedef unsigned short u_short;
 #include "snmp_api.h"
 #include "snmp_client.h"
 #include "mib.h"
-#include <limits.h>
+
+// These clash with the net-snmp definitons
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+#include <config.h>
 
 SCM scm_goops_make;
 SCM scm_class_oid;
 SCM scm_kw_value;
 SCM scm_oid_vec_slot;
 
+#if SIZEOF_OID == 8
+#define SCM_T_OID scm_t_uint64
+#define SCM_TAKE_OIDVECTOR  scm_take_u64vector
+#define SCM_OIDVECTOR_ELEMENTS scm_u64vector_elements
+#define SCM_OIDVECTOR_P scm_u64vector_p
+#define SCM_LIST_TO_OIDVECTOR scm_take_u64vector
+#elif SIZEOF_OID == 4
+#define SCM_T_OID scm_t_uint32
+#define SCM_TAKE_OIDVECTOR  scm_take_u32vector
+#define SCM_OIDVECTOR_ELEMENTS scm_u32vector_elements
+#define SCM_OIDVECTOR_P scm_u32vector_p
+#else
+#error "Can't handle size of oid"
+#endif
+
 %}
 
 %init %{
+
 scm_goops_make = scm_variable_ref(
                    scm_c_module_lookup(
                      scm_module_goops,
@@ -47,6 +71,61 @@ scm_class_oid = scm_variable_ref(
                     scm_c_resolve_module("snmp net-snmp"),
                     "<oid>"));
 scm_oid_vec_slot = scm_from_locale_symbol("_vec");
+
+scm_variable_set_x(
+  scm_c_module_lookup(
+    scm_c_resolve_module("snmp net-snmp"),
+    "empty-oidvec"),
+#if SIZEOF_OID == 8
+  scm_make_u64vector(scm_from_int(0),SCM_EOL)
+#else // SIZEOF_OID == 4
+  scm_make_u32vector(scm_from_int(0),SCM_EOL)
+#endif
+);
+
+#define MAPSRFI4(x) (x) * 57.29578)
+
+SCM netsnmp_module = scm_c_resolve_module("snmp net-snmp");
+SCM srfi4_module = scm_c_resolve_module("srfi srfi-4");
+
+#if SIZEOF_OID == 8
+scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector")));
+scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "make-oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "make-u64vector")));
+scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector?"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector?")));
+scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-length"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector-length")));
+scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "list->oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "list->u64vector")));
+scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector->list"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector->list")));
+scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-ref"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector-ref")));
+scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-set!"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector-set!")));
+#else // SIZEOF_OID == 4
+scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector")));
+scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "make-oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "make-u32vector")));
+scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector?"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector?")));
+scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-length"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector-length")));
+scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "list->oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "list->u32vector")));
+scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector->list"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector->list")));
+scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-ref"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector-ref")));
+scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-set!"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector-set!")));
+#endif
+
+
+   
 %}
 
 
@@ -60,8 +139,8 @@ scm_oid_vec_slot = scm_from_locale_symbol("_vec");
   scm_t_array_handle handle;
   size_t len,i;
   ssize_t inc;
-  const scm_t_uint64* elt = 
-    scm_u64vector_elements(
+  const SCM_T_OID* elt = 
+    SCM_OIDVECTOR_ELEMENTS(
       scm_slot_ref($input, scm_oid_vec_slot),
       &handle, &len, &inc);
   temp_oid = (oid*)calloc(len,sizeof(oid));
@@ -103,7 +182,7 @@ scm_oid_vec_slot = scm_from_locale_symbol("_vec");
 
   if(result){
     int i = 0;
-    SCM newoid = scm_take_u64vector((scm_t_uint64*) $1, *$2);
+    SCM newoid = SCM_TAKE_OIDVECTOR((SCM_T_OID*) $1, *$2);
     gswig_result = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,newoid),SCM_EOL);
   } else {
     free($1);
@@ -222,13 +301,13 @@ scm_oid_vec_slot = scm_from_locale_symbol("_vec");
 
     case ASN_OBJECT_ID:
       {
-        if ( ! scm_is_true(scm_u64vector_p (valscm) )){
+        if ( ! scm_is_true(SCM_OIDVECTOR_P (valscm) )){
           scm_throw(
             scm_string_to_symbol(
               scm_from_locale_string("snmperror")),
             scm_from_locale_string("Data is not an oid"));
         };
-        pointer = (void*) scm_u64vector_elements(valscm, &handle, &len, &iter);
+        pointer = (void*) SCM_OIDVECTOR_ELEMENTS(valscm, &handle, &len, &iter);
       };
       break;
 
@@ -337,7 +416,7 @@ SCM netsnmp_variable_list_value_get(struct variable_list *p) {
         // so we copy it first.
         oid* temp = (oid*)malloc(p->val_len);
         memcpy(temp,(p->val).objid,p->val_len);
-        result = scm_take_u64vector((scm_t_uint64 *)temp, (p->val_len)/sizeof(oid));
+        result = SCM_TAKE_OIDVECTOR((SCM_T_OID *)temp, (p->val_len)/sizeof(oid));
       }; 
       break;
     case ASN_IPADDRESS: 
@@ -454,12 +533,24 @@ oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
 
   (use-modules (oop goops))
   (use-modules (srfi srfi-39))
+  
+  ; The module will hook these up with architecture specific
+  ; srfi-4 routines
+  (define empty-oidvec #f)
+  (define oidvector #f)
+  (define make-oidvector #f)
+  (define oidvector? #f)
+  (define oidvector-length #f)
+  (define list->oidvector #f)
+  (define oidvector->list #f)
+  (define oidvector-ref #f)
+  (define oidvector-set! #f)
 
   (define-class <oid> ()
-    (_vec #:init-value (make-u64vector 0)
+    (_vec #:init-value empty-oidvec
           #:init-keyword #:value))
 
-  (define oid-translate (make-parameter #f))
+  (define oid-translate (make-parameter #t))
 
   (define-method (display (this <oid>) port)
     (if (oid-translate)
@@ -490,12 +581,25 @@ oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
     (equal? a (slot-ref  b '_vec)))
 
   (define-method (oid->list (this <oid>))
-    (uniform-vector->list (slot-ref  this '_vec)))
+    (oidvector->list (slot-ref  this '_vec)))
 
   (define-method (list->oid this)
-    (make <oid> #:value (list->u64vector this)))
+    (make <oid> #:value (list->oidvector this)))
 
-  (export <oid> oid-translate make-oid list->oid oid->list)
+  (export 
+    <oid> 
+    oid-translate
+    oidvector 
+    make-oidvector 
+    oidvector? 
+    oidvector-length
+    list->oidvector 
+    oidvector->list
+    oidvector-ref
+    oidvector-set!
+    list->oid 
+    oid->list 
+    empty-oidvec)
   
   (load-extension "libguile_snmp_net-snmp.so" "scm_init_snmp_net_snmp_module"))
 %}

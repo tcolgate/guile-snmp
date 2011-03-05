@@ -94,12 +94,12 @@
 ; This class is used to represent answers. We use our own dedicated class
 ; to allow free'ing of results, avoid link lists and better allow cacheing
 (define-class <snmp-reports-result> ()
-  (oid #:init-value #u64())
+  (oid #:init-value empty-oidvec)
   (type #:init-value #f)
   (value #:init-value #f)
-  (tag #:init-value #u64())
-  (base #:init-value #u64())
-  (iid #:init-value #u64())
+  (tag #:init-value empty-oidvec)
+  (base #:init-value empty-oidvec)
+  (iid #:init-value empty-oidvec)
   (rawvarbind #:init-value #f))
 
 (define-method (display (this <snmp-reports-result>) port)
@@ -207,7 +207,7 @@
             ; set the iid and tags to gueeses
             (slot-set! (cdr varitem) 'tag (slot-ref (cdr varitem) 'oid))
             (slot-set! (cdr varitem) 'base '())
-            (slot-set! (cdr varitem) 'iid #u64()))))
+            (slot-set! (cdr varitem) 'iid empty-oidvec))))
       result bases)
     (make <snmp-reports-result-set> #:results result)))
 

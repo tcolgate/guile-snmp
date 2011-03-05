@@ -28,7 +28,7 @@
   "find-host: Track a host to the layer2 switch and port it is connected to"
   (let* ((router (one-of l3list))
          (hostipstr (inet-ntoa (car(vector-ref (gethostbyname name) 4))))
-         (hostipoid (list->u64vector (map string->number (string-split hostipstr  #\. )))))
+         (hostipoid (list->oidvector (map string->number (string-split hostipstr  #\. )))))
     (session #:host (router)
       (let* ((arp (walk-on-fail ipNetToMediaPhysAddress))
              (ip (% 2 5 (iid arp)))
