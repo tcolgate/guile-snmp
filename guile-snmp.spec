@@ -4,17 +4,22 @@
 %define home_page    http://github.com/tcolgate/guile-snmp
 %define docprefix    %{prefix}/share
 
-Summary: guile bindings for net-snmp
+Summary: A guile binding for net-snmp
 Name: guile-snmp
 Version: %{ver}
 Release: %{rel}
 URL: %{home_page}
 Source0: %{name}-%{version}.tar.gz
-License: GPL
-Group: Development/Tools
+License: GPLv3
+Group: Applications/System
 BuildRoot: %{_tmppath}/%{name}-root
 
 %description
+
+Guile SNMP is a wrapper for the Net-SNMP libraries. it is intended
+to provide a basic wrapper for direct useage of the Net-SNMP libraries
+from Guile and an easy to use dialect of Scheme targeted at easier
+SNMP reqperting.
 
 %prep
 %setup -q -n %{name}-%{version}
