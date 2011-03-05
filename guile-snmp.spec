@@ -33,10 +33,11 @@ rm -rf ${RPM_BUILD_ROOT}
 
 %files
 %defattr(-,root,root)
-%doc CHANGES INSTALL LICENSE README
+%doc ChangeLog INSTALL COPYING README
 %doc doc/*
 %{_bindir}/*
-%{prefix}/share/*
+%{_libdir}/*
+%{_prefix}/share/*
 
 %changelog
 * Fri Mar 2 2011 Tristan Colgate <tcolgate@gmail.com>
