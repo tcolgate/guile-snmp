@@ -485,6 +485,8 @@ oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
   int currid = 0;
 
   *objidlen = 0;
+  if(tree_node->parent == NULL) return 1;
+
   while(currnode != head)
   {
     *objidlen += 1;
