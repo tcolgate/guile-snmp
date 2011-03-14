@@ -25,6 +25,7 @@ typedef unsigned short u_short;
 #include <net-snmp/mib_api.h>
 #include <net-snmp/pdu_api.h>
 #include <net-snmp/varbind_api.h>
+#include <net-snmp/agent/net-snmp-agent-includes.h>
 #include "snmp_api.h"
 #include "snmp_client.h"
 #include "mib.h"
@@ -523,6 +524,8 @@ oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
 %include "net-snmp/varbind_api.h"
 %include "net-snmp/mib_api.h"
 %include "net-snmp/pdu_api.h"
+#%include "net-snmp/agent/snmp_agent.h"
+#%include "net-snmp/agent/snmp_vars.h"
 
 # we use the local patched version of these
 %include "snmp_api.h"
@@ -603,7 +606,7 @@ oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
     oid->list 
     empty-oidvec)
   
-  (load-extension "libguile_snmp_net-snmp.so" "scm_init_snmp_net_snmp_module"))
+  (load-extension "libguile_snmp_net-snmp" "scm_init_snmp_net_snmp_module"))
 %}
 
 

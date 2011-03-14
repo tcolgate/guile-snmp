@@ -17,8 +17,8 @@ $(builddir)/net-snmp_wrap.c: $(SWIGSOURCES) $(NETSNMPPATCHES) mib.h snmp_client.
 	$(SWIG) $(SWIG_FLAGS) -module net-snmp -o $@ $<
 
 libguile_snmp_net_snmp_la_CFLAGS=@GUILE_CFLAGS@ -I.
-nodist_libguile_snmp_net_snmp_la_SOURCES=$(builddir)/net-snmp_wrap.c $(builddir)/snmp/net-snmp.scm\
-libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module -lsnmp -lnetsnmp
+nodist_libguile_snmp_net_snmp_la_SOURCES=$(builddir)/net-snmp_wrap.c $(builddir)/snmp/net-snmp.scm
+libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module -lsnmp -lnetsnmp -lnetsnmpagent -lnetsnmphelpers -lnetsnmpmibs
 
 SCHEMESOURCES=$(builddir)/snmp/net-snmp.scm\
               snmp/reports.scm\
