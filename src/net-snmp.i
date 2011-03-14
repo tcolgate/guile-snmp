@@ -15,20 +15,8 @@ typedef unsigned short u_short;
 %{
 #include <limits.h>
 #include <net-snmp/net-snmp-config.h>
-#include <net-snmp//net-snmp-includes.h>
-#include <net-snmp/library/transform_oids.h>
-#include <net-snmp/library/snmp_impl.h>
-#include <net-snmp/library/parse.h>
-#include <net-snmp/library/keytools.h>
-#include <net-snmp/types.h>
-#include <net-snmp/session_api.h>
-#include <net-snmp/mib_api.h>
-#include <net-snmp/pdu_api.h>
-#include <net-snmp/varbind_api.h>
+#include <net-snmp/net-snmp-includes.h>
 #include <net-snmp/agent/net-snmp-agent-includes.h>
-#include "snmp_api.h"
-#include "snmp_client.h"
-#include "mib.h"
 
 // These clash with the net-snmp definitons
 #undef PACKAGE_BUGREPORT
