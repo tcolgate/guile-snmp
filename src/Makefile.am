@@ -18,7 +18,8 @@ $(builddir)/net-snmp_wrap.c: $(SWIGSOURCES) $(NETSNMPPATCHES) mib.h snmp_client.
 
 libguile_snmp_net_snmp_la_CFLAGS=@GUILE_CFLAGS@ -I.
 nodist_libguile_snmp_net_snmp_la_SOURCES=$(builddir)/net-snmp_wrap.c $(builddir)/snmp/net-snmp.scm
-libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module -lsnmp -lnetsnmp -lnetsnmpagent -lnetsnmphelpers -lnetsnmpmibs
+#libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module -lsnmp -lnetsnmp -lnetsnmpagent -lnetsnmphelpers -lnetsnmpmibs -L/usr/lib64/perl5/CORE -lperl
+libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module -lsnmp -lnetsnmp 
 
 SCHEMESOURCES=$(builddir)/snmp/net-snmp.scm\
               snmp/reports.scm\
@@ -41,7 +42,7 @@ SUFFIXES = .scm .go
 .scm.go:
 	$(top_srcdir)/build-environ $(GUILE_COMPILE) -o "$@" "$<"
 
-EXTRA_DIST = snmp $(SWIGSOURCES) $(SCHEMESOURCES) $(SCHEMESOURCES2) $(NETSNMPPATCHES)
+EXTRA_DIST = snmp net-snmp_wrap.c $(SWIGSOURCES) $(SCHEMESOURCES) $(SCHEMESOURCES2) $(NETSNMPPATCHES)
 guilesite = @GUILE_SITE@
 guileprefix = @GUILE_PREFIX@
 guilesitesuffix = `echo $(guilesite) | sed -e 's!^$(guileprefix)!!'`
