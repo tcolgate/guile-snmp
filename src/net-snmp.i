@@ -493,9 +493,40 @@ oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
   };
   return 1;
 };
+%}
 
+# Callback Support
+
+%extend snmp_session {
+       const SCM value;
+}
+
+%inline %{
+int guile_snmp_async_response(int op, struct snmp_session *sp, int reqid,
+                     struct snmp_pdu *pdu, void *magic){
+  return 1;
+};
+%}
+
+// Specific implementation of set/get functions
+%{
+
+SCM
+snmp_session_callback_get(struct snmp_session *p) {
+  return (SCM) p->callback_magic;
+};
+
+void
+snmp_session_callback_set(struct snmp_session *p, SCM cb) {
+  p->callback = guile_snmp_async_response;
+  p->callback_magic = cb;
+  return ;
+};
 
 %}
+
+
+# Parse Headers
 
 %include "constants.i"
 %include "renames.i"
