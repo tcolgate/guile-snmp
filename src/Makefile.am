@@ -3,7 +3,7 @@ lib_LTLIBRARIES=libguile_snmp_net-snmp.la
 BUILT_SOURCES=$(builddir)/net-snmp_wrap.c $(builddir)/snmp/net-snmp.scm 
 SWIGSOURCES=net-snmp.i constants.i ignores.i renames.i 
 
-NETSNMPPATCHES=mib.h-patch snmp_client.h-patch snmp_api.h-patch
+NETSNMPPATCHES=mib.h-patch snmp_client.h-patch snmp_api.h-patch snmp_agent.h-patch
 
 realcpu = __@host_cpu@__
 fakecpu = `echo $(realcpu) | sed -e 's!i686!i386!'`
@@ -18,8 +18,8 @@ $(builddir)/net-snmp_wrap.c: $(SWIGSOURCES) $(NETSNMPPATCHES) mib.h snmp_client.
 
 libguile_snmp_net_snmp_la_CFLAGS=@GUILE_CFLAGS@ -I.
 nodist_libguile_snmp_net_snmp_la_SOURCES=$(builddir)/net-snmp_wrap.c $(builddir)/snmp/net-snmp.scm
-#libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module -lsnmp -lnetsnmp -lnetsnmpagent -lnetsnmphelpers -lnetsnmpmibs -L/usr/lib64/perl5/CORE -lperl
-libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module -lsnmp -lnetsnmp 
+libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module -lsnmp -lnetsnmp -lnetsnmpagent -lnetsnmphelpers -lnetsnmpmibs 
+#libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module -lsnmp -lnetsnmp 
 
 SCHEMESOURCES=$(builddir)/snmp/net-snmp.scm\
               snmp/reports.scm\
