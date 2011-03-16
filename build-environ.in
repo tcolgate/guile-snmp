@@ -1,6 +1,6 @@
 #!/bin/sh 
 
-export LD_LIBRARY_PATH=@abs_builddir@/src/.libs:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=@abs_builddir@/src:$LD_LIBRARY_PATH
 export GUILE_LOAD_PATH=@abs_builddir@/src:@abs_srcdir@/src:$GUILE_LOAD_PATH
 export GUILE_LOAD_COMPILED_PATH=@abs_builddir@/src:$GUILE_LOAD_COMPILED_PATH
 export XDG_CACHE_HOME=@abs_builddir@/src/.cache
