@@ -387,7 +387,12 @@ scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-set!"),
   free(pcharp$argnum);
 }
 
+%apply( int *, int *, char ** ){
+  (void *sess, int *clib_errorno, int *snmp_errorno, char **errstring)
+}
 
+
+/* Extend variable list to convert value when read from the struct */
 %extend variable_list {
        const SCM value;
 }
