@@ -3,7 +3,7 @@ lib_LTLIBRARIES=libguile_snmp_net-snmp.la
 BUILT_SOURCES=$(builddir)/net-snmp_wrap.c $(builddir)/snmp/net-snmp.scm 
 SWIGSOURCES=net-snmp.i constants.i ignores.i renames.i 
 
-NETSNMPPATCHES=mib.h-patch snmp_client.h-patch snmp_api.h-patch snmp_agent.h-patch
+NETSNMPPATCHES=mib.h-patch snmp_client.h-patch snmp_api.h-patch
 
 realcpu = __@host_cpu@__
 fakecpu = `echo $(realcpu) | sed -e 's!i686!i386!'`
@@ -12,10 +12,7 @@ SWIG_FLAGS = -D$(fakecpu) -DNET_SNMP_CONFIG_H -guile2 -Linkage module -package s
 mib.h snmp_client.h snmp_api.h: mib.h-patch snmp_client.h-patch snmp_api.h-patch 
 	cp /usr/include/net-snmp/library/$@ . && cat ${top_srcdir}/src/$@-patch |  patch -p0
 
-snmp_agent.h: snmp_agent.h-patch
-	cp /usr/include/net-snmp/agent/$@ . && cat ${top_srcdir}/src/$@-patch |  patch -p0
-
-$(builddir)/net-snmp_wrap.c: $(SWIGSOURCES) $(NETSNMPPATCHES) mib.h snmp_client.h snmp_api.h snmp_agent.h
+$(builddir)/net-snmp_wrap.c: $(SWIGSOURCES) $(NETSNMPPATCHES) mib.h snmp_client.h snmp_api.h 
 	test -d $(builddir)/snmp || mkdir $(builddir)/snmp
 	$(SWIG) $(SWIG_FLAGS) -module net-snmp -o $@ $<
 
@@ -39,7 +36,7 @@ GOBJECTS =
 GOBJECTS2 =
 endif
 
-CLEANFILES = $(GOBJECTS) $(GOBJECTS2) $(BUILT_SOURCES) *.orig mib.h snmp_client.h snmp_api.h snmp_agent.h
+CLEANFILES = $(GOBJECTS) $(GOBJECTS2) $(BUILT_SOURCES) *.orig mib.h snmp_client.h snmp_api.h
 
 SUFFIXES = .scm .go
 .scm.go:

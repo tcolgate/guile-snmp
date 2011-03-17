@@ -43,6 +43,9 @@ SCM scm_class_oid;
 SCM scm_kw_value;
 SCM scm_oid_vec_slot;
 
+/* This is needed by snmp_agent.h */
+int      lastAddrAge;
+
 #if SIZEOF_OID == 8
 #define SCM_T_OID scm_t_uint64
 #define SCM_TAKE_OIDVECTOR  scm_take_u64vector
@@ -553,12 +556,12 @@ snmp_session_callback_set(struct snmp_session *p, SCM cb) {
 %include "net-snmp/pdu_api.h"
 %include "net-snmp/agent/agent_handler.h"
 %include "net-snmp/agent/snmp_vars.h"
+%include "net-snmp/agent/snmp_agent.h"
 
 # we use the local patched version of these
 %include "snmp_api.h"
 %include "snmp_client.h"
 %include "mib.h"
-%include "snmp_agent.h"
 
 %goops %{ 
 
