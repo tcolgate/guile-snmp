@@ -9,7 +9,7 @@ realcpu = __@host_cpu@__
 fakecpu = `echo $(realcpu) | sed -e 's!i686!i386!'`
 SWIG_FLAGS = -D$(fakecpu) -DNET_SNMP_CONFIG_H -guile2 -Linkage module -package snmp -proxy -emit-setters -I/usr/include -outdir $(builddir)
 
-mib.h snmp_client.h snmp_api.h snmp_agent.h: mib.h-patch snmp_client.h-patch snmp_api.h-patch snmp_agent.h-patch
+mib.h snmp_client.h snmp_api.h: mib.h-patch snmp_client.h-patch snmp_api.h-patch 
 	cp /usr/include/net-snmp/library/$@ . && cat ${top_srcdir}/src/$@-patch |  patch -p0
 
 snmp_agent.h: snmp_agent.h-patch
