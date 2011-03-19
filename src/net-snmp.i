@@ -31,6 +31,9 @@ SCM scm_class_oid;
 SCM scm_kw_value;
 SCM scm_oid_vec_slot;
 
+/* This is needed by snmp_agent.h */
+int      lastAddrAge;
+
 #if SIZEOF_OID == 8
 #define SCM_T_OID scm_t_uint64
 #define SCM_TAKE_OIDVECTOR  scm_take_u64vector
@@ -372,7 +375,12 @@ scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-set!"),
   free(pcharp$argnum);
 }
 
+%apply( int *, int *, char ** ){
+  (int *clib_errorno, int *snmp_errorno, char **errstring)
+}
 
+
+/* Extend variable list to convert value when read from the struct */
 %extend variable_list {
        const SCM value;
 }
@@ -497,10 +505,6 @@ oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
 
 # Callback Support
 
-%extend snmp_session {
-       const SCM value;
-}
-
 %inline %{
 int guile_snmp_async_response(int op, struct snmp_session *sp, int reqid,
                      struct snmp_pdu *pdu, void *magic){
@@ -543,8 +547,9 @@ snmp_session_callback_set(struct snmp_session *p, SCM cb) {
 %include "net-snmp/varbind_api.h"
 %include "net-snmp/mib_api.h"
 %include "net-snmp/pdu_api.h"
-#%include "net-snmp/agent/snmp_agent.h"
-#%include "net-snmp/agent/snmp_vars.h"
+%include "net-snmp/agent/agent_handler.h"
+%include "net-snmp/agent/snmp_vars.h"
+%include "net-snmp/agent/snmp_agent.h"
 
 # we use the local patched version of these
 %include "snmp_api.h"

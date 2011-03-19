@@ -32,6 +32,9 @@ AC_SUBST(GUILE_COMPILE)
 AM_CONDITIONAL(HAVE_GUILE_COMPILE, test "$HAVE_GUILE_COMPILE" = 1)
 AM_PROG_CC_C_O
 
+CHECK_NETSNMP_CONFIG
+NETSNMP_FLAGS
+
 AC_CHECK_LIB([snmp], [init_snmp])
 AC_CHECK_LIB([netsnmp], [init_snmp])
 # Checks for header files.
