@@ -1,7 +1,7 @@
 GUILE-SNMP-TEST-MIB DEFINITIONS ::= BEGIN
 
 IMPORTS
-	OBJECT-TYPE, Integer32, experimental,
+	OBJECT-TYPE, Integer32, Counter64, experimental,
 	MODULE-IDENTITY                       FROM SNMPv2-SMI
 	DisplayString                         FROM SNMPv2-TC
 	MODULE-COMPLIANCE, OBJECT-GROUP       FROM SNMPv2-CONF;
@@ -44,13 +44,29 @@ gstTestString  OBJECT-TYPE
 		"A test string"
 	::= { gstMibObjects 2 }
 
+gstTestInt64  OBJECT-TYPE
+	SYNTAX      Counter64
+	MAX-ACCESS  read-write
+	STATUS      current
+	DESCRIPTION
+		"A test 64 bit int "
+	::= { gstMibObjects 3 }
+
+gstTestOid OBJECT-TYPE
+    SYNTAX     OBJECT IDENTIFIER
+    MAX-ACCESS read-write
+    STATUS     current
+    DESCRIPTION
+            "A test objectid"
+    ::= { gstMibObjects 4 }
+
 gstTabATable  OBJECT-TYPE
 	SYNTAX      SEQUENCE OF GstTabAEntry
 	MAX-ACCESS  not-accessible
 	STATUS      current
 	DESCRIPTION
 		"A test table with a single integer index"
-	::= { gstMibObjects 3 }
+	::= { gstMibObjects 5 }
 
 gstTabAEntry  OBJECT-TYPE
 	SYNTAX	GstTabAEntry
@@ -88,7 +104,7 @@ gstTabBTable  OBJECT-TYPE
 	STATUS      current
 	DESCRIPTION
 		"A test table with two indicies"
-	::= { gstMibObjects 4 }
+	::= { gstMibObjects 6 }
 
 gstTabBEntry  OBJECT-TYPE
 	SYNTAX	GstTabBEntry

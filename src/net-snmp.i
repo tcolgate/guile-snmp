@@ -547,9 +547,12 @@ snmp_session_callback_set(struct snmp_session *p, SCM cb) {
 %include "net-snmp/varbind_api.h"
 %include "net-snmp/mib_api.h"
 %include "net-snmp/pdu_api.h"
+
 %include "net-snmp/agent/agent_handler.h"
 %include "net-snmp/agent/snmp_vars.h"
 %include "net-snmp/agent/snmp_agent.h"
+%include "net-snmp/agent/watcher.h"
+%include "net-snmp/agent/instance.h"
 
 # we use the local patched version of these
 %include "snmp_api.h"

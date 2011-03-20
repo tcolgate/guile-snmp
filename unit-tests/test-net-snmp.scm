@@ -19,7 +19,13 @@
 (define-class <test-net-snmp> (<test-case>)
   (testsess #:accessor testsess)
   (oid-syslocation0 #:getter oid-syslocation0
-               #:init-value (list->oid (list 1 3 6 1 2 1 1 6 0))))
+               #:init-value (list->oid (list 1 3 6 1 2 1 1 6 0)))
+  (oid-gstTestInt320 #:getter oid-gstTestInt320
+               #:init-value (list->oid (list 1 3 6 1 3 1977 1 1 0)))
+  (oid-gstTestString0 #:getter oid-gstTestString0
+               #:init-value (list->oid (list 1 3 6 1 3 1977 1 2 0)))
+  (oid-gstTestInt640 #:getter oid-gstTestInt640
+               #:init-value (list->oid (list 1 3 6 1 3 1977 1 3 0))))
 
 (define-method (set-up-test (self <test-net-snmp>))
   (set! (testsess self) (make <snmp-session>))
@@ -33,17 +39,39 @@
   (assert-equal (oid-syslocation0 self)
                 (snmp-parse-oid "sysLocation.0")))
 
-(define-method (test-basic-get (self <test-net-snmp>))
+(define-method (test-basic-get-int32 (self <test-net-snmp>))
   (let* ((ss  (snmp-open (testsess self)))
          (pdu (snmp-pdu-create (SNMP-MSG-GET))))
-    (snmp-add-null-var pdu (oid-syslocation0 self))
+    (snmp-add-null-var pdu (oid-gstTestInt320 self))
     (let* ((status (snmp-synch-response ss pdu))
            (vals   (slot-ref status 'variables)))
-      (assert-equal "Testing Guile-SNMP"
+      (assert-equal 499
                     (slot-ref vals 'value))
       (snmp-free-pdu status)
       (snmp-close ss))))
       
+(define-method (test-basic-get-octetstr (self <test-net-snmp>))
+  (let* ((ss  (snmp-open (testsess self)))
+         (pdu (snmp-pdu-create (SNMP-MSG-GET))))
+    (snmp-add-null-var pdu (oid-gstTestString0 self))
+    (let* ((status (snmp-synch-response ss pdu))
+           (vals   (slot-ref status 'variables)))
+      (assert-equal "Guile-SNMP test string"
+                    (slot-ref vals 'value))
+      (snmp-free-pdu status)
+      (snmp-close ss))))
+
+(define-method (test-basic-get-counter64 (self <test-net-snmp>))
+  (let* ((ss  (snmp-open (testsess self)))
+         (pdu (snmp-pdu-create (SNMP-MSG-GET))))
+    (snmp-add-null-var pdu (oid-gstTestInt640 self))
+    (let* ((status (snmp-synch-response ss pdu))
+           (vals   (slot-ref status 'variables)))
+      (assert-equal 1499
+                    (slot-ref vals 'value))
+      (snmp-free-pdu status)
+      (snmp-close ss))))
+
 (define-method (test-basic-set (self <test-net-snmp>))
   (let* ((ss  (snmp-open (testsess self)))
          (pdu (snmp-pdu-create (SNMP-MSG-SET))))
