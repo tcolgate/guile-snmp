@@ -36,7 +36,8 @@
       (lambda(item)
         (let ((name (car item))
               (node (cdr item)))
-          (session #:host (slot-ref node 'ip) 
+;         (format (current-error-port) "Node: ~A~%" name)
+          (session #:host (slot-ref node 'ip)
                    #:community (slot-ref node 'community)
                    #:version (slot-ref node 'version)
             (let* ((brname   ((get sysName.0)))
@@ -44,14 +45,36 @@
                    (brprio   (prio ((get dot1dStpPriority.0))))
                    (brid     (bridgeid brmac brprio))
                    (brdr     (mac ((get dot1dStpDesignatedRoot.0)))))
-          
-              (format port "br~a[label = \"~a\"];~%" brid name)
-              (if (not (equal? brid brdr))
+
+              (if (equal? brid brdr)
+                (format #t "br~a[label = \"~a\", penwidth = 3];~%" (decolonify brid) name)
                 (let* ((brdrprtid   ((get dot1dStpRootPort.0)))
                        (drprtifindx ((get (+ dot1dBasePortIfIndex brdrprtid))))
                        (drprtname   ((get (+ ifName drprtifindx))))
                        (drprtbr     (mac ((get (+ dot1dStpPortDesignatedBridge brdrprtid))))))
-                   (format port "\"br~a\" -> \"br~a\" [ label = \"~a\" ] ;~%" brid drprtbr drprtname )))))))
+                   (format #t "br~a[label = \"~a\"];~%" (decolonify brid) name)
+                   (begin
+                     ; Draw DR link
+                     (format #t "\"br~a\" -> \"br~a\" [ label = \"~a\" ] ;~%"
+                             (decolonify brid)
+                             (decolonify drprtbr)
+                             (deslashify drprtname) )
+                     (catch 'walkend
+                       (lambda()
+                         (let ((dprtstatefunc (walk-func dot1dStpPortState)))
+                           (let dprtloop ((dprtstate (dprtstatefunc)))
+                             (if (equal? 2 (dprtstate)) ; blocked port 
+                               (let* ((blkprt (iid dprtstate))
+                                      (blkbrid (mac ((get (+ dot1dStpPortDesignatedBridge blkprt)))))
+                                      (blkprtifindex ((get (+ dot1dBasePortIfIndex blkprt))))
+                                      (blkprtname ((get (+ ifName blkprt)))))
+                                 (format #t "\"br~a\" -> \"br~a\" [ label = \"~a\", style = dashed ] ;~%"
+                                         (decolonify brid)
+                                         (decolonify blkbrid)
+                                         (deslashify blkprtname))))
+                             (dprtloop (dprtstatefunc)))))
+                       (lambda(key . args)
+                         #t)))))))))
     nodes)
 
     (format port "}~%"))
@@ -76,3 +99,4 @@ getopt-long-example [options]
           (drawvlan #t)))))
 
 (main (script-arguments))
+
