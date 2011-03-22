@@ -27,11 +27,9 @@
       (format #t "~a:~a" p m))))
 
 (define (drawvlan port)
-  (session #:community "K9gYhRWkXhX3Afx")
-
-    (format port "digraph g {~%")
-    (format port "rankdir=BT~%")
-
+  (format port "digraph g {~%")
+  (format port "rankdir=BT~%")
+  (session #:community "K9gYhRWkXhX3Afx"
     (map 
       (lambda(item)
         (let ((name (car item))
@@ -41,7 +39,10 @@
                    #:community (slot-ref node 'community)
                    #:version (slot-ref node 'version)
             (let* ((brname   ((get sysName.0)))
-                   (brmac    (mac ((get dot1dBaseBridgeAddress.0))))
+                   (brmacval ((get dot1dBaseBridgeAddress.0))))
+              (if (not (equal? 'noSuchObject brmacval))
+              (let*(
+                   (brmac    (mac brmacval))
                    (brprio   (prio ((get dot1dStpPriority.0))))
                    (brid     (bridgeid brmac brprio))
                    (brdr     (mac ((get dot1dStpDesignatedRoot.0)))))
@@ -74,14 +75,15 @@
                                          (deslashify blkprtname))))
                              (dprtloop (dprtstatefunc)))))
                        (lambda(key . args)
-                         #t)))))))))
-    nodes)
+                         #t)))))))))))
+    nodes))
 
-    (format port "}~%"))
+  (format port "}~%"))
 
 (define (main args)
-  (let* ((option-spec '((version (single-char #\v) (value #f))
-                        (help    (single-char #\h) (value #f))))
+  (display (command-line))(newline)
+  (let* ((option-spec '((version (single-char #\v) (value #t))
+                        (help    (single-char #\h) (value #t))))
          (options (getopt-long args option-spec))
          (help-wanted (option-ref options 'help #f))
          (version-wanted (option-ref options 'version #f)))
@@ -95,8 +97,7 @@ getopt-long-example [options]
   -v, --version    Display version
   -h, --help       Display this help
 ")))
-        (begin
-          (drawvlan #t)))))
+        (drawvlan #t))))
 
 (main (script-arguments))
 
