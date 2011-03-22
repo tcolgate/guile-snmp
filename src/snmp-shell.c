@@ -24,7 +24,13 @@
 
 #include "config.h"
 
-int verbose_flag = 0;
+void
+display_help()
+{
+  exit(0);
+};
+
+int help_flag = 0;
 char* opt_defversion = "2c";
 char* opt_defcommunity = "public";
 char* opt_defcontext = "";
@@ -64,6 +70,10 @@ snmp_shell_module (void* arguments)
 
   scm_c_use_module("snmp reports");
   scm_c_eval_string("(init-reports)");
+
+  if(0 != help_flag){
+    display_help();
+  };
 
   if(NULL != opt_defcommunity){
     scm_apply_1(
@@ -141,8 +151,8 @@ inner_main (void *closure, int argc, char **argv)
   while(1){
     int option_index = 0;
     static struct option long_options[] = {
-      {"version"      ,no_argument       ,&verbose_flag ,  1},
-      {"help"         ,no_argument       ,&verbose_flag ,  1},
+      {"version"      ,no_argument       ,&help_flag ,  1},
+      {"help"         ,no_argument       ,&help_flag ,  1},
       {"snmp-version" ,required_argument ,0             ,'v'},
       {"host"         ,required_argument ,0             ,'h'},
       {"community"    ,required_argument ,0             ,'c'},
@@ -161,7 +171,7 @@ inner_main (void *closure, int argc, char **argv)
 
       case 'V':
       case 'H':
-        verbose_flag = 1;
+        help_flag = 1;
         break;
 
       case 'v':
