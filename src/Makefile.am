@@ -3,25 +3,22 @@ lib_LTLIBRARIES=libguile_snmp_net-snmp.la
 BUILT_SOURCES=$(builddir)/net-snmp_wrap.c $(builddir)/snmp/net-snmp.scm 
 SWIGSOURCES=net-snmp.i constants.i ignores.i renames.i 
 
-NETSNMPPATCHES=mib.h-patch snmp_client.h-patch snmp_api.h-patch snmp_agent.h-patch
+NETSNMPPATCHES=mib.h-patch snmp_client.h-patch snmp_api.h-patch
 
 realcpu = __@host_cpu@__
 fakecpu = `echo $(realcpu) | sed -e 's!i686!i386!'`
-SWIG_FLAGS = -D$(fakecpu) -DNET_SNMP_CONFIG_H -guile2 -Linkage module -package snmp -proxy -emit-setters -I/usr/include -outdir $(builddir)
+SWIG_FLAGS = -D$(fakecpu) -DNET_SNMP_CONFIG_H -guile2 -Linkage module -package snmp -proxy -emit-setters -I@NETSNMP_PREFIX@/include -outdir $(builddir)
 
-mib.h snmp_client.h snmp_api.h snmp_agent.h: mib.h-patch snmp_client.h-patch snmp_api.h-patch snmp_agent.h-patch
-	cp /usr/include/net-snmp/library/$@ . && cat ${top_srcdir}/src/$@-patch |  patch -p0
+mib.h snmp_client.h snmp_api.h: mib.h-patch snmp_client.h-patch snmp_api.h-patch 
+	cp @NETSNMP_PREFIX@/include/net-snmp/library/$@ . && cat ${top_srcdir}/src/$@-patch |  patch -p0
 
-snmp_agent.h: snmp_agent.h-patch
-	cp /usr/include/net-snmp/agent/$@ . && cat ${top_srcdir}/src/$@-patch |  patch -p0
-
-$(builddir)/net-snmp_wrap.c: $(SWIGSOURCES) $(NETSNMPPATCHES) mib.h snmp_client.h snmp_api.h snmp_agent.h
+$(builddir)/net-snmp_wrap.c: $(SWIGSOURCES) $(NETSNMPPATCHES) mib.h snmp_client.h snmp_api.h 
 	test -d $(builddir)/snmp || mkdir $(builddir)/snmp
 	$(SWIG) $(SWIG_FLAGS) -module net-snmp -o $@ $<
 
 libguile_snmp_net_snmp_la_CFLAGS=@GUILE_CFLAGS@ -I.
 nodist_libguile_snmp_net_snmp_la_SOURCES=$(builddir)/net-snmp_wrap.c $(builddir)/snmp/net-snmp.scm
-libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module -lsnmp -lnetsnmp -lnetsnmpagent -lnetsnmphelpers -lnetsnmpmibs 
+libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module @NETSNMP_LDFLAGS@ @NETSNMPAGENT_LDFLAGS@
 #libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module -lsnmp -lnetsnmp 
 
 SCHEMESOURCES=$(builddir)/snmp/net-snmp.scm\
@@ -39,7 +36,7 @@ GOBJECTS =
 GOBJECTS2 =
 endif
 
-CLEANFILES = $(GOBJECTS) $(GOBJECTS2) $(BUILT_SOURCES) *.orig mib.h snmp_client.h snmp_api.h snmp_agent.h
+CLEANFILES = $(GOBJECTS) $(GOBJECTS2) $(BUILT_SOURCES) *.orig mib.h snmp_client.h snmp_api.h
 
 SUFFIXES = .scm .go
 .scm.go:

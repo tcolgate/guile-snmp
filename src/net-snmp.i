@@ -15,20 +15,8 @@ typedef unsigned short u_short;
 %{
 #include <limits.h>
 #include <net-snmp/net-snmp-config.h>
-#include <net-snmp//net-snmp-includes.h>
-#include <net-snmp/library/transform_oids.h>
-#include <net-snmp/library/snmp_impl.h>
-#include <net-snmp/library/parse.h>
-#include <net-snmp/library/keytools.h>
-#include <net-snmp/types.h>
-#include <net-snmp/session_api.h>
-#include <net-snmp/mib_api.h>
-#include <net-snmp/pdu_api.h>
-#include <net-snmp/varbind_api.h>
+#include <net-snmp/net-snmp-includes.h>
 #include <net-snmp/agent/net-snmp-agent-includes.h>
-#include "snmp_api.h"
-#include "snmp_client.h"
-#include "mib.h"
 
 // These clash with the net-snmp definitons
 #undef PACKAGE_BUGREPORT
@@ -42,6 +30,9 @@ SCM scm_goops_make;
 SCM scm_class_oid;
 SCM scm_kw_value;
 SCM scm_oid_vec_slot;
+
+/* This is needed by snmp_agent.h */
+int      lastAddrAge;
 
 #if SIZEOF_OID == 8
 #define SCM_T_OID scm_t_uint64
@@ -384,7 +375,12 @@ scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-set!"),
   free(pcharp$argnum);
 }
 
+%apply( int *, int *, char ** ){
+  (int *clib_errorno, int *snmp_errorno, char **errstring)
+}
 
+
+/* Extend variable list to convert value when read from the struct */
 %extend variable_list {
        const SCM value;
 }
@@ -551,8 +547,12 @@ snmp_session_callback_set(struct snmp_session *p, SCM cb) {
 %include "net-snmp/varbind_api.h"
 %include "net-snmp/mib_api.h"
 %include "net-snmp/pdu_api.h"
+
 %include "net-snmp/agent/agent_handler.h"
 %include "net-snmp/agent/snmp_vars.h"
+%include "net-snmp/agent/snmp_agent.h"
+%include "net-snmp/agent/watcher.h"
+%include "net-snmp/agent/instance.h"
 
 # we use the local patched version of these
 %include "snmp_api.h"

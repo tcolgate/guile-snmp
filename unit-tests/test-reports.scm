@@ -56,7 +56,7 @@
                   ((getnext (snmp-parse-oid "gstTestString"))))))
 
 (define-method (test-walk-func (self <test-reports>))
-  (assert-equal '(0 1)
+  (assert-equal '(1 2)
                 (session #:host "127.0.0.1:10161" 
                   (let* ((mywalk (walk-func (snmp-parse-oid "gstTabATable")))
                          (myval1 (value (mywalk)))
@@ -64,12 +64,12 @@
                     (list myval1 myval2)))))
 
 (define-method (test-walk (self <test-reports>))
-  (assert-equal '("tableA row 0" "tableA row 1" "tableA row 2" "tableA row 3" "tableA row 4" "tableA row 5")
+  (assert-equal '("tableA row 1" "tableA row 2" "tableA row 3" "tableA row 4" "tableA row 5")
                 (session #:host "127.0.0.1:10161" 
                   (map (lambda(x)(value x)) (walk (snmp-parse-oid "gstTabAData"))))))
 
 (define-method (test-walk-on-fail (self <test-reports>))
-  (assert-equal '("tableA row 0" "tableA row 1" "tableA row 2" "tableA row 3" "tableA row 4" "tableA row 5")
+  (assert-equal '("tableA row 1" "tableA row 2" "tableA row 3" "tableA row 4" "tableA row 5")
                 (session #:host "127.0.0.1:10161" 
                   (let* ((result (list))
                          (val    (walk-on-fail (snmp-parse-oid "gstTabAData"))))
