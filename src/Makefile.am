@@ -22,8 +22,8 @@ libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module @NETSNMP_LDFLAGS@ @NET
 #libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module -lsnmp -lnetsnmp 
 
 SCHEMESOURCES=$(builddir)/snmp/net-snmp.scm\
-              snmp/reports.scm\
-              snmp/oids.scm
+             $(builddir)/snmp/reports.scm\
+             $(builddir)/snmp/oids.scm
 
 SCHEMESOURCES2=snmp/reports/cache.scm\
                snmp/reports/session.scm
