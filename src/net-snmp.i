@@ -150,14 +150,10 @@ scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-set!"),
   free (temp_oid$argnum);
 }
 
-%apply(const oid* , size_t ){
-  (const oid* objid , size_t objidlen)
-  (const oid* hashtype , u_int hashtype_len)
-}
-
-%apply(const oid* , size_t ){
-  (const oid* name , size_t name_length)
-}
+%apply(const oid* , size_t ){ (const oid* objid , size_t objidlen) };
+%apply(const oid* , size_t ){ (const oid* hashtype , u_int hashtype_len) };
+%apply(const oid* , size_t ){ (const oid* name , size_t name_length) };
+%apply(const oid* , size_t ){ (const oid *reg_oid, size_t reg_oid_len) };
 
 /* A pair of typemaps  to pass oids for write and return the 
   value as output */
@@ -551,9 +547,9 @@ snmp_session_callback_set(struct snmp_session *p, SCM cb) {
 %include "net-snmp/agent/agent_handler.h"
 %include "net-snmp/agent/snmp_vars.h"
 %include "net-snmp/agent/snmp_agent.h"
-%include "net-snmp/agent/watcher.h"
-%include "net-snmp/agent/instance.h"
 %include "net-snmp/agent/snmp_agent.h"
+%include "net-snmp/agent/scalar.h"
+%include "net-snmp/agent/table_dataset.h"
 
 # we use the local patched version of these
 %include "snmp_api.h"
