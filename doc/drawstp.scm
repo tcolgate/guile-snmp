@@ -13,19 +13,19 @@
 (define (mac bytes)
   (with-output-to-string
     (lambda()
-      (format #t "~{~2,'0x~^:~}" (map char->integer (string->list bytes)) ))))
+      (format port "~{~2,'0x~^:~}" (map char->integer (string->list bytes)) ))))
 
 (define (prio int32)
   (let ((inthigh (bit-extract int32 0 7))
         (intlow  (bit-extract int32 8 16)))
     (with-output-to-string
       (lambda()
-        (format #t "~2,'0x:~2,'0x" intlow inthigh )))))
+        (format port "~2,'0x:~2,'0x" intlow inthigh )))))
 
 (define (bridgeid m p)
   (with-output-to-string
     (lambda()
-      (format #t "~a:~a" p m))))
+      (format port "~a:~a" p m))))
 
 (define (decolonify str)
      (regexp-substitute/global #f ":" str 'pre 'post))
@@ -60,19 +60,19 @@
                       (brdr     (mac ((get dot1dStpDesignatedRoot.0)))))
 
                   (if (equal? brid brdr)
-                    (format #t "br~a[label = \"~a\", penwidth = 3];~%" (decolonify brid) name)
+                    (format port "br~a[label = \"~a\", penwidth = 3];~%" (decolonify brid) name)
                     (let* ((brdrprtid   ((get dot1dStpRootPort.0)))
                            (drprtifindx ((get (+ dot1dBasePortIfIndex brdrprtid))))
                            (drprtname   ((get (+ ifName drprtifindx))))
                            (drprtbr     (mac ((get (+ dot1dStpPortDesignatedBridge brdrprtid))))))
-                       (format #t "br~a[label = \"~a\"];~%" (decolonify brid) name)
+                       (format port "br~a[label = \"~a\"];~%" (decolonify brid) name)
                        (begin
                          ; Draw DR link
-                         (format #t "\"br~a\" -> \"br~a\" [ label = \"~a\" ] ;~%"
+                         (format port "\"br~a\" -> \"br~a\" [ label = \"~a\" ] ;~%"
                                  (decolonify brid)
                                  (decolonify drprtbr)
                                  (deslashify drprtname) )
-                         (catch #t
+                         (catch port
                            (lambda()
                              (let ((dprtstatefunc (walk-func dot1dStpPortState)))
                                (let dprtloop ((dprtstate (dprtstatefunc)))
@@ -81,21 +81,21 @@
                                           (blkbrid (mac ((get (+ dot1dStpPortDesignatedBridge blkprt)))))
                                           (blkprtifindex ((get (+ dot1dBasePortIfIndex blkprt))))
                                           (blkprtname ((get (+ ifName blkprt)))))
-                                     (format #t "\"br~a\" -> \"br~a\" [ label = \"~a\", style = dashed ] ;~%"
+                                     (format port "\"br~a\" -> \"br~a\" [ label = \"~a\", style = dashed ] ;~%"
                                              (decolonify brid)
                                              (decolonify blkbrid)
                                              (deslashify blkprtname))))
                              (dprtloop (dprtstatefunc)))))
                            (lambda(key . args)
-                             #t)))))))))))
+                             port)))))))))))
     nodes))
 
   (format port "}~%"))
 
 (define (main args)
   (if (eq? args '())
-   (drawvlan "1" #t)
-   (drawvlan (car args) #t)))
+   (drawvlan "1" port)
+   (drawvlan (car args) port)))
 
 (main (script-arguments))
 
