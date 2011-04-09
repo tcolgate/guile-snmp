@@ -2,8 +2,7 @@
 !#
 
 ; draw a graph of the current spanning tree configuration for 
-; a given vlan This example also uses getopt-long ot process
-; command line arguments.
+; a given vlan 
 
 (use-modules (ice-9 regex))
 
@@ -39,12 +38,12 @@
 (define (drawvlan vlan port)
   (format port "digraph g {~%")
   (format port "rankdir=BT~%")
-  (session #:community "K9gYhRWkXhX3Afx"
+  (session #:community "public"
     (map 
       (lambda(item)
         (let ((name (car item))
               (node (cdr item)))
-         (format (current-error-port) "Node: ~A~%" name)
+          (format (current-error-port) "Node: ~A~%" name)
           (session #:host (slot-ref node 'ip)
                    #:community (if (equal? vlan "1")
                                  (slot-ref node 'community)
