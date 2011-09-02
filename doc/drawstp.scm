@@ -5,6 +5,8 @@
 ; a given vlan This example also uses getopt-long ot process
 ; command line arguments.
 
+(debug-reports #t)
+
 (use-modules (ice-9 regex))
 
 (use-mibs BRIDGE-MIB)

@@ -25,7 +25,8 @@
     set set-or-fail
     fail old-fail one-of iid oid type tag value 
     make-varbind-func tag-varbinds split-varbinds 
-    filter-valid-next reach-each)
+    filter-valid-next reach-each
+    debug-reports)
   #:re-export (
     current-session
     current-community
@@ -49,6 +50,8 @@
            (module-use! (module-public-interface (current-module))
                         (resolve-interface ',(car args)))
            (re-export-modules ,@(cdr args))))))
+
+(define debug-reports (make-parameter #f))
 
 (define-syntax use-mibs
   (syntax-rules ()
@@ -245,6 +248,12 @@
 
 ; Perform an synchronous SNMP query
 (define (synch-query querytype oids)
+  (if (debug-reports) (format (current-error-port) 
+                               "Attempting to perform a ~a for ~a from host ~a using ~a~%~!"
+                              querytype
+                              oids
+                              (current-host)
+                              (current-community))) 
   (let ((crs (list))  ; records retrived from cache
         (cms (list))) ; records not in cache
     (for-each 
