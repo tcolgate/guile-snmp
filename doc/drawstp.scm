@@ -4,6 +4,8 @@
 ; draw a graph of the current spanning tree configuration for 
 ; a given vlan 
 
+(debug-reports #t)
+
 (use-modules (ice-9 regex))
 
 (use-mibs BRIDGE-MIB)
