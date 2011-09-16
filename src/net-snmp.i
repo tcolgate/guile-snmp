@@ -476,25 +476,22 @@ oid_from_varbind(struct variable_list* varbind, oid* objid, size_t* objidlen){
 int
 oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
   struct tree *currnode = tree_node;
-  struct tree *head = get_tree_head();
   int currid = 0;
-
   *objidlen = 0;
-  if(tree_node->parent == NULL) return 1;
 
-  while(currnode != head)
+  while(currnode != NULL)
   {
     *objidlen += 1;
+    if(currnode->parent == NULL) break;
     currnode = currnode->parent;
   };
-  *objidlen += 1;
-
   currnode = tree_node;
-  objid[0] = head->subid;
-  while(currnode != head)
+
+  while(currnode != NULL)
   {
     objid[*objidlen - currid - 1] = currnode->subid;
     currid++;
+    if(currnode->parent == NULL) break;
     currnode = currnode->parent;
   };
   return 1;
