@@ -409,7 +409,9 @@ SCM netsnmp_variable_list_value_get(struct variable_list *p) {
         // so we copy it first.
         oid* temp = (oid*)malloc(p->val_len);
         memcpy(temp,(p->val).objid,p->val_len);
-        result = SCM_TAKE_OIDVECTOR((SCM_T_OID *)temp, (p->val_len)/sizeof(oid));
+        result = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,
+            SCM_TAKE_OIDVECTOR((SCM_T_OID *)temp, (p->val_len)/sizeof(oid))
+          ),SCM_EOL);
       }; 
       break;
     case ASN_IPADDRESS: 
