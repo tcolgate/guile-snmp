@@ -135,7 +135,7 @@ snmp_shell_module (void* arguments)
 
   if(NULL == opt_script && NULL == opt_eval){
     //scm_c_eval_string("(start-repl #:welcome #f)");
-    scm_c_eval_string("(start-repl)");
+    scm_c_eval_string("(start-repl 'scheme)");
   };
 
   return;
