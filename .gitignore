@@ -2,6 +2,9 @@
 compile
 autom4te.cache
 aclocal.m4
+build-environ
+guile-snmp-*.tar.gz
+test-environ
 config.h
 config.h.in~
 config.log
