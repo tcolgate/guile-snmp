@@ -42,7 +42,7 @@ SUFFIXES = .scm .go
 .scm.go:
 	$(top_srcdir)/build-environ $(GUILE_COMPILE) -o "$@" "$<"
 
-EXTRA_DIST = snmp net-snmp_wrap.c $(SWIGSOURCES) $(SCHEMESOURCES) $(SCHEMESOURCES2) $(NETSNMPPATCHES)
+EXTRA_DIST = snmp net-snmp_wrap.c $(SWIGSOURCES) $(SCHEMESOURCES) $(SCHEMESOURCES2) $(NETSNMPPATCHES) mib.h snmp_client.h snmp_api.h
 guilesite = @GUILE_SITE@
 guileprefix = @GUILE_PREFIX@
 guilesitesuffix = `echo $(guilesite) | sed -e 's!^$(guileprefix)!!'`
