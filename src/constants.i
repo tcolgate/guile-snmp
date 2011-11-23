@@ -7,15 +7,15 @@
 //-------------------------------------------------------------------
 
 /* Force the definitions of some consts that swig is missing */
-%constant oid SNMP_MSG_GET = (oid) SNMP_MSG_GET;
-%constant oid SNMP_MSG_GETNEXT = (oid) SNMP_MSG_GETNEXT;
-%constant oid SNMP_MSG_RESPONSE = (oid) SNMP_MSG_RESPONSE;
-%constant oid SNMP_MSG_SET = (oid) SNMP_MSG_SET;
-%constant oid SNMP_MSG_TRAP = (oid) SNMP_MSG_TRAP;
-%constant oid SNMP_MSG_GETBULK = (oid) SNMP_MSG_GETBULK;
-%constant oid SNMP_MSG_INFORM = (oid) SNMP_MSG_INFORM;
-%constant oid SNMP_MSG_TRAP2 = (oid) SNMP_MSG_TRAP2;
-%constant oid SNMP_MSG_REPORT = (oid) SNMP_MSG_REPORT;
+%constant int SNMP_MSG_GET = SNMP_MSG_GET;
+%constant int SNMP_MSG_GETNEXT = SNMP_MSG_GETNEXT;
+%constant int SNMP_MSG_RESPONSE = SNMP_MSG_RESPONSE;
+%constant int SNMP_MSG_SET = SNMP_MSG_SET;
+%constant int SNMP_MSG_TRAP = SNMP_MSG_TRAP;
+%constant int SNMP_MSG_GETBULK = SNMP_MSG_GETBULK;
+%constant int SNMP_MSG_INFORM = SNMP_MSG_INFORM;
+%constant int SNMP_MSG_TRAP2 = SNMP_MSG_TRAP2;
+%constant int SNMP_MSG_REPORT = SNMP_MSG_REPORT;
 %constant int SNMP_NOSUCHOBJECT = (ASN_CONTEXT | ASN_PRIMITIVE | 0x0); /* 80=128 */
 %constant int SNMP_NOSUCHINSTANCE = (ASN_CONTEXT | ASN_PRIMITIVE | 0x1); /* 81=129 */
 %constant int SNMP_ENDOFMIBVIEW = (ASN_CONTEXT | ASN_PRIMITIVE | 0x2); /* 82=130 */

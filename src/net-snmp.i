@@ -539,6 +539,7 @@ snmp_session_callback_set(struct snmp_session *p, SCM cb) {
 %include "net-snmp/library/keytools.h"
 %include "net-snmp/types.h"
 %include "net-snmp/session_api.h"
+%include "net-snmp/output_api.h"
 %include "net-snmp/varbind_api.h"
 %include "net-snmp/mib_api.h"
 %include "net-snmp/pdu_api.h"
