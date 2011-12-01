@@ -68,7 +68,9 @@ snmp_shell_module (void* arguments)
   scm_c_use_module("ice-9 readline");
   scm_c_eval_string("(activate-readline)");
 
-  scm_c_use_module("snmp reports");
+//  scm_c_use_module("snmp reports");
+  scm_c_use_module("snmp net-snmp");
+/*
   scm_c_eval_string("(init-reports)");
 
   if(0 != help_flag){
@@ -133,10 +135,11 @@ snmp_shell_module (void* arguments)
       scm_list_1(scm_c_eval_string(opt_eval)));
   };
 
-  if(NULL == opt_script && NULL == opt_eval){
+*/
+ // if(NULL == opt_script && NULL == opt_eval){
     //scm_c_eval_string("(start-repl #:welcome #f)");
     scm_c_eval_string("(start-repl 'scheme)");
-  };
+ // };
 
   return;
 }
