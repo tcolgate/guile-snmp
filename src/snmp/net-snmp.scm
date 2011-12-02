@@ -85,100 +85,123 @@
 (use-modules (oop goops))
 (use-modules ((snmp net-snmp-primitive) :renamer (symbol-prefix-proc 'primitive:)))
 
-(define oid-from-varbind primitive:oid-from-varbind)
-(define oid-from-tree-node primitive:oid-from-tree-node)
-(define guile-snmp-async-response primitive:guile-snmp-async-response)
-(define SNMP-MSG-GET primitive:SNMP-MSG-GET)
-(define SNMP-MSG-GETNEXT primitive:SNMP-MSG-GETNEXT)
-(define SNMP-MSG-RESPONSE primitive:SNMP-MSG-RESPONSE)
-(define SNMP-MSG-SET primitive:SNMP-MSG-SET)
-(define SNMP-MSG-TRAP primitive:SNMP-MSG-TRAP)
-(define SNMP-MSG-GETBULK primitive:SNMP-MSG-GETBULK)
-(define SNMP-MSG-INFORM primitive:SNMP-MSG-INFORM)
-(define SNMP-MSG-TRAP2 primitive:SNMP-MSG-TRAP2)
-(define SNMP-MSG-REPORT primitive:SNMP-MSG-REPORT)
-(define SNMP-NOSUCHOBJECT primitive:SNMP-NOSUCHOBJECT)
-(define SNMP-NOSUCHINSTANCE primitive:SNMP-NOSUCHINSTANCE)
-(define SNMP-ENDOFMIBVIEW primitive:SNMP-ENDOFMIBVIEW)
-(define STAT-SUCCESS primitive:STAT-SUCCESS)
-(define STAT-ERROR primitive:STAT-ERROR)
-(define STAT-TIMEOUT primitive:STAT-TIMEOUT)
-(define ASN-BOOLEAN primitive:ASN-BOOLEAN)
-(define ASN-INTEGER primitive:ASN-INTEGER)
-(define ASN-BIT-STR primitive:ASN-BIT-STR)
-(define ASN-NULL primitive:ASN-NULL)
-(define ASN-OBJECT-ID primitive:ASN-OBJECT-ID)
-(define ASN-SEQUENCE primitive:ASN-SEQUENCE)
-(define ASN-SET primitive:ASN-SET)
-(define ASN-OCTET-STR primitive:ASN-OCTET-STR)
-(define ASN-IPADDRESS primitive:ASN-IPADDRESS)
-(define ASN-COUNTER primitive:ASN-COUNTER)
-(define ASN-GAUGE primitive:ASN-GAUGE)
-(define ASN-UNSIGNED primitive:ASN-UNSIGNED)
-(define ASN-TIMETICKS primitive:ASN-TIMETICKS)
-(define ASN-OPAQUE primitive:ASN-OPAQUE)
-(define ASN-NSAP primitive:ASN-NSAP)
-(define ASN-COUNTER64 primitive:ASN-COUNTER64)
-(define ASN-UINTEGER primitive:ASN-UINTEGER)
-(define ASN-FLOAT primitive:ASN-FLOAT)
-(define ASN-DOUBLE primitive:ASN-DOUBLE)
-(define ASN-INTEGER64 primitive:ASN-INTEGER64)
-(define ASN-UNSIGNED64 primitive:ASN-UNSIGNED64)
-(define SNMP-PORT primitive:SNMP-PORT)
-(define SNMP-TRAP-PORT primitive:SNMP-TRAP-PORT)
-(define SNMP-MAX-LEN primitive:SNMP-MAX-LEN)
-(define SNMP-MIN-MAX-LEN primitive:SNMP-MIN-MAX-LEN)
-(define SNMP-VERSION-1 primitive:SNMP-VERSION-1)
-(define SNMP-VERSION-2c primitive:SNMP-VERSION-2c)
-(define SNMP-VERSION-2u primitive:SNMP-VERSION-2u)
-(define SNMP-VERSION-3 primitive:SNMP-VERSION-3)
-(define SNMP-VERSION-sec primitive:SNMP-VERSION-sec)
-(define SNMP-VERSION-2p primitive:SNMP-VERSION-2p)
-(define SNMP-VERSION-2star primitive:SNMP-VERSION-2star)
+;(define oid-from-varbind primitive:oid-from-varbind)
+;(define oid-from-tree-node primitive:oid-from-tree-node)
+;(define guile-snmp-async-response primitive:guile-snmp-async-response)
+;(define SNMP-NOSUCHOBJECT primitive:SNMP-NOSUCHOBJECT)
+;(define SNMP-NOSUCHINSTANCE primitive:SNMP-NOSUCHINSTANCE)
+;(define SNMP-ENDOFMIBVIEW primitive:SNMP-ENDOFMIBVIEW)
+;(define STAT-SUCCESS primitive:STAT-SUCCESS)
+;(define STAT-ERROR primitive:STAT-ERROR)
+;(define STAT-TIMEOUT primitive:STAT-TIMEOUT)
+;(define SNMP-PORT primitive:SNMP-PORT)
+;(define SNMP-TRAP-PORT primitive:SNMP-TRAP-PORT)
+;(define SNMP-MAX-LEN primitive:SNMP-MAX-LEN)
+;(define SNMP-MIN-MAX-LEN primitive:SNMP-MIN-MAX-LEN)
+;
 
+(define-class <snmp-constant> ()
+  (value #:init-keyword #:value))
+(define-method (display (this <snmp-constant>) port)
+  (format port "~a(~a)" (class-name (class-of this))(slot-ref this 'value)))
+(define-method (write (this <snmp-constant>) port)
+  (format port "~a(~a)" (class-name (class-of this))(slot-ref this 'value)))
 
-(define-class <snmp-session> ()
-  (version #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-version-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-version-set obj value)))
-  (retries #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-retries-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-retries-set obj value)))
-  (timeout #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-timeout-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-timeout-set obj value)))
-  (subsession #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-subsession-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-subsession-set obj value)))
-  (next #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-next-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-next-set obj value)))
-  (peername #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-peername-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-peername-set obj value)))
-  (remote-port #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-remote-port-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-remote-port-set obj value)))
-  (localname #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-localname-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-localname-set obj value)))
-  (local-port #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-local-port-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-local-port-set obj value)))
-  (community #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-community-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-community-set obj value)))
-  (contextName #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-contextName-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-contextName-set obj value)))
-  #:new-function primitive:new-snmp-session
-)
+(define-syntax define-constant
+  (syntax-rules ()
+    ((_ type name)
+     (begin
+       (define name (make type 
+                          #:value (local-ref (list  
+                          (string->symbol (string-append "primitive:_wrap_" 
+                                          (symbol->string (quote name)))) ))))
+       (export name)))))
 
-(define snmp-sess-init primitive:snmp-sess-init)
-(define snmp-open primitive:snmp-open)
-(define snmp-close primitive:snmp-close)
-(define snmp-close-sessions primitive:snmp-close-sessions)
+(define-class <snmp-version> (<snmp-constant>))
+(define-constant <snmp-version> SNMP-VERSION-1) 
+(define-constant <snmp-version> SNMP-VERSION-2c) 
+(define-constant <snmp-version> SNMP-VERSION-2u) 
+(define-constant <snmp-version> SNMP-VERSION-3) 
+(define-constant <snmp-version> SNMP-VERSION-sec) 
+(define-constant <snmp-version> SNMP-VERSION-2p) 
+(define-constant <snmp-version> SNMP-VERSION-2star) 
 
-(export SNMP-VERSION-2c 
-  <snmp-session> 
-  <oid>)
+(define-class <snmp-msg> (<snmp-constant>))
+(define-constant <snmp-msg> SNMP-MSG-GET)
+(define-constant <snmp-msg> SNMP-MSG-GETNEXT)
+(define-constant <snmp-msg> SNMP-MSG-RESPONSE)
+(define-constant <snmp-msg> SNMP-MSG-SET)
+(define-constant <snmp-msg> SNMP-MSG-TRAP)
+(define-constant <snmp-msg> SNMP-MSG-GETBULK)
+(define-constant <snmp-msg> SNMP-MSG-INFORM)
+(define-constant <snmp-msg> SNMP-MSG-TRAP2)
+(define-constant <snmp-msg> SNMP-MSG-REPORT)
+
+(define-class <asn-type> (<snmp-constant>))
+(define-constant <asn-type> ASN-BOOLEAN)
+(define-constant <asn-type> ASN-INTEGER)
+(define-constant <asn-type> ASN-BIT-STR)
+(define-constant <asn-type> ASN-NULL)
+(define-constant <asn-type> ASN-OBJECT-ID)
+(define-constant <asn-type> ASN-SEQUENCE)
+(define-constant <asn-type> ASN-SET)
+(define-constant <asn-type> ASN-OCTET-STR)
+(define-constant <asn-type> ASN-IPADDRESS)
+(define-constant <asn-type> ASN-COUNTER)
+(define-constant <asn-type> ASN-GAUGE)
+(define-constant <asn-type> ASN-UNSIGNED)
+(define-constant <asn-type> ASN-TIMETICKS)
+(define-constant <asn-type> ASN-OPAQUE)
+(define-constant <asn-type> ASN-NSAP)
+(define-constant <asn-type> ASN-COUNTER6)
+(define-constant <asn-type> ASN-UINTEGE)
+(define-constant <asn-type> ASN-FLOA)
+(define-constant <asn-type> ASN-DOUBL)
+(define-constant <asn-type> ASN-INTEGER6)
+(define-constant <asn-type> ASN-UNSIGNED6)
+
+;(define-class <snmp-session> ()
+;  (version #:allocation #:virtual
+;   #:slot-ref (lambda (obj) (primitive:snmp-session-version-get obj))
+;   #:slot-set! (lambda (obj value) (primitive:snmp-session-version-set obj value)))
+;  (retries #:allocation #:virtual
+;   #:slot-ref (lambda (obj) (primitive:snmp-session-retries-get obj))
+;   #:slot-set! (lambda (obj value) (primitive:snmp-session-retries-set obj value)))
+;  (timeout #:allocation #:virtual
+;   #:slot-ref (lambda (obj) (primitive:snmp-session-timeout-get obj))
+;   #:slot-set! (lambda (obj value) (primitive:snmp-session-timeout-set obj value)))
+;  (subsession #:allocation #:virtual
+;   #:slot-ref (lambda (obj) (primitive:snmp-session-subsession-get obj))
+;   #:slot-set! (lambda (obj value) (primitive:snmp-session-subsession-set obj value)))
+;  (next #:allocation #:virtual
+;   #:slot-ref (lambda (obj) (primitive:snmp-session-next-get obj))
+;   #:slot-set! (lambda (obj value) (primitive:snmp-session-next-set obj value)))
+;  (peername #:allocation #:virtual
+;   #:slot-ref (lambda (obj) (primitive:snmp-session-peername-get obj))
+;   #:slot-set! (lambda (obj value) (primitive:snmp-session-peername-set obj value)))
+;  (remote-port #:allocation #:virtual
+;   #:slot-ref (lambda (obj) (primitive:snmp-session-remote-port-get obj))
+;   #:slot-set! (lambda (obj value) (primitive:snmp-session-remote-port-set obj value)))
+;  (localname #:allocation #:virtual
+;   #:slot-ref (lambda (obj) (primitive:snmp-session-localname-get obj))
+;   #:slot-set! (lambda (obj value) (primitive:snmp-session-localname-set obj value)))
+;  (local-port #:allocation #:virtual
+;   #:slot-ref (lambda (obj) (primitive:snmp-session-local-port-get obj))
+;   #:slot-set! (lambda (obj value) (primitive:snmp-session-local-port-set obj value)))
+;  (community #:allocation #:virtual
+;   #:slot-ref (lambda (obj) (primitive:snmp-session-community-get obj))
+;   #:slot-set! (lambda (obj value) (primitive:snmp-session-community-set obj value)))
+;  (contextName #:allocation #:virtual
+;   #:slot-ref (lambda (obj) (primitive:snmp-session-contextName-get obj))
+;   #:slot-set! (lambda (obj value) (primitive:snmp-session-contextName-set obj value)))
+;  #:new-function primitive:new-snmp-session
+;)
+
+;(define snmp-sess-init primitive:snmp-sess-init)
+;(define snmp-open primitive:snmp-open)
+;(define snmp-close primitive:snmp-close)
+;(define snmp-close-sessions primitive:snmp-close-sessions)
+
+;(export SNMP-VERSION-2c 
+;  <snmp-session> 
+;  <oid>)
