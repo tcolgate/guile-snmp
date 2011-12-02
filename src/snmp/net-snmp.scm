@@ -88,17 +88,6 @@
 ;(define oid-from-varbind primitive:oid-from-varbind)
 ;(define oid-from-tree-node primitive:oid-from-tree-node)
 ;(define guile-snmp-async-response primitive:guile-snmp-async-response)
-;(define SNMP-NOSUCHOBJECT primitive:SNMP-NOSUCHOBJECT)
-;(define SNMP-NOSUCHINSTANCE primitive:SNMP-NOSUCHINSTANCE)
-;(define SNMP-ENDOFMIBVIEW primitive:SNMP-ENDOFMIBVIEW)
-;(define STAT-SUCCESS primitive:STAT-SUCCESS)
-;(define STAT-ERROR primitive:STAT-ERROR)
-;(define STAT-TIMEOUT primitive:STAT-TIMEOUT)
-;(define SNMP-PORT primitive:SNMP-PORT)
-;(define SNMP-TRAP-PORT primitive:SNMP-TRAP-PORT)
-;(define SNMP-MAX-LEN primitive:SNMP-MAX-LEN)
-;(define SNMP-MIN-MAX-LEN primitive:SNMP-MIN-MAX-LEN)
-;
 
 (define-class <snmp-constant> ()
   (value #:init-keyword #:value))
@@ -160,7 +149,16 @@
 (define-constant <asn-type> ASN-INTEGER6)
 (define-constant <asn-type> ASN-UNSIGNED6)
 
+(define-class <snmp-status> (<snmp-constant>))
+(define-constant <snmp-status> SNMP-NOSUCHOBJECT)
+(define-constant <snmp-status> SNMP-NOSUCHINSTANCE)
+(define-constant <snmp-status> SNMP-ENDOFMIBVIEW)
+(define-constant <snmp-status> STAT-SUCCESS)
+(define-constant <snmp-status> STAT-ERROR)
+(define-constant <snmp-status> STAT-TIMEOUT)
+
 ;(define-class <snmp-session> ()
+;
 ;  (version #:allocation #:virtual
 ;   #:slot-ref (lambda (obj) (primitive:snmp-session-version-get obj))
 ;   #:slot-set! (lambda (obj value) (primitive:snmp-session-version-set obj value)))
@@ -202,6 +200,6 @@
 ;(define snmp-close primitive:snmp-close)
 ;(define snmp-close-sessions primitive:snmp-close-sessions)
 
-;(export SNMP-VERSION-2c 
+;(export 
 ;  <snmp-session> 
 ;  <oid>)

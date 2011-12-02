@@ -20,8 +20,6 @@
 #include <config.h>
 
 
-
-
 SCM scm_goops_make;
 SCM scm_class_oid;
 SCM scm_kw_value;
@@ -189,6 +187,7 @@ static oid wrap_const_SNMP_MSG_GETBULK = (oid) SNMP_MSG_GETBULK;
 static oid wrap_const_SNMP_MSG_INFORM = (oid) SNMP_MSG_INFORM;
 static oid wrap_const_SNMP_MSG_TRAP2 = (oid) SNMP_MSG_TRAP2;
 static oid wrap_const_SNMP_MSG_REPORT = (oid) SNMP_MSG_REPORT;
+
 static int wrap_const_SNMP_NOSUCHOBJECT = (ASN_CONTEXT|ASN_PRIMITIVE|0x0);
 static int wrap_const_SNMP_NOSUCHINSTANCE = (ASN_CONTEXT|ASN_PRIMITIVE|0x1);
 static int wrap_const_SNMP_ENDOFMIBVIEW = (ASN_CONTEXT|ASN_PRIMITIVE|0x2);
@@ -217,12 +216,6 @@ static int wrap_const_ASN_FLOAT = (ASN_APPLICATION|8);
 static int wrap_const_ASN_DOUBLE = (ASN_APPLICATION|9);
 static int wrap_const_ASN_INTEGER64 = (ASN_APPLICATION|10);
 static int wrap_const_ASN_UNSIGNED64 = (ASN_APPLICATION|11);
-
-static int wrap_const_SNMP_PORT = 161;
-static int wrap_const_SNMP_TRAP_PORT = 162;
-static int wrap_const_SNMP_MAX_LEN = 1500;
-static int wrap_const_SNMP_MIN_MAX_LEN = 484;
-
 
 static int wrap_const_SNMP_VERSION_1 = 0;
 static int wrap_const_SNMP_VERSION_2c = 1;
@@ -343,157 +336,6 @@ _wrap_guile_snmp_async_response (SCM s_0, SCM s_1, SCM s_2, SCM s_3, SCM s_4)
   return gswig_result;
 #undef FUNC_NAME
 }
-
-
-static SCM
-_wrap_SNMP_NOSUCHOBJECT(SCM s_0)
-{
-#define FUNC_NAME "SNMP-NOSUCHOBJECT"
-  SCM gswig_result;
-  
-  {
-    gswig_result = scm_from_signed_integer(wrap_const_SNMP_NOSUCHOBJECT);
-  }
-  
-  return gswig_result;
-#undef FUNC_NAME
-}
-
-
-static SCM
-_wrap_SNMP_NOSUCHINSTANCE(SCM s_0)
-{
-#define FUNC_NAME "SNMP-NOSUCHINSTANCE"
-  SCM gswig_result;
-  
-  {
-    gswig_result = scm_from_signed_integer(wrap_const_SNMP_NOSUCHINSTANCE);
-  }
-  
-  return gswig_result;
-#undef FUNC_NAME
-}
-
-
-static SCM
-_wrap_SNMP_ENDOFMIBVIEW(SCM s_0)
-{
-#define FUNC_NAME "SNMP-ENDOFMIBVIEW"
-  SCM gswig_result;
-  
-  {
-    gswig_result = scm_from_signed_integer(wrap_const_SNMP_ENDOFMIBVIEW);
-  }
-  
-  return gswig_result;
-#undef FUNC_NAME
-}
-
-
-static SCM
-_wrap_STAT_SUCCESS(SCM s_0)
-{
-#define FUNC_NAME "STAT-SUCCESS"
-  SCM gswig_result;
-  
-  {
-    gswig_result = scm_from_signed_integer(wrap_const_STAT_SUCCESS);
-  }
-  
-  return gswig_result;
-#undef FUNC_NAME
-}
-
-
-static SCM
-_wrap_STAT_ERROR(SCM s_0)
-{
-#define FUNC_NAME "STAT-ERROR"
-  SCM gswig_result;
-  
-  {
-    gswig_result = scm_from_signed_integer(wrap_const_STAT_ERROR);
-  }
-  
-  return gswig_result;
-#undef FUNC_NAME
-}
-
-
-static SCM
-_wrap_STAT_TIMEOUT(SCM s_0)
-{
-#define FUNC_NAME "STAT-TIMEOUT"
-  SCM gswig_result;
-  
-  {
-    gswig_result = scm_from_signed_integer(wrap_const_STAT_TIMEOUT);
-  }
-  
-  return gswig_result;
-#undef FUNC_NAME
-}
-
-
-static SCM
-_wrap_SNMP_PORT(SCM s_0)
-{
-#define FUNC_NAME "SNMP-PORT"
-  SCM gswig_result;
-  
-  {
-    gswig_result = scm_from_signed_integer(wrap_const_SNMP_PORT);
-  }
-  
-  return gswig_result;
-#undef FUNC_NAME
-}
-
-
-static SCM
-_wrap_SNMP_TRAP_PORT(SCM s_0)
-{
-#define FUNC_NAME "SNMP-TRAP-PORT"
-  SCM gswig_result;
-  
-  {
-    gswig_result = scm_from_signed_integer(wrap_const_SNMP_TRAP_PORT);
-  }
-  
-  return gswig_result;
-#undef FUNC_NAME
-}
-
-
-static SCM
-_wrap_SNMP_MAX_LEN(SCM s_0)
-{
-#define FUNC_NAME "SNMP-MAX-LEN"
-  SCM gswig_result;
-  
-  {
-    gswig_result = scm_from_signed_integer(wrap_const_SNMP_MAX_LEN);
-  }
-  
-  return gswig_result;
-#undef FUNC_NAME
-}
-
-
-static SCM
-_wrap_SNMP_MIN_MAX_LEN(SCM s_0)
-{
-#define FUNC_NAME "SNMP-MIN-MAX-LEN"
-  SCM gswig_result;
-  
-  {
-    gswig_result = scm_from_signed_integer(wrap_const_SNMP_MIN_MAX_LEN);
-  }
-  
-  return gswig_result;
-#undef FUNC_NAME
-}
-
 
 
 static SCM
@@ -826,16 +668,12 @@ SWIG_init(void)
   EXPORT_CONSTANT(ASN_INTEGER64 , "ASN-INTEGER64" , scm_from_signed_integer)
   EXPORT_CONSTANT(ASN_UNSIGNED , "ASN-UNSIGNED64" , scm_from_signed_integer)
 
-  scm_c_define_gsubr("SNMP-NOSUCHOBJECT", 0, 0, 0, (void *) _wrap_SNMP_NOSUCHOBJECT);
-  scm_c_define_gsubr("SNMP-NOSUCHINSTANCE", 0, 0, 0, (void *) _wrap_SNMP_NOSUCHINSTANCE);
-  scm_c_define_gsubr("SNMP-ENDOFMIBVIEW", 0, 0, 0, (void *) _wrap_SNMP_ENDOFMIBVIEW);
-  scm_c_define_gsubr("STAT-SUCCESS", 0, 0, 0, (void *) _wrap_STAT_SUCCESS);
-  scm_c_define_gsubr("STAT-ERROR", 0, 0, 0, (void *) _wrap_STAT_ERROR);
-  scm_c_define_gsubr("STAT-TIMEOUT", 0, 0, 0, (void *) _wrap_STAT_TIMEOUT);
-  scm_c_define_gsubr("SNMP-PORT", 0, 0, 0, (void *) _wrap_SNMP_PORT);
-  scm_c_define_gsubr("SNMP-TRAP-PORT", 0, 0, 0, (void *) _wrap_SNMP_TRAP_PORT);
-  scm_c_define_gsubr("SNMP-MAX-LEN", 0, 0, 0, (void *) _wrap_SNMP_MAX_LEN);
-  scm_c_define_gsubr("SNMP-MIN-MAX-LEN", 0, 0, 0, (void *) _wrap_SNMP_MIN_MAX_LEN);
+  EXPORT_CONSTANT(SNMP_NOSUCHOBJECT , "SNMP-NOSUCHOBJECT" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_NOSUCHINSTANCE , "SNMP-NOSUCHINSTANCE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ENDOFMIBVIEW , "SNMP-ENDOFMIBVIEW" , scm_from_signed_integer)
+  EXPORT_CONSTANT(STAT_SUCCESS , "STAT-SUCCESS" , scm_from_signed_integer)
+  EXPORT_CONSTANT(STAT_ERROR , "STAT-ERROR" , scm_from_signed_integer)
+  EXPORT_CONSTANT(STAT_TIMEOUT , "STAT-TIMEOUT" , scm_from_signed_integer)
 
   {
     SCM setter = scm_c_define_gsubr("snmp-session-version-set", 2, 0, 0, (void *) _wrap_snmp_session_version_set);
