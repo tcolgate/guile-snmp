@@ -48,56 +48,65 @@ extern "C" {
 #endif
 
 
-static scm_t_bits snmp_wrap_tag;
+static scm_t_bits snmp_wrap_smob_tag;
+typedef enum snmp_wrap_smob_subtypes {
+  smob_netsnmp_session = 1
+} snmp_wrap_smob_subtypes_e;
 
 static SCM
-make_snmp_wrap_smob (void)
+make_snmp_wrap_smob (snmp_wrap_smob_subtypes_e type, void* wrapstruct)
 {
   SCM smob;
-  struct image *image;
+  //struct image *image;
 
   /* Step 1: Allocate the memory block.
    */
-  image = (struct image *) scm_gc_malloc (sizeof (struct image), "image");
+  // image = (struct image *) scm_gc_malloc (sizeof (struct image), "image");
 
   /* Step 2: Initialize it with straight code.
    */
-  image->width = width;
-  image->height = height;
-  image->pixels = NULL;
-  image->name = SCM_BOOL_F;
-  image->update_func = SCM_BOOL_F;
+  // image->width = width;
+  // image->height = height;
+  // image->pixels = NULL;
+  // image->name = SCM_BOOL_F;
+  // image->update_func = SCM_BOOL_F;
 
   /* Step 3: Create the smob.
    */
-  SCM_NEWSMOB (smob, snmp_wrap_tag, image);
-
+  SCM_NEWSMOB (smob, snmp_wrap_smob_tag, wrapstruct);
+  SCM_SET_SMOB_FLAGS (smob, type);
   /* Step 4: Finish the initialization.
    */
-  image->name = name;
-  image->pixels = scm_gc_malloc_pointerless (width * height, "image pixels");
+  // image->name = name;
+  // image->pixels = scm_gc_malloc_pointerless (width * height, "image pixels");
 
   return smob;
 }
 
+static SCM
+make_snmp_wrap_netsnmp_session_smob(void)
+{
+  return make_snmp_wrap_smob(smob_netsnmp_session,NULL);
+};
+
 SCM
 clear_snmp_wrap_smob (SCM image_smob)
 {
-  int area;
-  struct image *image;
+//  int area;
+//  struct image *image;
 
-  scm_assert_smob_type (image_tag, image_smob);
+//  scm_assert_smob_type (image_tag, image_smob);
 
-  image = (struct image *) SCM_SMOB_DATA (image_smob);
-  area = image->width * image->height;
-  memset (image->pixels, 0, area);
+ // image = (struct image *) SCM_SMOB_DATA (image_smob);
+ // area = image->width * image->height;
+ // memset (image->pixels, 0, area);
 
   /* Invoke the image's update function.
    */
-  if (scm_is_true (image->update_func))
-    scm_call_0 (image->update_func);
+//  if (scm_is_true (image->update_func))
+//    scm_call_0 (image->update_func);
 
-  scm_remember_upto_here_1 (image_smob);
+ // scm_remember_upto_here_1 (image_smob);
 
   return SCM_UNSPECIFIED;
 }
@@ -105,11 +114,11 @@ clear_snmp_wrap_smob (SCM image_smob)
 static int
 print_snmp_wrap_smob (SCM snmp_wrap_smob, SCM port, scm_print_state *pstate)
 {
-  struct image *image = (struct image *) SCM_SMOB_DATA (image_smob);
+//  struct image *image = (struct image *) SCM_SMOB_DATA (image_smob);
 
-  scm_puts ("#<image ", port);
-  scm_display (image->name, port);
-  scm_puts (">", port);
+//  scm_puts ("#<image ", port);
+//  scm_display (image->name, port);
+//  scm_puts (">", port);
 
   /* non-zero means success */
   return 1;
@@ -118,11 +127,12 @@ print_snmp_wrap_smob (SCM snmp_wrap_smob, SCM port, scm_print_state *pstate)
 void
 init_snmp_wrap_smob_type (void)
 {
-  snmp_wrap_tag = scm_make_smob_type ("snmp_wrap", sizeof (struct image));
-  scm_set_smob_print (snmp_wrap_smob_tag, snmp_wrap_smob);
+  snmp_wrap_smob_tag = scm_make_smob_type ("snmp_wrap_smob", sizeof (void*));
+  // scm_set_smob_print (snmp_wrap_smob_tag, snmp_wrap_smob);
 
-  scm_c_define_gsubr ("clear-snmp-wrap-smob", 1, 0, 0, clear_snmp_wrap_smob);
-  scm_c_define_gsubr ("make-snmp-wrap=smob", 0, 0, 0, make_snmp_wrap_smob);
+  scm_c_define_gsubr ("make-snmp-wrap-netsnmp-session-smob", 0, 0, 0, make_snmp_wrap_netsnmp_session_smob);
+  scm_c_export("make-snmp-wrap-netsnmp-session-smob" , NULL);
+//  scm_c_define_gsubr ("clear-snmp-wrap-smob", 1, 0, 0, clear_snmp_wrap_smob);
 }
 
 SCM netsnmp_variable_list_value_get(struct variable_list *p) {
@@ -773,10 +783,10 @@ static void init_snmp_wrap(void *data)
 SCM
 scm_init_snmp_net_snmp_module (void)
 {
-  init_snmp_wrap_smob_type (void)
+  init_snmp_wrap_smob_type();
 
   scm_c_define_module("snmp net-snmp-primitive",
-  SWIG_init_helper, NULL);
+  init_snmp_wrap, NULL);
   return SCM_UNSPECIFIED;
 }
 
