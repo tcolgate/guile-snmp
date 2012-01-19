@@ -47,11 +47,26 @@ int      lastAddrAge;
 extern "C" {
 #endif
 
+typedef SCM (*clear_snmp_wrap_smob_f)(SCM);
+typedef int (*print_snmp_wrap_smob_f)(SCM,SCM,scm_print_state);
+typedef struct snmp_wrap_smob_typedef_s {
+  char *name;
+  clear_snmp_wrap_smob_f clear_func;
+  print_snmp_wrap_smob_f print_func;
+} snmp_wrap_smob_typedef_t;
 
 static scm_t_bits snmp_wrap_smob_tag;
 typedef enum snmp_wrap_smob_subtypes {
-  smob_netsnmp_session = 1
+  smob_netsnmp_session = 0,
+  values,
+  last
 } snmp_wrap_smob_subtypes_e;
+
+snmp_wrap_smob_typedef_t snmp_wrap_smob_types[] = {
+  {"snmp-session", NULL, NULL},
+  {"values", NULL, NULL},
+  {NULL, NULL, NULL}
+};
 
 static SCM
 make_snmp_wrap_smob (snmp_wrap_smob_subtypes_e type, void* wrapstruct)
