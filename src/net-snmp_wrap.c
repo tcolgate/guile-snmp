@@ -47,10 +47,14 @@ int      lastAddrAge;
 extern "C" {
 #endif
 
+typedef void (*init_snmp_wrap_smob_class_f)(void);
+typedef SCM (*make_snmp_wrap_smob_f)(SCM);
 typedef SCM (*clear_snmp_wrap_smob_f)(SCM);
 typedef int (*print_snmp_wrap_smob_f)(SCM,SCM,scm_print_state);
 typedef struct snmp_wrap_smob_typedef_s {
   char *name;
+  init_snmp_wrap_smob_class_f init_func;
+  make_snmp_wrap_smob_f make_func;
   clear_snmp_wrap_smob_f clear_func;
   print_snmp_wrap_smob_f print_func;
 } snmp_wrap_smob_typedef_t;
@@ -63,9 +67,15 @@ typedef enum snmp_wrap_smob_subtypes {
 } snmp_wrap_smob_subtypes_e;
 
 snmp_wrap_smob_typedef_t snmp_wrap_smob_types[] = {
-  {"snmp-session", NULL, NULL},
-  {"values", NULL, NULL},
-  {NULL, NULL, NULL}
+  {"snmp-session", NULL, NULL, NULL, NULL},
+  {"values", NULL, NULL, NULL, NULL},
+  {NULL, NULL, NULL, NULL, NULL}
+};
+
+void
+init_snmp_wrap_classes(void)
+{
+  return ;
 };
 
 static SCM
@@ -777,6 +787,8 @@ static void init_snmp_wrap(void *data)
   EXPORT_CONSTANT(STAT_SUCCESS , "STAT-SUCCESS" , scm_from_signed_integer)
   EXPORT_CONSTANT(STAT_ERROR , "STAT-ERROR" , scm_from_signed_integer)
   EXPORT_CONSTANT(STAT_TIMEOUT , "STAT-TIMEOUT" , scm_from_signed_integer)
+
+  init_snmp_wrap_classes();
 
   {
     SCM setter = scm_c_define_gsubr("snmp-session-version-set", 2, 0, 0, (void *) _wrap_snmp_session_version_set);
