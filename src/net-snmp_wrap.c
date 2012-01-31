@@ -62,8 +62,7 @@ typedef struct snmp_wrap_smob_typedef_s {
 static scm_t_bits snmp_wrap_smob_tag;
 typedef enum snmp_wrap_smob_subtypes {
   smob_netsnmp_session = 0,
-  values,
-  last
+  smob_values
 } snmp_wrap_smob_subtypes_e;
 
 snmp_wrap_smob_typedef_t snmp_wrap_smob_types[] = {
@@ -82,8 +81,6 @@ static SCM
 make_snmp_wrap_smob (snmp_wrap_smob_subtypes_e type, void* wrapstruct)
 {
   SCM smob;
-  //struct image *image;
-
   /* Step 1: Allocate the memory block.
    */
   // image = (struct image *) scm_gc_malloc (sizeof (struct image), "image");
@@ -111,7 +108,8 @@ make_snmp_wrap_smob (snmp_wrap_smob_subtypes_e type, void* wrapstruct)
 static SCM
 make_snmp_wrap_netsnmp_session_smob(void)
 {
-  return make_snmp_wrap_smob(smob_netsnmp_session,NULL);
+  return make_snmp_wrap_smob(smob_netsnmp_session
+		           ,(void*) scm_gc_malloc (sizeof(netsnmp_session), "netsnmp_session"));
 };
 
 SCM
