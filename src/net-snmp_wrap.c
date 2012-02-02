@@ -17,7 +17,7 @@
 #undef PACKAGE_STRING
 #undef PACKAGE_TARNAME
 #undef PACKAGE_VERSION
-#include <config.h>
+#include "config.h"
 
 
 SCM scm_goops_make;
@@ -758,8 +758,6 @@ static void init_snmp_wrap(void *data)
     scm_make_u32vector(scm_from_int(0),SCM_EOL)
   #endif
     );
-  
-#define MAPSRFI4(x) (x) * 57.29578)
   
   SCM netsnmp_module = scm_c_resolve_module("snmp net-snmp");
   SCM srfi4_module = scm_c_resolve_module("srfi srfi-4");
