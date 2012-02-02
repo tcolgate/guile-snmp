@@ -690,10 +690,10 @@ _wrap_snmp_session_community_get (SCM s_0)
 }
 
 
-SCM scm_from_oid(SCM_T_OID *oidarray, int oidlen)
+SCM scm_from_oid(oid *oidarray, int oidlen)
 {
   SCM result = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,
-            SCM_TAKE_OIDVECTOR((SCM_T_OID *)oidarray, oidlen/sizeof(oid))
+            SCM_TAKE_OIDVECTOR((SCM_T_OID*) oidarray, oidlen/sizeof(oid))
           ),SCM_EOL);
 
   return result;
@@ -717,11 +717,13 @@ static SCM
 _wrap_snmp_parse_oid (SCM oidname)
 {
 	
-   size_t *oidlen = (size_t*)scm_gc_malloc_pointerless(sizeof(size_t), "oid stroage");
+   //size_t *oidlen = (size_t*)scm_gc_malloc_pointerless(sizeof(size_t), "oid stroage");
+   size_t *oidlen = (size_t*)malloc(sizeof(size_t));
    *oidlen=MAX_OID_LEN;
-   oid *oidstore = (oid*)scm_gc_malloc_pointerless(*oidlen * sizeof(oid), "oid storage");
+   //oid *oidstore = (oid*)scm_gc_malloc_pointerless(*oidlen * sizeof(oid), "oid storage");
+   oid *oidstore = (oid*)malloc(*oidlen * sizeof(oid));
 
-   oid result = snmp_parse_oid(scm_to_utf8_string(oidname), oidstore, oidlen);
+   oid *result = snmp_parse_oid(scm_to_locale_string(oidname), oidstore, oidlen);
   
    SCM scmresult = SCM_UNSPECIFIED; 
    if(result){
