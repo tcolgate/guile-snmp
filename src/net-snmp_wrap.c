@@ -10,6 +10,7 @@
 
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/net-snmp-includes.h>
+#include <net-snmp/library/snmp.h>
 #include <net-snmp/agent/net-snmp-agent-includes.h>
 // These clash with the net-snmp definitons
 #undef PACKAGE_BUGREPORT
@@ -314,53 +315,75 @@ snmp_session_callback_set(struct snmp_session *p, SCM cb) {
   return ;
 };
 
+#define WRAP_CONSTANT(type, name) \
+static type wrap_const_ ## name = name ;
 
-static oid wrap_const_SNMP_MSG_GET = (oid) SNMP_MSG_GET;
-static oid wrap_const_SNMP_MSG_GETNEXT = (oid) SNMP_MSG_GETNEXT;
-static oid wrap_const_SNMP_MSG_RESPONSE = (oid) SNMP_MSG_RESPONSE;
-static oid wrap_const_SNMP_MSG_SET = (oid) SNMP_MSG_SET;
-static oid wrap_const_SNMP_MSG_TRAP = (oid) SNMP_MSG_TRAP;
-static oid wrap_const_SNMP_MSG_GETBULK = (oid) SNMP_MSG_GETBULK;
-static oid wrap_const_SNMP_MSG_INFORM = (oid) SNMP_MSG_INFORM;
-static oid wrap_const_SNMP_MSG_TRAP2 = (oid) SNMP_MSG_TRAP2;
-static oid wrap_const_SNMP_MSG_REPORT = (oid) SNMP_MSG_REPORT;
+WRAP_CONSTANT(oid , SNMP_MSG_GET)
+WRAP_CONSTANT(oid , SNMP_MSG_GETNEXT)
+WRAP_CONSTANT(oid , SNMP_MSG_RESPONSE)
+WRAP_CONSTANT(oid , SNMP_MSG_SET)
+WRAP_CONSTANT(oid , SNMP_MSG_TRAP)
+WRAP_CONSTANT(oid , SNMP_MSG_GETBULK)
+WRAP_CONSTANT(oid , SNMP_MSG_INFORM)
+WRAP_CONSTANT(oid , SNMP_MSG_TRAP2)
+WRAP_CONSTANT(oid , SNMP_MSG_REPORT)
 
-static int wrap_const_SNMP_NOSUCHOBJECT = (ASN_CONTEXT|ASN_PRIMITIVE|0x0);
-static int wrap_const_SNMP_NOSUCHINSTANCE = (ASN_CONTEXT|ASN_PRIMITIVE|0x1);
-static int wrap_const_SNMP_ENDOFMIBVIEW = (ASN_CONTEXT|ASN_PRIMITIVE|0x2);
-static int wrap_const_STAT_SUCCESS = 0;
-static int wrap_const_STAT_ERROR = 1;
-static int wrap_const_STAT_TIMEOUT = 2;
+WRAP_CONSTANT(int , SNMP_NOSUCHOBJECT)
+WRAP_CONSTANT(int , SNMP_NOSUCHINSTANCE)
+WRAP_CONSTANT(int , SNMP_ENDOFMIBVIEW)
+WRAP_CONSTANT(int , STAT_SUCCESS)
+WRAP_CONSTANT(int , STAT_ERROR)
+WRAP_CONSTANT(int , STAT_TIMEOUT)
 
-static int wrap_const_ASN_BOOLEAN = 1;
-static int wrap_const_ASN_INTEGER = 2;
-static int wrap_const_ASN_BIT_STR = 3;
-static int wrap_const_ASN_NULL = 0x05;
-static int wrap_const_ASN_OBJECT_ID = 0x06;
-static int wrap_const_ASN_SEQUENCE = 0x016;
-static int wrap_const_ASN_SET = 0x017;
-static int wrap_const_ASN_OCTET_STR = 0x04;
-static int wrap_const_ASN_IPADDRESS = (ASN_APPLICATION|0);
-static int wrap_const_ASN_COUNTER = (ASN_APPLICATION|1);
-static int wrap_const_ASN_GAUGE = (ASN_APPLICATION|2);
-static int wrap_const_ASN_UNSIGNED = (ASN_APPLICATION|2);
-static int wrap_const_ASN_TIMETICKS = (ASN_APPLICATION|3);
-static int wrap_const_ASN_OPAQUE = (ASN_APPLICATION|4);
-static int wrap_const_ASN_NSAP = (ASN_APPLICATION|5);
-static int wrap_const_ASN_COUNTER64 = (ASN_APPLICATION|6);
-static int wrap_const_ASN_UINTEGER = (ASN_APPLICATION|7);
-static int wrap_const_ASN_FLOAT = (ASN_APPLICATION|8);
-static int wrap_const_ASN_DOUBLE = (ASN_APPLICATION|9);
-static int wrap_const_ASN_INTEGER64 = (ASN_APPLICATION|10);
-static int wrap_const_ASN_UNSIGNED64 = (ASN_APPLICATION|11);
+WRAP_CONSTANT(int , ASN_BOOLEAN)
+WRAP_CONSTANT(int , ASN_INTEGER)
+WRAP_CONSTANT(int , ASN_BIT_STR)
+WRAP_CONSTANT(int , ASN_NULL)
+WRAP_CONSTANT(int , ASN_OBJECT_ID)
+WRAP_CONSTANT(int , ASN_SEQUENCE)
+WRAP_CONSTANT(int , ASN_SET)
+WRAP_CONSTANT(int , ASN_OCTET_STR)
+WRAP_CONSTANT(int , ASN_IPADDRESS)
+WRAP_CONSTANT(int , ASN_COUNTER)
+WRAP_CONSTANT(int , ASN_GAUGE)
+WRAP_CONSTANT(int , ASN_UNSIGNED)
+WRAP_CONSTANT(int , ASN_TIMETICKS)
+WRAP_CONSTANT(int , ASN_OPAQUE)
+WRAP_CONSTANT(int , ASN_NSAP)
+WRAP_CONSTANT(int , ASN_COUNTER64)
+WRAP_CONSTANT(int , ASN_UINTEGER)
+WRAP_CONSTANT(int , ASN_FLOAT)
+WRAP_CONSTANT(int , ASN_DOUBLE)
+WRAP_CONSTANT(int , ASN_INTEGER64)
+WRAP_CONSTANT(int , ASN_UNSIGNED64)
 
-static int wrap_const_SNMP_VERSION_1 = 0;
-static int wrap_const_SNMP_VERSION_2c = 1;
-static int wrap_const_SNMP_VERSION_2u = 2;
-static int wrap_const_SNMP_VERSION_3 = 3;
-static int wrap_const_SNMP_VERSION_sec = 128;
-static int wrap_const_SNMP_VERSION_2p = 129;
-static int wrap_const_SNMP_VERSION_2star = 130;
+WRAP_CONSTANT(int , SNMP_VERSION_1)
+WRAP_CONSTANT(int , SNMP_VERSION_2c)
+WRAP_CONSTANT(int , SNMP_VERSION_2u)
+WRAP_CONSTANT(int , SNMP_VERSION_3)
+WRAP_CONSTANT(int , SNMP_VERSION_sec)
+WRAP_CONSTANT(int , SNMP_VERSION_2p)
+WRAP_CONSTANT(int , SNMP_VERSION_2star)
+
+WRAP_CONSTANT(int , SNMP_ERR_NOERROR)
+WRAP_CONSTANT(int , SNMP_ERR_TOOBIG)
+WRAP_CONSTANT(int , SNMP_ERR_NOSUCHNAME)
+WRAP_CONSTANT(int , SNMP_ERR_BADVALUE)
+WRAP_CONSTANT(int , SNMP_ERR_READONLY)
+WRAP_CONSTANT(int , SNMP_ERR_GENERR)
+WRAP_CONSTANT(int , SNMP_ERR_NOACCESS)
+WRAP_CONSTANT(int , SNMP_ERR_WRONGTYPE)
+WRAP_CONSTANT(int , SNMP_ERR_WRONGLENGTH)
+WRAP_CONSTANT(int , SNMP_ERR_WRONGENCODING)
+WRAP_CONSTANT(int , SNMP_ERR_WRONGVALUE)
+WRAP_CONSTANT(int , SNMP_ERR_NOCREATION)
+WRAP_CONSTANT(int , SNMP_ERR_INCONSISTENTVALUE)
+WRAP_CONSTANT(int , SNMP_ERR_RESOURCEUNAVAILABLE)
+WRAP_CONSTANT(int , SNMP_ERR_COMMITFAILED)
+WRAP_CONSTANT(int , SNMP_ERR_UNDOFAILED)
+WRAP_CONSTANT(int , SNMP_ERR_AUTHORIZATIONERROR)
+WRAP_CONSTANT(int , SNMP_ERR_NOTWRITABLE)
+WRAP_CONSTANT(int , SNMP_ERR_INCONSISTENTNAME)
 
 _wrap_oid_from_varbind (SCM s_0)
 {
@@ -851,6 +874,26 @@ static void init_snmp_wrap(void *data)
   EXPORT_CONSTANT(STAT_SUCCESS , "STAT-SUCCESS" , scm_from_signed_integer)
   EXPORT_CONSTANT(STAT_ERROR , "STAT-ERROR" , scm_from_signed_integer)
   EXPORT_CONSTANT(STAT_TIMEOUT , "STAT-TIMEOUT" , scm_from_signed_integer)
+
+  EXPORT_CONSTANT(SNMP_ERR_NOERROR , "SNMP-ERR-NOERROR" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_TOOBIG , "SNMP-ERR-TOOBIG" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_NOSUCHNAME , "SNMP-ERR-NOSUCHNAME" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_BADVALUE , "SNMP-ERR-BADVALUE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_READONLY , "SNMP-ERR-READONLY" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_GENERR , "SNMP-ERR-GENERR" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_NOACCESS , "SNMP-ERR-NOACCESS" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_WRONGTYPE , "SNMP-ERR-WRONGTYPE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_WRONGLENGTH , "SNMP-ERR-WRONGLENGTH" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_WRONGENCODING , "SNMP-ERR-WRONGENCODING" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_WRONGVALUE , "SNMP-ERR-WRONGVALUE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_NOCREATION , "SNMP-ERR-NOCREATION" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_INCONSISTENTVALUE , "SNMP-ERR-INCONSISTENTVALUE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_RESOURCEUNAVAILABLE , "SNMP-ERR-RESOURCEUNAVAILABLE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_COMMITFAILED , "SNMP-ERR-COMMITFAILED" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_UNDOFAILED , "SNMP-ERR-UNDOFAILED" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_AUTHORIZATIONERROR , "SNMP-ERR-AUTHORIZATIONERROR" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_NOTWRITABLE , "SNMP-ERR-NOTWRITABLE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_INCONSISTENTNAME , "SNMP-ERR-INCONSISTENTNAME" , scm_from_signed_integer)
 
   init_snmp_wrap_classes();
 
