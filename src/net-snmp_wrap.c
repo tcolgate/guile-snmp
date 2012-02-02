@@ -717,11 +717,9 @@ static SCM
 _wrap_snmp_parse_oid (SCM oidname)
 {
 	
-   //size_t *oidlen = (size_t*)scm_gc_malloc_pointerless(sizeof(size_t), "oid stroage");
-   size_t *oidlen = (size_t*)malloc(sizeof(size_t));
+   size_t *oidlen = (size_t*)scm_gc_malloc_pointerless(sizeof(size_t), "oid stroage");
    *oidlen=MAX_OID_LEN;
-   //oid *oidstore = (oid*)scm_gc_malloc_pointerless(*oidlen * sizeof(oid), "oid storage");
-   oid *oidstore = (oid*)malloc(*oidlen * sizeof(oid));
+   oid *oidstore = (oid*)scm_gc_malloc_pointerless(*oidlen * sizeof(oid), "oid storage");
 
    oid *result = snmp_parse_oid(scm_to_locale_string(oidname), oidstore, oidlen);
   
