@@ -693,7 +693,7 @@ _wrap_snmp_session_community_get (SCM s_0)
 SCM scm_from_oid(oid *oidarray, int oidlen)
 {
   SCM result = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,
-            SCM_TAKE_OIDVECTOR((SCM_T_OID*) oidarray, oidlen/sizeof(oid))
+            SCM_TAKE_OIDVECTOR((SCM_T_OID*) oidarray, oidlen)
           ),SCM_EOL);
 
   return result;
