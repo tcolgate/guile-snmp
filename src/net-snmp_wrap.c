@@ -61,11 +61,13 @@ typedef struct snmp_wrap_smob_typedef_s {
 
 static scm_t_bits snmp_wrap_smob_tag;
 typedef enum snmp_wrap_smob_subtypes {
-  smob_netsnmp_session = 0,
+  smob_oid = 0,
+  smob_netsnmp_session,
   smob_values
 } snmp_wrap_smob_subtypes_e;
 
 snmp_wrap_smob_typedef_t snmp_wrap_smob_types[] = {
+  {"oid", NULL, NULL, NULL, NULL},
   {"snmp-session", NULL, NULL, NULL, NULL},
   {"values", NULL, NULL, NULL, NULL},
   {NULL, NULL, NULL, NULL, NULL}
@@ -157,6 +159,30 @@ init_snmp_wrap_smob_type (void)
   scm_c_export("make-snmp-wrap-netsnmp-session-smob" , NULL);
 //  scm_c_define_gsubr ("clear-snmp-wrap-smob", 1, 0, 0, clear_snmp_wrap_smob);
 }
+
+static SCM
+make_snmp_wrap_oid_smob(void)
+{
+  return make_snmp_wrap_smob(smob_oid
+		           ,(void*) scm_gc_malloc (sizeof(netsnmp_session), "netsnmp_session"));
+  SCM smob;
+  /* Step 1: Allocate the memory block.
+   */
+  SCM oidscm;
+
+  /* Step 2: Initialize it with straight code.
+   */
+
+  /* Step 3: Create the smob.
+   */
+  SCM_NEWSMOB (smob, snmp_wrap_smob_tag, oidscm);
+  SCM_SET_SMOB_FLAGS (smob, smob_oid);
+  /* Step 4: Finish the initialization.
+   */
+  // image->pixels = scm_gc_malloc_pointerless (width * height, "image pixels");
+
+  return smob;
+};
 
 SCM netsnmp_variable_list_value_get(struct variable_list *p) {
   SCM result = SCM_UNSPECIFIED;
@@ -664,6 +690,48 @@ _wrap_snmp_session_community_get (SCM s_0)
 }
 
 
+SCM scm_from_oid(SCM_T_OID *oidarray, int oidlen)
+{
+  SCM result = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,
+            SCM_TAKE_OIDVECTOR((SCM_T_OID *)oidarray, oidlen/sizeof(oid))
+          ),SCM_EOL);
+
+  return result;
+}
+
+static SCM
+_wrap_init_snmp (SCM name)
+{
+  init_snmp(scm_to_utf8_string (name));
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_init_mib (void)
+{
+  init_mib();
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_snmp_parse_oid (SCM oidname)
+{
+	
+   size_t *oidlen = (size_t*)scm_gc_malloc_pointerless(sizeof(size_t), "oid stroage");
+   *oidlen=MAX_OID_LEN;
+   oid *oidstore = (oid*)scm_gc_malloc_pointerless(*oidlen * sizeof(oid), "oid storage");
+
+   oid result = snmp_parse_oid(scm_to_utf8_string(oidname), oidstore, oidlen);
+  
+   SCM scmresult = SCM_UNSPECIFIED; 
+   if(result){
+     scmresult = scm_from_oid(oidstore,*oidlen);
+   }; 
+     
+   return scmresult;
+}
+
+
 static void init_snmp_wrap(void *data)
 {
 
@@ -788,21 +856,26 @@ static void init_snmp_wrap(void *data)
 
   init_snmp_wrap_classes();
 
-  {
-    SCM setter = scm_c_define_gsubr("snmp-session-version-set", 2, 0, 0, (void *) _wrap_snmp_session_version_set);
-    SCM getter = scm_c_define_gsubr("snmp-session-version-get", 1, 0, 0, (void *) _wrap_snmp_session_version_get);
-    scm_c_define("snmp-session-version", scm_make_procedure_with_setter(getter, setter));
-  }
-  {
-    SCM setter = scm_c_define_gsubr("snmp-session-peername-set", 2, 0, 0, (void *) _wrap_snmp_session_peername_set);
-    SCM getter = scm_c_define_gsubr("snmp-session-peername-get", 1, 0, 0, (void *) _wrap_snmp_session_peername_get);
-    scm_c_define("snmp-session-peername", scm_make_procedure_with_setter(getter, setter));
-  }
-  {
-    SCM setter = scm_c_define_gsubr("snmp-session-community-set", 2, 0, 0, (void *) _wrap_snmp_session_community_set);
-    SCM getter = scm_c_define_gsubr("snmp-session-community-get", 1, 0, 0, (void *) _wrap_snmp_session_community_get);
-    scm_c_define("snmp-session-community", scm_make_procedure_with_setter(getter, setter));
-  }
+  scm_c_define_gsubr("init-mib", 0, 0, 0, (void *) _wrap_init_mib);
+  scm_c_export("init-mib" , NULL);
+
+  scm_c_define_gsubr("init-snmp", 1, 0, 0, (void *) _wrap_init_snmp);
+  scm_c_export("init-snmp" , NULL);
+
+  scm_c_define_gsubr("snmp-parse-oid", 1, 0, 0, (void *) _wrap_snmp_parse_oid);
+  scm_c_export("snmp-parse-oid" , NULL);
+
+  scm_c_define("snmp-session-version", scm_make_procedure_with_setter(
+    scm_c_define_gsubr("snmp-session-version-get", 1, 0, 0, (void *) _wrap_snmp_session_version_get),
+    scm_c_define_gsubr("snmp-session-version-set", 2, 0, 0, (void *) _wrap_snmp_session_version_set)));
+
+  scm_c_define("snmp-session-peername", scm_make_procedure_with_setter(
+    scm_c_define_gsubr("snmp-session-peername-get", 1, 0, 0, (void *) _wrap_snmp_session_peername_get),
+    scm_c_define_gsubr("snmp-session-peername-set", 2, 0, 0, (void *) _wrap_snmp_session_peername_set)));
+
+  scm_c_define("snmp-session-community", scm_make_procedure_with_setter(
+    scm_c_define_gsubr("snmp-session-community-get", 1, 0, 0, (void *) _wrap_snmp_session_community_get),
+    scm_c_define_gsubr("snmp-session-community-set", 2, 0, 0, (void *) _wrap_snmp_session_community_set)));
 }
 
 SCM
@@ -810,8 +883,7 @@ scm_init_snmp_net_snmp_module (void)
 {
   init_snmp_wrap_smob_type();
 
-  scm_c_define_module("snmp net-snmp-primitive",
-  init_snmp_wrap, NULL);
+  scm_c_define_module("snmp net-snmp-primitive", init_snmp_wrap, NULL);
   return SCM_UNSPECIFIED;
 }
 

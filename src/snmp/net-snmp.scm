@@ -11,7 +11,7 @@
 
   (use-modules (oop goops))
   (use-modules (srfi srfi-39))
-  
+
   ; The module will hook these up with architecture specific
   ; srfi-4 routines
   (define empty-oidvec #f)
@@ -25,44 +25,44 @@
   (define oidvector-set! #f)
 
   (define-class <oid> ()
-    (_vec #:init-value empty-oidvec
-          #:init-keyword #:value))
+		(_vec #:init-value empty-oidvec
+		      #:init-keyword #:value))
 
-  (define oid-translate (make-parameter #t))
+  (define oid-translate (make-parameter #f))
 
-;  (define-method (display (this <oid>) port)
-;    (if (oid-translate)
-;      (let* ((node     (get-tree this (get-tree-head)))
-;             (basename (slot-ref node 'label))
-;             (diff     (- (oid-from-tree-node node) this)))
-;        (format port "~a~{.~d~}" basename (oid->list diff)))
-;      (format port "~{.~d~}" (oid->list this))))
-;
-;  (define-method (write (this <oid>) port)
-;    (if (oid-translate)
-;      (let* ((node     (get-tree this (get-tree-head)))
-;             (basename (slot-ref node 'label))
-;             (diff     (- (oid-from-tree-node node) this)))
-;        (format port "#<oid: ~a~{.~d~}>#" basename (oid->list  diff)))
-;      (format port "#<oid: ~{.~d~}>#" (oid->list this))))
+  ;  (define-method (display (this <oid>) port)
+  ;    (if (oid-translate)
+  ;      (let* ((node     (get-tree this (get-tree-head)))
+  ;             (basename (slot-ref node 'label))
+  ;             (diff     (- (oid-from-tree-node node) this)))
+  ;        (format port "~a~{.~d~}" basename (oid->list diff)))
+  ;      (format port "~{.~d~}" (oid->list this))))
+  ;
+  ;  (define-method (write (this <oid>) port)
+  ;    (if (oid-translate)
+  ;      (let* ((node     (get-tree this (get-tree-head)))
+  ;             (basename (slot-ref node 'label))
+  ;             (diff     (- (oid-from-tree-node node) this)))
+  ;        (format port "#<oid: ~a~{.~d~}>#" basename (oid->list  diff)))
+  ;      (format port "#<oid: ~{.~d~}>#" (oid->list this))))
 
   (define-method (equal? (a <oid>) (b <oid>))
-    (equal? (slot-ref a '_vec) (slot-ref  b '_vec)))
+		 (equal? (slot-ref a '_vec) (slot-ref  b '_vec)))
 
   (define-method (equal? (a <oid>) b)
-    (equal? (slot-ref a '_vec) b))
+		 (equal? (slot-ref a '_vec) b))
 
   (define-method (equal? (a <oid>) b)
-    (equal? (slot-ref a '_vec) b))
+		 (equal? (slot-ref a '_vec) b))
 
   (define-method (equal? a (b <oid>))
-    (equal? a (slot-ref  b '_vec)))
+		 (equal? a (slot-ref  b '_vec)))
 
   (define-method (oid->list (this <oid>))
-    (oidvector->list (slot-ref  this '_vec)))
+		 (oidvector->list (slot-ref  this '_vec)))
 
   (define-method (list->oid this)
-    (make <oid> #:value (list->oidvector this)))
+		 (make <oid> #:value (list->oidvector this)))
 
   (export 
     <oid> 
@@ -78,7 +78,7 @@
     list->oid 
     oid->list 
     empty-oidvec)
-  
+
   (load-extension "libguile_snmp_net-snmp" "scm_init_snmp_net_snmp_module"))
 
 
@@ -157,6 +157,7 @@
 (define-constant <snmp-status> STAT-ERROR)
 (define-constant <snmp-status> STAT-TIMEOUT)
 
+
 ;(define-class <snmp-session> ()
 ;
 ;  (version #:allocation #:virtual
@@ -199,6 +200,15 @@
 ;(define snmp-open primitive:snmp-open)
 ;(define snmp-close primitive:snmp-close)
 ;(define snmp-close-sessions primitive:snmp-close-sessions)
+;
+(define init-mib primitive:init-mib)
+(define init-snmp primitive:init-snmp)
+(define snmp-parse-oid primitive:snmp-parse-oid)
+
+(export 
+  init-mib
+  init-snmp
+  snmp-parse-oid)
 
 ;(export 
 ;  <snmp-session> 
