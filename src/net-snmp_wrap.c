@@ -62,14 +62,14 @@ typedef struct snmp_wrap_smob_typedef_s {
 
 static scm_t_bits snmp_wrap_smob_tag;
 typedef enum snmp_wrap_smob_subtypes {
-  smob_oid = 0,
-  smob_netsnmp_session,
+  smob_netsnmp_session = 0,
+  smob_tree_node,
   smob_values
 } snmp_wrap_smob_subtypes_e;
 
 snmp_wrap_smob_typedef_t snmp_wrap_smob_types[] = {
-  {"oid", NULL, NULL, NULL, NULL},
   {"snmp-session", NULL, NULL, NULL, NULL},
+  {"tree-node", NULL, NULL, NULL, NULL},
   {"values", NULL, NULL, NULL, NULL},
   {NULL, NULL, NULL, NULL, NULL}
 };
@@ -160,30 +160,6 @@ init_snmp_wrap_smob_type (void)
   scm_c_export("make-snmp-wrap-netsnmp-session-smob" , NULL);
 //  scm_c_define_gsubr ("clear-snmp-wrap-smob", 1, 0, 0, clear_snmp_wrap_smob);
 }
-
-static SCM
-make_snmp_wrap_oid_smob(void)
-{
-  return make_snmp_wrap_smob(smob_oid
-		           ,(void*) scm_gc_malloc (sizeof(netsnmp_session), "netsnmp_session"));
-  SCM smob;
-  /* Step 1: Allocate the memory block.
-   */
-  SCM oidscm;
-
-  /* Step 2: Initialize it with straight code.
-   */
-
-  /* Step 3: Create the smob.
-   */
-  SCM_NEWSMOB (smob, snmp_wrap_smob_tag, oidscm);
-  SCM_SET_SMOB_FLAGS (smob, smob_oid);
-  /* Step 4: Finish the initialization.
-   */
-  // image->pixels = scm_gc_malloc_pointerless (width * height, "image pixels");
-
-  return smob;
-};
 
 SCM netsnmp_variable_list_value_get(struct variable_list *p) {
   SCM result = SCM_UNSPECIFIED;
@@ -832,10 +808,6 @@ static void init_snmp_wrap(void *data)
   EXPORT_CONSTANT(SNMP_VERSION_2p, "SNMP-VERSION-2p" , scm_from_signed_integer)
   EXPORT_CONSTANT(SNMP_VERSION_2star, "SNMP-VERSION-2star" , scm_from_signed_integer)
 
-  scm_c_define_gsubr("oid-from-varbind", 1, 0, 0, (void *) _wrap_oid_from_varbind);
-  scm_c_define_gsubr("oid-from-tree-node", 1, 0, 0, (void *) _wrap_oid_from_tree_node);
-  scm_c_define_gsubr("guile-snmp-async-response", 5, 0, 0, (void *) _wrap_guile_snmp_async_response);
-
   EXPORT_CONSTANT(SNMP_MSG_GET, "SNMP-MSG-GET" , scm_from_ulong)
   EXPORT_CONSTANT(SNMP_MSG_GETNEXT, "SNMP-MSG-GETNEXT" , scm_from_ulong)
   EXPORT_CONSTANT(SNMP_MSG_RESPONSE, "SNMP-MSG-RESPONSE" , scm_from_ulong)
@@ -896,6 +868,10 @@ static void init_snmp_wrap(void *data)
   EXPORT_CONSTANT(SNMP_ERR_INCONSISTENTNAME , "SNMP-ERR-INCONSISTENTNAME" , scm_from_signed_integer)
 
   init_snmp_wrap_classes();
+
+  scm_c_define_gsubr("oid-from-varbind", 1, 0, 0, (void *) _wrap_oid_from_varbind);
+  scm_c_define_gsubr("oid-from-tree-node", 1, 0, 0, (void *) _wrap_oid_from_tree_node);
+  scm_c_define_gsubr("guile-snmp-async-response", 5, 0, 0, (void *) _wrap_guile_snmp_async_response);
 
   scm_c_define_gsubr("init-mib", 0, 0, 0, (void *) _wrap_init_mib);
   scm_c_export("init-mib" , NULL);
