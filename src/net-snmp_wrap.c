@@ -63,13 +63,13 @@ typedef struct snmp_wrap_smob_typedef_s {
 static scm_t_bits snmp_wrap_smob_tag;
 typedef enum snmp_wrap_smob_subtypes {
   smob_netsnmp_session = 0,
-  smob_tree_node,
+  smob_tree,
   smob_values
 } snmp_wrap_smob_subtypes_e;
 
 snmp_wrap_smob_typedef_t snmp_wrap_smob_types[] = {
   {"snmp-session", NULL, NULL, NULL, NULL},
-  {"tree-node", NULL, NULL, NULL, NULL},
+  {"tree", NULL, NULL, NULL, NULL},
   {"values", NULL, NULL, NULL, NULL},
   {NULL, NULL, NULL, NULL, NULL}
 };
@@ -108,13 +108,6 @@ make_snmp_wrap_smob (snmp_wrap_smob_subtypes_e type, void* wrapstruct)
   return smob;
 }
 
-static SCM
-make_snmp_wrap_netsnmp_session_smob(void)
-{
-  return make_snmp_wrap_smob(smob_netsnmp_session
-		           ,(void*) scm_gc_malloc (sizeof(netsnmp_session), "netsnmp_session"));
-};
-
 SCM
 clear_snmp_wrap_smob (SCM image_smob)
 {
@@ -149,6 +142,18 @@ print_snmp_wrap_smob (SCM snmp_wrap_smob, SCM port, scm_print_state *pstate)
   /* non-zero means success */
   return 1;
 }
+
+static SCM
+make_snmp_wrap_netsnmp_session_smob(void)
+{
+  return make_snmp_wrap_smob(smob_netsnmp_session
+		           ,(void*) scm_gc_malloc (sizeof(netsnmp_session), "netsnmp_session"));
+};
+
+make_snmp_wrap_tree_smob_from_ptr(struct tree *ptr)
+{
+  return make_snmp_wrap_smob(smob_tree ,(void*) ptr);
+};
 
 void
 init_snmp_wrap_smob_type (void)
@@ -730,6 +735,12 @@ _wrap_snmp_parse_oid (SCM oidname)
    return scmresult;
 }
 
+static SCM
+_wrap_get_tree_head (void)
+{
+   return make_snmp_wrap_tree_smob_from_ptr(get_tree_head());
+}
+
 
 static void init_snmp_wrap(void *data)
 {
@@ -881,6 +892,9 @@ static void init_snmp_wrap(void *data)
 
   scm_c_define_gsubr("snmp-parse-oid", 1, 0, 0, (void *) _wrap_snmp_parse_oid);
   scm_c_export("snmp-parse-oid" , NULL);
+
+  scm_c_define_gsubr("get-tree-head", 0, 0, 0, (void *) _wrap_get_tree_head);
+  scm_c_export("get-tree-head" , NULL);
 
   scm_c_define("snmp-session-version", scm_make_procedure_with_setter(
     scm_c_define_gsubr("snmp-session-version-get", 1, 0, 0, (void *) _wrap_snmp_session_version_get),

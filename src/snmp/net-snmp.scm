@@ -81,7 +81,6 @@
 
   (load-extension "libguile_snmp_net-snmp" "scm_init_snmp_net_snmp_module"))
 
-
 (use-modules (oop goops))
 (use-modules ((snmp net-snmp-primitive) :renamer (symbol-prefix-proc 'primitive:)))
 
@@ -220,15 +219,19 @@
 ;(define snmp-open primitive:snmp-open)
 ;(define snmp-close primitive:snmp-close)
 ;(define snmp-close-sessions primitive:snmp-close-sessions)
-;
-(define init-mib primitive:init-mib)
-(define init-snmp primitive:init-snmp)
-(define snmp-parse-oid primitive:snmp-parse-oid)
 
-(export 
-  init-mib
-  init-snmp
-  snmp-parse-oid)
+(define-macro (re-export name)
+  `(begin
+     (define ,name ,(string->symbol
+		       (string-append
+		         "primitive:"
+		         (symbol->string name))))
+     (export ,name)))
+
+(re-export init-mib)
+(re-export init-snmp)
+(re-export snmp-parse-oid)
+(re-export get-tree-head)
 
 ;(export 
 ;  <snmp-session> 
