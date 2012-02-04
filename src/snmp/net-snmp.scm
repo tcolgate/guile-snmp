@@ -206,9 +206,6 @@
 ;  (local-port #:allocation #:virtual
 ;   #:slot-ref (lambda (obj) (primitive:snmp-session-local-port-get obj))
 ;   #:slot-set! (lambda (obj value) (primitive:snmp-session-local-port-set obj value)))
-;  (community #:allocation #:virtual
-;   #:slot-ref (lambda (obj) (primitive:snmp-session-community-get obj))
-;   #:slot-set! (lambda (obj value) (primitive:snmp-session-community-set obj value)))
 ;  (contextName #:allocation #:virtual
 ;   #:slot-ref (lambda (obj) (primitive:snmp-session-contextName-get obj))
 ;   #:slot-set! (lambda (obj value) (primitive:snmp-session-contextName-set obj value)))
@@ -219,6 +216,15 @@
 ;(define snmp-open primitive:snmp-open)
 ;(define snmp-close primitive:snmp-close)
 ;(define snmp-close-sessions primitive:snmp-close-sessions)
+
+(define-class <tree> (primitive:<tree-ptr>))
+(export <tree>)
+
+(define-class <snmp-session> (primitive:<snmp-session-ptr>))
+(export <snmp-session>)
+
+(define-class <values> (primitive:<values-ptr>))
+(export <values>)
 
 (define-macro (re-export name)
   `(begin
@@ -232,6 +238,7 @@
 (re-export init-snmp)
 (re-export snmp-parse-oid)
 (re-export get-tree-head)
+
 
 ;(export 
 ;  <snmp-session> 

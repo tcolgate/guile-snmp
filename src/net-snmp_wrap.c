@@ -58,19 +58,21 @@ typedef struct wrap_smob_typedef_s {
   mark_wrap_smob_f mark_func;
   print_wrap_smob_f print_func;
   equalp_wrap_smob_f equalp_func;
+  SCM ptrclass;
 } wrap_smob_typedef_t;
 
 static scm_t_bits snmp_wrap_smob_tag;
 typedef enum snmp_wrap_smob_subtypes {
   smob_netsnmp_session = 0,
   smob_tree,
-  smob_values
+  smob_valuesi,
+  smob_last
 } snmp_wrap_smob_subtypes_e;
 
 wrap_smob_typedef_t wrap_smob_types[] = {
-  {"snmp-session", NULL, NULL, NULL, NULL},
-  {"tree", NULL, NULL, NULL, NULL},
-  {"values", NULL, NULL, NULL, NULL}
+  {"snmp-session", NULL, NULL, NULL, NULL, NULL},
+  {"tree", NULL, NULL, NULL, NULL, NULL},
+  {"values", NULL, NULL, NULL, NULL, NULL}
 };
 
 size_t
@@ -142,30 +144,73 @@ init_snmp_wrap_smob_type (void)
 void
 init_snmp_wrap_classes(void)
 {
+  init_snmp_wrap_smob_type();
+  snmp_wrap_smob_subtypes_e last = smob_last;
+
+  int c;
+  for(c = 0; c < (int) last; c++){
+    SCM classname = scm_string_to_symbol(
+      scm_string_append(
+        scm_list_3(
+          scm_from_utf8_string("<"),
+          scm_from_utf8_string(wrap_smob_types[c].name),
+          scm_from_utf8_string("-ptr>"))));
+
+    /*
+     *  (define <classname-ptr>
+     *    (make-class (list) (list (list 'ptr)) #:name '<classname-ptr>))))
+     *  (export <classname-ptr>)
+     */
+    SCM makeclass = scm_variable_ref(
+		      scm_c_module_lookup (
+			scm_c_resolve_module("oop goops"), "make-class"));
+    SCM namekw = scm_from_utf8_keyword("name");
+    SCM supers = SCM_EOL;
+    SCM slots = scm_list_1(
+                  scm_list_1(
+                    scm_from_utf8_symbol("ptr")));
+
+    SCM ptrclass = scm_call_4 (
+		     makeclass,
+		     supers,
+		     slots,
+                     namekw, 
+                     classname );
+
+    scm_module_define(scm_current_module(), classname, ptrclass);
+    wrap_smob_types[c].ptrclass = ptrclass;
+    scm_module_export(scm_current_module(), scm_list_1(classname));
+  };
+  
   return ;
 };
 
 static SCM
-make_snmp_wrap_smob (snmp_wrap_smob_subtypes_e type, void* wrapstruct)
+make_wrapped_pointer (snmp_wrap_smob_subtypes_e type, void* wrapstruct)
 {
   SCM smob;
   SCM_NEWSMOB (smob, snmp_wrap_smob_tag, wrapstruct);
   SCM_SET_SMOB_FLAGS (smob, type);
 
-  return smob;
+  SCM ptrsym = scm_from_utf8_symbol("ptr");
+  SCM inst = scm_make(scm_list_1(wrap_smob_types[type].ptrclass));
+  scm_slot_set_x(inst,ptrsym,smob);
+
+  return inst;
+
 }
 
 static SCM
 make_snmp_wrap_netsnmp_session_smob(void)
 {
-  return make_snmp_wrap_smob(smob_netsnmp_session
+  return make_wrapped_pointer(smob_netsnmp_session
 		           ,(void*) scm_gc_malloc (sizeof(netsnmp_session), "netsnmp_session"));
 };
 
 static SCM
 make_snmp_wrap_tree_smob_from_ptr(struct tree *ptr)
 {
-  return make_snmp_wrap_smob(smob_tree ,(void*) ptr);
+  return make_wrapped_pointer(smob_tree ,(void*) ptr);
 };
 
 
@@ -922,8 +967,6 @@ static void init_snmp_wrap(void *data)
 SCM
 scm_init_snmp_net_snmp_module (void)
 {
-  init_snmp_wrap_smob_type();
-
   scm_c_define_module("snmp net-snmp-primitive", init_snmp_wrap, NULL);
   return SCM_UNSPECIFIED;
 }
