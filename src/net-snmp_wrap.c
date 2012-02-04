@@ -48,17 +48,17 @@ int      lastAddrAge;
 extern "C" {
 #endif
 
-typedef void (*init_snmp_wrap_smob_class_f)(void);
-typedef SCM (*make_snmp_wrap_smob_f)(SCM);
-typedef SCM (*clear_snmp_wrap_smob_f)(SCM);
-typedef int (*print_snmp_wrap_smob_f)(SCM,SCM,scm_print_state);
-typedef struct snmp_wrap_smob_typedef_s {
+typedef size_t (*free_wrap_smob_f)(SCM);
+typedef SCM (*mark_wrap_smob_f)(SCM);
+typedef int (*print_wrap_smob_f)(SCM,SCM,scm_print_state*);
+typedef SCM (*equalp_wrap_smob_f)(SCM,SCM);
+typedef struct wrap_smob_typedef_s {
   char *name;
-  init_snmp_wrap_smob_class_f init_func;
-  make_snmp_wrap_smob_f make_func;
-  clear_snmp_wrap_smob_f clear_func;
-  print_snmp_wrap_smob_f print_func;
-} snmp_wrap_smob_typedef_t;
+  free_wrap_smob_f free_func;
+  mark_wrap_smob_f mark_func;
+  print_wrap_smob_f print_func;
+  equalp_wrap_smob_f equalp_func;
+} wrap_smob_typedef_t;
 
 static scm_t_bits snmp_wrap_smob_tag;
 typedef enum snmp_wrap_smob_subtypes {
@@ -67,12 +67,77 @@ typedef enum snmp_wrap_smob_subtypes {
   smob_values
 } snmp_wrap_smob_subtypes_e;
 
-snmp_wrap_smob_typedef_t snmp_wrap_smob_types[] = {
+wrap_smob_typedef_t wrap_smob_types[] = {
   {"snmp-session", NULL, NULL, NULL, NULL},
   {"tree", NULL, NULL, NULL, NULL},
-  {"values", NULL, NULL, NULL, NULL},
-  {NULL, NULL, NULL, NULL, NULL}
+  {"values", NULL, NULL, NULL, NULL}
 };
+
+size_t
+free_snmp_wrap_smob (SCM smob)
+{
+  scm_assert_smob_type (snmp_wrap_smob_tag, smob);
+  if(wrap_smob_types[SCM_SMOB_FLAGS(smob)].free_func){
+    return wrap_smob_types[SCM_SMOB_FLAGS(smob)].free_func(smob);
+  };
+
+  return 0;
+}
+
+SCM
+mark_snmp_wrap_smob (SCM smob)
+{
+  scm_assert_smob_type (snmp_wrap_smob_tag, smob);
+  if(wrap_smob_types[SCM_SMOB_FLAGS(smob)].mark_func){
+    return wrap_smob_types[SCM_SMOB_FLAGS(smob)].mark_func(smob);
+  };
+
+  return SCM_UNSPECIFIED;
+}
+
+static int
+print_snmp_wrap_smob (SCM smob, SCM port, scm_print_state *pstate)
+{
+  scm_assert_smob_type (snmp_wrap_smob_tag, smob);
+  if(wrap_smob_types[SCM_SMOB_FLAGS(smob)].print_func){
+    return wrap_smob_types[SCM_SMOB_FLAGS(smob)].print_func(smob, port, pstate);
+  };
+
+  void* data = (void *) SCM_SMOB_DATA (smob);
+  int flags = (int) SCM_SMOB_FLAGS (smob);
+
+  char str[128];
+  snprintf(str,128,"#<smob: %p %i>",data,flags);
+  scm_puts (str, port);
+
+  /* non-zero means success */
+  return 1;
+}
+
+SCM
+equalp_snmp_wrap_smob (SCM smob1, SCM smob2)
+{
+  scm_assert_smob_type (snmp_wrap_smob_tag, smob1);
+  scm_assert_smob_type (snmp_wrap_smob_tag, smob2);
+
+  if(SCM_SMOB_FLAGS(smob1) != SCM_SMOB_FLAGS(smob2)) return SCM_BOOL_F;
+
+  if(wrap_smob_types[SCM_SMOB_FLAGS(smob1)].equalp_func){
+    return wrap_smob_types[SCM_SMOB_FLAGS(smob1)].equalp_func(smob1, smob2);
+  };
+
+  return SCM_SMOB_DATA(smob1) == SCM_SMOB_DATA(smob2) ? SCM_BOOL_T : SCM_BOOL_F;
+}
+
+void
+init_snmp_wrap_smob_type (void)
+{
+  snmp_wrap_smob_tag = scm_make_smob_type ("snmp_wrap_smob", sizeof (void*));
+  scm_set_smob_free (snmp_wrap_smob_tag, free_snmp_wrap_smob);
+  scm_set_smob_mark (snmp_wrap_smob_tag, mark_snmp_wrap_smob);
+  scm_set_smob_print (snmp_wrap_smob_tag, print_snmp_wrap_smob);
+  scm_set_smob_equalp (snmp_wrap_smob_tag, equalp_snmp_wrap_smob);
+}
 
 void
 init_snmp_wrap_classes(void)
@@ -84,63 +149,10 @@ static SCM
 make_snmp_wrap_smob (snmp_wrap_smob_subtypes_e type, void* wrapstruct)
 {
   SCM smob;
-  /* Step 1: Allocate the memory block.
-   */
-  // image = (struct image *) scm_gc_malloc (sizeof (struct image), "image");
-
-  /* Step 2: Initialize it with straight code.
-   */
-  // image->width = width;
-  // image->height = height;
-  // image->pixels = NULL;
-  // image->name = SCM_BOOL_F;
-  // image->update_func = SCM_BOOL_F;
-
-  /* Step 3: Create the smob.
-   */
   SCM_NEWSMOB (smob, snmp_wrap_smob_tag, wrapstruct);
   SCM_SET_SMOB_FLAGS (smob, type);
-  /* Step 4: Finish the initialization.
-   */
-  // image->name = name;
-  // image->pixels = scm_gc_malloc_pointerless (width * height, "image pixels");
 
   return smob;
-}
-
-SCM
-clear_snmp_wrap_smob (SCM image_smob)
-{
-//  int area;
-//  struct image *image;
-
-//  scm_assert_smob_type (image_tag, image_smob);
-
- // image = (struct image *) SCM_SMOB_DATA (image_smob);
- // area = image->width * image->height;
- // memset (image->pixels, 0, area);
-
-  /* Invoke the image's update function.
-   */
-//  if (scm_is_true (image->update_func))
-//    scm_call_0 (image->update_func);
-
- // scm_remember_upto_here_1 (image_smob);
-
-  return SCM_UNSPECIFIED;
-}
-
-static int
-print_snmp_wrap_smob (SCM snmp_wrap_smob, SCM port, scm_print_state *pstate)
-{
-//  struct image *image = (struct image *) SCM_SMOB_DATA (image_smob);
-
-//  scm_puts ("#<image ", port);
-//  scm_display (image->name, port);
-//  scm_puts (">", port);
-
-  /* non-zero means success */
-  return 1;
 }
 
 static SCM
@@ -150,21 +162,12 @@ make_snmp_wrap_netsnmp_session_smob(void)
 		           ,(void*) scm_gc_malloc (sizeof(netsnmp_session), "netsnmp_session"));
 };
 
+static SCM
 make_snmp_wrap_tree_smob_from_ptr(struct tree *ptr)
 {
   return make_snmp_wrap_smob(smob_tree ,(void*) ptr);
 };
 
-void
-init_snmp_wrap_smob_type (void)
-{
-  snmp_wrap_smob_tag = scm_make_smob_type ("snmp_wrap_smob", sizeof (void*));
-  // scm_set_smob_print (snmp_wrap_smob_tag, snmp_wrap_smob);
-
-  scm_c_define_gsubr ("make-snmp-wrap-netsnmp-session-smob", 0, 0, 0, make_snmp_wrap_netsnmp_session_smob);
-  scm_c_export("make-snmp-wrap-netsnmp-session-smob" , NULL);
-//  scm_c_define_gsubr ("clear-snmp-wrap-smob", 1, 0, 0, clear_snmp_wrap_smob);
-}
 
 SCM netsnmp_variable_list_value_get(struct variable_list *p) {
   SCM result = SCM_UNSPECIFIED;
@@ -295,76 +298,6 @@ snmp_session_callback_set(struct snmp_session *p, SCM cb) {
   p->callback_magic = cb;
   return ;
 };
-
-#define WRAP_CONSTANT(type, name) \
-static type wrap_const_ ## name = name ;
-
-WRAP_CONSTANT(oid , SNMP_MSG_GET)
-WRAP_CONSTANT(oid , SNMP_MSG_GETNEXT)
-WRAP_CONSTANT(oid , SNMP_MSG_RESPONSE)
-WRAP_CONSTANT(oid , SNMP_MSG_SET)
-WRAP_CONSTANT(oid , SNMP_MSG_TRAP)
-WRAP_CONSTANT(oid , SNMP_MSG_GETBULK)
-WRAP_CONSTANT(oid , SNMP_MSG_INFORM)
-WRAP_CONSTANT(oid , SNMP_MSG_TRAP2)
-WRAP_CONSTANT(oid , SNMP_MSG_REPORT)
-
-WRAP_CONSTANT(int , SNMP_NOSUCHOBJECT)
-WRAP_CONSTANT(int , SNMP_NOSUCHINSTANCE)
-WRAP_CONSTANT(int , SNMP_ENDOFMIBVIEW)
-WRAP_CONSTANT(int , STAT_SUCCESS)
-WRAP_CONSTANT(int , STAT_ERROR)
-WRAP_CONSTANT(int , STAT_TIMEOUT)
-
-WRAP_CONSTANT(int , ASN_BOOLEAN)
-WRAP_CONSTANT(int , ASN_INTEGER)
-WRAP_CONSTANT(int , ASN_BIT_STR)
-WRAP_CONSTANT(int , ASN_NULL)
-WRAP_CONSTANT(int , ASN_OBJECT_ID)
-WRAP_CONSTANT(int , ASN_SEQUENCE)
-WRAP_CONSTANT(int , ASN_SET)
-WRAP_CONSTANT(int , ASN_OCTET_STR)
-WRAP_CONSTANT(int , ASN_IPADDRESS)
-WRAP_CONSTANT(int , ASN_COUNTER)
-WRAP_CONSTANT(int , ASN_GAUGE)
-WRAP_CONSTANT(int , ASN_UNSIGNED)
-WRAP_CONSTANT(int , ASN_TIMETICKS)
-WRAP_CONSTANT(int , ASN_OPAQUE)
-WRAP_CONSTANT(int , ASN_NSAP)
-WRAP_CONSTANT(int , ASN_COUNTER64)
-WRAP_CONSTANT(int , ASN_UINTEGER)
-WRAP_CONSTANT(int , ASN_FLOAT)
-WRAP_CONSTANT(int , ASN_DOUBLE)
-WRAP_CONSTANT(int , ASN_INTEGER64)
-WRAP_CONSTANT(int , ASN_UNSIGNED64)
-
-WRAP_CONSTANT(int , SNMP_VERSION_1)
-WRAP_CONSTANT(int , SNMP_VERSION_2c)
-WRAP_CONSTANT(int , SNMP_VERSION_2u)
-WRAP_CONSTANT(int , SNMP_VERSION_3)
-WRAP_CONSTANT(int , SNMP_VERSION_sec)
-WRAP_CONSTANT(int , SNMP_VERSION_2p)
-WRAP_CONSTANT(int , SNMP_VERSION_2star)
-
-WRAP_CONSTANT(int , SNMP_ERR_NOERROR)
-WRAP_CONSTANT(int , SNMP_ERR_TOOBIG)
-WRAP_CONSTANT(int , SNMP_ERR_NOSUCHNAME)
-WRAP_CONSTANT(int , SNMP_ERR_BADVALUE)
-WRAP_CONSTANT(int , SNMP_ERR_READONLY)
-WRAP_CONSTANT(int , SNMP_ERR_GENERR)
-WRAP_CONSTANT(int , SNMP_ERR_NOACCESS)
-WRAP_CONSTANT(int , SNMP_ERR_WRONGTYPE)
-WRAP_CONSTANT(int , SNMP_ERR_WRONGLENGTH)
-WRAP_CONSTANT(int , SNMP_ERR_WRONGENCODING)
-WRAP_CONSTANT(int , SNMP_ERR_WRONGVALUE)
-WRAP_CONSTANT(int , SNMP_ERR_NOCREATION)
-WRAP_CONSTANT(int , SNMP_ERR_INCONSISTENTVALUE)
-WRAP_CONSTANT(int , SNMP_ERR_RESOURCEUNAVAILABLE)
-WRAP_CONSTANT(int , SNMP_ERR_COMMITFAILED)
-WRAP_CONSTANT(int , SNMP_ERR_UNDOFAILED)
-WRAP_CONSTANT(int , SNMP_ERR_AUTHORIZATIONERROR)
-WRAP_CONSTANT(int , SNMP_ERR_NOTWRITABLE)
-WRAP_CONSTANT(int , SNMP_ERR_INCONSISTENTNAME)
 
 _wrap_oid_from_varbind (SCM s_0)
 {
@@ -741,71 +674,79 @@ _wrap_get_tree_head (void)
    return make_snmp_wrap_tree_smob_from_ptr(get_tree_head());
 }
 
+#define WRAP_CONSTANT(type, name) \
+static type wrap_const_ ## name = name ;
 
-static void init_snmp_wrap(void *data)
+WRAP_CONSTANT(oid , SNMP_MSG_GET)
+WRAP_CONSTANT(oid , SNMP_MSG_GETNEXT)
+WRAP_CONSTANT(oid , SNMP_MSG_RESPONSE)
+WRAP_CONSTANT(oid , SNMP_MSG_SET)
+WRAP_CONSTANT(oid , SNMP_MSG_TRAP)
+WRAP_CONSTANT(oid , SNMP_MSG_GETBULK)
+WRAP_CONSTANT(oid , SNMP_MSG_INFORM)
+WRAP_CONSTANT(oid , SNMP_MSG_TRAP2)
+WRAP_CONSTANT(oid , SNMP_MSG_REPORT)
+
+WRAP_CONSTANT(int , SNMP_NOSUCHOBJECT)
+WRAP_CONSTANT(int , SNMP_NOSUCHINSTANCE)
+WRAP_CONSTANT(int , SNMP_ENDOFMIBVIEW)
+WRAP_CONSTANT(int , STAT_SUCCESS)
+WRAP_CONSTANT(int , STAT_ERROR)
+WRAP_CONSTANT(int , STAT_TIMEOUT)
+
+WRAP_CONSTANT(int , ASN_BOOLEAN)
+WRAP_CONSTANT(int , ASN_INTEGER)
+WRAP_CONSTANT(int , ASN_BIT_STR)
+WRAP_CONSTANT(int , ASN_NULL)
+WRAP_CONSTANT(int , ASN_OBJECT_ID)
+WRAP_CONSTANT(int , ASN_SEQUENCE)
+WRAP_CONSTANT(int , ASN_SET)
+WRAP_CONSTANT(int , ASN_OCTET_STR)
+WRAP_CONSTANT(int , ASN_IPADDRESS)
+WRAP_CONSTANT(int , ASN_COUNTER)
+WRAP_CONSTANT(int , ASN_GAUGE)
+WRAP_CONSTANT(int , ASN_UNSIGNED)
+WRAP_CONSTANT(int , ASN_TIMETICKS)
+WRAP_CONSTANT(int , ASN_OPAQUE)
+WRAP_CONSTANT(int , ASN_NSAP)
+WRAP_CONSTANT(int , ASN_COUNTER64)
+WRAP_CONSTANT(int , ASN_UINTEGER)
+WRAP_CONSTANT(int , ASN_FLOAT)
+WRAP_CONSTANT(int , ASN_DOUBLE)
+WRAP_CONSTANT(int , ASN_INTEGER64)
+WRAP_CONSTANT(int , ASN_UNSIGNED64)
+
+WRAP_CONSTANT(int , SNMP_VERSION_1)
+WRAP_CONSTANT(int , SNMP_VERSION_2c)
+WRAP_CONSTANT(int , SNMP_VERSION_2u)
+WRAP_CONSTANT(int , SNMP_VERSION_3)
+WRAP_CONSTANT(int , SNMP_VERSION_sec)
+WRAP_CONSTANT(int , SNMP_VERSION_2p)
+WRAP_CONSTANT(int , SNMP_VERSION_2star)
+
+WRAP_CONSTANT(int , SNMP_ERR_NOERROR)
+WRAP_CONSTANT(int , SNMP_ERR_TOOBIG)
+WRAP_CONSTANT(int , SNMP_ERR_NOSUCHNAME)
+WRAP_CONSTANT(int , SNMP_ERR_BADVALUE)
+WRAP_CONSTANT(int , SNMP_ERR_READONLY)
+WRAP_CONSTANT(int , SNMP_ERR_GENERR)
+WRAP_CONSTANT(int , SNMP_ERR_NOACCESS)
+WRAP_CONSTANT(int , SNMP_ERR_WRONGTYPE)
+WRAP_CONSTANT(int , SNMP_ERR_WRONGLENGTH)
+WRAP_CONSTANT(int , SNMP_ERR_WRONGENCODING)
+WRAP_CONSTANT(int , SNMP_ERR_WRONGVALUE)
+WRAP_CONSTANT(int , SNMP_ERR_NOCREATION)
+WRAP_CONSTANT(int , SNMP_ERR_INCONSISTENTVALUE)
+WRAP_CONSTANT(int , SNMP_ERR_RESOURCEUNAVAILABLE)
+WRAP_CONSTANT(int , SNMP_ERR_COMMITFAILED)
+WRAP_CONSTANT(int , SNMP_ERR_UNDOFAILED)
+WRAP_CONSTANT(int , SNMP_ERR_AUTHORIZATIONERROR)
+WRAP_CONSTANT(int , SNMP_ERR_NOTWRITABLE)
+WRAP_CONSTANT(int , SNMP_ERR_INCONSISTENTNAME)
+
+void
+init_snmp_wrap_constants(void)
 {
-
-  scm_goops_make = scm_variable_ref(
-    scm_c_module_lookup(
-      scm_module_goops,
-      "make"));
-  scm_kw_value = scm_from_locale_keyword("value");
-  scm_class_oid = scm_variable_ref(
-    scm_c_module_lookup(
-      scm_c_resolve_module("snmp net-snmp"),
-      "<oid>"));
-  scm_oid_vec_slot = scm_from_locale_symbol("_vec");
-  
-  scm_variable_set_x(
-    scm_c_module_lookup(
-      scm_c_resolve_module("snmp net-snmp"),
-      "empty-oidvec"),
-  #if SIZEOF_OID == 8
-    scm_make_u64vector(scm_from_int(0),SCM_EOL)
-  #else // SIZEOF_OID == 4
-    scm_make_u32vector(scm_from_int(0),SCM_EOL)
-  #endif
-    );
-  
-  SCM netsnmp_module = scm_c_resolve_module("snmp net-snmp");
-  SCM srfi4_module = scm_c_resolve_module("srfi srfi-4");
-  
-#if SIZEOF_OID == 8
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "make-oidvector"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "make-u64vector")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector?"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector?")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-length"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector-length")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "list->oidvector"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "list->u64vector")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector->list"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector->list")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-ref"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector-ref")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-set!"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector-set!")));
-#else // SIZEOF_OID == 4
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "make-oidvector"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "make-u32vector")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector?"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector?")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-length"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector-length")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "list->oidvector"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "list->u32vector")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector->list"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector->list")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-ref"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector-ref")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-set!"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector-set!")));
-#endif
-
 #define EXPORT_CONSTANT(cname, name, func) \
   scm_c_define("_wrap_" name , \
     func ( wrap_const_ ## cname ));\
@@ -877,8 +818,74 @@ static void init_snmp_wrap(void *data)
   EXPORT_CONSTANT(SNMP_ERR_AUTHORIZATIONERROR , "SNMP-ERR-AUTHORIZATIONERROR" , scm_from_signed_integer)
   EXPORT_CONSTANT(SNMP_ERR_NOTWRITABLE , "SNMP-ERR-NOTWRITABLE" , scm_from_signed_integer)
   EXPORT_CONSTANT(SNMP_ERR_INCONSISTENTNAME , "SNMP-ERR-INCONSISTENTNAME" , scm_from_signed_integer)
+}
+
+static void init_snmp_wrap(void *data)
+{
+
+  scm_goops_make = scm_variable_ref(
+    scm_c_module_lookup(
+      scm_module_goops,
+      "make"));
+  scm_kw_value = scm_from_locale_keyword("value");
+  scm_class_oid = scm_variable_ref(
+    scm_c_module_lookup(
+      scm_c_resolve_module("snmp net-snmp"),
+      "<oid>"));
+  scm_oid_vec_slot = scm_from_locale_symbol("_vec");
+  
+  scm_variable_set_x(
+    scm_c_module_lookup(
+      scm_c_resolve_module("snmp net-snmp"),
+      "empty-oidvec"),
+  #if SIZEOF_OID == 8
+    scm_make_u64vector(scm_from_int(0),SCM_EOL)
+  #else // SIZEOF_OID == 4
+    scm_make_u32vector(scm_from_int(0),SCM_EOL)
+  #endif
+    );
+  
+  SCM netsnmp_module = scm_c_resolve_module("snmp net-snmp");
+  SCM srfi4_module = scm_c_resolve_module("srfi srfi-4");
+  
+#if SIZEOF_OID == 8
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "make-oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "make-u64vector")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector?"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector?")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-length"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector-length")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "list->oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "list->u64vector")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector->list"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector->list")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-ref"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector-ref")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-set!"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector-set!")));
+#else // SIZEOF_OID == 4
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "make-oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "make-u32vector")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector?"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector?")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-length"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector-length")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "list->oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "list->u32vector")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector->list"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector->list")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-ref"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector-ref")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-set!"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector-set!")));
+#endif
 
   init_snmp_wrap_classes();
+  init_snmp_wrap_constants();
 
   scm_c_define_gsubr("oid-from-varbind", 1, 0, 0, (void *) _wrap_oid_from_varbind);
   scm_c_define_gsubr("oid-from-tree-node", 1, 0, 0, (void *) _wrap_oid_from_tree_node);
@@ -907,6 +914,9 @@ static void init_snmp_wrap(void *data)
   scm_c_define("snmp-session-community", scm_make_procedure_with_setter(
     scm_c_define_gsubr("snmp-session-community-get", 1, 0, 0, (void *) _wrap_snmp_session_community_get),
     scm_c_define_gsubr("snmp-session-community-set", 2, 0, 0, (void *) _wrap_snmp_session_community_set)));
+
+  scm_c_define_gsubr ("make-snmp-wrap-netsnmp-session-smob", 0, 0, 0, make_snmp_wrap_netsnmp_session_smob);
+  scm_c_export("make-snmp-wrap-netsnmp-session-smob" , NULL);
 }
 
 SCM
