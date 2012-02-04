@@ -70,9 +70,9 @@ typedef enum snmp_wrap_smob_subtypes {
 } snmp_wrap_smob_subtypes_e;
 
 wrap_smob_typedef_t wrap_smob_types[] = {
-  {"snmp-session", NULL, NULL, NULL, NULL, NULL},
-  {"tree", NULL, NULL, NULL, NULL, NULL},
-  {"values", NULL, NULL, NULL, NULL, NULL}
+  {"<snmp-session>", NULL, NULL, NULL, NULL, NULL},
+  {"<tree>", NULL, NULL, NULL, NULL, NULL},
+  {"<values>", NULL, NULL, NULL, NULL, NULL}
 };
 
 size_t
@@ -149,12 +149,7 @@ init_snmp_wrap_classes(void)
 
   int c;
   for(c = 0; c < (int) last; c++){
-    SCM classname = scm_string_to_symbol(
-      scm_string_append(
-        scm_list_3(
-          scm_from_utf8_string("<"),
-          scm_from_utf8_string(wrap_smob_types[c].name),
-          scm_from_utf8_string("-ptr>"))));
+    SCM classname = scm_from_utf8_symbol(wrap_smob_types[c].name);
 
     /*
      *  (define <classname-ptr>
@@ -200,19 +195,75 @@ make_wrapped_pointer (snmp_wrap_smob_subtypes_e type, void* wrapstruct)
 
 }
 
-static SCM
-make_snmp_wrap_netsnmp_session_smob(void)
+inline void
+assert_smob_subtype(snmp_wrap_smob_subtypes_e type, SCM smob)
 {
-  return make_wrapped_pointer(smob_netsnmp_session
-		           ,(void*) scm_gc_malloc (sizeof(netsnmp_session), "netsnmp_session"));
+  if(SCM_SMOB_FLAGS(smob) != type) {
+    return;
+  };
+}
+
+void*
+pointer_from_wrapped_smob(snmp_wrap_smob_subtypes_e type, SCM obj)
+{
+  SCM ptrsym = scm_from_utf8_symbol("ptr");
+  SCM smob = scm_slot_ref(obj, ptrsym);
+  assert_smob_subtype(type, smob);
+  return (void*) SCM_SMOB_DATA (smob);
 };
 
 static SCM
+read_only_setter(SCM s_0, SCM s_1)
+{
+  return SCM_UNSPECIFIED;
+};
+
+static SCM
+
 make_snmp_wrap_tree_smob_from_ptr(struct tree *ptr)
 {
   return make_wrapped_pointer(smob_tree ,(void*) ptr);
 };
 
+static SCM
+_wrap_tree_label_get (SCM tree)
+{
+  struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
+  return scm_from_utf8_string(node->label);
+}
+
+static SCM
+_wrap_get_tree_head (void)
+{
+   return make_snmp_wrap_tree_smob_from_ptr(get_tree_head());
+}
+
+static SCM
+_wrap_get_tree (SCM oidvec, SCM treehead)
+{
+  struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, treehead);
+
+  scm_t_array_handle handle;
+  size_t len,i;
+  ssize_t inc;
+  oid* temp_oid1;
+  const SCM_T_OID* elt = SCM_OIDVECTOR_ELEMENTS(scm_slot_ref(oidvec,scm_oid_vec_slot), &handle, &len, &inc);
+  temp_oid1 = (oid*)calloc(len,sizeof(oid));
+  oid* oid_elt = temp_oid1;
+  for (i = 0; i < len; i++, elt += inc,oid_elt++){
+    *oid_elt = (oid) *elt;
+  };
+
+  struct tree* result = get_tree(temp_oid1,len,node);
+  scm_remember_upto_here_1(treehead);
+
+  SCM scmresult = make_snmp_wrap_tree_smob_from_ptr(result);
+
+  free(temp_oid1);
+  scm_array_handle_release (&handle);
+  scm_remember_upto_here_1(oidvec);
+  return scmresult;
+}
 
 SCM netsnmp_variable_list_value_get(struct variable_list *p) {
   SCM result = SCM_UNSPECIFIED;
@@ -332,6 +383,13 @@ int guile_snmp_async_response(int op, struct snmp_session *sp, int reqid,
   return 1;
 };
 
+static SCM
+make_snmp_wrap_netsnmp_session_smob(void)
+{
+  return make_wrapped_pointer(smob_netsnmp_session
+		           ,(void*) scm_gc_malloc (sizeof(netsnmp_session), "netsnmp_session"));
+};
+
 SCM
 snmp_session_callback_get(struct snmp_session *p) {
   return (SCM) p->callback_magic;
@@ -350,7 +408,7 @@ _wrap_oid_from_varbind (SCM s_0)
   struct variable_list *arg1 = (struct variable_list *) 0 ;
   oid *arg2 = (oid *) 0 ;
   size_t *arg3 = (size_t *) 0 ;
-  SCM gswig_result;
+  SCM scmresult;
   int result;
   
   {
@@ -361,15 +419,15 @@ _wrap_oid_from_varbind (SCM s_0)
   }
   result = (int)oid_from_varbind(arg1,arg2,arg3);
   {
-    gswig_result = scm_from_signed_integer(result);
+    scmresult = scm_from_signed_integer(result);
   }
   {
-    gswig_result = SCM_UNSPECIFIED;
+    scmresult = SCM_UNSPECIFIED;
     
     if(result){
       int i = 0;
       SCM newoid = SCM_TAKE_OIDVECTOR((SCM_T_OID*) arg2, *arg3);
-      gswig_result = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,newoid),SCM_EOL);
+      scmresult = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,newoid),SCM_EOL);
     } else {
       free(arg2);
     };
@@ -378,7 +436,7 @@ _wrap_oid_from_varbind (SCM s_0)
   }
   
   
-  return gswig_result;
+  return scmresult;
 #undef FUNC_NAME
 }
 
@@ -386,11 +444,10 @@ _wrap_oid_from_varbind (SCM s_0)
 static SCM
 _wrap_oid_from_tree_node (SCM s_0)
 {
-#define FUNC_NAME "oid-from-tree-node"
-  struct tree *arg1 = (struct tree *) 0 ;
+  struct tree *arg1 = (struct tree *) pointer_from_wrapped_smob(smob_tree,s_0) ;
   oid *arg2 = (oid *) 0 ;
   size_t *arg3 = (size_t *) 0 ;
-  SCM gswig_result;
+  SCM scmresult;
   int result;
   
   {
@@ -401,25 +458,23 @@ _wrap_oid_from_tree_node (SCM s_0)
   }
   result = (int)oid_from_tree_node(arg1,arg2,arg3);
   {
-    gswig_result = scm_from_signed_integer(result);
+    scmresult = scm_from_signed_integer(result);
   }
   {
-    gswig_result = SCM_UNSPECIFIED;
+    scmresult = SCM_UNSPECIFIED;
     
     if(result){
       int i = 0;
       SCM newoid = SCM_TAKE_OIDVECTOR((SCM_T_OID*) arg2, *arg3);
-      gswig_result = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,newoid),SCM_EOL);
+      scmresult = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,newoid),SCM_EOL);
     } else {
       free(arg2);
     };
     
     free(arg3);
   }
-  
-  
-  return gswig_result;
-#undef FUNC_NAME
+
+  return scmresult;
 }
 
 
@@ -432,7 +487,7 @@ _wrap_guile_snmp_async_response (SCM s_0, SCM s_1, SCM s_2, SCM s_3, SCM s_4)
   int arg3 ;
   struct snmp_pdu *arg4 = (struct snmp_pdu *) 0 ;
   void *arg5 = (void *) 0 ;
-  SCM gswig_result;
+  SCM scmresult;
   int result;
   
   {
@@ -446,13 +501,13 @@ _wrap_guile_snmp_async_response (SCM s_0, SCM s_1, SCM s_2, SCM s_3, SCM s_4)
   }
   result = (int)guile_snmp_async_response(arg1,arg2,arg3,arg4,arg5);
   {
-    gswig_result = scm_from_signed_integer(result);
+    scmresult = scm_from_signed_integer(result);
   }
   
   
   
   
-  return gswig_result;
+  return scmresult;
 #undef FUNC_NAME
 }
 
@@ -463,16 +518,16 @@ _wrap_snmp_session_version_set (SCM s_0, SCM s_1)
 #define FUNC_NAME "snmp-session-version-set"
   struct snmp_session *arg1 = (struct snmp_session *) 0 ;
   long arg2 ;
-  SCM gswig_result;
+  SCM scmresult;
   
   {
     arg2 = (long) scm_to_long(s_1);
   }
   if (arg1) (arg1)->version = arg2;
-  gswig_result = SCM_UNSPECIFIED;
+  scmresult = SCM_UNSPECIFIED;
   
   
-  return gswig_result;
+  return scmresult;
 #undef FUNC_NAME
 }
 
@@ -482,16 +537,16 @@ _wrap_snmp_session_version_get (SCM s_0)
 {
 #define FUNC_NAME "snmp-session-version-get"
   struct snmp_session *arg1 = (struct snmp_session *) 0 ;
-  SCM gswig_result;
+  SCM scmresult;
   long result;
   
   result = (long) ((arg1)->version);
   {
-    gswig_result = scm_from_long(result);
+    scmresult = scm_from_long(result);
   }
   
   
-  return gswig_result;
+  return scmresult;
 #undef FUNC_NAME
 }
 
@@ -502,16 +557,16 @@ _wrap_snmp_session_retries_set (SCM s_0, SCM s_1)
 #define FUNC_NAME "snmp-session-retries-set"
   struct snmp_session *arg1 = (struct snmp_session *) 0 ;
   int arg2 ;
-  SCM gswig_result;
+  SCM scmresult;
   
   {
     arg2 = (int) scm_to_int(s_1);
   }
   if (arg1) (arg1)->retries = arg2;
-  gswig_result = SCM_UNSPECIFIED;
+  scmresult = SCM_UNSPECIFIED;
   
   
-  return gswig_result;
+  return scmresult;
 #undef FUNC_NAME
 }
 
@@ -521,16 +576,16 @@ _wrap_snmp_session_retries_get (SCM s_0)
 {
 #define FUNC_NAME "snmp-session-retries-get"
   struct snmp_session *arg1 = (struct snmp_session *) 0 ;
-  SCM gswig_result;
+  SCM scmresult;
   int result;
   
   result = (int) ((arg1)->retries);
   {
-    gswig_result = scm_from_signed_integer(result);
+    scmresult = scm_from_signed_integer(result);
   }
   
   
-  return gswig_result;
+  return scmresult;
 #undef FUNC_NAME
 }
 
@@ -541,16 +596,16 @@ _wrap_snmp_session_timeout_set (SCM s_0, SCM s_1)
 #define FUNC_NAME "snmp-session-timeout-set"
   struct snmp_session *arg1 = (struct snmp_session *) 0 ;
   long arg2 ;
-  SCM gswig_result;
+  SCM scmresult;
   
   {
     arg2 = (long) scm_to_long(s_1);
   }
   if (arg1) (arg1)->timeout = arg2;
-  gswig_result = SCM_UNSPECIFIED;
+  scmresult = SCM_UNSPECIFIED;
   
   
-  return gswig_result;
+  return scmresult;
 #undef FUNC_NAME
 }
 
@@ -560,16 +615,16 @@ _wrap_snmp_session_timeout_get (SCM s_0)
 {
 #define FUNC_NAME "snmp-session-timeout-get"
   struct snmp_session *arg1 = (struct snmp_session *) 0 ;
-  SCM gswig_result;
+  SCM scmresult;
   long result;
   
   result = (long) ((arg1)->timeout);
   {
-    gswig_result = scm_from_long(result);
+    scmresult = scm_from_long(result);
   }
   
   
-  return gswig_result;
+  return scmresult;
 #undef FUNC_NAME
 }
 
@@ -580,7 +635,7 @@ _wrap_snmp_session_peername_set (SCM s_0, SCM s_1)
   struct snmp_session *arg1 = (struct snmp_session *) 0 ;
   char *arg2 = (char *) 0 ;
   int must_free2 = 0 ;
-  SCM gswig_result;
+  SCM scmresult;
   
   {
     arg2 = (char *)SWIG_scm2str(s_1);
@@ -595,11 +650,11 @@ _wrap_snmp_session_peername_set (SCM s_0, SCM s_1)
       arg1->peername = 0;
     }
   }
-  gswig_result = SCM_UNSPECIFIED;
+  scmresult = SCM_UNSPECIFIED;
   
   if (must_free2 && arg2) SWIG_free(arg2);
   
-  return gswig_result;
+  return scmresult;
 #undef FUNC_NAME
 }
 
@@ -609,16 +664,16 @@ _wrap_snmp_session_peername_get (SCM s_0)
 {
 #define FUNC_NAME "snmp-session-peername-get"
   struct snmp_session *arg1 = (struct snmp_session *) 0 ;
-  SCM gswig_result;
+  SCM scmresult;
   char *result = 0 ;
   
   result = (char *) ((arg1)->peername);
   {
-    gswig_result = scm_from_locale_string((const char *)result);
+    scmresult = scm_from_locale_string((const char *)result);
   }
   
   
-  return gswig_result;
+  return scmresult;
 #undef FUNC_NAME
 }
 
@@ -629,7 +684,7 @@ _wrap_snmp_session_community_set (SCM s_0, SCM s_1)
   struct snmp_session *arg1 = (struct snmp_session *) 0 ;
   u_char *arg2 = (u_char *) 0 ;
   int must_free2 = 0 ;
-  SCM gswig_result;
+  SCM scmresult;
   
   {
     arg2 = (u_char *)SWIG_scm2str(s_1);
@@ -644,11 +699,11 @@ _wrap_snmp_session_community_set (SCM s_0, SCM s_1)
       arg1->community = 0;
     }
   }
-  gswig_result = SCM_UNSPECIFIED;
+  scmresult = SCM_UNSPECIFIED;
   
   if (must_free2 && arg2) SWIG_free(arg2);
   
-  return gswig_result;
+  return scmresult;
 #undef FUNC_NAME
 }
 
@@ -656,19 +711,17 @@ _wrap_snmp_session_community_set (SCM s_0, SCM s_1)
 static SCM
 _wrap_snmp_session_community_get (SCM s_0)
 {
-#define FUNC_NAME "snmp-session-community-get"
   struct snmp_session *arg1 = (struct snmp_session *) 0 ;
-  SCM gswig_result;
+  SCM scmresult;
   u_char *result = 0 ;
   
   result = (u_char *) ((arg1)->community);
   {
-    gswig_result = scm_from_locale_string((const char *)result);
+    scmresult = scm_from_locale_string((const char *)result);
   }
   
   
-  return gswig_result;
-#undef FUNC_NAME
+  return scmresult;
 }
 
 
@@ -713,11 +766,6 @@ _wrap_snmp_parse_oid (SCM oidname)
    return scmresult;
 }
 
-static SCM
-_wrap_get_tree_head (void)
-{
-   return make_snmp_wrap_tree_smob_from_ptr(get_tree_head());
-}
 
 #define WRAP_CONSTANT(type, name) \
 static type wrap_const_ ## name = name ;
@@ -933,7 +981,6 @@ static void init_snmp_wrap(void *data)
   init_snmp_wrap_constants();
 
   scm_c_define_gsubr("oid-from-varbind", 1, 0, 0, (void *) _wrap_oid_from_varbind);
-  scm_c_define_gsubr("oid-from-tree-node", 1, 0, 0, (void *) _wrap_oid_from_tree_node);
   scm_c_define_gsubr("guile-snmp-async-response", 5, 0, 0, (void *) _wrap_guile_snmp_async_response);
 
   scm_c_define_gsubr("init-mib", 0, 0, 0, (void *) _wrap_init_mib);
@@ -947,6 +994,17 @@ static void init_snmp_wrap(void *data)
 
   scm_c_define_gsubr("get-tree-head", 0, 0, 0, (void *) _wrap_get_tree_head);
   scm_c_export("get-tree-head" , NULL);
+
+  scm_c_define_gsubr("get-tree", 2, 0, 0, (void *) _wrap_get_tree);
+  scm_c_export("get-tree" , NULL);
+
+  scm_c_define_gsubr("oid-from-tree-node", 1, 0, 0, (void *) _wrap_oid_from_tree_node);
+  scm_c_export("oid-from-tree-node" , NULL);
+
+  scm_c_define_gsubr("tree-label-get", 1, 0, 0, (void *) _wrap_tree_label_get);
+  scm_c_define_gsubr("tree-label-set", 2, 0, 0, (void *) read_only_setter);
+  scm_c_export("tree-label-get" , NULL);
+  scm_c_export("tree-label-set" , NULL);
 
   scm_c_define("snmp-session-version", scm_make_procedure_with_setter(
     scm_c_define_gsubr("snmp-session-version-get", 1, 0, 0, (void *) _wrap_snmp_session_version_get),

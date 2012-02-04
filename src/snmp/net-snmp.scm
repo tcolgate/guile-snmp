@@ -28,7 +28,7 @@
 		(_vec #:init-value empty-oidvec
 		      #:init-keyword #:value))
 
-  (define oid-translate (make-parameter #f))
+  (define oid-translate (make-parameter #t))
 
     (define-method (display (this <oid>) port)
       (if (oid-translate)
@@ -85,7 +85,6 @@
 (use-modules ((snmp net-snmp-primitive) :renamer (symbol-prefix-proc 'primitive:)))
 
 ;(define oid-from-varbind primitive:oid-from-varbind)
-;(define oid-from-tree-node primitive:oid-from-tree-node)
 ;(define guile-snmp-async-response primitive:guile-snmp-async-response)
 
 (define-class <snmp-constant> ()
@@ -178,7 +177,6 @@
 (define-constant <snmp-err-status> SNMP-ERR-INCONSISTENTNAME)
 
 ;(define-class <snmp-session> ()
-;
 ;  (version #:allocation #:virtual
 ;   #:slot-ref (lambda (obj) (primitive:snmp-session-version-get obj))
 ;   #:slot-set! (lambda (obj value) (primitive:snmp-session-version-set obj value)))
@@ -217,14 +215,12 @@
 ;(define snmp-close primitive:snmp-close)
 ;(define snmp-close-sessions primitive:snmp-close-sessions)
 
-(define-class <tree> (primitive:<tree-ptr>))
-(export <tree>)
-
-(define-class <snmp-session> (primitive:<snmp-session-ptr>))
-(export <snmp-session>)
-
-(define-class <values> (primitive:<values-ptr>))
-(export <values>)
+(define-class primitive:<tree> ()
+  ptr
+  (label #:allocation #:virtual
+   #:slot-ref primitive:tree-label-get
+   #:slot-set! primitive:tree-label-set)
+  #:name '<tree>)
 
 (define-macro (re-export name)
   `(begin
@@ -234,10 +230,16 @@
 		         (symbol->string name))))
      (export ,name)))
 
+(re-export <tree>)
+(re-export <snmp-session>)
+(re-export <values>)
+
 (re-export init-mib)
 (re-export init-snmp)
 (re-export snmp-parse-oid)
+(re-export get-tree)
 (re-export get-tree-head)
+(re-export oid-from-tree-node)
 
 
 ;(export 
