@@ -48,6 +48,99 @@ int      lastAddrAge;
 extern "C" {
 #endif
 
+void
+init_oid_class()
+{
+  scm_goops_make = scm_variable_ref(
+    scm_c_module_lookup(
+      scm_module_goops,
+      "make"));
+  scm_kw_value = scm_from_locale_keyword("value");
+  scm_class_oid = scm_variable_ref(
+    scm_c_module_lookup(
+      scm_c_resolve_module("snmp net-snmp"),
+      "<oid>"));
+  scm_oid_vec_slot = scm_from_locale_symbol("_vec");
+  
+  scm_variable_set_x(
+    scm_c_module_lookup(
+      scm_c_resolve_module("snmp net-snmp"),
+      "empty-oidvec"),
+  #if SIZEOF_OID == 8
+    scm_make_u64vector(scm_from_int(0),SCM_EOL)
+  #else // SIZEOF_OID == 4
+    scm_make_u32vector(scm_from_int(0),SCM_EOL)
+  #endif
+    );
+  
+  SCM netsnmp_module = scm_c_resolve_module("snmp net-snmp");
+  SCM srfi4_module = scm_c_resolve_module("srfi srfi-4");
+  
+#if SIZEOF_OID == 8
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "make-oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "make-u64vector")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector?"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector?")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-length"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector-length")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "list->oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "list->u64vector")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector->list"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector->list")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-ref"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector-ref")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-set!"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector-set!")));
+#else // SIZEOF_OID == 4
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "make-oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "make-u32vector")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector?"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector?")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-length"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector-length")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "list->oidvector"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "list->u32vector")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector->list"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector->list")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-ref"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector-ref")));
+  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-set!"),
+  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector-set!")));
+#endif
+};
+
+void
+scm_to_oid(SCM oidscm, oid** result, size_t *len)
+{
+  scm_t_array_handle handle;
+  size_t i;
+  ssize_t inc;
+  const SCM_T_OID* elt = SCM_OIDVECTOR_ELEMENTS(scm_slot_ref(oidscm,scm_oid_vec_slot), &handle, len, &inc);
+  *result = (oid*) realloc(*result,*len * sizeof(oid));
+  oid* oid_elt = *result;
+  for (i = 0; i < *len; i++, elt += inc,oid_elt++)
+  {
+    *oid_elt = (oid) *elt;
+  };
+
+  scm_array_handle_release (&handle);
+  scm_remember_upto_here_1(oidscm);
+  return;
+}
+
+SCM scm_from_oid(oid *oidarray, int oidlen)
+{
+  SCM result = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,
+            SCM_TAKE_OIDVECTOR((SCM_T_OID*) oidarray, oidlen)
+          ),SCM_EOL);
+
+  return result;
+}
+
 typedef size_t (*free_wrap_smob_f)(SCM);
 typedef SCM (*mark_wrap_smob_f)(SCM);
 typedef int (*print_wrap_smob_f)(SCM,SCM,scm_print_state*);
@@ -82,7 +175,6 @@ free_snmp_wrap_smob (SCM smob)
   if(wrap_smob_types[SCM_SMOB_FLAGS(smob)].free_func){
     return wrap_smob_types[SCM_SMOB_FLAGS(smob)].free_func(smob);
   };
-
   return 0;
 }
 
@@ -239,29 +331,21 @@ _wrap_get_tree_head (void)
 }
 
 static SCM
-_wrap_get_tree (SCM oidvec, SCM treehead)
+_wrap_get_tree (SCM oidscm, SCM treehead)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, treehead);
+  size_t len = MAX_OID_LEN;
+  oid* temp_oid = (oid*)malloc(len * sizeof(oid));
+  scm_to_oid(oidscm,&temp_oid,&len);
 
-  scm_t_array_handle handle;
-  size_t len,i;
-  ssize_t inc;
-  oid* temp_oid1;
-  const SCM_T_OID* elt = SCM_OIDVECTOR_ELEMENTS(scm_slot_ref(oidvec,scm_oid_vec_slot), &handle, &len, &inc);
-  temp_oid1 = (oid*)calloc(len,sizeof(oid));
-  oid* oid_elt = temp_oid1;
-  for (i = 0; i < len; i++, elt += inc,oid_elt++){
-    *oid_elt = (oid) *elt;
-  };
-
-  struct tree* result = get_tree(temp_oid1,len,node);
+  struct tree* result = get_tree(temp_oid,len,node);
   scm_remember_upto_here_1(treehead);
 
   SCM scmresult = make_snmp_wrap_tree_smob_from_ptr(result);
 
-  free(temp_oid1);
-  scm_array_handle_release (&handle);
-  scm_remember_upto_here_1(oidvec);
+  free(temp_oid);
+  scm_remember_upto_here_1(oidscm);
+
   return scmresult;
 }
 
@@ -725,15 +809,6 @@ _wrap_snmp_session_community_get (SCM s_0)
 }
 
 
-SCM scm_from_oid(oid *oidarray, int oidlen)
-{
-  SCM result = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,
-            SCM_TAKE_OIDVECTOR((SCM_T_OID*) oidarray, oidlen)
-          ),SCM_EOL);
-
-  return result;
-}
-
 static SCM
 _wrap_init_snmp (SCM name)
 {
@@ -916,67 +991,7 @@ init_snmp_wrap_constants(void)
 static void init_snmp_wrap(void *data)
 {
 
-  scm_goops_make = scm_variable_ref(
-    scm_c_module_lookup(
-      scm_module_goops,
-      "make"));
-  scm_kw_value = scm_from_locale_keyword("value");
-  scm_class_oid = scm_variable_ref(
-    scm_c_module_lookup(
-      scm_c_resolve_module("snmp net-snmp"),
-      "<oid>"));
-  scm_oid_vec_slot = scm_from_locale_symbol("_vec");
-  
-  scm_variable_set_x(
-    scm_c_module_lookup(
-      scm_c_resolve_module("snmp net-snmp"),
-      "empty-oidvec"),
-  #if SIZEOF_OID == 8
-    scm_make_u64vector(scm_from_int(0),SCM_EOL)
-  #else // SIZEOF_OID == 4
-    scm_make_u32vector(scm_from_int(0),SCM_EOL)
-  #endif
-    );
-  
-  SCM netsnmp_module = scm_c_resolve_module("snmp net-snmp");
-  SCM srfi4_module = scm_c_resolve_module("srfi srfi-4");
-  
-#if SIZEOF_OID == 8
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "make-oidvector"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "make-u64vector")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector?"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector?")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-length"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector-length")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "list->oidvector"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "list->u64vector")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector->list"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector->list")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-ref"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector-ref")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-set!"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector-set!")));
-#else // SIZEOF_OID == 4
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "make-oidvector"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "make-u32vector")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector?"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector?")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-length"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector-length")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "list->oidvector"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "list->u32vector")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector->list"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector->list")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-ref"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector-ref")));
-  scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector-set!"),
-  scm_variable_ref( scm_c_module_lookup( srfi4_module, "u32vector-set!")));
-#endif
-
+  init_oid_class();
   init_snmp_wrap_classes();
   init_snmp_wrap_constants();
 
