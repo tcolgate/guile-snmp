@@ -94,6 +94,17 @@
 (define-method (write (this <snmp-constant>) port)
   (format port "~a(~a)" (class-name (class-of this))(slot-ref this 'value)))
 
+(define constant-classes (make-hash-table 20))
+(export constant-classes)
+
+(define-syntax define-constant-class
+  (syntax-rules ()
+    ((_ name)
+     (begin
+       (define-class name (<snmp-constant>))
+       (hash-set! constant-classes name (make-hash-table 32))  
+       (export name)))))
+
 (define-syntax define-constant
   (syntax-rules ()
     ((_ type name)
@@ -101,10 +112,14 @@
        (define name (make type 
                           #:value (local-ref (list  
                           (string->symbol (string-append "primitive:_wrap_" 
-                                          (symbol->string (quote name)))) ))))
+                                          (symbol->string (quote name))))))))
+       (hash-set! (hash-ref constant-classes type) (local-ref (list  
+                          (string->symbol (string-append "primitive:_wrap_" 
+                                          (symbol->string (quote name)))))
+							      ) name) 
        (export name)))))
 
-(define-class <snmp-version> (<snmp-constant>))
+(define-constant-class <snmp-version>)
 (define-constant <snmp-version> SNMP-VERSION-1) 
 (define-constant <snmp-version> SNMP-VERSION-2c) 
 (define-constant <snmp-version> SNMP-VERSION-2u) 
@@ -113,7 +128,7 @@
 (define-constant <snmp-version> SNMP-VERSION-2p) 
 (define-constant <snmp-version> SNMP-VERSION-2star) 
 
-(define-class <snmp-msg> (<snmp-constant>))
+(define-constant-class <snmp-msg>)
 (define-constant <snmp-msg> SNMP-MSG-GET)
 (define-constant <snmp-msg> SNMP-MSG-GETNEXT)
 (define-constant <snmp-msg> SNMP-MSG-RESPONSE)
@@ -124,7 +139,7 @@
 (define-constant <snmp-msg> SNMP-MSG-TRAP2)
 (define-constant <snmp-msg> SNMP-MSG-REPORT)
 
-(define-class <asn-type> (<snmp-constant>))
+(define-constant-class <asn-type>)
 (define-constant <asn-type> ASN-BOOLEAN)
 (define-constant <asn-type> ASN-INTEGER)
 (define-constant <asn-type> ASN-BIT-STR)
@@ -147,7 +162,7 @@
 (define-constant <asn-type> ASN-INTEGER6)
 (define-constant <asn-type> ASN-UNSIGNED6)
 
-(define-class <snmp-status> (<snmp-constant>))
+(define-constant-class <snmp-status>)
 (define-constant <snmp-status> SNMP-NOSUCHOBJECT)
 (define-constant <snmp-status> SNMP-NOSUCHINSTANCE)
 (define-constant <snmp-status> SNMP-ENDOFMIBVIEW)
@@ -155,7 +170,7 @@
 (define-constant <snmp-status> STAT-ERROR)
 (define-constant <snmp-status> STAT-TIMEOUT)
 
-(define-class <snmp-err-status> (<snmp-constant>))
+(define-constant-class <snmp-err-status>)
 (define-constant <snmp-err-status> SNMP-ERR-NOERROR)
 (define-constant <snmp-err-status> SNMP-ERR-TOOBIG)
 (define-constant <snmp-err-status> SNMP-ERR-NOSUCHNAME)
