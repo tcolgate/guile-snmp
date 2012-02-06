@@ -88,11 +88,13 @@
 ;(define guile-snmp-async-response primitive:guile-snmp-async-response)
 
 (define-class <snmp-constant> ()
-  (value #:init-keyword #:value))
+  (value #:init-keyword #:value) 
+  (symbol #:init-keyword #:symbol)) 
+
 (define-method (display (this <snmp-constant>) port)
-  (format port "~a(~a)" (class-name (class-of this))(slot-ref this 'value)))
+  (format port "~a" (slot-ref this 'symbol)))
 (define-method (write (this <snmp-constant>) port)
-  (format port "~a(~a)" (class-name (class-of this))(slot-ref this 'value)))
+  (format port "~a" (slot-ref this 'symbol)))
 
 (define constant-classes (make-hash-table 20))
 (export constant-classes)
@@ -112,12 +114,17 @@
        (define name (make type 
                           #:value (local-ref (list  
                           (string->symbol (string-append "primitive:_wrap_" 
-                                          (symbol->string (quote name))))))))
-       (hashq-set! (hashq-ref constant-classes type) (local-ref (list  
-                          (string->symbol (string-append "primitive:_wrap_" 
-                                          (symbol->string (quote name)))))
-							      ) name) 
+                                          (symbol->string (quote name))))))
+			  #:symbol (quote name)))
+       (hashq-set! (hashq-ref constant-classes type) 
+		   (local-ref (list  (string->symbol (string-append "primitive:_wrap_" 
+                                          (symbol->string (quote name)))))) 
+		   name) 
        (export name)))))
+
+(define (constant-name-from-value class val)
+  (hashq-ref (hashq-ref constant-classes class) val))
+(export constant-name-from-value)
 
 (define-constant-class <snmp-version>)
 (define-constant <snmp-version> SNMP-VERSION-1) 
@@ -155,12 +162,12 @@
 (define-constant <asn-type> ASN-TIMETICKS)
 (define-constant <asn-type> ASN-OPAQUE)
 (define-constant <asn-type> ASN-NSAP)
-(define-constant <asn-type> ASN-COUNTER6)
-(define-constant <asn-type> ASN-UINTEGE)
-(define-constant <asn-type> ASN-FLOA)
-(define-constant <asn-type> ASN-DOUBL)
-(define-constant <asn-type> ASN-INTEGER6)
-(define-constant <asn-type> ASN-UNSIGNED6)
+(define-constant <asn-type> ASN-COUNTER64)
+(define-constant <asn-type> ASN-UINTEGER)
+(define-constant <asn-type> ASN-FLOAT)
+(define-constant <asn-type> ASN-DOUBLE)
+(define-constant <asn-type> ASN-INTEGER64)
+(define-constant <asn-type> ASN-UNSIGNED64)
 
 (define-constant-class <snmp-status>)
 (define-constant <snmp-status> SNMP-NOSUCHOBJECT)
