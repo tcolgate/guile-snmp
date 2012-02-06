@@ -841,13 +841,14 @@ _wrap_snmp_parse_oid (SCM oidname)
    return scmresult;
 }
 
-SCM constant_classes_ref;
+SCM constant_classes;
+
 #define WRAP_CONSTANT_CLASS(cname) \
-static SCM constant_class_ ## cname ## _ref ;
+static SCM constant_class_ ## cname ;
 
 #define WRAP_CONSTANT(type, name) \
 static type wrap_const_ ## name = name ;\
-SCM wrap_const_inst ## name = SCM_BOOL_F;
+SCM wrap_const_inst_ ## name = SCM_BOOL_F;
 
 WRAP_CONSTANT_CLASS(snmp_msg);
 WRAP_CONSTANT(oid , SNMP_MSG_GET)
@@ -925,12 +926,18 @@ WRAP_CONSTANT(int , SNMP_ERR_INCONSISTENTNAME)
 void
 init_snmp_wrap_constants(void)
 {
-  scm_c_define("constant-classes", scm_make_hash_table(scm_from_signed_integer(20)));
-  constant_classes_ref = scm_variable_ref(scm_c_lookup("constant-classes"));
+  SCM current_module_name = scm_call_1(scm_variable_ref(scm_c_lookup("module-name")),
+                                  scm_current_module());
 
   SCM makeclass = scm_variable_ref(
                     scm_c_module_lookup (
                       scm_c_resolve_module("oop goops"), "make-class"));
+
+  constant_classes = scm_from_utf8_symbol("constant-classes");
+  scm_define(constant_classes, 
+    scm_make_hash_table(scm_from_signed_integer(20)));
+  scm_module_export(scm_current_module(), scm_list_1(constant_classes));
+  SCM constant_classes_ref = scm_public_ref(current_module_name,constant_classes);  
 
   SCM superclassname = scm_from_utf8_symbol("<snmp-constant>");
   SCM namekw = scm_from_utf8_keyword("name");
@@ -941,38 +948,36 @@ init_snmp_wrap_constants(void)
   SCM slots = scm_list_1(
                   scm_list_3(
                     scm_from_utf8_symbol("value"),initkw, valuekw));
-  SCM snmp_constant_class = scm_call_4 ( makeclass, supers, slots, namekw, superclassname );
-  scm_module_define(scm_current_module(),superclassname,snmp_constant_class);
+  scm_define(superclassname,
+    scm_call_4 ( makeclass, supers, slots, namekw, superclassname ));
   scm_module_export(scm_current_module(), scm_list_1(superclassname));
 
+  SCM classname = SCM_EOL;
+  SCM constname,value,makeargs = SCM_EOL;
+
+  supers = scm_list_1(scm_public_ref(current_module_name,superclassname));
+  slots = SCM_EOL; 
+
+
 #define EXPORT_CONSTANT_CLASS(cname , name) \
-  {\
-  SCM classname = scm_from_utf8_symbol("<" name ">");\
-  SCM supers = scm_list_1(snmp_constant_class); \
-  SCM slots = SCM_EOL; \
-  SCM class = scm_call_4 ( makeclass, supers, slots, namekw, classname ); \
-  scm_module_define(scm_current_module(),classname,class); \
-  scm_module_export(scm_current_module(), scm_list_1(classname)); \
-  constant_class_ ## cname ## _ref = class; \
-  scm_hash_set_x(constant_classes_ref , constant_class_ ## cname ## _ref , scm_make_hash_table(scm_from_signed_integer(32)));\
-  }\
+  constant_class_ ## cname = scm_from_utf8_symbol("<" name ">");\
+  scm_define(constant_class_ ## cname ,scm_call_4 ( makeclass, supers, slots, namekw, constant_class_ ## cname )); \
+  scm_module_export(scm_current_module(), scm_list_1(constant_class_ ## cname)); \
+  scm_hash_set_x( constant_classes_ref \
+    , constant_class_ ## cname , scm_make_hash_table(scm_from_signed_integer(32)));\
+
 
 #define EXPORT_CONSTANT(class, cname, name, func) \
-  {\
-  SCM constname = scm_from_utf8_symbol( name );\
-  SCM value = func ( wrap_const_ ## cname );\
-  SCM makeargs = scm_list_1(constant_class_ ## class ## _ref);\
-  SCM inst = scm_make(makeargs);\
-  wrap_const_inst ## cname = inst;\
-  scm_slot_set_x(inst,valuesym,value);\
-  scm_module_define( scm_current_module(), constname, inst);\
-  scm_module_export( scm_current_module() , scm_list_1(constname));\
+  wrap_const_inst_ ## cname = scm_from_utf8_symbol( name );\
+  value = func ( wrap_const_ ## cname );\
+  makeargs = scm_list_1(scm_public_ref(current_module_name, constant_class_ ## class));\
+  scm_define( wrap_const_inst_ ## cname, scm_make(makeargs));\
+  scm_module_export( scm_current_module() , scm_list_1(wrap_const_inst_ ## cname));\
+  scm_slot_set_x(scm_public_ref(current_module_name,wrap_const_inst_ ## cname),valuesym,value);\
   scm_hash_set_x(\
-    scm_hash_ref(constant_classes_ref , constant_class_ ## class ## _ref, SCM_BOOL_F)\
+    scm_hash_ref(constant_classes_ref , constant_class_ ## class , SCM_BOOL_F)\
   , value \
-  , inst);\
-  }\
-
+  , wrap_const_inst_ ## cname);\
 
   EXPORT_CONSTANT_CLASS(snmp_version , "snmp-version");
   EXPORT_CONSTANT(snmp_version, SNMP_VERSION_1, "SNMP-VERSION-1" , scm_from_signed_integer)
@@ -1025,7 +1030,6 @@ init_snmp_wrap_constants(void)
   EXPORT_CONSTANT(snmp_status, STAT_ERROR , "STAT-ERROR" , scm_from_signed_integer)
   EXPORT_CONSTANT(snmp_status, STAT_TIMEOUT , "STAT-TIMEOUT" , scm_from_signed_integer)
 
-  /*
   EXPORT_CONSTANT_CLASS(snmp_err_status , "snmp-err-status");
   EXPORT_CONSTANT(snmp_err_status, SNMP_ERR_NOERROR , "SNMP-ERR-NOERROR" , scm_from_signed_integer)
   EXPORT_CONSTANT(snmp_err_status, SNMP_ERR_TOOBIG , "SNMP-ERR-TOOBIG" , scm_from_signed_integer)
@@ -1046,7 +1050,8 @@ init_snmp_wrap_constants(void)
   EXPORT_CONSTANT(snmp_err_status, SNMP_ERR_AUTHORIZATIONERROR , "SNMP-ERR-AUTHORIZATIONERROR" , scm_from_signed_integer)
   EXPORT_CONSTANT(snmp_err_status, SNMP_ERR_NOTWRITABLE , "SNMP-ERR-NOTWRITABLE" , scm_from_signed_integer)
   EXPORT_CONSTANT(snmp_err_status, SNMP_ERR_INCONSISTENTNAME , "SNMP-ERR-INCONSISTENTNAME" , scm_from_signed_integer)
-  */
+/*
+ */
 }
 
 static void init_snmp_wrap(void *data)
