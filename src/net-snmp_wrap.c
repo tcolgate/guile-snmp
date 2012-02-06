@@ -141,6 +141,175 @@ SCM scm_from_oid(oid *oidarray, int oidlen)
   return result;
 }
 
+
+#define WRAP_CONSTANT(type, name) \
+static type wrap_const_ ## name = name ;
+
+WRAP_CONSTANT(oid , SNMP_MSG_GET)
+WRAP_CONSTANT(oid , SNMP_MSG_GETNEXT)
+WRAP_CONSTANT(oid , SNMP_MSG_RESPONSE)
+WRAP_CONSTANT(oid , SNMP_MSG_SET)
+WRAP_CONSTANT(oid , SNMP_MSG_TRAP)
+WRAP_CONSTANT(oid , SNMP_MSG_GETBULK)
+WRAP_CONSTANT(oid , SNMP_MSG_INFORM)
+WRAP_CONSTANT(oid , SNMP_MSG_TRAP2)
+WRAP_CONSTANT(oid , SNMP_MSG_REPORT)
+
+WRAP_CONSTANT(int , SNMP_NOSUCHOBJECT)
+WRAP_CONSTANT(int , SNMP_NOSUCHINSTANCE)
+WRAP_CONSTANT(int , SNMP_ENDOFMIBVIEW)
+WRAP_CONSTANT(int , STAT_SUCCESS)
+WRAP_CONSTANT(int , STAT_ERROR)
+WRAP_CONSTANT(int , STAT_TIMEOUT)
+
+WRAP_CONSTANT(int , ASN_BOOLEAN)
+WRAP_CONSTANT(int , ASN_INTEGER)
+WRAP_CONSTANT(int , ASN_BIT_STR)
+WRAP_CONSTANT(int , ASN_NULL)
+WRAP_CONSTANT(int , ASN_OBJECT_ID)
+WRAP_CONSTANT(int , ASN_SEQUENCE)
+WRAP_CONSTANT(int , ASN_SET)
+WRAP_CONSTANT(int , ASN_OCTET_STR)
+WRAP_CONSTANT(int , ASN_IPADDRESS)
+WRAP_CONSTANT(int , ASN_COUNTER)
+WRAP_CONSTANT(int , ASN_GAUGE)
+WRAP_CONSTANT(int , ASN_UNSIGNED)
+WRAP_CONSTANT(int , ASN_TIMETICKS)
+WRAP_CONSTANT(int , ASN_OPAQUE)
+WRAP_CONSTANT(int , ASN_NSAP)
+WRAP_CONSTANT(int , ASN_COUNTER64)
+WRAP_CONSTANT(int , ASN_UINTEGER)
+WRAP_CONSTANT(int , ASN_FLOAT)
+WRAP_CONSTANT(int , ASN_DOUBLE)
+WRAP_CONSTANT(int , ASN_INTEGER64)
+WRAP_CONSTANT(int , ASN_UNSIGNED64)
+
+WRAP_CONSTANT(int , SNMP_VERSION_1)
+WRAP_CONSTANT(int , SNMP_VERSION_2c)
+WRAP_CONSTANT(int , SNMP_VERSION_2u)
+WRAP_CONSTANT(int , SNMP_VERSION_3)
+WRAP_CONSTANT(int , SNMP_VERSION_sec)
+WRAP_CONSTANT(int , SNMP_VERSION_2p)
+WRAP_CONSTANT(int , SNMP_VERSION_2star)
+
+WRAP_CONSTANT(int , SNMP_ERR_NOERROR)
+WRAP_CONSTANT(int , SNMP_ERR_TOOBIG)
+WRAP_CONSTANT(int , SNMP_ERR_NOSUCHNAME)
+WRAP_CONSTANT(int , SNMP_ERR_BADVALUE)
+WRAP_CONSTANT(int , SNMP_ERR_READONLY)
+WRAP_CONSTANT(int , SNMP_ERR_GENERR)
+WRAP_CONSTANT(int , SNMP_ERR_NOACCESS)
+WRAP_CONSTANT(int , SNMP_ERR_WRONGTYPE)
+WRAP_CONSTANT(int , SNMP_ERR_WRONGLENGTH)
+WRAP_CONSTANT(int , SNMP_ERR_WRONGENCODING)
+WRAP_CONSTANT(int , SNMP_ERR_WRONGVALUE)
+WRAP_CONSTANT(int , SNMP_ERR_NOCREATION)
+WRAP_CONSTANT(int , SNMP_ERR_INCONSISTENTVALUE)
+WRAP_CONSTANT(int , SNMP_ERR_RESOURCEUNAVAILABLE)
+WRAP_CONSTANT(int , SNMP_ERR_COMMITFAILED)
+WRAP_CONSTANT(int , SNMP_ERR_UNDOFAILED)
+WRAP_CONSTANT(int , SNMP_ERR_AUTHORIZATIONERROR)
+WRAP_CONSTANT(int , SNMP_ERR_NOTWRITABLE)
+WRAP_CONSTANT(int , SNMP_ERR_INCONSISTENTNAME)
+
+// Provide hook for the main module to hook into
+SCM constant_name_from_value_hook = SCM_BOOL_F;
+
+SCM
+scm_set_constant_name_from_value_hook_x(SCM func)
+{
+  constant_name_from_value_hook = func;
+  return SCM_UNSPECIFIED;
+};
+
+SCM
+scm_constant_name_from_int(const char* classname, int val)
+{
+  return scm_call_2(
+           constant_name_from_value_hook,
+           scm_from_utf8_symbol(classname),
+           scm_from_signed_integer(val));
+};
+
+void
+init_snmp_wrap_constants(void)
+{
+  scm_c_define_gsubr("set-constant-name-from-value-hook!", 1, 0, 0, (void *) scm_set_constant_name_from_value_hook_x);
+  scm_c_export("set-constant-name-from-value-hook!", NULL);
+
+#define EXPORT_CONSTANT(cname, name, func) \
+  scm_c_define("_wrap_" name , \
+    func ( wrap_const_ ## cname ));\
+  scm_c_export("_wrap_" name , NULL);\
+
+  EXPORT_CONSTANT(SNMP_VERSION_1, "SNMP-VERSION-1" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_VERSION_2c, "SNMP-VERSION-2c" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_VERSION_2u, "SNMP-VERSION-2u" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_VERSION_3, "SNMP-VERSION-3" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_VERSION_sec, "SNMP-VERSION-2sec" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_VERSION_2p, "SNMP-VERSION-2p" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_VERSION_2star, "SNMP-VERSION-2star" , scm_from_signed_integer)
+
+  EXPORT_CONSTANT(SNMP_MSG_GET, "SNMP-MSG-GET" , scm_from_ulong)
+  EXPORT_CONSTANT(SNMP_MSG_GETNEXT, "SNMP-MSG-GETNEXT" , scm_from_ulong)
+  EXPORT_CONSTANT(SNMP_MSG_RESPONSE, "SNMP-MSG-RESPONSE" , scm_from_ulong)
+  EXPORT_CONSTANT(SNMP_MSG_SET, "SNMP-MSG-SET" , scm_from_ulong)
+  EXPORT_CONSTANT(SNMP_MSG_TRAP, "SNMP-MSG-TRAP" , scm_from_ulong)
+  EXPORT_CONSTANT(SNMP_MSG_GETBULK, "SNMP-MSG-GETBULK" , scm_from_ulong)
+  EXPORT_CONSTANT(SNMP_MSG_INFORM, "SNMP-MSG-INFORM" , scm_from_ulong)
+  EXPORT_CONSTANT(SNMP_MSG_TRAP2, "SNMP-MSG-TRAP2" , scm_from_ulong)
+  EXPORT_CONSTANT(SNMP_MSG_REPORT, "SNMP-MSG-REPORT" , scm_from_ulong)
+
+  EXPORT_CONSTANT(ASN_BOOLEAN , "ASN-BOOLEAN" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_INTEGER , "ASN-INTEGER" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_BIT_STR , "ASN-BIT-STR" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_NULL , "ASN-NULL" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_OBJECT_ID , "ASN-OBJECT-ID" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_SEQUENCE , "ASN-SEQUENCE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_SET , "ASN-SET" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_OCTET_STR , "ASN-OCTET-STR" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_IPADDRESS , "ASN-IPADDRESS" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_COUNTER , "ASN-COUNTER" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_GAUGE , "ASN-GAUGE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_UNSIGNED , "ASN-UNSIGNED" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_TIMETICKS , "ASN-TIMETICKS" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_OPAQUE , "ASN-OPAQUE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_NSAP , "ASN-NSAP" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_COUNTER64 , "ASN-COUNTER64" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_UINTEGER , "ASN-UINTEGER" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_FLOAT , "ASN-FLOAT" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_DOUBLE , "ASN-DOUBLE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_INTEGER64 , "ASN-INTEGER64" , scm_from_signed_integer)
+  EXPORT_CONSTANT(ASN_UNSIGNED , "ASN-UNSIGNED64" , scm_from_signed_integer)
+
+  EXPORT_CONSTANT(SNMP_NOSUCHOBJECT , "SNMP-NOSUCHOBJECT" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_NOSUCHINSTANCE , "SNMP-NOSUCHINSTANCE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ENDOFMIBVIEW , "SNMP-ENDOFMIBVIEW" , scm_from_signed_integer)
+  EXPORT_CONSTANT(STAT_SUCCESS , "STAT-SUCCESS" , scm_from_signed_integer)
+  EXPORT_CONSTANT(STAT_ERROR , "STAT-ERROR" , scm_from_signed_integer)
+  EXPORT_CONSTANT(STAT_TIMEOUT , "STAT-TIMEOUT" , scm_from_signed_integer)
+
+  EXPORT_CONSTANT(SNMP_ERR_NOERROR , "SNMP-ERR-NOERROR" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_TOOBIG , "SNMP-ERR-TOOBIG" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_NOSUCHNAME , "SNMP-ERR-NOSUCHNAME" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_BADVALUE , "SNMP-ERR-BADVALUE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_READONLY , "SNMP-ERR-READONLY" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_GENERR , "SNMP-ERR-GENERR" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_NOACCESS , "SNMP-ERR-NOACCESS" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_WRONGTYPE , "SNMP-ERR-WRONGTYPE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_WRONGLENGTH , "SNMP-ERR-WRONGLENGTH" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_WRONGENCODING , "SNMP-ERR-WRONGENCODING" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_WRONGVALUE , "SNMP-ERR-WRONGVALUE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_NOCREATION , "SNMP-ERR-NOCREATION" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_INCONSISTENTVALUE , "SNMP-ERR-INCONSISTENTVALUE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_RESOURCEUNAVAILABLE , "SNMP-ERR-RESOURCEUNAVAILABLE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_COMMITFAILED , "SNMP-ERR-COMMITFAILED" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_UNDOFAILED , "SNMP-ERR-UNDOFAILED" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_AUTHORIZATIONERROR , "SNMP-ERR-AUTHORIZATIONERROR" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_NOTWRITABLE , "SNMP-ERR-NOTWRITABLE" , scm_from_signed_integer)
+  EXPORT_CONSTANT(SNMP_ERR_INCONSISTENTNAME , "SNMP-ERR-INCONSISTENTNAME" , scm_from_signed_integer)
+}
+
 typedef size_t (*free_wrap_smob_f)(SCM);
 typedef SCM (*mark_wrap_smob_f)(SCM);
 typedef int (*print_wrap_smob_f)(SCM,SCM,scm_print_state*);
@@ -322,6 +491,13 @@ _wrap_tree_label_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
   return scm_from_utf8_string(node->label);
+}
+
+static SCM
+_wrap_tree_type_get (SCM tree)
+{
+  struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
+  return scm_constant_name_from_int("<asn-type>", node->type);
 }
 
 static SCM
@@ -841,153 +1017,6 @@ _wrap_snmp_parse_oid (SCM oidname)
    return scmresult;
 }
 
-
-#define WRAP_CONSTANT(type, name) \
-static type wrap_const_ ## name = name ;
-
-WRAP_CONSTANT(oid , SNMP_MSG_GET)
-WRAP_CONSTANT(oid , SNMP_MSG_GETNEXT)
-WRAP_CONSTANT(oid , SNMP_MSG_RESPONSE)
-WRAP_CONSTANT(oid , SNMP_MSG_SET)
-WRAP_CONSTANT(oid , SNMP_MSG_TRAP)
-WRAP_CONSTANT(oid , SNMP_MSG_GETBULK)
-WRAP_CONSTANT(oid , SNMP_MSG_INFORM)
-WRAP_CONSTANT(oid , SNMP_MSG_TRAP2)
-WRAP_CONSTANT(oid , SNMP_MSG_REPORT)
-
-WRAP_CONSTANT(int , SNMP_NOSUCHOBJECT)
-WRAP_CONSTANT(int , SNMP_NOSUCHINSTANCE)
-WRAP_CONSTANT(int , SNMP_ENDOFMIBVIEW)
-WRAP_CONSTANT(int , STAT_SUCCESS)
-WRAP_CONSTANT(int , STAT_ERROR)
-WRAP_CONSTANT(int , STAT_TIMEOUT)
-
-WRAP_CONSTANT(int , ASN_BOOLEAN)
-WRAP_CONSTANT(int , ASN_INTEGER)
-WRAP_CONSTANT(int , ASN_BIT_STR)
-WRAP_CONSTANT(int , ASN_NULL)
-WRAP_CONSTANT(int , ASN_OBJECT_ID)
-WRAP_CONSTANT(int , ASN_SEQUENCE)
-WRAP_CONSTANT(int , ASN_SET)
-WRAP_CONSTANT(int , ASN_OCTET_STR)
-WRAP_CONSTANT(int , ASN_IPADDRESS)
-WRAP_CONSTANT(int , ASN_COUNTER)
-WRAP_CONSTANT(int , ASN_GAUGE)
-WRAP_CONSTANT(int , ASN_UNSIGNED)
-WRAP_CONSTANT(int , ASN_TIMETICKS)
-WRAP_CONSTANT(int , ASN_OPAQUE)
-WRAP_CONSTANT(int , ASN_NSAP)
-WRAP_CONSTANT(int , ASN_COUNTER64)
-WRAP_CONSTANT(int , ASN_UINTEGER)
-WRAP_CONSTANT(int , ASN_FLOAT)
-WRAP_CONSTANT(int , ASN_DOUBLE)
-WRAP_CONSTANT(int , ASN_INTEGER64)
-WRAP_CONSTANT(int , ASN_UNSIGNED64)
-
-WRAP_CONSTANT(int , SNMP_VERSION_1)
-WRAP_CONSTANT(int , SNMP_VERSION_2c)
-WRAP_CONSTANT(int , SNMP_VERSION_2u)
-WRAP_CONSTANT(int , SNMP_VERSION_3)
-WRAP_CONSTANT(int , SNMP_VERSION_sec)
-WRAP_CONSTANT(int , SNMP_VERSION_2p)
-WRAP_CONSTANT(int , SNMP_VERSION_2star)
-
-WRAP_CONSTANT(int , SNMP_ERR_NOERROR)
-WRAP_CONSTANT(int , SNMP_ERR_TOOBIG)
-WRAP_CONSTANT(int , SNMP_ERR_NOSUCHNAME)
-WRAP_CONSTANT(int , SNMP_ERR_BADVALUE)
-WRAP_CONSTANT(int , SNMP_ERR_READONLY)
-WRAP_CONSTANT(int , SNMP_ERR_GENERR)
-WRAP_CONSTANT(int , SNMP_ERR_NOACCESS)
-WRAP_CONSTANT(int , SNMP_ERR_WRONGTYPE)
-WRAP_CONSTANT(int , SNMP_ERR_WRONGLENGTH)
-WRAP_CONSTANT(int , SNMP_ERR_WRONGENCODING)
-WRAP_CONSTANT(int , SNMP_ERR_WRONGVALUE)
-WRAP_CONSTANT(int , SNMP_ERR_NOCREATION)
-WRAP_CONSTANT(int , SNMP_ERR_INCONSISTENTVALUE)
-WRAP_CONSTANT(int , SNMP_ERR_RESOURCEUNAVAILABLE)
-WRAP_CONSTANT(int , SNMP_ERR_COMMITFAILED)
-WRAP_CONSTANT(int , SNMP_ERR_UNDOFAILED)
-WRAP_CONSTANT(int , SNMP_ERR_AUTHORIZATIONERROR)
-WRAP_CONSTANT(int , SNMP_ERR_NOTWRITABLE)
-WRAP_CONSTANT(int , SNMP_ERR_INCONSISTENTNAME)
-
-void
-init_snmp_wrap_constants(void)
-{
-#define EXPORT_CONSTANT(cname, name, func) \
-  scm_c_define("_wrap_" name , \
-    func ( wrap_const_ ## cname ));\
-  scm_c_export("_wrap_" name , NULL);\
-
-  EXPORT_CONSTANT(SNMP_VERSION_1, "SNMP-VERSION-1" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_VERSION_2c, "SNMP-VERSION-2c" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_VERSION_2u, "SNMP-VERSION-2u" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_VERSION_3, "SNMP-VERSION-3" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_VERSION_sec, "SNMP-VERSION-2sec" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_VERSION_2p, "SNMP-VERSION-2p" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_VERSION_2star, "SNMP-VERSION-2star" , scm_from_signed_integer)
-
-  EXPORT_CONSTANT(SNMP_MSG_GET, "SNMP-MSG-GET" , scm_from_ulong)
-  EXPORT_CONSTANT(SNMP_MSG_GETNEXT, "SNMP-MSG-GETNEXT" , scm_from_ulong)
-  EXPORT_CONSTANT(SNMP_MSG_RESPONSE, "SNMP-MSG-RESPONSE" , scm_from_ulong)
-  EXPORT_CONSTANT(SNMP_MSG_SET, "SNMP-MSG-SET" , scm_from_ulong)
-  EXPORT_CONSTANT(SNMP_MSG_TRAP, "SNMP-MSG-TRAP" , scm_from_ulong)
-  EXPORT_CONSTANT(SNMP_MSG_GETBULK, "SNMP-MSG-GETBULK" , scm_from_ulong)
-  EXPORT_CONSTANT(SNMP_MSG_INFORM, "SNMP-MSG-INFORM" , scm_from_ulong)
-  EXPORT_CONSTANT(SNMP_MSG_TRAP2, "SNMP-MSG-TRAP2" , scm_from_ulong)
-  EXPORT_CONSTANT(SNMP_MSG_REPORT, "SNMP-MSG-REPORT" , scm_from_ulong)
-
-  EXPORT_CONSTANT(ASN_BOOLEAN , "ASN-BOOLEAN" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_INTEGER , "ASN-INTEGER" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_BIT_STR , "ASN-BIT-STR" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_NULL , "ASN-NULL" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_OBJECT_ID , "ASN-OBJECT-ID" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_SEQUENCE , "ASN-SEQUENCE" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_SET , "ASN-SET" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_OCTET_STR , "ASN-OCTET-STR" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_IPADDRESS , "ASN-IPADDRESS" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_COUNTER , "ASN-COUNTER" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_GAUGE , "ASN-GAUGE" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_UNSIGNED , "ASN-UNSIGNED" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_TIMETICKS , "ASN-TIMETICKS" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_OPAQUE , "ASN-OPAQUE" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_NSAP , "ASN-NSAP" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_COUNTER64 , "ASN-COUNTER64" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_UINTEGER , "ASN-UINTEGER" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_FLOAT , "ASN-FLOAT" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_DOUBLE , "ASN-DOUBLE" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_INTEGER64 , "ASN-INTEGER64" , scm_from_signed_integer)
-  EXPORT_CONSTANT(ASN_UNSIGNED , "ASN-UNSIGNED64" , scm_from_signed_integer)
-
-  EXPORT_CONSTANT(SNMP_NOSUCHOBJECT , "SNMP-NOSUCHOBJECT" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_NOSUCHINSTANCE , "SNMP-NOSUCHINSTANCE" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ENDOFMIBVIEW , "SNMP-ENDOFMIBVIEW" , scm_from_signed_integer)
-  EXPORT_CONSTANT(STAT_SUCCESS , "STAT-SUCCESS" , scm_from_signed_integer)
-  EXPORT_CONSTANT(STAT_ERROR , "STAT-ERROR" , scm_from_signed_integer)
-  EXPORT_CONSTANT(STAT_TIMEOUT , "STAT-TIMEOUT" , scm_from_signed_integer)
-
-  EXPORT_CONSTANT(SNMP_ERR_NOERROR , "SNMP-ERR-NOERROR" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_TOOBIG , "SNMP-ERR-TOOBIG" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_NOSUCHNAME , "SNMP-ERR-NOSUCHNAME" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_BADVALUE , "SNMP-ERR-BADVALUE" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_READONLY , "SNMP-ERR-READONLY" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_GENERR , "SNMP-ERR-GENERR" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_NOACCESS , "SNMP-ERR-NOACCESS" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_WRONGTYPE , "SNMP-ERR-WRONGTYPE" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_WRONGLENGTH , "SNMP-ERR-WRONGLENGTH" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_WRONGENCODING , "SNMP-ERR-WRONGENCODING" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_WRONGVALUE , "SNMP-ERR-WRONGVALUE" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_NOCREATION , "SNMP-ERR-NOCREATION" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_INCONSISTENTVALUE , "SNMP-ERR-INCONSISTENTVALUE" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_RESOURCEUNAVAILABLE , "SNMP-ERR-RESOURCEUNAVAILABLE" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_COMMITFAILED , "SNMP-ERR-COMMITFAILED" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_UNDOFAILED , "SNMP-ERR-UNDOFAILED" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_AUTHORIZATIONERROR , "SNMP-ERR-AUTHORIZATIONERROR" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_NOTWRITABLE , "SNMP-ERR-NOTWRITABLE" , scm_from_signed_integer)
-  EXPORT_CONSTANT(SNMP_ERR_INCONSISTENTNAME , "SNMP-ERR-INCONSISTENTNAME" , scm_from_signed_integer)
-}
-
 static void init_snmp_wrap(void *data)
 {
 
@@ -1020,6 +1049,11 @@ static void init_snmp_wrap(void *data)
   scm_c_define_gsubr("tree-label-set", 2, 0, 0, (void *) read_only_setter);
   scm_c_export("tree-label-get" , NULL);
   scm_c_export("tree-label-set" , NULL);
+
+  scm_c_define_gsubr("tree-type-get", 1, 0, 0, (void *) _wrap_tree_type_get);
+  scm_c_define_gsubr("tree-type-set", 2, 0, 0, (void *) read_only_setter);
+  scm_c_export("tree-type-get" , NULL);
+  scm_c_export("tree-type-set" , NULL);
 
   scm_c_define("snmp-session-version", scm_make_procedure_with_setter(
     scm_c_define_gsubr("snmp-session-version-get", 1, 0, 0, (void *) _wrap_snmp_session_version_get),

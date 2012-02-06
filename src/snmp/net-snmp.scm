@@ -123,8 +123,8 @@
        (export name)))))
 
 (define (constant-name-from-value class val)
-  (hashq-ref (hashq-ref constant-classes class) val))
-(export constant-name-from-value)
+  (hashq-ref (hashq-ref constant-classes (module-ref (current-module ) class)) val))
+(primitive:set-constant-name-from-value-hook! constant-name-from-value)
 
 (define-constant-class <snmp-version>)
 (define-constant <snmp-version> SNMP-VERSION-1) 
@@ -242,6 +242,9 @@
   (label #:allocation #:virtual
    #:slot-ref primitive:tree-label-get
    #:slot-set! primitive:tree-label-set)
+  (type #:allocation #:virtual
+   #:slot-ref primitive:tree-type-get
+   #:slot-set! primitive:tree-type-set)
   #:name '<tree>)
 
 (define-macro (re-export name)
