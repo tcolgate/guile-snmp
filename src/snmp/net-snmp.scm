@@ -102,7 +102,7 @@
     ((_ name)
      (begin
        (define-class name (<snmp-constant>))
-       (hash-set! constant-classes name (make-hash-table 32))  
+       (hashq-set! constant-classes name (make-hash-table 32))  
        (export name)))))
 
 (define-syntax define-constant
@@ -113,7 +113,7 @@
                           #:value (local-ref (list  
                           (string->symbol (string-append "primitive:_wrap_" 
                                           (symbol->string (quote name))))))))
-       (hash-set! (hash-ref constant-classes type) (local-ref (list  
+       (hashq-set! (hashq-ref constant-classes type) (local-ref (list  
                           (string->symbol (string-append "primitive:_wrap_" 
                                           (symbol->string (quote name)))))
 							      ) name) 
