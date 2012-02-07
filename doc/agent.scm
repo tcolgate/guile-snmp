@@ -2,15 +2,15 @@
 !#
 
 (let ((tds (netsnmp-create-table-data-set "stuff")))
-  (netsnmp-table-dataset-add-index tds (ASN-OCTET-STR))
-  (netsnmp-table-set-add-default-row tds 2 (ASN-OCTET-STR) 0 (nullOid) 0)
-  (netsnmp-table-set-add-default-row tds 3 (ASN-INTEGER) 0 (nullOid) 0)
+  (netsnmp-table-dataset-add-index tds ASN-OCTET-STR)
+  (netsnmp-table-set-add-default-row tds 2 ASN-OCTET-STR 0 (nullOid) 0)
+  (netsnmp-table-set-add-default-row tds 3 ASN-INTEGER 0 (nullOid) 0)
 
   (netsnmp-register-table-data-set
     (netsnmp-create-handler-registration "test" 
-                                         (nullOid) 
+                                         nullOid 
                                          .1.2.3.4.5.6.7 
-                                         (HANDLER-CAN-RONLY)) 
+                                         HANDLER-CAN-RONLY) 
     tds 
     nullOid))
 

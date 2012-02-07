@@ -172,11 +172,11 @@
   (make <snmp-reports-result-set> #:results (filter
     (lambda(thisres)   
       (cond
-        ((equal? (char->integer (slot-ref (cdr thisres) 'type)) (SNMP-ENDOFMIBVIEW)) 
+        ((equal? (char->integer (slot-ref (cdr thisres) 'type)) SNMP-ENDOFMIBVIEW)
           #f)
-        ((equal? (char->integer (slot-ref (cdr thisres) 'type)) (SNMP-NOSUCHOBJECT)) 
+        ((equal? (char->integer (slot-ref (cdr thisres) 'type)) SNMP-NOSUCHOBJECT) 
           #f)
-        ((equal? (char->integer (slot-ref (cdr thisres) 'type)) (SNMP-NOSUCHINSTANCE)) 
+        ((equal? (char->integer (slot-ref (cdr thisres) 'type)) SNMP-NOSUCHINSTANCE) 
           #f)
         ((null? (slot-ref (cdr thisres) 'base)) 
           #f)
@@ -278,7 +278,7 @@
                    (let ((status (snmp-sess-synch-response (current-session) newpdu)))
                      (if (or
                            (unspecified? status)
-                           (not (equal? (slot-ref status 'errstat) (SNMP-ERR-NOERROR))))
+                           (not (equal? (slot-ref status 'errstat) SNMP-ERR-NOERROR)))
                       (throw 'snmperror (snmp-sess-error (current-session)))
                       (let ((results (slot-ref status 'variables)))
                         (split-varbinds results))))))))
@@ -291,18 +291,18 @@
 
 (define (get . oid-terms)
   (tag-varbinds
-    (synch-query (SNMP-MSG-GET) oid-terms)
+    (synch-query SNMP-MSG-GET oid-terms)
     oid-terms))
 
 (define (getnext . oid-terms)
   (tag-varbinds
-    (synch-query (SNMP-MSG-GETNEXT) oid-terms)
+    (synch-query SNMP-MSG-GETNEXT oid-terms)
     oid-terms))
 
 (define (synch-set oid-value-pairs)
   (if (equal? oid-value-pairs '())
     #t
-    (let ((newpdu (snmp-pdu-create (SNMP-MSG-SET))))
+    (let ((newpdu (snmp-pdu-create SNMP-MSG-SET)))
       (let addoids ((sos oid-value-pairs))
         (if (not (eq? sos '()))
           (let ((so (car sos)))
@@ -331,7 +331,7 @@
                                        (cdr sos)))))))))))
       (let* ((response (snmp-sess-synch-response (current-session) newpdu))
              (status   (slot-ref response 'errstat)))
-        (if (not (equal? status (SNMP-ERR-NOERROR)))
+        (if (not (equal? status SNMP-ERR-NOERROR))
           (throw 'snmperror "error during set")
           #t)))))
 
@@ -363,7 +363,7 @@
     (lambda()
       (if (not (equal? curroid #f))
         (let* ((results      (tag-varbinds
-                               (synch-query (SNMP-MSG-GETNEXT) (list curroid))
+                               (synch-query SNMP-MSG-GETNEXT (list curroid))
                                (list currbase)))
                (cleanresults (filter-valid-next results)))
           (if (equal? (slot-ref  cleanresults 'results) '())

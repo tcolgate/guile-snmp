@@ -87,7 +87,7 @@
 (define-method (test-set2 (self <test-reports>))
   (assert-equal #t
                 (session #:host "127.0.0.1:10161" 
-                  (set ((snmp-parse-oid "gstTestString.0") ((ASN-OCTET-STR) "Guile-SNMP test string"))))))
+                  (set ((snmp-parse-oid "gstTestString.0") (ASN-OCTET-STR "Guile-SNMP test string"))))))
 
 (define-method (test-set3 (self <test-reports>))
   (assert-equal #t
