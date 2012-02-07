@@ -1,7 +1,7 @@
 lib_LTLIBRARIES=libguile_snmp_net-snmp.la 
 
 libguile_snmp_net_snmp_la_CFLAGS=@GUILE_CFLAGS@ 
-libguile_snmp_net_snmp_la_SOURCES=net-snmp_wrap.c net-snmp_wrap_oid.h net-snmp_wrap_constants.h
+libguile_snmp_net_snmp_la_SOURCES=net-snmp_wrap.c net-snmp_wrap_oid.h net-snmp_wrap_constants.h net-snmp_wrap_structs.h net-snmp_wrap_funcs.h
 libguile_snmp_net_snmp_la_LDFLAGS=@GUILE_LDFLAGS@ -module @NETSNMP_LDFLAGS@ @NETSNMPAGENT_LDFLAGS@
 
 SCHEMESOURCES=snmp/net-snmp.scm\
