@@ -6,11 +6,19 @@
 
 (define-module (snmp net-snmp))
  
+(define-macro (re-export name)
+  `(begin
+     (define ,name ,(string->symbol
+		       (string-append
+		         "primitive:"
+		         (symbol->string name))))
+     (export ,name)))
 
 (eval-when (eval load compile)
 
   (use-modules (oop goops))
   (use-modules (srfi srfi-39))
+  (use-modules (ice-9 pretty-print))
 
   ; The module will hook these up with architecture specific
   ; srfi-4 routines
@@ -198,65 +206,88 @@
 (define-constant <snmp-err-status> SNMP-ERR-NOTWRITABLE)
 (define-constant <snmp-err-status> SNMP-ERR-INCONSISTENTNAME)
 
-;(define-class <snmp-session> ()
-;  (version #:allocation #:virtual
-;   #:slot-ref (lambda (obj) (primitive:snmp-session-version-get obj))
-;   #:slot-set! (lambda (obj value) (primitive:snmp-session-version-set obj value)))
-;  (retries #:allocation #:virtual
-;   #:slot-ref (lambda (obj) (primitive:snmp-session-retries-get obj))
-;   #:slot-set! (lambda (obj value) (primitive:snmp-session-retries-set obj value)))
-;  (timeout #:allocation #:virtual
-;   #:slot-ref (lambda (obj) (primitive:snmp-session-timeout-get obj))
-;   #:slot-set! (lambda (obj value) (primitive:snmp-session-timeout-set obj value)))
-;  (subsession #:allocation #:virtual
-;   #:slot-ref (lambda (obj) (primitive:snmp-session-subsession-get obj))
-;   #:slot-set! (lambda (obj value) (primitive:snmp-session-subsession-set obj value)))
-;  (next #:allocation #:virtual
-;   #:slot-ref (lambda (obj) (primitive:snmp-session-next-get obj))
-;   #:slot-set! (lambda (obj value) (primitive:snmp-session-next-set obj value)))
-;  (peername #:allocation #:virtual
-;   #:slot-ref (lambda (obj) (primitive:snmp-session-peername-get obj))
-;   #:slot-set! (lambda (obj value) (primitive:snmp-session-peername-set obj value)))
-;  (remote-port #:allocation #:virtual
-;   #:slot-ref (lambda (obj) (primitive:snmp-session-remote-port-get obj))
-;   #:slot-set! (lambda (obj value) (primitive:snmp-session-remote-port-set obj value)))
-;  (localname #:allocation #:virtual
-;   #:slot-ref (lambda (obj) (primitive:snmp-session-localname-get obj))
-;   #:slot-set! (lambda (obj value) (primitive:snmp-session-localname-set obj value)))
-;  (local-port #:allocation #:virtual
-;   #:slot-ref (lambda (obj) (primitive:snmp-session-local-port-get obj))
-;   #:slot-set! (lambda (obj value) (primitive:snmp-session-local-port-set obj value)))
-;  (contextName #:allocation #:virtual
-;   #:slot-ref (lambda (obj) (primitive:snmp-session-contextName-get obj))
-;   #:slot-set! (lambda (obj value) (primitive:snmp-session-contextName-set obj value)))
-;  #:new-function primitive:new-snmp-session
-;)
 
 ;(define snmp-sess-init primitive:snmp-sess-init)
 ;(define snmp-open primitive:snmp-open)
 ;(define snmp-close primitive:snmp-close)
 ;(define snmp-close-sessions primitive:snmp-close-sessions)
 
-(define-class primitive:<tree> ()
-  ptr
-  (label #:allocation #:virtual
-   #:slot-ref primitive:tree-label-get
-   #:slot-set! primitive:tree-label-set)
-  (type #:allocation #:virtual
-   #:slot-ref primitive:tree-type-get
-   #:slot-set! primitive:tree-type-set)
-  #:name '<tree>)
+(define-syntax define-class-wrapped-struct
+  (lambda(stx)
+    (let* ((input (syntax->datum stx))
+           (type  (cadr input))
+           (slots  (cddr input))
+           (class (string->symbol (string-append "<"  (symbol->string type) ">")))
+           (primname (string->symbol (string-append "primitive:"  (symbol->string class))))
+	   (slotdefs (let* ((p "primitive:")) 
+		       (map
+			 (lambda (slot)
+			   (let* ((pref  (string-append p 
+							(symbol->string type) 
+							"-"
+							(symbol->string slot)))
+				  (sget  (string->symbol (string-append pref "-get"))) 
+				  (sset  (string->symbol (string-append pref "-set")))
+				  (sacc  (string->symbol (string-append p (symbol->string slot)))))
+			     `(,slot #:allocation #:virtual
+				     #:slot-ref  ,sget
+				     #:slot-set! ,sset
+				     #:accessor ,sacc)))
+			 slots)))
+	   (slotexps (map
+			(lambda (slot)
+			     `(re-export ,slot))
+			 slots)))
+      
+        (datum->syntax stx 
+		     `(begin
+			(define-class ,primname ()
+				      ptr
+				      ,@slotdefs
+				      #:name (quote ,class))
+			(re-export ,class)
+			,@slotexps)))))
 
-(define-macro (re-export name)
-  `(begin
-     (define ,name ,(string->symbol
-		       (string-append
-		         "primitive:"
-		         (symbol->string name))))
-     (export ,name)))
+(define-class-wrapped-struct tree label type) 
 
-(re-export <tree>)
+#!
+(define-class <snmp-session> ()
+  (community #:allocation #:virtual
+    #:slot-ref (lambda (obj)  (primitive:netsnmp-pdu-community-get obj))
+    #:slot-set! (lambda (obj value)  (primitive:netsnmp-pdu-community-set obj value)))
+  (version #:allocation #:virtual
+   #:slot-ref (lambda (obj) (primitive:snmp-session-version-get obj))
+   #:slot-set! (lambda (obj value) (primitive:snmp-session-version-set obj value)))
+  (retries #:allocation #:virtual
+   #:slot-ref (lambda (obj) (primitive:snmp-session-retries-get obj))
+   #:slot-set! (lambda (obj value) (primitive:snmp-session-retries-set obj value)))
+  (timeout #:allocation #:virtual
+   #:slot-ref (lambda (obj) (primitive:snmp-session-timeout-get obj))
+   #:slot-set! (lambda (obj value) (primitive:snmp-session-timeout-set obj value)))
+  (subsession #:allocation #:virtual
+   #:slot-ref (lambda (obj) (primitive:snmp-session-subsession-get obj))
+   #:slot-set! (lambda (obj value) (primitive:snmp-session-subsession-set obj value)))
+  (peername #:allocation #:virtual
+   #:slot-ref (lambda (obj) (primitive:snmp-session-peername-get obj))
+   #:slot-set! (lambda (obj value) (primitive:snmp-session-peername-set obj value)))
+  (remote-port #:allocation #:virtual
+   #:slot-ref (lambda (obj) (primitive:snmp-session-remote-port-get obj))
+   #:slot-set! (lambda (obj value) (primitive:snmp-session-remote-port-set obj value)))
+  (localname #:allocation #:virtual
+   #:slot-ref (lambda (obj) (primitive:snmp-session-localname-get obj))
+   #:slot-set! (lambda (obj value) (primitive:snmp-session-localname-set obj value)))
+  (local-port #:allocation #:virtual
+   #:slot-ref (lambda (obj) (primitive:snmp-session-local-port-get obj))
+   #:slot-set! (lambda (obj value) (primitive:snmp-session-local-port-set obj value)))
+  (contextName #:allocation #:virtual
+   #:slot-ref (lambda (obj) (primitive:snmp-session-contextName-get obj))
+   #:slot-set! (lambda (obj value) (primitive:snmp-session-contextName-set obj value)))
+  #:new-function primitive:new-snmp-session
+)
+
 (re-export <snmp-session>)
+!#
+
 (re-export <values>)
 
 (re-export init-mib)
