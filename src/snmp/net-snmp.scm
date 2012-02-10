@@ -18,6 +18,7 @@
 
   (use-modules (oop goops))
   (use-modules (srfi srfi-39))
+  (use-modules (ice-9 pretty-print))
 
   ; The module will hook these up with architecture specific
   ; srfi-4 routines
@@ -248,8 +249,6 @@
 (define-constant <mib-status> MIB-STATUS-DEPRECATED)
 (define-constant <mib-status> MIB-STATUS-CURRENT)
 
-
-
 ;(define snmp-sess-init primitive:snmp-sess-init)
 ;(define snmp-open primitive:snmp-open)
 ;(define snmp-close primitive:snmp-close)
@@ -269,37 +268,27 @@
 							(symbol->string type) 
 							"-"
 							(symbol->string slot)))
-				  (sref  (string->symbol (string-append pref "-ref"))) 
-				  (sset  (string->symbol (string-append pref "-set")))) 
+				  (sget  (string->symbol (string-append pref "-get"))) 
+				  (sset  (string->symbol (string-append pref "-set")))
+				  (sacc  (string->symbol (string-append p (symbol->string slot)))))
 			     `(,slot #:allocation #:virtual
-				     #:slot-ref  ,sref 
+				     #:slot-ref  ,sget
 				     #:slot-set! ,sset
-				     #:accessor ,slot)))
-			 slots))))
-      (datum->syntax stx
+				     #:accessor ,sacc)))
+			 slots)))
+	   (slotexps (map
+			(lambda (slot)
+			     `(re-export ,slot))
+			 slots)))
+      
+        (datum->syntax stx 
 		     `(begin
 			(define-class ,primname ()
 				      ptr
 				      ,@slotdefs
 				      #:name (quote ,class))
-			(re-export ,class))))))
-
-
-
-;(define-class primitive:<tree> ()
-;  ptr
-;  (label #:allocation #:virtual
-;   #:slot-ref primitive:tree-label-get
-;   #:slot-set! primitive:tree-label-set
-;   #:accessor primitive:label)
-;  (type #:allocation #:virtual
-;   #:slot-ref primitive:tree-type-get
-;   #:slot-set! primitive:tree-type-set
-;   #:accessor primitive:type)
-;  #:name '<tree>)
-;(re-export <tree>)
-;(re-export label)
-;(re-export type)
+			(re-export ,class)
+			,@slotexps)))))
 
 (define-class-wrapped-struct tree label type) 
 
