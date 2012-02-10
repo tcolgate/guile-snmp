@@ -14,7 +14,7 @@ typedef struct wrap_smob_typedef_s {
 
 static scm_t_bits snmp_wrap_smob_tag;
 typedef enum snmp_wrap_smob_subtypes {
-  smob_netsnmp_session = 0,
+  smob_snmp_session = 0,
   smob_tree,
   smob_valuesi,
   smob_last
@@ -168,6 +168,116 @@ read_only_setter(SCM s_0, SCM s_1)
   return SCM_UNSPECIFIED;
 };
 
+/*
+ * Wrap struct netsnmp_session
+ */
+
+static SCM
+make_snmp_wrap_netsnmp_session_smob(void)
+{
+  return make_wrapped_pointer(smob_snmp_session
+		           ,(void*) scm_gc_malloc (sizeof(netsnmp_session), "netsnmp_session"));
+};
+
+int guile_snmp_async_response(int , struct snmp_session *, int , struct snmp_pdu *, void *);
+
+SCM
+snmp_session_callback_get(struct snmp_session *p) {
+  return (SCM) p->callback_magic;
+};
+
+SCM
+snmp_session_callback_set(struct snmp_session *p, SCM cb) {
+  p->callback = guile_snmp_async_response;
+  p->callback_magic = cb;
+  return SCM_UNSPECIFIED;
+};
+
+static SCM
+_wrap_snmp_session_version_get (SCM s_0)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  return scm_constant_name_from_int("<snmp-verion>", session->version);
+}
+
+static SCM
+_wrap_snmp_session_version_set (SCM s_0, SCM s_1)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  session->version = scm_to_long(s_1);
+
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_snmp_session_retries_get (SCM s_0)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  return scm_from_int(session->retries);
+}
+
+static SCM
+_wrap_snmp_session_retries_set (SCM s_0, SCM s_1)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  session->retries = scm_to_int(s_1);
+
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_snmp_session_timeout_get (SCM s_0)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  return scm_from_long(session->timeout);
+}
+
+static SCM
+_wrap_snmp_session_timeout_set (SCM s_0, SCM s_1)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  session->timeout = scm_to_long(s_1);
+
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_snmp_session_peername_get (SCM s_0)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  return scm_from_latin1_string(session->peername);
+}
+
+static SCM
+_wrap_snmp_session_peername_set (SCM s_0, SCM s_1)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  session->peername = scm_to_latin1_string(s_1);
+
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_snmp_session_community_get (SCM s_0)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  return scm_from_utf8_string(session->community);
+}
+
+static SCM
+_wrap_snmp_session_community_set (SCM s_0, SCM s_1)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  session->community = scm_to_utf8_string(s_1);
+  session->community_len = strlen(session->community);
+
+  return SCM_UNSPECIFIED;
+}
+
+/*
+ * Wrap struct tree
+ */
+
 static SCM
 make_snmp_wrap_tree_smob_from_ptr(struct tree *ptr)
 {
@@ -211,6 +321,10 @@ _wrap_tree_status_get (SCM tree)
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
   return scm_constant_name_from_int("<mib-status>", node->status);
 }
+
+/*
+ * Wrap struct variable_list
+ */
 
 SCM netsnmp_variable_list_value_get(struct variable_list *p) {
   SCM result = SCM_UNSPECIFIED;
@@ -291,239 +405,14 @@ SCM netsnmp_variable_list_value_get(struct variable_list *p) {
   return result;
 };
 
-static SCM
-make_snmp_wrap_netsnmp_session_smob(void)
-{
-  return make_wrapped_pointer(smob_netsnmp_session
-		           ,(void*) scm_gc_malloc (sizeof(netsnmp_session), "netsnmp_session"));
-};
 
-
-int guile_snmp_async_response(int , struct snmp_session *, int , struct snmp_pdu *, void *);
-
-SCM
-snmp_session_callback_get(struct snmp_session *p) {
-  return (SCM) p->callback_magic;
-};
-
-void
-snmp_session_callback_set(struct snmp_session *p, SCM cb) {
-  p->callback = guile_snmp_async_response;
-  p->callback_magic = cb;
-  return ;
-};
-
-static SCM
-_wrap_snmp_session_version_set (SCM s_0, SCM s_1)
-{
-#define FUNC_NAME "snmp-session-version-set"
-  struct snmp_session *arg1 = (struct snmp_session *) 0 ;
-  long arg2 ;
-  SCM scmresult;
-  
-  {
-    arg2 = (long) scm_to_long(s_1);
-  }
-  if (arg1) (arg1)->version = arg2;
-  scmresult = SCM_UNSPECIFIED;
-  
-  
-  return scmresult;
-#undef FUNC_NAME
-}
-
-
-static SCM
-_wrap_snmp_session_version_get (SCM s_0)
-{
-#define FUNC_NAME "snmp-session-version-get"
-  struct snmp_session *arg1 = (struct snmp_session *) 0 ;
-  SCM scmresult;
-  long result;
-  
-  result = (long) ((arg1)->version);
-  {
-    scmresult = scm_from_long(result);
-  }
-  
-  
-  return scmresult;
-#undef FUNC_NAME
-}
-
-
-static SCM
-_wrap_snmp_session_retries_set (SCM s_0, SCM s_1)
-{
-#define FUNC_NAME "snmp-session-retries-set"
-  struct snmp_session *arg1 = (struct snmp_session *) 0 ;
-  int arg2 ;
-  SCM scmresult;
-  
-  {
-    arg2 = (int) scm_to_int(s_1);
-  }
-  if (arg1) (arg1)->retries = arg2;
-  scmresult = SCM_UNSPECIFIED;
-  
-  
-  return scmresult;
-#undef FUNC_NAME
-}
-
-
-static SCM
-_wrap_snmp_session_retries_get (SCM s_0)
-{
-#define FUNC_NAME "snmp-session-retries-get"
-  struct snmp_session *arg1 = (struct snmp_session *) 0 ;
-  SCM scmresult;
-  int result;
-  
-  result = (int) ((arg1)->retries);
-  {
-    scmresult = scm_from_signed_integer(result);
-  }
-  
-  
-  return scmresult;
-#undef FUNC_NAME
-}
-
-
-static SCM
-_wrap_snmp_session_timeout_set (SCM s_0, SCM s_1)
-{
-#define FUNC_NAME "snmp-session-timeout-set"
-  struct snmp_session *arg1 = (struct snmp_session *) 0 ;
-  long arg2 ;
-  SCM scmresult;
-  
-  {
-    arg2 = (long) scm_to_long(s_1);
-  }
-  if (arg1) (arg1)->timeout = arg2;
-  scmresult = SCM_UNSPECIFIED;
-  
-  
-  return scmresult;
-#undef FUNC_NAME
-}
-
-
-static SCM
-_wrap_snmp_session_timeout_get (SCM s_0)
-{
-#define FUNC_NAME "snmp-session-timeout-get"
-  struct snmp_session *arg1 = (struct snmp_session *) 0 ;
-  SCM scmresult;
-  long result;
-  
-  result = (long) ((arg1)->timeout);
-  {
-    scmresult = scm_from_long(result);
-  }
-  
-  
-  return scmresult;
-#undef FUNC_NAME
-}
-
-static SCM
-_wrap_snmp_session_peername_set (SCM s_0, SCM s_1)
-{
-#define FUNC_NAME "snmp-session-peername-set"
-  struct snmp_session *arg1 = (struct snmp_session *) 0 ;
-  char *arg2 = (char *) 0 ;
-  int must_free2 = 0 ;
-  SCM scmresult;
-  
-  {
-    arg2 = (char *)SWIG_scm2str(s_1);
-    must_free2 = 1;
-  }
-  {
-    if (arg1->peername) free((char *)arg1->peername);
-    if (arg2) {
-      arg1->peername = (char *) malloc(strlen((const char *)arg2)+1);
-      strcpy((char *)arg1->peername, (const char *)arg2);
-    } else {
-      arg1->peername = 0;
-    }
-  }
-  scmresult = SCM_UNSPECIFIED;
-  
-  if (must_free2 && arg2) SWIG_free(arg2);
-  
-  return scmresult;
-#undef FUNC_NAME
-}
-
-
-static SCM
-_wrap_snmp_session_peername_get (SCM s_0)
-{
-#define FUNC_NAME "snmp-session-peername-get"
-  struct snmp_session *arg1 = (struct snmp_session *) 0 ;
-  SCM scmresult;
-  char *result = 0 ;
-  
-  result = (char *) ((arg1)->peername);
-  {
-    scmresult = scm_from_locale_string((const char *)result);
-  }
-  
-  
-  return scmresult;
-#undef FUNC_NAME
-}
-
-static SCM
-_wrap_snmp_session_community_set (SCM s_0, SCM s_1)
-{
-#define FUNC_NAME "snmp-session-community-set"
-  struct snmp_session *arg1 = (struct snmp_session *) 0 ;
-  u_char *arg2 = (u_char *) 0 ;
-  int must_free2 = 0 ;
-  SCM scmresult;
-  
-  {
-    arg2 = (u_char *)SWIG_scm2str(s_1);
-    must_free2 = 1;
-  }
-  {
-    if (arg1->community) free((char *)arg1->community);
-    if (arg2) {
-      arg1->community = (u_char *) malloc(strlen((const char *)arg2)+1);
-      strcpy((char *)arg1->community, (const char *)arg2);
-    } else {
-      arg1->community = 0;
-    }
-  }
-  scmresult = SCM_UNSPECIFIED;
-  
-  if (must_free2 && arg2) SWIG_free(arg2);
-  
-  return scmresult;
-#undef FUNC_NAME
-}
-
-
-static SCM
-_wrap_snmp_session_community_get (SCM s_0)
-{
-  struct snmp_session *arg1 = (struct snmp_session *) 0 ;
-  SCM scmresult;
-  u_char *result = 0 ;
-  
-  result = (u_char *) ((arg1)->community);
-  {
-    scmresult = scm_from_locale_string((const char *)result);
-  }
-  
-  
-  return scmresult;
-}
+#define DEFINE_SLOT_READWRITE(strtype , type , strslot , slot) \
+  scm_c_define( strtype "-" strslot, scm_make_procedure_with_setter(\
+    scm_c_define_gsubr( strtype "-" strslot "-get", 1, 0, 0, (void *) _wrap_ ## type ## _ ## slot ## _get),\
+    scm_c_define_gsubr( strtype "-" strslot "-set", 2, 0, 0, (void *) _wrap_ ## type ## _ ## slot ## _set)));\
+  scm_c_export( strtype "-" strslot , NULL);\
+  scm_c_export( strtype "-" strslot "-get" , NULL);\
+  scm_c_export( strtype "-" strslot "-set" , NULL);\
 
 #define DEFINE_SLOT_READONLY(strtype , type , strslot , slot) \
   scm_c_define( strtype "-" strslot, scm_make_procedure_with_setter(\
@@ -541,17 +430,11 @@ static void init_snmp_wrap_structs(void)
   DEFINE_SLOT_READONLY("tree" , tree , "status" ,status)
   DEFINE_SLOT_READONLY("tree" , tree , "access" ,access)
 
-  scm_c_define("snmp-session-version", scm_make_procedure_with_setter(
-    scm_c_define_gsubr("snmp-session-version-get", 1, 0, 0, (void *) _wrap_snmp_session_version_get),
-    scm_c_define_gsubr("snmp-session-version-set", 2, 0, 0, (void *) _wrap_snmp_session_version_set)));
-
-  scm_c_define("snmp-session-peername", scm_make_procedure_with_setter(
-    scm_c_define_gsubr("snmp-session-peername-get", 1, 0, 0, (void *) _wrap_snmp_session_peername_get),
-    scm_c_define_gsubr("snmp-session-peername-set", 2, 0, 0, (void *) _wrap_snmp_session_peername_set)));
-
-  scm_c_define("snmp-session-community", scm_make_procedure_with_setter(
-    scm_c_define_gsubr("snmp-session-community-get", 1, 0, 0, (void *) _wrap_snmp_session_community_get),
-    scm_c_define_gsubr("snmp-session-community-set", 2, 0, 0, (void *) _wrap_snmp_session_community_set)));
+  DEFINE_SLOT_READWRITE("session" , snmp_session , "community" ,community)
+  DEFINE_SLOT_READWRITE("session" , snmp_session , "peername" ,peername)
+  DEFINE_SLOT_READWRITE("session" , snmp_session , "version" ,version)
+  DEFINE_SLOT_READWRITE("session" , snmp_session , "retries" ,retries)
+  DEFINE_SLOT_READWRITE("session" , snmp_session , "timeout" ,timeout)
 
   scm_c_define_gsubr ("make-snmp-wrap-netsnmp-session-smob", 0, 0, 0, make_snmp_wrap_netsnmp_session_smob);
   scm_c_export("make-snmp-wrap-netsnmp-session-smob" , NULL);

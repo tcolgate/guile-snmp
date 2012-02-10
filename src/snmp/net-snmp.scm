@@ -291,44 +291,7 @@
 			,@slotexps)))))
 
 (define-class-wrapped-struct tree label description type access status) 
-
-#!
-(define-class <snmp-session> ()
-  (community #:allocation #:virtual
-    #:slot-ref (lambda (obj)  (primitive:netsnmp-pdu-community-get obj))
-    #:slot-set! (lambda (obj value)  (primitive:netsnmp-pdu-community-set obj value)))
-  (version #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-version-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-version-set obj value)))
-  (retries #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-retries-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-retries-set obj value)))
-  (timeout #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-timeout-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-timeout-set obj value)))
-  (subsession #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-subsession-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-subsession-set obj value)))
-  (peername #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-peername-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-peername-set obj value)))
-  (remote-port #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-remote-port-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-remote-port-set obj value)))
-  (localname #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-localname-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-localname-set obj value)))
-  (local-port #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-local-port-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-local-port-set obj value)))
-  (contextName #:allocation #:virtual
-   #:slot-ref (lambda (obj) (primitive:snmp-session-contextName-get obj))
-   #:slot-set! (lambda (obj value) (primitive:snmp-session-contextName-set obj value)))
-  #:new-function primitive:new-snmp-session
-)
-
-(re-export <snmp-session>)
-!#
+(define-class-wrapped-struct session community peername version timeout retries) 
 
 (re-export <values>)
 
