@@ -169,7 +169,6 @@ read_only_setter(SCM s_0, SCM s_1)
 };
 
 static SCM
-
 make_snmp_wrap_tree_smob_from_ptr(struct tree *ptr)
 {
   return make_wrapped_pointer(smob_tree ,(void*) ptr);
@@ -183,10 +182,34 @@ _wrap_tree_label_get (SCM tree)
 }
 
 static SCM
+_wrap_tree_description_get (SCM tree)
+{
+  struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
+  if(node->description){
+    return scm_from_utf8_string(node->description);
+  };
+  return scm_from_utf8_string("No description set, MIB description may not be being loaded");
+}
+
+static SCM
 _wrap_tree_type_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
   return scm_constant_name_from_int("<mib-type>", node->type);
+}
+
+static SCM
+_wrap_tree_access_get (SCM tree)
+{
+  struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
+  return scm_constant_name_from_int("<mib-access>", node->access);
+}
+
+static SCM
+_wrap_tree_status_get (SCM tree)
+{
+  struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
+  return scm_constant_name_from_int("<mib-status>", node->status);
 }
 
 SCM netsnmp_variable_list_value_get(struct variable_list *p) {
@@ -502,22 +525,21 @@ _wrap_snmp_session_community_get (SCM s_0)
   return scmresult;
 }
 
+#define DEFINE_SLOT_READONLY(strtype , type , strslot , slot) \
+  scm_c_define( strtype "-" strslot, scm_make_procedure_with_setter(\
+    scm_c_define_gsubr( strtype "-" strslot "-get", 1, 0, 0, (void *) _wrap_ ## type ## _ ## slot ## _get),\
+    scm_c_define_gsubr( strtype "-" strslot "-set", 2, 0, 0, (void *) read_only_setter)));\
+  scm_c_export( strtype "-" strslot , NULL);\
+  scm_c_export( strtype "-" strslot "-get" , NULL);\
+  scm_c_export( strtype "-" strslot "-set" , NULL);\
 
 static void init_snmp_wrap_structs(void)
 {
-  scm_c_define("tree-label", scm_make_procedure_with_setter(
-    scm_c_define_gsubr("tree-label-get", 1, 0, 0, (void *) _wrap_tree_label_get),
-    scm_c_define_gsubr("tree-label-set", 2, 0, 0, (void *) read_only_setter)));
-  scm_c_export("tree-label" , NULL);
-  scm_c_export("tree-label-get" , NULL);
-  scm_c_export("tree-label-set" , NULL);
-
-  scm_c_define("tree-type", scm_make_procedure_with_setter(
-    scm_c_define_gsubr("tree-type-get", 1, 0, 0, (void *) _wrap_tree_type_get),
-    scm_c_define_gsubr("tree-type-set", 2, 0, 0, (void *) read_only_setter)));
-  scm_c_export("tree-type" , NULL);
-  scm_c_export("tree-type-get" , NULL);
-  scm_c_export("tree-type-set" , NULL);
+  DEFINE_SLOT_READONLY("tree" , tree , "label" ,label)
+  DEFINE_SLOT_READONLY("tree" , tree , "description" ,description)
+  DEFINE_SLOT_READONLY("tree" , tree , "type" ,type)
+  DEFINE_SLOT_READONLY("tree" , tree , "status" ,status)
+  DEFINE_SLOT_READONLY("tree" , tree , "access" ,access)
 
   scm_c_define("snmp-session-version", scm_make_procedure_with_setter(
     scm_c_define_gsubr("snmp-session-version-get", 1, 0, 0, (void *) _wrap_snmp_session_version_get),

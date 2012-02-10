@@ -290,7 +290,7 @@
 			(re-export ,class)
 			,@slotexps)))))
 
-(define-class-wrapped-struct tree label type) 
+(define-class-wrapped-struct tree label description type access status) 
 
 #!
 (define-class <snmp-session> ()
