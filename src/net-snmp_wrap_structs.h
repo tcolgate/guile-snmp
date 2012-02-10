@@ -175,12 +175,9 @@ read_only_setter(SCM s_0, SCM s_1)
 static SCM
 _wrap_initialize_snmp_session (SCM obj, SCM args)
 {
-  struct snmp_session *session = (void*) scm_gc_malloc (sizeof(struct snmp_session), "snmp_session");
-  snmp_sess_init(session);
-  session->community = "public";
-  session->community_len = strlen(session->community);
+  void *ptr = snmp_sess_open(&global_snmp_session);
   SCM smob;
-  SCM_NEWSMOB (smob, snmp_wrap_smob_tag, session);
+  SCM_NEWSMOB (smob, snmp_wrap_smob_tag, ptr);
   SCM_SET_SMOB_FLAGS (smob, smob_snmp_session);
 
   SCM ptrsym = scm_from_utf8_symbol("ptr");
@@ -191,14 +188,16 @@ _wrap_initialize_snmp_session (SCM obj, SCM args)
 static SCM
 _wrap_snmp_session_version_get (SCM s_0)
 {
-  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  void *ptr = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  struct snmp_session *session = snmp_sess_session(ptr);
   return scm_constant_name_from_int("<snmp-verion>", session->version);
 }
 
 static SCM
 _wrap_snmp_session_version_set (SCM s_0, SCM s_1)
 {
-  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  void *ptr = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  struct snmp_session *session = snmp_sess_session(ptr);
   session->version = scm_to_long(s_1);
 
   return SCM_UNSPECIFIED;
@@ -207,14 +206,16 @@ _wrap_snmp_session_version_set (SCM s_0, SCM s_1)
 static SCM
 _wrap_snmp_session_retries_get (SCM s_0)
 {
-  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  void *ptr = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  struct snmp_session *session = snmp_sess_session(ptr);
   return scm_from_int(session->retries);
 }
 
 static SCM
 _wrap_snmp_session_retries_set (SCM s_0, SCM s_1)
 {
-  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  void *ptr = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  struct snmp_session *session = snmp_sess_session(ptr);
   session->retries = scm_to_int(s_1);
 
   return SCM_UNSPECIFIED;
@@ -223,14 +224,16 @@ _wrap_snmp_session_retries_set (SCM s_0, SCM s_1)
 static SCM
 _wrap_snmp_session_timeout_get (SCM s_0)
 {
-  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  void *ptr = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  struct snmp_session *session = snmp_sess_session(ptr);
   return scm_from_long(session->timeout);
 }
 
 static SCM
 _wrap_snmp_session_timeout_set (SCM s_0, SCM s_1)
 {
-  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  void *ptr = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  struct snmp_session *session = snmp_sess_session(ptr);
   session->timeout = scm_to_long(s_1);
 
   return SCM_UNSPECIFIED;
@@ -239,14 +242,16 @@ _wrap_snmp_session_timeout_set (SCM s_0, SCM s_1)
 static SCM
 _wrap_snmp_session_peername_get (SCM s_0)
 {
-  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  void *ptr = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  struct snmp_session *session = snmp_sess_session(ptr);
   return scm_from_latin1_string(session->peername);
 }
 
 static SCM
 _wrap_snmp_session_peername_set (SCM s_0, SCM s_1)
 {
-  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  void *ptr = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  struct snmp_session *session = snmp_sess_session(ptr);
   session->peername = scm_to_latin1_string(s_1);
 
   return SCM_UNSPECIFIED;
@@ -255,14 +260,16 @@ _wrap_snmp_session_peername_set (SCM s_0, SCM s_1)
 static SCM
 _wrap_snmp_session_community_get (SCM s_0)
 {
-  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  void *ptr = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  struct snmp_session *session = snmp_sess_session(ptr);
   return scm_from_utf8_string(session->community);
 }
 
 static SCM
 _wrap_snmp_session_community_set (SCM s_0, SCM s_1)
 {
-  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  void *ptr = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  struct snmp_session *session = snmp_sess_session(ptr);
   session->community = scm_to_utf8_string(s_1);
   session->community_len = strlen(session->community);
 

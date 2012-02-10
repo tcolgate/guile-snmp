@@ -175,6 +175,7 @@ static SCM
 _wrap_init_snmp (SCM name)
 {
   init_snmp(scm_to_utf8_string (name));
+  snmp_sess_init(&global_snmp_session);
   return SCM_UNSPECIFIED;
 }
 
