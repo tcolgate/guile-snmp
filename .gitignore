@@ -37,3 +37,5 @@ acinclude.m4
 src/snmp-shell
 unit-tests/.test-agent-pid
 m4/*.m4
+m4/libtool.m4
+m4/ltversion.m4
