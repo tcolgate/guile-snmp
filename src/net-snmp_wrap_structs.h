@@ -194,6 +194,12 @@ snmp_session_callback_set(struct snmp_session *p, SCM cb) {
 };
 
 static SCM
+_wrap_snmp_session_version_make (void)
+{
+  return SCM_EOL;
+}
+
+static SCM
 _wrap_snmp_session_version_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
