@@ -173,30 +173,19 @@ read_only_setter(SCM s_0, SCM s_1)
  */
 
 static SCM
-make_snmp_wrap_netsnmp_session_smob(void)
+_wrap_initialize_snmp_session (SCM obj, SCM args)
 {
-  return make_wrapped_pointer(smob_snmp_session
-		           ,(void*) scm_gc_malloc (sizeof(netsnmp_session), "netsnmp_session"));
-};
+  struct snmp_session *session = (void*) scm_gc_malloc (sizeof(struct snmp_session), "snmp_session");
+  snmp_sess_init(session);
+  session->community = "public";
+  session->community_len = strlen(session->community);
+  SCM smob;
+  SCM_NEWSMOB (smob, snmp_wrap_smob_tag, session);
+  SCM_SET_SMOB_FLAGS (smob, smob_snmp_session);
 
-int guile_snmp_async_response(int , struct snmp_session *, int , struct snmp_pdu *, void *);
-
-SCM
-snmp_session_callback_get(struct snmp_session *p) {
-  return (SCM) p->callback_magic;
-};
-
-SCM
-snmp_session_callback_set(struct snmp_session *p, SCM cb) {
-  p->callback = guile_snmp_async_response;
-  p->callback_magic = cb;
+  SCM ptrsym = scm_from_utf8_symbol("ptr");
+  scm_slot_set_x(obj,ptrsym,smob);
   return SCM_UNSPECIFIED;
-};
-
-static SCM
-_wrap_snmp_session_version_make (void)
-{
-  return SCM_EOL;
 }
 
 static SCM
@@ -280,12 +269,32 @@ _wrap_snmp_session_community_set (SCM s_0, SCM s_1)
   return SCM_UNSPECIFIED;
 }
 
+int guile_snmp_async_response(int , struct snmp_session *, int , struct snmp_pdu *, void *);
+
+SCM
+snmp_session_callback_get(struct snmp_session *p) {
+  return (SCM) p->callback_magic;
+};
+
+SCM
+snmp_session_callback_set(struct snmp_session *p, SCM cb) {
+  p->callback = guile_snmp_async_response;
+  p->callback_magic = cb;
+  return SCM_UNSPECIFIED;
+};
+
 /*
  * Wrap struct tree
  */
 
 static SCM
-make_snmp_wrap_tree_smob_from_ptr(struct tree *ptr)
+_wrap_initialize_tree (SCM obj)
+{
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+make_tree_smob_from_ptr(struct tree *ptr)
 {
   return make_wrapped_pointer(smob_tree ,(void*) ptr);
 };
@@ -435,14 +444,16 @@ static void init_snmp_wrap_structs(void)
   DEFINE_SLOT_READONLY("tree" , tree , "type" ,type)
   DEFINE_SLOT_READONLY("tree" , tree , "status" ,status)
   DEFINE_SLOT_READONLY("tree" , tree , "access" ,access)
+  scm_c_define_gsubr ("initialize-tree", 2, 0, 0, _wrap_initialize_tree);
+  scm_c_export("initialize-tree" , NULL);
 
-  DEFINE_SLOT_READWRITE("session" , snmp_session , "community" ,community)
-  DEFINE_SLOT_READWRITE("session" , snmp_session , "peername" ,peername)
-  DEFINE_SLOT_READWRITE("session" , snmp_session , "version" ,version)
-  DEFINE_SLOT_READWRITE("session" , snmp_session , "retries" ,retries)
-  DEFINE_SLOT_READWRITE("session" , snmp_session , "timeout" ,timeout)
+  DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "community" ,community)
+  DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "peername" ,peername)
+  DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "version" ,version)
+  DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "retries" ,retries)
+  DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "timeout" ,timeout)
+  scm_c_define_gsubr ("initialize-snmp-session", 2, 0, 0, _wrap_initialize_snmp_session);
+  scm_c_export("initialize-snmp-session" , NULL);
 
-  scm_c_define_gsubr ("make-snmp-wrap-netsnmp-session-smob", 0, 0, 0, make_snmp_wrap_netsnmp_session_smob);
-  scm_c_export("make-snmp-wrap-netsnmp-session-smob" , NULL);
 }
 

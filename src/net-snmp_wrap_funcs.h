@@ -2,7 +2,7 @@
 static SCM
 _wrap_get_tree_head (void)
 {
-   return make_snmp_wrap_tree_smob_from_ptr(get_tree_head());
+   return make_tree_smob_from_ptr(get_tree_head());
 }
 
 static SCM
@@ -16,7 +16,7 @@ _wrap_get_tree (SCM oidscm, SCM treehead)
   struct tree* result = get_tree(temp_oid,len,node);
   scm_remember_upto_here_1(treehead);
 
-  SCM scmresult = make_snmp_wrap_tree_smob_from_ptr(result);
+  SCM scmresult = make_tree_smob_from_ptr(result);
 
   free(temp_oid);
   scm_remember_upto_here_1(oidscm);

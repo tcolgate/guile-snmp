@@ -261,6 +261,7 @@
            (slots  (cddr input))
            (class (string->symbol (string-append "<"  (symbol->string type) ">")))
            (primname (string->symbol (string-append "primitive:"  (symbol->string class))))
+           (initfunc (string->symbol (string-append "primitive:initialize-"  (symbol->string type))))
 	   (slotdefs (let* ((p "primitive:")) 
 		       (map
 			 (lambda (slot)
@@ -287,11 +288,14 @@
 				      ptr
 				      ,@slotdefs
 				      #:name (quote ,class))
+			(define-method (initialize (obj ,primname) initargs)
+			   (,initfunc obj initargs)
+                           (next-method))
 			(re-export ,class)
 			,@slotexps)))))
 
 (define-class-wrapped-struct tree label description type access status) 
-(define-class-wrapped-struct session community peername version timeout retries) 
+(define-class-wrapped-struct snmp-session community peername version timeout retries) 
 
 (re-export <values>)
 
