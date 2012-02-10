@@ -186,7 +186,7 @@ static SCM
 _wrap_tree_type_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
-  return scm_constant_name_from_int("<asn-type>", node->type);
+  return scm_constant_name_from_int("<mib-type>", node->type);
 }
 
 SCM netsnmp_variable_list_value_get(struct variable_list *p) {
@@ -505,13 +505,17 @@ _wrap_snmp_session_community_get (SCM s_0)
 
 static void init_snmp_wrap_structs(void)
 {
-  scm_c_define_gsubr("tree-label-get", 1, 0, 0, (void *) _wrap_tree_label_get);
-  scm_c_define_gsubr("tree-label-set", 2, 0, 0, (void *) read_only_setter);
+  scm_c_define("tree-label", scm_make_procedure_with_setter(
+    scm_c_define_gsubr("tree-label-get", 1, 0, 0, (void *) _wrap_tree_label_get),
+    scm_c_define_gsubr("tree-label-set", 2, 0, 0, (void *) read_only_setter)));
+  scm_c_export("tree-label" , NULL);
   scm_c_export("tree-label-get" , NULL);
   scm_c_export("tree-label-set" , NULL);
 
-  scm_c_define_gsubr("tree-type-get", 1, 0, 0, (void *) _wrap_tree_type_get);
-  scm_c_define_gsubr("tree-type-set", 2, 0, 0, (void *) read_only_setter);
+  scm_c_define("tree-type", scm_make_procedure_with_setter(
+    scm_c_define_gsubr("tree-type-get", 1, 0, 0, (void *) _wrap_tree_type_get),
+    scm_c_define_gsubr("tree-type-set", 2, 0, 0, (void *) read_only_setter)));
+  scm_c_export("tree-type" , NULL);
   scm_c_export("tree-type-get" , NULL);
   scm_c_export("tree-type-set" , NULL);
 
