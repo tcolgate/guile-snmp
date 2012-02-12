@@ -36,8 +36,6 @@
     (slot-set! bs 'version (current-version))
     (slot-set! bs 'peername (current-host))
     (slot-set! bs 'community (current-community))
-    (slot-set! bs 'community-len (string-length (current-community)))
-    (slot-set! bs 'community (current-community))
     (if (not (equal? #f (current-context)))
       (begin 
         (slot-set! bs 'contextName (current-context))

@@ -129,6 +129,22 @@ scm_constant_name_from_int(const char* classname, int val)
            scm_from_signed_integer(val));
 };
 
+int
+scm_int_from_constant(const char* classname, SCM obj)
+{
+  SCM reqclass = scm_variable_ref(scm_c_lookup(classname));
+  SCM objclass = scm_call_1( scm_variable_ref(scm_c_lookup("class-of")), obj);
+
+  if(reqclass != objclass){
+    scm_throw(
+      scm_string_to_symbol(
+        scm_from_locale_string("type error")),
+          scm_from_locale_string("Incorrect type"));
+    return 0;
+  };
+  return scm_to_int(scm_slot_ref(obj,scm_from_utf8_symbol("value")));
+};
+
 void
 init_snmp_wrap_constants(void)
 {
