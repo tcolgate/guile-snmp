@@ -267,6 +267,23 @@ _wrap_snmp_session_community_set (SCM s_0, SCM s_1)
   return SCM_UNSPECIFIED;
 }
 
+static SCM
+_wrap_snmp_session_context_get (SCM s_0)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  return scm_from_utf8_string(session->contextName);
+}
+
+static SCM
+_wrap_snmp_session_context_set (SCM s_0, SCM s_1)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  session->contextName = scm_to_utf8_string(s_1);
+  session->contextNameLen = strlen(session->contextName);
+
+  return SCM_UNSPECIFIED;
+}
+
 int guile_snmp_async_response(int , struct snmp_session *, int , struct snmp_pdu *, void *);
 
 SCM
@@ -448,6 +465,7 @@ static void init_snmp_wrap_structs(void)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "community" ,community)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "peername" ,peername)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "version" ,version)
+  DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "context" ,context)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "retries" ,retries)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "timeout" ,timeout)
   scm_c_define_gsubr ("initialize-snmp-session", 2, 0, 0, _wrap_initialize_snmp_session);

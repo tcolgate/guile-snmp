@@ -70,7 +70,6 @@ snmp_shell_module (void* arguments)
 
   scm_c_use_module("snmp reports");
   scm_c_use_module("snmp net-snmp");
-/*
 
   scm_c_eval_string("(init-reports)");
 
@@ -102,13 +101,13 @@ snmp_shell_module (void* arguments)
   if(NULL != opt_defversion){
     SCM val;
     if(!strcmp(opt_defversion, "1")){
-      val = scm_apply_0(scm_variable_ref(scm_c_lookup("SNMP-VERSION-1")), SCM_EOL);
+      val = scm_variable_ref(scm_c_lookup("SNMP-VERSION-1"));
     } else if (!strcmp(opt_defversion, "2c")){ 
-      val = scm_apply_0(scm_variable_ref(scm_c_lookup("SNMP-VERSION-2c")), SCM_EOL);
+      val = scm_variable_ref(scm_c_lookup("SNMP-VERSION-2c"));
     } else if (!strcmp(opt_defversion, "3")){
-      val = scm_apply_0(scm_variable_ref(scm_c_lookup("SNMP-VERSION-3")), SCM_EOL);
+      val = scm_variable_ref(scm_c_lookup("SNMP-VERSION-3"));
     } else {
-      val = scm_apply_0(scm_variable_ref(scm_c_lookup("SNMP-VERSION-2c")), SCM_EOL);
+      val = scm_variable_ref(scm_c_lookup("SNMP-VERSION-2c"));
     };
     
     scm_apply_1(
@@ -136,7 +135,6 @@ snmp_shell_module (void* arguments)
       scm_list_1(scm_c_eval_string(opt_eval)));
   };
 
-*/
  // if(NULL == opt_script && NULL == opt_eval){
     //scm_c_eval_string("(start-repl #:welcome #f)");
     scm_c_eval_string("(start-repl 'scheme)");

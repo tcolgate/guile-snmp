@@ -295,7 +295,7 @@
 			,@slotexps)))))
 
 (define-class-wrapped-struct tree label description type access status) 
-(define-class-wrapped-struct snmp-session community peername version timeout retries) 
+(define-class-wrapped-struct snmp-session community peername version context timeout retries) 
 
 (re-export <values>)
 
@@ -305,6 +305,7 @@
 (re-export get-tree)
 (re-export get-tree-head)
 (re-export oid-from-tree-node)
+(re-export snmp-sess-open)
 
 
 ;(export 

@@ -38,8 +38,7 @@
     (slot-set! bs 'community (current-community))
     (if (not (equal? #f (current-context)))
       (begin 
-        (slot-set! bs 'contextName (current-context))
-        (slot-set! bs 'contextNameLen (string-length (current-context)))))
+        (slot-set! bs 'context (current-context))))
     (slot-set! bs 'retries (current-retries))
     (slot-set! bs 'timeout (current-timeout))
     (snmp-sess-open bs)))
