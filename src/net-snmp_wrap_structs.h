@@ -175,7 +175,8 @@ read_only_setter(SCM s_0, SCM s_1)
 static SCM
 _wrap_initialize_snmp_session (SCM obj, SCM args)
 {
-  void *ptr = snmp_sess_open(&global_snmp_session);
+  void *ptr = scm_gc_malloc(sizeof(struct snmp_session),"snmp session");
+  snmp_sess_init(ptr);
   SCM smob;
   SCM_NEWSMOB (smob, snmp_wrap_smob_tag, ptr);
   SCM_SET_SMOB_FLAGS (smob, smob_snmp_session);

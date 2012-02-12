@@ -32,23 +32,19 @@
 (define current-timeout (make-parameter 1000000))
 
 (define (new-snmp-session)
-  #t)
-;
-;(define (new-snmp-session)
-;  (let* ((bs (make <snmp-session>))
-;         (jn (snmp-sess-init bs)))
-;    (slot-set! bs 'version (current-version))
-;    (slot-set! bs 'peername (current-host))
-;    (slot-set! bs 'community (current-community))
-;    (slot-set! bs 'community-len (string-length (current-community)))
-;    (slot-set! bs 'community (current-community))
-;    (if (not (equal? #f (current-context)))
-;      (begin 
-;        (slot-set! bs 'contextName (current-context))
-;        (slot-set! bs 'contextNameLen (string-length (current-context)))))
-;    (slot-set! bs 'retries (current-retries))
-;    (slot-set! bs 'timeout (current-timeout))
-;    (snmp-sess-open bs)))
+  (let* ((bs (make <snmp-session>)))
+    (slot-set! bs 'version (current-version))
+    (slot-set! bs 'peername (current-host))
+    (slot-set! bs 'community (current-community))
+    (slot-set! bs 'community-len (string-length (current-community)))
+    (slot-set! bs 'community (current-community))
+    (if (not (equal? #f (current-context)))
+      (begin 
+        (slot-set! bs 'contextName (current-context))
+        (slot-set! bs 'contextNameLen (string-length (current-context)))))
+    (slot-set! bs 'retries (current-retries))
+    (slot-set! bs 'timeout (current-timeout))
+    (snmp-sess-open bs)))
 
 (define current-session (make-parameter (new-snmp-session)))
 
