@@ -151,6 +151,7 @@ inline void
 assert_smob_subtype(snmp_wrap_smob_subtypes_e type, SCM smob)
 {
   if(SCM_SMOB_FLAGS(smob) != type) {
+    printf("Gah!!! you be doin' bad thing!\n");
     return;
   };
 }

@@ -217,7 +217,7 @@ _wrap_snmp_sess_session (SCM s_0)
 {
   void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
   struct snmp_session *childsess = snmp_sess_session(sessp);
-  return make_wrapped_pointer(smob_snmp_session ,(struct snmp_session*) sessp);
+  return make_wrapped_pointer(smob_snmp_session ,(struct snmp_session*) childsess);
 }
 
 static SCM
