@@ -249,11 +249,6 @@
 (define-constant <mib-status> MIB-STATUS-DEPRECATED)
 (define-constant <mib-status> MIB-STATUS-CURRENT)
 
-;(define snmp-sess-init primitive:snmp-sess-init)
-;(define snmp-open primitive:snmp-open)
-;(define snmp-close primitive:snmp-close)
-;(define snmp-close-sessions primitive:snmp-close-sessions)
-
 (define-syntax define-class-wrapped-struct
   (lambda(stx)
     (let* ((input (syntax->datum stx))
@@ -297,6 +292,8 @@
 (define-class-wrapped-struct tree label description type access status) 
 (define-class-wrapped-struct snmp-session community peername version context timeout retries) 
 
+(re-export <snmp-single-session>)
+
 (re-export <values>)
 
 (re-export init-mib)
@@ -306,6 +303,7 @@
 (re-export get-tree-head)
 (re-export oid-from-tree-node)
 (re-export snmp-sess-open)
+(re-export snmp-sess-session)
 (re-export snmp-sess-close)
 
 

@@ -208,15 +208,23 @@ static SCM
 _wrap_snmp_sess_open (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  struct snmp_session *childsess = snmp_sess_open(session);
-  return make_wrapped_pointer(smob_snmp_session ,(void*) childsess);
+  void *sessp = snmp_sess_open(session);
+  return make_wrapped_pointer(smob_snmp_single_session ,(void*) sessp);
+}
+
+static SCM
+_wrap_snmp_sess_session (SCM s_0)
+{
+  void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
+  struct snmp_session *childsess = snmp_sess_session(sessp);
+  return make_wrapped_pointer(smob_snmp_session ,(struct snmp_session*) sessp);
 }
 
 static SCM
 _wrap_snmp_sess_close (SCM s_0)
 {
-  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  snmp_sess_close(session);
+  void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
+  snmp_sess_close(sessp);
   return SCM_UNSPECIFIED;
 }
 
@@ -247,6 +255,9 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("snmp-sess-open", 1, 0, 0, (void *) _wrap_snmp_sess_open);
   scm_c_export("snmp-sess-open" , NULL);
+
+  scm_c_define_gsubr("snmp-sess-session", 1, 0, 0, (void *) _wrap_snmp_sess_session);
+  scm_c_export("snmp-sess-session" , NULL);
 
   scm_c_define_gsubr("snmp-sess-close", 1, 0, 0, (void *) _wrap_snmp_sess_close);
   scm_c_export("snmp-sess-close" , NULL);

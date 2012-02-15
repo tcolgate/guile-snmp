@@ -15,6 +15,7 @@ typedef struct wrap_smob_typedef_s {
 static scm_t_bits snmp_wrap_smob_tag;
 typedef enum snmp_wrap_smob_subtypes {
   smob_snmp_session = 0,
+  smob_snmp_single_session,
   smob_tree,
   smob_valuesi,
   smob_last
@@ -22,6 +23,7 @@ typedef enum snmp_wrap_smob_subtypes {
 
 wrap_smob_typedef_t wrap_smob_types[] = {
   {"<snmp-session>", NULL, NULL, NULL, NULL, NULL},
+  {"<snmp-single-session>", NULL, NULL, NULL, NULL, NULL},
   {"<tree>", NULL, NULL, NULL, NULL, NULL},
   {"<values>", NULL, NULL, NULL, NULL, NULL}
 };
@@ -297,6 +299,23 @@ snmp_session_callback_set(struct snmp_session *p, SCM cb) {
   p->callback_magic = cb;
   return SCM_UNSPECIFIED;
 };
+
+/*
+ * Wrap struct void* as snmp-single-session
+ */
+
+static SCM
+_wrap_initialize_snmp_single_session (SCM obj, SCM args)
+{
+  void *ptr = NULL;
+  SCM smob;
+  SCM_NEWSMOB (smob, snmp_wrap_smob_tag, ptr);
+  SCM_SET_SMOB_FLAGS (smob, smob_snmp_single_session);
+
+  SCM ptrsym = scm_from_utf8_symbol("ptr");
+  scm_slot_set_x(obj,ptrsym,smob);
+  return SCM_UNSPECIFIED;
+}
 
 /*
  * Wrap struct tree
