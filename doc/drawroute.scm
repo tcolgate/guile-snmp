@@ -33,7 +33,8 @@
                   (format #t "  \"~a\" -> \"~a\" [color=~a] ;~%" prev name color)
                   (loop (misc nextgw) name)))) 
             (begin 
-              (format #t "  \"~a\" -> \"~a\" [color=~a] ;~%" prev (gw next) color)   
+              (format #t "  \"~a\" -> \"~a\" [color=~a] ;~%" prev name color)
+              (format #t "  \"~a\" -> \"~a\" [color=~a] ;~%" name (gw next) color)   
               (format #t "  \"~a\" -> \"~a\" [color=~a] ;~%" (gw next) dst color))))
         (format #t "  \"~a\" -> unknown -> \"~a\" [color=~a] ;~%" dst name color)))))
 
