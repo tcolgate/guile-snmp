@@ -17,7 +17,8 @@ typedef enum snmp_wrap_smob_subtypes {
   smob_snmp_session = 0,
   smob_snmp_single_session,
   smob_tree,
-  smob_valuesi,
+  smob_pdu,
+  smob_values,
   smob_last
 } snmp_wrap_smob_subtypes_e;
 
@@ -25,6 +26,7 @@ wrap_smob_typedef_t wrap_smob_types[] = {
   {"<snmp-session>", NULL, NULL, NULL, NULL, NULL},
   {"<snmp-single-session>", NULL, NULL, NULL, NULL, NULL},
   {"<tree>", NULL, NULL, NULL, NULL, NULL},
+  {"<pdu>", NULL, NULL, NULL, NULL, NULL},
   {"<values>", NULL, NULL, NULL, NULL, NULL}
 };
 
@@ -370,6 +372,23 @@ _wrap_tree_status_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
   return scm_constant_name_from_int("<mib-status>", node->status);
+}
+
+/*
+ * Wrap netsnmp_pdu* as pdu 
+ */
+
+static SCM
+_wrap_initialize_pdu (SCM obj, SCM args)
+{
+  void *ptr = NULL;
+  SCM smob;
+  SCM_NEWSMOB (smob, snmp_wrap_smob_tag, ptr);
+  SCM_SET_SMOB_FLAGS (smob, smob_pdu);
+
+  SCM ptrsym = scm_from_utf8_symbol("ptr");
+  scm_slot_set_x(obj,ptrsym,smob);
+  return SCM_UNSPECIFIED;
 }
 
 /*
