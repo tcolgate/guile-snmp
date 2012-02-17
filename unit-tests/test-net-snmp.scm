@@ -46,7 +46,8 @@
       (assert-equal 499
                     (slot-ref vals 'value))
       (snmp-free-pdu status)
-      (snmp-close ss))))
+      (snmp-sess-close ss)))
+  )
       
 (define-method (test-basic-get-octetstr (self <test-net-snmp>))
   (let* ((ss  (snmp-sess-open (testsess self)))
@@ -57,7 +58,7 @@
       (assert-equal "Guile-SNMP test string"
                     (slot-ref vals 'value))
       (snmp-free-pdu status)
-      (snmp-close ss))))
+      (snmp-sess-close ss))))
 
 (define-method (test-basic-get-counter64 (self <test-net-snmp>))
   (let* ((ss  (snmp-sess-open (testsess self)))
@@ -68,7 +69,7 @@
       (assert-equal 1499
                     (slot-ref vals 'value))
       (snmp-free-pdu status)
-      (snmp-close ss))))
+      (snmp-sess-close ss))))
 
 (define-method (test-basic-set (self <test-net-snmp>))
   (let* ((ss  (snmp-sess-open (testsess self)))
@@ -76,7 +77,7 @@
     (snmp-pdu-add-variable pdu (oid-syslocation0 self) (cons (integer->char ASN-OCTET-STR) "Testing Guile-SNMP"))
     (let* ((status (snmp-sess-synch-response ss pdu)))
       (snmp-free-pdu status)
-      (snmp-close ss))))
+      (snmp-sess-close ss))))
 
 (exit-with-summary (run-all-defined-test-cases))
 

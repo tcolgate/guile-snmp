@@ -293,21 +293,27 @@
 (define-class-wrapped-struct snmp-session community peername version context timeout retries) 
 
 (re-export <snmp-single-session>)
-
-(re-export <values>)
+(re-export <pdu>)
+(re-export <pdu-variable>)
 
 (re-export init-mib)
 (re-export init-snmp)
+
 (re-export snmp-parse-oid)
+
 (re-export get-tree)
 (re-export get-tree-head)
+
 (re-export oid-from-tree-node)
+
 (re-export snmp-sess-open)
 (re-export snmp-sess-session)
+(re-export snmp-sess-synch-response)
 (re-export snmp-sess-close)
+
 (re-export snmp-pdu-create)
 (re-export snmp-add-null-var)
-(re-export snmp-sess-synch-response)
+(re-export snmp-free-pdu)
 
 
 ;(export 

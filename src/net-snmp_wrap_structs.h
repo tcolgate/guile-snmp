@@ -18,7 +18,7 @@ typedef enum snmp_wrap_smob_subtypes {
   smob_snmp_single_session,
   smob_tree,
   smob_pdu,
-  smob_values,
+  smob_pdu_variable,
   smob_last
 } snmp_wrap_smob_subtypes_e;
 
@@ -27,7 +27,7 @@ wrap_smob_typedef_t wrap_smob_types[] = {
   {"<snmp-single-session>", NULL, NULL, NULL, NULL, NULL},
   {"<tree>", NULL, NULL, NULL, NULL, NULL},
   {"<pdu>", NULL, NULL, NULL, NULL, NULL},
-  {"<values>", NULL, NULL, NULL, NULL, NULL}
+  {"<pdu-variable>", NULL, NULL, NULL, NULL, NULL}
 };
 
 size_t
@@ -63,7 +63,7 @@ print_snmp_wrap_smob (SCM smob, SCM port, scm_print_state *pstate)
   int flags = (int) SCM_SMOB_FLAGS (smob);
 
   char str[128];
-  snprintf(str,128,"#<smob: %p %i>",data,flags);
+  snprintf(str,128,"#<snmp-wrap-smob: %p %i>",data,flags);
   scm_puts (str, port);
 
   /* non-zero means success */
@@ -394,6 +394,19 @@ _wrap_initialize_pdu (SCM obj, SCM args)
 /*
  * Wrap struct variable_list
  */
+
+static SCM
+_wrap_initialize_pdu_variable (SCM obj, SCM args)
+{
+  void *ptr = NULL;
+  SCM smob;
+  SCM_NEWSMOB (smob, snmp_wrap_smob_tag, ptr);
+  SCM_SET_SMOB_FLAGS (smob, smob_pdu_variable);
+
+  SCM ptrsym = scm_from_utf8_symbol("ptr");
+  scm_slot_set_x(obj,ptrsym,smob);
+  return SCM_UNSPECIFIED;
+}
 
 SCM netsnmp_variable_list_value_get(struct variable_list *p) {
   SCM result = SCM_UNSPECIFIED;
