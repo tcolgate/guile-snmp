@@ -12,7 +12,7 @@
 		       (string-append
 		         "primitive:"
 		         (symbol->string name))))
-     (export ,name)))
+     (export! ,name)))
 
 (eval-when (eval load compile)
 
