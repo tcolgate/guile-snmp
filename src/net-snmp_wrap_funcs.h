@@ -228,7 +228,31 @@ _wrap_snmp_sess_close (SCM s_0)
   return SCM_UNSPECIFIED;
 }
 
+static SCM
+_wrap_snmp_pdu_create (SCM s_0)
+{
+  return make_wrapped_pointer( smob_pdu , snmp_pdu_create( scm_int_from_constant("<snmp-msg>",s_0)));
+}
+
+static SCM
+_wrap_snmp_add_null_var (SCM s_0, SCM s_1)
+{
+  netsnmp_pdu *pdu = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
+  size_t len = MAX_OID_LEN;
+  oid* temp_oid = (oid*)malloc(len * sizeof(oid));
+  scm_to_oid(s_1,&temp_oid,&len);
+
+  snmp_add_null_var(pdu,temp_oid,len);
+
+  free(temp_oid);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+
+  return SCM_UNSPECIFIED;
+}
 static void 
+
 init_snmp_wrap_funcs(void)
 {
 
@@ -261,5 +285,11 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("snmp-sess-close", 1, 0, 0, (void *) _wrap_snmp_sess_close);
   scm_c_export("snmp-sess-close" , NULL);
+
+  scm_c_define_gsubr("snmp-pdu-create", 1, 0, 0, (void *) _wrap_snmp_pdu_create);
+  scm_c_export("snmp-pdu-create" , NULL);
+
+  scm_c_define_gsubr("snmp-add-null-var", 2, 0, 0, (void *) _wrap_snmp_add_null_var);
+  scm_c_export("snmp-add-null-var" , NULL);
 }
 

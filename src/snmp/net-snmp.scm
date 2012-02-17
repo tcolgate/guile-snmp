@@ -305,6 +305,8 @@
 (re-export snmp-sess-open)
 (re-export snmp-sess-session)
 (re-export snmp-sess-close)
+(re-export snmp-pdu-create)
+(re-export snmp-add-null-var)
 
 
 ;(export 
