@@ -251,8 +251,26 @@ _wrap_snmp_add_null_var (SCM s_0, SCM s_1)
 
   return SCM_UNSPECIFIED;
 }
-static void 
 
+static SCM
+_wrap_snmp_sess_synch_response (SCM s_0, SCM s_1)
+{
+  int res;
+  void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
+  netsnmp_pdu *pdu = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_1);
+  netsnmp_pdu *respdu = (netsnmp_pdu*) scm_gc_malloc(sizeof(netsnmp_pdu),"snmp pdu");
+  SCM scmrespdu;
+
+  res = snmp_sess_synch_response(sessp, pdu, &respdu);
+  scmrespdu = make_wrapped_pointer( smob_pdu , respdu);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+
+  return scmrespdu;
+}
+
+static void 
 init_snmp_wrap_funcs(void)
 {
 
@@ -291,5 +309,8 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("snmp-add-null-var", 2, 0, 0, (void *) _wrap_snmp_add_null_var);
   scm_c_export("snmp-add-null-var" , NULL);
+
+  scm_c_define_gsubr("snmp-sess-synch-response", 2, 0, 0, (void *) _wrap_snmp_sess_synch_response);
+  scm_c_export("snmp-sess-synch-response" , NULL);
 }
 
