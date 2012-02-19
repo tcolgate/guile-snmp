@@ -34,6 +34,9 @@ size_t
 free_snmp_wrap_smob (SCM smob)
 {
   scm_assert_smob_type (snmp_wrap_smob_tag, smob);
+  printf ("smob free function called\n");
+  snmp_wrap_smob_subtypes_e subtype = SCM_SMOB_FLAGS(smob);
+  printf ("subtype: %s\n", wrap_smob_types[subtype].name);
   if(wrap_smob_types[SCM_SMOB_FLAGS(smob)].free_func){
     return wrap_smob_types[SCM_SMOB_FLAGS(smob)].free_func(smob);
   };
@@ -144,9 +147,10 @@ make_wrapped_pointer (snmp_wrap_smob_subtypes_e type, void* wrapstruct)
   SCM ptrsym = scm_from_utf8_symbol("ptr");
   SCM inst = scm_make(scm_list_1(wrap_smob_types[type].ptrclass));
   scm_slot_set_x(inst,ptrsym,smob);
+  scm_gc_protect_object(smob);
+  scm_gc_protect_object(inst);
 
   return inst;
-
 }
 
 inline void
@@ -180,7 +184,7 @@ read_only_setter(SCM s_0, SCM s_1)
 static SCM
 _wrap_initialize_snmp_session (SCM obj, SCM args)
 {
-  void *ptr = scm_gc_malloc(sizeof(struct snmp_session),"snmp session");
+  void *ptr = scm_malloc(sizeof(struct snmp_session));
   snmp_sess_init(ptr);
   SCM smob;
   SCM_NEWSMOB (smob, snmp_wrap_smob_tag, ptr);
@@ -188,6 +192,8 @@ _wrap_initialize_snmp_session (SCM obj, SCM args)
 
   SCM ptrsym = scm_from_utf8_symbol("ptr");
   scm_slot_set_x(obj,ptrsym,smob);
+  scm_gc_protect_object(smob);
+  scm_gc_protect_object(obj);
   return SCM_UNSPECIFIED;
 }
 
@@ -432,7 +438,7 @@ SCM netsnmp_variable_list_value_get(struct variable_list *p) {
       {
         // Guile wants to take ownership of the array
         // so we copy it first.
-        oid* temp = (oid*)malloc(p->val_len);
+        oid* temp = (oid*)scm_malloc(p->val_len);
         memcpy(temp,(p->val).objid,p->val_len);
         result = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,
             SCM_TAKE_OIDVECTOR((SCM_T_OID *)temp, (p->val_len)/sizeof(oid))
@@ -443,7 +449,7 @@ SCM netsnmp_variable_list_value_get(struct variable_list *p) {
       //Since snmp session takes a string we will rewturn
       // these as strings. would prefer a proper IP object
       {
-        char* temp = (char*)malloc(16*(sizeof(char)));
+        char* temp = (char*)scm_malloc(16*(sizeof(char)));
         unsigned int a = ((unsigned char*)((p->val).bitstring))[0];
         unsigned int b = ((unsigned char*)((p->val).bitstring))[1];
         unsigned int c = ((unsigned char*)((p->val).bitstring))[2];

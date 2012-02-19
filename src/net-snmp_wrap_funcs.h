@@ -10,7 +10,7 @@ _wrap_get_tree (SCM oidscm, SCM treehead)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, treehead);
   size_t len = MAX_OID_LEN;
-  oid* temp_oid = (oid*)malloc(len * sizeof(oid));
+  oid* temp_oid = (oid*)scm_malloc(len * sizeof(oid));
   scm_to_oid(oidscm,&temp_oid,&len);
 
   struct tree* result = get_tree(temp_oid,len,node);
@@ -56,12 +56,12 @@ oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
   return 1;
 };
 
-
 int guile_snmp_async_response(int op, struct snmp_session *sp, int reqid,
                      struct snmp_pdu *pdu, void *magic){
   return 1;
 };
 
+SCM
 _wrap_oid_from_varbind (SCM s_0)
 {
 #define FUNC_NAME "oid-from-varbind"
@@ -73,9 +73,9 @@ _wrap_oid_from_varbind (SCM s_0)
   
   {
     // allocate a new oid( of maximum length)
-    arg3 = (size_t*)calloc(1,sizeof(size_t));
+    arg3 = (size_t*)scm_malloc(sizeof(size_t));
     *arg3=MAX_OID_LEN;
-    arg2 = (oid*)calloc(*arg3,sizeof(oid));
+    arg2 = (oid*)scm_malloc(*arg3 * sizeof(oid));
   }
   result = (int)oid_from_varbind(arg1,arg2,arg3);
   {
@@ -112,9 +112,9 @@ _wrap_oid_from_tree_node (SCM s_0)
   
   {
     // allocate a new oid( of maximum length)
-    arg3 = (size_t*)calloc(1,sizeof(size_t));
+    arg3 = (size_t*)scm_malloc(sizeof(size_t));
     *arg3=MAX_OID_LEN;
-    arg2 = (oid*)calloc(*arg3,sizeof(oid));
+    arg2 = (oid*)scm_malloc(*arg3 * sizeof(oid));
   }
   result = (int)oid_from_tree_node(arg1,arg2,arg3);
   {
@@ -190,9 +190,9 @@ static SCM
 _wrap_snmp_parse_oid (SCM oidname)
 {
 	
-   size_t *oidlen = (size_t*)scm_gc_malloc_pointerless(sizeof(size_t), "oid stroage");
+   size_t *oidlen = (size_t*)scm_malloc(sizeof(size_t));
    *oidlen=MAX_OID_LEN;
-   oid *oidstore = (oid*)scm_gc_malloc_pointerless(*oidlen * sizeof(oid), "oid storage");
+   oid *oidstore = (oid*)scm_malloc(*oidlen * sizeof(oid));
 
    oid *result = snmp_parse_oid(scm_to_locale_string(oidname), oidstore, oidlen);
   
@@ -207,9 +207,14 @@ _wrap_snmp_parse_oid (SCM oidname)
 static SCM
 _wrap_snmp_sess_open (SCM s_0)
 {
+  scm_display(s_0, scm_current_output_port());
+  scm_newline(scm_current_output_port());
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
   void *sessp = snmp_sess_open(session);
-  return make_wrapped_pointer(smob_snmp_single_session ,(void*) sessp);
+  printf("sessp %p\n",sessp);
+  SCM obj =  make_wrapped_pointer(smob_snmp_single_session ,(void*) sessp);
+  scm_gc_protect_object(obj);
+  return obj;
 }
 
 static SCM
@@ -217,20 +222,28 @@ _wrap_snmp_sess_session (SCM s_0)
 {
   void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
   struct snmp_session *childsess = snmp_sess_session(sessp);
-  return make_wrapped_pointer(smob_snmp_session ,(struct snmp_session*) childsess);
+  SCM obj = make_wrapped_pointer(smob_snmp_session ,(struct snmp_session*) childsess);
+  scm_gc_protect_object(obj);
+  return obj;
 }
 
 static SCM
 _wrap_snmp_sess_synch_response (SCM s_0, SCM s_1)
 {
   int res;
+  printf("%p %p\n", s_0, s_1);
+ // scm_display(s_0, scm_current_output_port());
+  scm_display(s_1, scm_current_output_port());
+  scm_newline(scm_current_output_port());
   void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
+  printf("newsessp %p\n", sessp);
   netsnmp_pdu *pdu = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_1);
   netsnmp_pdu *respdu = NULL;
   SCM scmrespdu;
 
   res = snmp_sess_synch_response(sessp, pdu, &respdu);
   scmrespdu = make_wrapped_pointer( smob_pdu , respdu);
+  scm_gc_protect_object(scmrespdu);
 
   scm_remember_upto_here_1(s_0);
   scm_remember_upto_here_1(s_1);
@@ -249,7 +262,9 @@ _wrap_snmp_sess_close (SCM s_0)
 static SCM
 _wrap_snmp_pdu_create (SCM s_0)
 {
-  return make_wrapped_pointer( smob_pdu , snmp_pdu_create( scm_int_from_constant("<snmp-msg>",s_0)));
+  SCM obj = make_wrapped_pointer( smob_pdu , snmp_pdu_create( scm_int_from_constant("<snmp-msg>",s_0)));
+  scm_gc_protect_object(obj);
+  return obj;
 }
 
 static SCM
@@ -257,7 +272,7 @@ _wrap_snmp_add_null_var (SCM s_0, SCM s_1)
 {
   netsnmp_pdu *pdu = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
   size_t len = MAX_OID_LEN;
-  oid* temp_oid = (oid*)malloc(len * sizeof(oid));
+  oid* temp_oid = (oid*)scm_malloc(len * sizeof(oid));
   scm_to_oid(s_1,&temp_oid,&len);
 
   snmp_add_null_var(pdu,temp_oid,len);

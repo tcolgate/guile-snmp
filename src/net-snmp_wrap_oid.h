@@ -99,7 +99,7 @@ scm_to_oid(SCM oidscm, oid** result, size_t *len)
   size_t i;
   ssize_t inc;
   const SCM_T_OID* elt = SCM_OIDVECTOR_ELEMENTS(scm_slot_ref(oidscm,scm_oid_vec_slot), &handle, len, &inc);
-  *result = (oid*) realloc(*result,*len * sizeof(oid));
+  *result = (oid*) scm_realloc(*result,*len * sizeof(oid));
   oid* oid_elt = *result;
   for (i = 0; i < *len; i++, elt += inc,oid_elt++)
   {
