@@ -25,14 +25,6 @@ _wrap_get_tree (SCM oidscm, SCM treehead)
 }
 
 int
-oid_from_varbind(struct variable_list* varbind, oid* objid, size_t* objidlen){
-  memcpy( objid, varbind->name, (varbind->name_length * sizeof(oid)));
-  *objidlen =  varbind->name_length;
-  return 1 ;
-};
-
-
-int
 oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {
   struct tree *currnode = tree_node;
   int currid = 0;
@@ -257,11 +249,23 @@ _wrap_snmp_free_pdu (SCM s_0)
   return SCM_UNSPECIFIED;
 }
 
-SCM
-_wrap_oid_from_varbind (SCM s_0)
+static SCM
+_wrap_netsnmp_oid_is_subtree (SCM s_0, SCM s_1)
 {
-  netsnmp_variable_list *var = (netsnmp_variable_list*) pointer_from_wrapped_smob(smob_pdu_variable, s_0);
-  return scm_from_oid(var->name,var->name_length);
+  size_t len1 = MAX_OID_LEN;
+  oid* temp_oid1 = (oid*)scm_calloc(len1 * sizeof(oid));
+  scm_to_oid(s_0,&temp_oid1,&len1);
+
+  size_t len2 = MAX_OID_LEN;
+  oid* temp_oid2 = (oid*)scm_calloc(len2 * sizeof(oid));
+  scm_to_oid(s_1,&temp_oid2,&len2);
+
+  SCM scmresult = scm_from_signed_integer(netsnmp_oid_is_subtree(temp_oid1, len1, temp_oid2, len2));
+
+  free(temp_oid1);
+  free(temp_oid2);
+
+  return scmresult;
 }
 
 static void 
@@ -309,7 +313,7 @@ init_snmp_wrap_funcs(void)
   scm_c_define_gsubr("snmp-free-pdu", 1, 0, 0, (void *) _wrap_snmp_free_pdu);
   scm_c_export("snmp-free-pdu" , NULL);
 
-  scm_c_define_gsubr("oid-from-varbind", 1, 0, 0, (void *) _wrap_oid_from_varbind);
-  scm_c_export("oid-from-varbind" , NULL);
+  scm_c_define_gsubr("netsnmp-oid-is-subtree", 2, 0, 0, (void *) _wrap_netsnmp_oid_is_subtree);
+  scm_c_export("netsnmp-oid-is-subtree" , NULL);
 }
 

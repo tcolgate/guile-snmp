@@ -453,6 +453,13 @@ _wrap_pdu_variable_name_get (SCM s_0)
 }
 
 SCM 
+_wrap_pdu_variable_type_get (SCM s_0)
+{
+  netsnmp_variable_list *var = (netsnmp_variable_list*) pointer_from_wrapped_smob(smob_pdu_variable, s_0);
+  return scm_constant_name_from_int("<asn-type>", var->type);
+}
+
+SCM 
 _wrap_pdu_variable_value_get(SCM s_0) 
 { 
   SCM result = SCM_UNSPECIFIED;
@@ -575,6 +582,7 @@ static void init_snmp_wrap_structs(void)
   DEFINE_SLOT_READONLY("pdu" , pdu , "variables" ,variables)
 
   DEFINE_SLOT_READONLY("pdu-variable" , pdu_variable, "name" ,name)
+  DEFINE_SLOT_READONLY("pdu-variable" , pdu_variable, "type" ,type)
   DEFINE_SLOT_READONLY("pdu-variable" , pdu_variable, "value" ,value)
 }
 

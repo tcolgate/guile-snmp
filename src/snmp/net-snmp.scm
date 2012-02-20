@@ -92,7 +92,6 @@
 (use-modules (oop goops))
 (use-modules ((snmp net-snmp-primitive) :renamer (symbol-prefix-proc 'primitive:)))
 
-;(define oid-from-varbind primitive:oid-from-varbind)
 ;(define guile-snmp-async-response primitive:guile-snmp-async-response)
 
 (define-class <snmp-constant> ()
@@ -293,7 +292,7 @@
 (define-class-wrapped-struct snmp-session community peername version context timeout retries) 
 (re-export <snmp-single-session>)
 (define-class-wrapped-struct pdu errstat variables)
-(define-class-wrapped-struct pdu-variable name value)
+(define-class-wrapped-struct pdu-variable name type value)
 
 (re-export init-mib)
 (re-export init-snmp)
@@ -314,7 +313,7 @@
 (re-export snmp-add-null-var)
 (re-export snmp-free-pdu)
 
-(re-export oid-from-varbind)
+(re-export netsnmp-oid-is-subtree)
 
 ;(export 
 ;  <snmp-session> 

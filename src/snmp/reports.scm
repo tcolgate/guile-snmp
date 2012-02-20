@@ -154,17 +154,15 @@
 
 ; split the returned list of varbinds into an associated list of variables
 (define (split-varbinds input)
-  (let nextvarbind ((thisvarbind input)
-                    (result (list)))
-    (if (not (null? thisvarbind))
-          (let ((newvar (make <snmp-reports-result>)))
-            (slot-set! newvar 'rawvarbind thisvarbind)
-            (slot-set! newvar 'oid (oid-from-varbind thisvarbind))
-            (slot-set! newvar 'type (slot-ref thisvarbind 'type))
-            (slot-set! newvar 'value (slot-ref thisvarbind 'value))
-            (set! result (acons (slot-ref newvar 'oid)  newvar result))
-            (nextvarbind (slot-ref thisvarbind 'next-variable) result))
-          result)))
+  (map
+    (lambda (thisvarbind)
+      (let ((newvar (make <snmp-reports-result>)))
+        (slot-set! newvar 'rawvarbind thisvarbind)
+        (slot-set! newvar 'oid (slot-ref thisvarbind 'name))
+        (slot-set! newvar 'type (slot-ref thisvarbind 'type))
+	(slot-set! newvar 'value (slot-ref thisvarbind 'value))
+        (cons (slot-ref newvar 'oid)  newvar)))
+    input))
 
 (define-generic filter-valid-next)
 
