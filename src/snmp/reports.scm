@@ -170,11 +170,11 @@
   (make <snmp-reports-result-set> #:results (filter
     (lambda(thisres)   
       (cond
-        ((equal? (char->integer (slot-ref (cdr thisres) 'type)) SNMP-ENDOFMIBVIEW)
+        ((equal? (slot-ref (cdr thisres) 'type) SNMP-ENDOFMIBVIEW)
           #f)
-        ((equal? (char->integer (slot-ref (cdr thisres) 'type)) SNMP-NOSUCHOBJECT) 
+        ((equal? (slot-ref (cdr thisres) 'type) SNMP-NOSUCHOBJECT) 
           #f)
-        ((equal? (char->integer (slot-ref (cdr thisres) 'type)) SNMP-NOSUCHINSTANCE) 
+        ((equal? (slot-ref (cdr thisres) 'type) SNMP-NOSUCHINSTANCE) 
           #f)
         ((null? (slot-ref (cdr thisres) 'base)) 
           #f)
