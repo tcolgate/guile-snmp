@@ -314,6 +314,7 @@
 (re-export snmp-free-pdu)
 
 (re-export netsnmp-oid-is-subtree)
+(re-export mib-to-asn-type)
 
 ;(export 
 ;  <snmp-session> 

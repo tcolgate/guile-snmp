@@ -268,6 +268,15 @@ _wrap_netsnmp_oid_is_subtree (SCM s_0, SCM s_1)
   return scmresult;
 }
 
+static SCM
+_wrap_mib_to_asn_type (SCM s_0)
+{
+  return scm_constant_name_from_int(
+		  "<asn-type>", 
+		  mib_to_asn_type(
+			  scm_int_from_constant("<mib-type>",s_0)));
+}
+
 static void 
 init_snmp_wrap_funcs(void)
 {
@@ -315,5 +324,8 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("netsnmp-oid-is-subtree", 2, 0, 0, (void *) _wrap_netsnmp_oid_is_subtree);
   scm_c_export("netsnmp-oid-is-subtree" , NULL);
+
+  scm_c_define_gsubr("mib-to-asn-type", 1, 0, 0, (void *) _wrap_mib_to_asn_type);
+  scm_c_export("mib-to-asn-type" , NULL);
 }
 
