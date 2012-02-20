@@ -18,7 +18,6 @@ _wrap_get_tree (SCM oidscm, SCM treehead)
 
   SCM scmresult = make_tree_smob_from_ptr(result);
 
-  free(temp_oid);
   scm_remember_upto_here_1(oidscm);
 
   return scmresult;
@@ -74,11 +73,7 @@ _wrap_oid_from_tree_node (SCM s_0)
       int i = 0;
       SCM newoid = SCM_TAKE_OIDVECTOR((SCM_T_OID*) arg2, *arg3);
       scmresult = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,newoid),SCM_EOL);
-    } else {
-      free(arg2);
-    };
-    
-    free(arg3);
+    } 
   }
 
   return scmresult;
@@ -227,8 +222,6 @@ _wrap_snmp_add_null_var (SCM s_0, SCM s_1)
 
   snmp_add_null_var(pdu,temp_oid,len);
 
-  free(temp_oid);
-
   scm_remember_upto_here_1(s_0);
   scm_remember_upto_here_1(s_1);
 
@@ -345,8 +338,6 @@ _wrap_snmp_add_var (SCM s_0, SCM s_1, SCM s_2)
   
   int result = snmp_pdu_add_variable(pdu,temp_oid,oidlen,typespec,(void const *)pointer,len);
 
-  free (temp_oid);
-  
   return SCM_UNSPECIFIED;
 }
 
@@ -371,8 +362,6 @@ _wrap_netsnmp_oid_is_subtree (SCM s_0, SCM s_1)
 
   SCM scmresult = scm_from_signed_integer(netsnmp_oid_is_subtree(temp_oid1, len1, temp_oid2, len2));
 
-  free(temp_oid1);
-  free(temp_oid2);
 
   return scmresult;
 }

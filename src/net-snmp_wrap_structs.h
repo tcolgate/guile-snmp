@@ -135,7 +135,11 @@ init_snmp_wrap_classes(void)
 
     scm_module_define(scm_current_module(), classname, ptrclass);
     wrap_smob_types[c].ptrclass = ptrclass;
-//    scm_permanent_object(wrap_smob_types[c].ptrclass);
+    scm_permanent_object(wrap_smob_types[c].ptrclass);
+    scm_permanent_object(namekw);
+    scm_permanent_object(supers);
+    scm_permanent_object(slots);
+    scm_permanent_object(classname);
     scm_module_export(scm_current_module(), scm_list_1(classname));
   };
   
@@ -505,7 +509,6 @@ _wrap_pdu_variable_value_get(SCM s_0)
         unsigned int d = ((unsigned char*)((p->val).bitstring))[3];
         snprintf(temp,16,"%u.%u.%u.%u",a,b,c,d);
         result = scm_from_locale_string(temp);
-        free(temp);
       }
       break;
     case ASN_COUNTER64: 
