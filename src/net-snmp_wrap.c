@@ -19,8 +19,6 @@
 #undef PACKAGE_TARNAME
 #undef PACKAGE_VERSION
 
-struct snmp_session global_snmp_session;
-
 #include "net-snmp_wrap_oid.h"
 #include "net-snmp_wrap_constants.h"
 #include "net-snmp_wrap_structs.h"

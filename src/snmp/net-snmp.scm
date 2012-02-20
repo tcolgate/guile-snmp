@@ -291,9 +291,9 @@
 
 (define-class-wrapped-struct tree label description type access status) 
 (define-class-wrapped-struct snmp-session community peername version context timeout retries) 
+(define-class-wrapped-struct pdu errstat variables)
 
 (re-export <snmp-single-session>)
-(re-export <pdu>)
 (re-export <pdu-variable>)
 
 (re-export init-mib)

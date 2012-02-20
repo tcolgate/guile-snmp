@@ -34,8 +34,8 @@ size_t
 free_snmp_wrap_smob (SCM smob)
 {
   scm_assert_smob_type (snmp_wrap_smob_tag, smob);
-  printf ("smob free function called\n");
   snmp_wrap_smob_subtypes_e subtype = SCM_SMOB_FLAGS(smob);
+  printf ("smob free function called\n");
   printf ("subtype: %s\n", wrap_smob_types[subtype].name);
   if(wrap_smob_types[SCM_SMOB_FLAGS(smob)].free_func){
     return wrap_smob_types[SCM_SMOB_FLAGS(smob)].free_func(smob);
@@ -47,11 +47,14 @@ SCM
 mark_snmp_wrap_smob (SCM smob)
 {
   scm_assert_smob_type (snmp_wrap_smob_tag, smob);
+  snmp_wrap_smob_subtypes_e subtype = SCM_SMOB_FLAGS(smob);
+//  printf ("smob mark function called\n");
+//  printf ("subtype: %s\n", wrap_smob_types[subtype].name);
   if(wrap_smob_types[SCM_SMOB_FLAGS(smob)].mark_func){
     return wrap_smob_types[SCM_SMOB_FLAGS(smob)].mark_func(smob);
   };
 
-  return SCM_UNSPECIFIED;
+  return SCM_BOOL_F;
 }
 
 static int
@@ -93,7 +96,8 @@ init_snmp_wrap_smob_type (void)
 {
   snmp_wrap_smob_tag = scm_make_smob_type ("snmp_wrap_smob", sizeof (void*));
   scm_set_smob_free (snmp_wrap_smob_tag, free_snmp_wrap_smob);
-  scm_set_smob_mark (snmp_wrap_smob_tag, mark_snmp_wrap_smob);
+//  scm_set_smob_mark (snmp_wrap_smob_tag, mark_snmp_wrap_smob);
+  scm_set_smob_mark (snmp_wrap_smob_tag, 0);
   scm_set_smob_print (snmp_wrap_smob_tag, print_snmp_wrap_smob);
   scm_set_smob_equalp (snmp_wrap_smob_tag, equalp_snmp_wrap_smob);
 }
@@ -131,6 +135,7 @@ init_snmp_wrap_classes(void)
 
     scm_module_define(scm_current_module(), classname, ptrclass);
     wrap_smob_types[c].ptrclass = ptrclass;
+//    scm_permanent_object(wrap_smob_types[c].ptrclass);
     scm_module_export(scm_current_module(), scm_list_1(classname));
   };
   
@@ -147,8 +152,8 @@ make_wrapped_pointer (snmp_wrap_smob_subtypes_e type, void* wrapstruct)
   SCM ptrsym = scm_from_utf8_symbol("ptr");
   SCM inst = scm_make(scm_list_1(wrap_smob_types[type].ptrclass));
   scm_slot_set_x(inst,ptrsym,smob);
-  scm_gc_protect_object(smob);
-  scm_gc_protect_object(inst);
+//  scm_permanent_object(smob);
+ // scm_permanent_object(inst);
 
   return inst;
 }
@@ -184,7 +189,7 @@ read_only_setter(SCM s_0, SCM s_1)
 static SCM
 _wrap_initialize_snmp_session (SCM obj, SCM args)
 {
-  void *ptr = scm_malloc(sizeof(struct snmp_session));
+  void *ptr = scm_calloc(sizeof(struct snmp_session));
   snmp_sess_init(ptr);
   SCM smob;
   SCM_NEWSMOB (smob, snmp_wrap_smob_tag, ptr);
@@ -192,8 +197,8 @@ _wrap_initialize_snmp_session (SCM obj, SCM args)
 
   SCM ptrsym = scm_from_utf8_symbol("ptr");
   scm_slot_set_x(obj,ptrsym,smob);
-  scm_gc_protect_object(smob);
-  scm_gc_protect_object(obj);
+  scm_permanent_object(smob);
+  scm_permanent_object(obj);
   return SCM_UNSPECIFIED;
 }
 
@@ -397,6 +402,24 @@ _wrap_initialize_pdu (SCM obj, SCM args)
   return SCM_UNSPECIFIED;
 }
 
+static SCM
+_wrap_pdu_errstat_get (SCM s_0)
+{
+	printf("pdusmob: %p\n", s_0);
+  netsnmp_pdu *p = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
+	printf("pdu: %p\n", p);
+  return scm_constant_name_from_int("<snmp-err-status>", p->errstat);
+}
+
+static SCM
+_wrap_pdu_variables_get (SCM s_0)
+{
+	printf("pdusmob: %p\n", s_0);
+  netsnmp_pdu *p = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
+	printf("pdu: %p\n", p);
+  return make_wrapped_pointer(smob_pdu_variable ,(netsnmp_variable_list*) p->variables);
+}
+
 /*
  * Wrap struct variable_list
  */
@@ -414,8 +437,7 @@ _wrap_initialize_pdu_variable (SCM obj, SCM args)
   return SCM_UNSPECIFIED;
 }
 
-SCM netsnmp_variable_list_value_get(struct variable_list *p) {
-  SCM result = SCM_UNSPECIFIED;
+SCM netsnmp_variable_list_value_get(struct variable_list *p) { SCM result = SCM_UNSPECIFIED;
   switch(p->type){
     case ASN_OCTET_STR: 
     case ASN_BIT_STR: 
@@ -438,7 +460,7 @@ SCM netsnmp_variable_list_value_get(struct variable_list *p) {
       {
         // Guile wants to take ownership of the array
         // so we copy it first.
-        oid* temp = (oid*)scm_malloc(p->val_len);
+        oid* temp = (oid*)scm_calloc(p->val_len);
         memcpy(temp,(p->val).objid,p->val_len);
         result = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,
             SCM_TAKE_OIDVECTOR((SCM_T_OID *)temp, (p->val_len)/sizeof(oid))
@@ -449,7 +471,7 @@ SCM netsnmp_variable_list_value_get(struct variable_list *p) {
       //Since snmp session takes a string we will rewturn
       // these as strings. would prefer a proper IP object
       {
-        char* temp = (char*)scm_malloc(16*(sizeof(char)));
+        char* temp = (char*)scm_calloc(16*(sizeof(char)));
         unsigned int a = ((unsigned char*)((p->val).bitstring))[0];
         unsigned int b = ((unsigned char*)((p->val).bitstring))[1];
         unsigned int c = ((unsigned char*)((p->val).bitstring))[2];
@@ -529,5 +551,7 @@ static void init_snmp_wrap_structs(void)
   scm_c_define_gsubr ("initialize-snmp-session", 2, 0, 0, _wrap_initialize_snmp_session);
   scm_c_export("initialize-snmp-session" , NULL);
 
+  DEFINE_SLOT_READONLY("pdu" , pdu , "errstat" ,errstat)
+  DEFINE_SLOT_READONLY("pdu" , pdu , "variables" ,variables)
 }
 
