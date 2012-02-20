@@ -312,13 +312,10 @@
                   ; (type value)
                   (begin 
                     (let* ((ty       (car valspec))
-                           (tychar   (if (char? ty)
-                                       ty
-                                       (integer->char ty)))
                            (val      (cdr valspec)))
-                      (snmp-pdu-add-variable newpdu 
-                                             var 
-                                             (cons tychar val)))
+                      (snmp-add-var newpdu 
+                                    var 
+                                    (cons ty val)))
                     (addoids (cdr sos)))
                   ; (value) infer type from oid
                   (let ((type (mib-to-asn-type (get-oid-type var))))

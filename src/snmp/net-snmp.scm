@@ -311,6 +311,7 @@
 
 (re-export snmp-pdu-create)
 (re-export snmp-add-null-var)
+(re-export snmp-add-var)
 (re-export snmp-free-pdu)
 
 (re-export netsnmp-oid-is-subtree)
