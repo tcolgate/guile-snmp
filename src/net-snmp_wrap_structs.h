@@ -414,10 +414,18 @@ _wrap_pdu_errstat_get (SCM s_0)
 static SCM
 _wrap_pdu_variables_get (SCM s_0)
 {
-	printf("pdusmob: %p\n", s_0);
+  printf("pdusmob: %p\n", s_0);
   netsnmp_pdu *p = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
-	printf("pdu: %p\n", p);
-  return make_wrapped_pointer(smob_pdu_variable ,(netsnmp_variable_list*) p->variables);
+  printf("pdu: %p\n", p);
+
+  SCM res = SCM_EOL;
+  netsnmp_variable_list *curr = p->variables;
+  while(curr){
+    res = scm_append(scm_list_2(res, scm_list_1(make_wrapped_pointer(smob_pdu_variable,curr))));
+    curr = curr->next_variable;
+  };
+
+  return res;
 }
 
 /*
@@ -437,7 +445,19 @@ _wrap_initialize_pdu_variable (SCM obj, SCM args)
   return SCM_UNSPECIFIED;
 }
 
-SCM netsnmp_variable_list_value_get(struct variable_list *p) { SCM result = SCM_UNSPECIFIED;
+SCM 
+_wrap_pdu_variable_name_get (SCM s_0)
+{
+  netsnmp_variable_list *var = (netsnmp_variable_list*) pointer_from_wrapped_smob(smob_pdu_variable, s_0);
+  return scm_from_oid(var->name,var->name_length);
+}
+
+SCM 
+_wrap_pdu_variable_value_get(SCM s_0) 
+{ 
+  SCM result = SCM_UNSPECIFIED;
+  netsnmp_variable_list *p = (netsnmp_variable_list*) pointer_from_wrapped_smob(smob_pdu_variable, s_0);
+
   switch(p->type){
     case ASN_OCTET_STR: 
     case ASN_BIT_STR: 
@@ -553,5 +573,8 @@ static void init_snmp_wrap_structs(void)
 
   DEFINE_SLOT_READONLY("pdu" , pdu , "errstat" ,errstat)
   DEFINE_SLOT_READONLY("pdu" , pdu , "variables" ,variables)
+
+  DEFINE_SLOT_READONLY("pdu-variable" , pdu_variable, "name" ,name)
+  DEFINE_SLOT_READONLY("pdu-variable" , pdu_variable, "value" ,value)
 }
 

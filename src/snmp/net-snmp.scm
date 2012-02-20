@@ -291,10 +291,9 @@
 
 (define-class-wrapped-struct tree label description type access status) 
 (define-class-wrapped-struct snmp-session community peername version context timeout retries) 
-(define-class-wrapped-struct pdu errstat variables)
-
 (re-export <snmp-single-session>)
-(re-export <pdu-variable>)
+(define-class-wrapped-struct pdu errstat variables)
+(define-class-wrapped-struct pdu-variable name value)
 
 (re-export init-mib)
 (re-export init-snmp)
@@ -315,6 +314,7 @@
 (re-export snmp-add-null-var)
 (re-export snmp-free-pdu)
 
+(re-export oid-from-varbind)
 
 ;(export 
 ;  <snmp-session> 

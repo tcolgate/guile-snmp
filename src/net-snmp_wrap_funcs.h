@@ -61,44 +61,6 @@ int guile_snmp_async_response(int op, struct snmp_session *sp, int reqid,
   return 1;
 };
 
-SCM
-_wrap_oid_from_varbind (SCM s_0)
-{
-#define FUNC_NAME "oid-from-varbind"
-  struct variable_list *arg1 = (struct variable_list *) 0 ;
-  oid *arg2 = (oid *) 0 ;
-  size_t *arg3 = (size_t *) 0 ;
-  SCM scmresult;
-  int result;
-  
-  {
-    // allocate a new oid( of maximum length)
-    arg3 = (size_t*)scm_calloc(sizeof(size_t));
-    *arg3=MAX_OID_LEN;
-    arg2 = (oid*)scm_calloc(*arg3 * sizeof(oid));
-  }
-  result = (int)oid_from_varbind(arg1,arg2,arg3);
-  {
-    scmresult = scm_from_signed_integer(result);
-  }
-  {
-    scmresult = SCM_UNSPECIFIED;
-    
-    if(result){
-      int i = 0;
-      SCM newoid = SCM_TAKE_OIDVECTOR((SCM_T_OID*) arg2, *arg3);
-      scmresult = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,newoid),SCM_EOL);
-    } else {
-      free(arg2);
-    };
-    
-    free(arg3);
-  }
-  
-  
-  return scmresult;
-#undef FUNC_NAME
-}
 
 
 static SCM
@@ -295,11 +257,17 @@ _wrap_snmp_free_pdu (SCM s_0)
   return SCM_UNSPECIFIED;
 }
 
+SCM
+_wrap_oid_from_varbind (SCM s_0)
+{
+  netsnmp_variable_list *var = (netsnmp_variable_list*) pointer_from_wrapped_smob(smob_pdu_variable, s_0);
+  return scm_from_oid(var->name,var->name_length);
+}
+
 static void 
 init_snmp_wrap_funcs(void)
 {
 
-  scm_c_define_gsubr("oid-from-varbind", 1, 0, 0, (void *) _wrap_oid_from_varbind);
   scm_c_define_gsubr("guile-snmp-async-response", 5, 0, 0, (void *) _wrap_guile_snmp_async_response);
 
   scm_c_define_gsubr("init-mib", 0, 0, 0, (void *) _wrap_init_mib);
@@ -340,5 +308,8 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("snmp-free-pdu", 1, 0, 0, (void *) _wrap_snmp_free_pdu);
   scm_c_export("snmp-free-pdu" , NULL);
+
+  scm_c_define_gsubr("oid-from-varbind", 1, 0, 0, (void *) _wrap_oid_from_varbind);
+  scm_c_export("oid-from-varbind" , NULL);
 }
 
