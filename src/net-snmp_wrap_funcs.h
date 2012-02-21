@@ -204,6 +204,20 @@ _wrap_snmp_sess_close (SCM s_0)
 }
 
 static SCM
+_wrap_snmp_sess_error (SCM s_0)
+{
+  void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
+  int cliberr,snmperr;
+  char *errstring;
+
+  snmp_sess_error(sessp,&cliberr,&snmperr,&errstring);
+
+  scm_remember_upto_here_1(s_0);
+
+  return scm_from_locale_string(errstring);
+}
+
+static SCM
 _wrap_snmp_pdu_create (SCM s_0)
 {
   SCM obj = make_wrapped_pointer( smob_pdu , snmp_pdu_create( scm_int_from_constant("<snmp-msg>",s_0)));
@@ -381,6 +395,7 @@ _wrap_mib_to_asn_type (SCM s_0)
 			  scm_int_from_constant("<mib-type>",s_0)));
 }
 
+
 static void 
 init_snmp_wrap_funcs(void)
 {
@@ -413,6 +428,9 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("snmp-sess-synch-response", 2, 0, 0, (void *) _wrap_snmp_sess_synch_response);
   scm_c_export("snmp-sess-synch-response" , NULL);
+
+  scm_c_define_gsubr("snmp-sess-error", 1, 0, 0, (void *) _wrap_snmp_sess_error);
+  scm_c_export("snmp-sess-error" , NULL);
 
   scm_c_define_gsubr("snmp-sess-close", 1, 0, 0, (void *) _wrap_snmp_sess_close);
   scm_c_export("snmp-sess-close" , NULL);
