@@ -129,8 +129,22 @@ inline void
 assert_smob_subtype(snmp_wrap_smob_subtypes_e type, SCM smob)
 {
   if(SCM_SMOB_FLAGS(smob) != type) {
-    printf("Gah!!! you be doin' bad thing!\n");
-    return;
+    char* message1 = "Wrong type, got ";
+    char* message2 = " expected ";
+    int len = strlen(message1) + strlen(message2) +
+	      strlen(wrap_smob_types[type].name) +
+	      strlen(wrap_smob_types[SCM_SMOB_FLAGS(smob)].name) + 1;
+    char* temp = (char*)scm_calloc(16*(sizeof(char)));
+
+    snprintf(temp,len,"%s%s%s%s" 
+                     ,message1
+		     ,wrap_smob_types[type].name
+		     ,message2
+		     ,wrap_smob_types[SCM_SMOB_FLAGS(smob)].name);
+
+    scm_throw(
+      scm_from_utf8_symbol("snmperror"),
+        scm_list_1(scm_from_utf8_string(temp)));
   };
 }
 
