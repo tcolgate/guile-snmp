@@ -260,7 +260,9 @@ _wrap_snmp_add_var (SCM s_0, SCM s_1, SCM s_2)
   oid* temp_oid = (oid*)scm_calloc(oidlen * sizeof(oid));
   scm_to_oid(s_1,&temp_oid,&oidlen);
 
-  u_char typespec; SCM valscm;
+  scm_t_array_handle handle;
+  u_char typespec; 
+  SCM valscm;
   void* pointer = NULL; 
   size_t len = 0;
   size_t iter = 0;
@@ -331,17 +333,17 @@ _wrap_snmp_add_var (SCM s_0, SCM s_1, SCM s_2)
     }; 
     break;
     
-//  case ASN_OBJECT_ID:
-//    {
-//      if ( ! scm_is_true(SCM_OIDVECTOR_P (valscm) )){
-//        scm_throw(
-//          scm_string_to_symbol(
-//            scm_from_locale_string("snmperror")),
-//          scm_from_locale_string("Data is not an oid"));
-//      };
-//      pointer = (void*) SCM_OIDVECTOR_ELEMENTS(valscm, &handle4, &len, &iter);
-//    };
-//    break;
+  case ASN_OBJECT_ID:
+    {
+      if ( ! scm_is_true(SCM_OIDVECTOR_P (valscm) )){
+        scm_throw(
+          scm_string_to_symbol(
+            scm_from_locale_string("snmperror")),
+          scm_from_locale_string("Data is not an oid"));
+      };
+      pointer = (void*) SCM_OIDVECTOR_ELEMENTS(valscm, &handle, &len, &iter);
+    };
+    break;
     
   case ASN_BIT_STR:
   case ASN_COUNTER64:
