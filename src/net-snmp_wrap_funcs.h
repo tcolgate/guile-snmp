@@ -181,7 +181,12 @@ _wrap_snmp_sess_synch_response (SCM s_0, SCM s_1)
   SCM scmrespdu;
 
   res = snmp_sess_synch_response(sessp, pdu, &respdu);
-  scmrespdu = make_wrapped_pointer( smob_pdu , respdu);
+
+  if(!res){
+    scmrespdu = make_wrapped_pointer( smob_pdu , respdu);
+  } else {
+    scmrespdu = scm_constant_name_from_int( "<snmp-status>", res);
+  };
 
   scm_remember_upto_here_1(s_0);
   scm_remember_upto_here_1(s_1);

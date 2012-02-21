@@ -273,12 +273,10 @@
                        (begin
                          (snmp-add-null-var newpdu (car qs))
                          (addoids (cdr qs)))))
-                   (let ((status (snmp-sess-synch-response (current-session) newpdu)))
-                     (if (or
-                           (unspecified? status)
-                           (not (equal? (slot-ref status 'errstat) SNMP-ERR-NOERROR)))
+                   (let ((response (snmp-sess-synch-response (current-session) newpdu)))
+                     (if (not (equal?  (class-of response) <pdu>)) 
                       (throw 'snmperror (snmp-sess-error (current-session)))
-                      (let ((results (slot-ref status 'variables)))
+                      (let ((results (slot-ref response 'variables)))
                         (split-varbinds results))))))))
        (if (query-cache-enabled)
          (for-each 
@@ -320,13 +318,12 @@
                   ; (value) infer type from oid
                   (let ((type (mib-to-asn-type (get-oid-type var))))
                     ; need to lob an exception if we don't get an type back
-                    (if (equal? 255 (char->integer type))
+                    (if (not  (equal? (class-of type) <asn-type>)) 
                       (throw 'snmperror "Could not determine type in set")
                       (addoids (append (list (cons var (cons type valspec)))
                                        (cdr sos)))))))))))
-      (let* ((response (snmp-sess-synch-response (current-session) newpdu))
-             (status   (slot-ref response 'errstat)))
-        (if (not (equal? status SNMP-ERR-NOERROR))
+      (let* ((response (snmp-sess-synch-response (current-session) newpdu)))
+        (if (not (equal?  (class-of response) <pdu>))
           (throw 'snmperror "error during set")
           #t)))))
 
