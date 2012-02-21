@@ -35,11 +35,10 @@ free_snmp_wrap_smob (SCM smob)
 {
   scm_assert_smob_type (snmp_wrap_smob_tag, smob);
   snmp_wrap_smob_subtypes_e subtype = SCM_SMOB_FLAGS(smob);
-  printf ("smob free function called\n");
-  printf ("subtype: %s\n", wrap_smob_types[subtype].name);
   if(wrap_smob_types[SCM_SMOB_FLAGS(smob)].free_func){
     return wrap_smob_types[SCM_SMOB_FLAGS(smob)].free_func(smob);
   };
+  scm_remember_upto_here_1(smob);
   return 0;
 }
 
@@ -48,12 +47,11 @@ mark_snmp_wrap_smob (SCM smob)
 {
   scm_assert_smob_type (snmp_wrap_smob_tag, smob);
   snmp_wrap_smob_subtypes_e subtype = SCM_SMOB_FLAGS(smob);
-//  printf ("smob mark function called\n");
-//  printf ("subtype: %s\n", wrap_smob_types[subtype].name);
   if(wrap_smob_types[SCM_SMOB_FLAGS(smob)].mark_func){
     return wrap_smob_types[SCM_SMOB_FLAGS(smob)].mark_func(smob);
   };
 
+  scm_remember_upto_here_1(smob);
   return SCM_BOOL_F;
 }
 
@@ -72,6 +70,8 @@ print_snmp_wrap_smob (SCM smob, SCM port, scm_print_state *pstate)
   snprintf(str,128,"#<snmp-wrap-smob: %p %i>",data,flags);
   scm_puts (str, port);
 
+  scm_remember_upto_here_1(smob);
+  scm_remember_upto_here_1(port);
   /* non-zero means success */
   return 1;
 }
@@ -107,43 +107,6 @@ init_snmp_wrap_classes(void)
 {
   init_snmp_wrap_smob_type();
   snmp_wrap_smob_subtypes_e last = smob_last;
-
-  int c;
-  for(c = 0; c < (int) last; c++){
-    SCM classname = scm_from_utf8_symbol(wrap_smob_types[c].name);
-
-    /*
-     *  (define <classname-ptr>
-     *    (make-class (list) (list (list 'ptr)) #:name '<classname-ptr>))))
-     *  (export <classname-ptr>)
-     */
-    SCM makeclass = scm_variable_ref(
-		      scm_c_module_lookup (
-			scm_c_resolve_module("oop goops"), "make-class"));
-    SCM namekw = scm_from_utf8_keyword("name");
-    SCM supers = SCM_EOL;
-    SCM slots = scm_list_1(
-                  scm_list_1(
-                    scm_from_utf8_symbol("ptr")));
-
-    SCM ptrclass = scm_call_4 (
-		     makeclass,
-		     supers,
-		     slots,
-                     namekw, 
-                     classname );
-
-    scm_module_define(scm_current_module(), classname, ptrclass);
-    wrap_smob_types[c].ptrclass = ptrclass;
-    scm_permanent_object(wrap_smob_types[c].ptrclass);
-    scm_permanent_object(namekw);
-    scm_permanent_object(supers);
-    scm_permanent_object(slots);
-    scm_permanent_object(classname);
-    scm_module_export(scm_current_module(), scm_list_1(classname));
-  };
-  
-  return ;
 };
 
 static SCM
@@ -154,10 +117,10 @@ make_wrapped_pointer (snmp_wrap_smob_subtypes_e type, void* wrapstruct)
   SCM_SET_SMOB_FLAGS (smob, type);
 
   SCM ptrsym = scm_from_utf8_symbol("ptr");
-  SCM inst = scm_make(scm_list_1(wrap_smob_types[type].ptrclass));
+  SCM inst = scm_apply(make_func, scm_list_1(scm_variable_ref(scm_c_lookup(wrap_smob_types[type].name))),SCM_EOL);
   scm_slot_set_x(inst,ptrsym,smob);
-//  scm_permanent_object(smob);
- // scm_permanent_object(inst);
+
+  scm_remember_upto_here_1(smob);
 
   return inst;
 }
@@ -177,6 +140,7 @@ pointer_from_wrapped_smob(snmp_wrap_smob_subtypes_e type, SCM obj)
   SCM ptrsym = scm_from_utf8_symbol("ptr");
   SCM smob = scm_slot_ref(obj, ptrsym);
   assert_smob_subtype(type, smob);
+  scm_remember_upto_here_1(obj);
   return (void*) SCM_SMOB_DATA (smob);
 };
 
@@ -201,8 +165,8 @@ _wrap_initialize_snmp_session (SCM obj, SCM args)
 
   SCM ptrsym = scm_from_utf8_symbol("ptr");
   scm_slot_set_x(obj,ptrsym,smob);
-  scm_permanent_object(smob);
-  scm_permanent_object(obj);
+  scm_remember_upto_here_1(obj);
+  scm_remember_upto_here_1(args);
   return SCM_UNSPECIFIED;
 }
 
@@ -210,6 +174,7 @@ static SCM
 _wrap_snmp_session_version_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  scm_remember_upto_here_1(s_0);
   return scm_constant_name_from_int("<snmp-version>", session->version);
 }
 
@@ -219,6 +184,8 @@ _wrap_snmp_session_version_set (SCM s_0, SCM s_1)
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
   session->version = scm_int_from_constant("<snmp-version>",s_1);
 
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
   return SCM_UNSPECIFIED;
 }
 
@@ -226,6 +193,7 @@ static SCM
 _wrap_snmp_session_retries_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  scm_remember_upto_here_1(s_0);
   return scm_from_int(session->retries);
 }
 
@@ -234,6 +202,7 @@ _wrap_snmp_session_retries_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
   session->retries = scm_to_int(s_1);
+  scm_remember_upto_here_1(s_0);
 
   return SCM_UNSPECIFIED;
 }
@@ -242,6 +211,7 @@ static SCM
 _wrap_snmp_session_timeout_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  scm_remember_upto_here_1(s_0);
   return scm_from_long(session->timeout);
 }
 
@@ -251,6 +221,7 @@ _wrap_snmp_session_timeout_set (SCM s_0, SCM s_1)
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
   session->timeout = scm_to_long(s_1);
 
+  scm_remember_upto_here_1(s_0);
   return SCM_UNSPECIFIED;
 }
 
@@ -258,6 +229,7 @@ static SCM
 _wrap_snmp_session_peername_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  scm_remember_upto_here_1(s_0);
   return scm_from_latin1_string(session->peername);
 }
 
@@ -267,6 +239,7 @@ _wrap_snmp_session_peername_set (SCM s_0, SCM s_1)
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
   session->peername = scm_to_latin1_string(s_1);
 
+  scm_remember_upto_here_1(s_0);
   return SCM_UNSPECIFIED;
 }
 
@@ -274,6 +247,7 @@ static SCM
 _wrap_snmp_session_community_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  scm_remember_upto_here_1(s_0);
   return scm_from_utf8_string(session->community);
 }
 
@@ -284,6 +258,8 @@ _wrap_snmp_session_community_set (SCM s_0, SCM s_1)
   session->community = scm_to_utf8_string(s_1);
   session->community_len = strlen(session->community);
 
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
   return SCM_UNSPECIFIED;
 }
 
@@ -291,6 +267,7 @@ static SCM
 _wrap_snmp_session_context_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  scm_remember_upto_here_1(s_0);
   return scm_from_utf8_string(session->contextName);
 }
 
@@ -301,6 +278,8 @@ _wrap_snmp_session_context_set (SCM s_0, SCM s_1)
   session->contextName = scm_to_utf8_string(s_1);
   session->contextNameLen = strlen(session->contextName);
 
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
   return SCM_UNSPECIFIED;
 }
 
@@ -315,6 +294,7 @@ SCM
 snmp_session_callback_set(struct snmp_session *p, SCM cb) {
   p->callback = guile_snmp_async_response;
   p->callback_magic = cb;
+  scm_remember_upto_here_1(cb);
   return SCM_UNSPECIFIED;
 };
 
@@ -332,6 +312,8 @@ _wrap_initialize_snmp_single_session (SCM obj, SCM args)
 
   SCM ptrsym = scm_from_utf8_symbol("ptr");
   scm_slot_set_x(obj,ptrsym,smob);
+  scm_remember_upto_here_1(obj);
+  scm_remember_upto_here_1(args);
   return SCM_UNSPECIFIED;
 }
 
@@ -355,6 +337,7 @@ static SCM
 _wrap_tree_label_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
+  scm_remember_upto_here_1(tree);
   return scm_from_utf8_string(node->label);
 }
 
@@ -365,6 +348,7 @@ _wrap_tree_description_get (SCM tree)
   if(node->description){
     return scm_from_utf8_string(node->description);
   };
+  scm_remember_upto_here_1(tree);
   return scm_from_utf8_string("No description set, MIB description may not be being loaded");
 }
 
@@ -372,6 +356,7 @@ static SCM
 _wrap_tree_type_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
+  scm_remember_upto_here_1(tree);
   return scm_constant_name_from_int("<mib-type>", node->type);
 }
 
@@ -379,6 +364,7 @@ static SCM
 _wrap_tree_access_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
+  scm_remember_upto_here_1(tree);
   return scm_constant_name_from_int("<mib-access>", node->access);
 }
 
@@ -386,6 +372,7 @@ static SCM
 _wrap_tree_status_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
+  scm_remember_upto_here_1(tree);
   return scm_constant_name_from_int("<mib-status>", node->status);
 }
 
@@ -403,24 +390,25 @@ _wrap_initialize_pdu (SCM obj, SCM args)
 
   SCM ptrsym = scm_from_utf8_symbol("ptr");
   scm_slot_set_x(obj,ptrsym,smob);
+
+  scm_remember_upto_here_1(obj);
+  scm_remember_upto_here_1(args);
+
   return SCM_UNSPECIFIED;
 }
 
 static SCM
 _wrap_pdu_errstat_get (SCM s_0)
 {
-	printf("pdusmob: %p\n", s_0);
   netsnmp_pdu *p = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
-	printf("pdu: %p\n", p);
+  scm_remember_upto_here_1(s_0);
   return scm_constant_name_from_int("<snmp-err-status>", p->errstat);
 }
 
 static SCM
 _wrap_pdu_variables_get (SCM s_0)
 {
-  printf("pdusmob: %p\n", s_0);
   netsnmp_pdu *p = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
-  printf("pdu: %p\n", p);
 
   SCM res = SCM_EOL;
   netsnmp_variable_list *curr = p->variables;
@@ -429,6 +417,7 @@ _wrap_pdu_variables_get (SCM s_0)
     curr = curr->next_variable;
   };
 
+  scm_remember_upto_here_1(s_0);
   return res;
 }
 
@@ -446,6 +435,8 @@ _wrap_initialize_pdu_variable (SCM obj, SCM args)
 
   SCM ptrsym = scm_from_utf8_symbol("ptr");
   scm_slot_set_x(obj,ptrsym,smob);
+  scm_remember_upto_here_1(obj);
+  scm_remember_upto_here_1(args);
   return SCM_UNSPECIFIED;
 }
 
@@ -453,6 +444,7 @@ SCM
 _wrap_pdu_variable_name_get (SCM s_0)
 {
   netsnmp_variable_list *var = (netsnmp_variable_list*) pointer_from_wrapped_smob(smob_pdu_variable, s_0);
+  scm_remember_upto_here_1(s_0);
   return scm_from_oid(var->name,var->name_length);
 }
 
@@ -460,6 +452,7 @@ SCM
 _wrap_pdu_variable_type_get (SCM s_0)
 {
   netsnmp_variable_list *var = (netsnmp_variable_list*) pointer_from_wrapped_smob(smob_pdu_variable, s_0);
+  scm_remember_upto_here_1(s_0);
   return scm_constant_name_from_int("<asn-type>", var->type);
 }
 
@@ -542,6 +535,7 @@ _wrap_pdu_variable_value_get(SCM s_0)
       // use snprint_value to format the value as a string
       break;
   };
+  scm_remember_upto_here_1(s_0);
   return result;
 };
 
@@ -581,11 +575,18 @@ static void init_snmp_wrap_structs(void)
   scm_c_define_gsubr ("initialize-snmp-session", 2, 0, 0, _wrap_initialize_snmp_session);
   scm_c_export("initialize-snmp-session" , NULL);
 
+  scm_c_define_gsubr ("initialize-snmp-single-session", 2, 0, 0, _wrap_initialize_snmp_single_session);
+  scm_c_export("initialize-snmp-single-session" , NULL);
+
   DEFINE_SLOT_READONLY("pdu" , pdu , "errstat" ,errstat)
   DEFINE_SLOT_READONLY("pdu" , pdu , "variables" ,variables)
+  scm_c_define_gsubr ("initialize-pdu", 2, 0, 0, _wrap_initialize_pdu);
+  scm_c_export("initialize-pdu" , NULL);
 
   DEFINE_SLOT_READONLY("pdu-variable" , pdu_variable, "name" ,name)
   DEFINE_SLOT_READONLY("pdu-variable" , pdu_variable, "type" ,type)
   DEFINE_SLOT_READONLY("pdu-variable" , pdu_variable, "value" ,value)
+  scm_c_define_gsubr ("initialize-pdu-variable", 2, 0, 0, _wrap_initialize_pdu_variable);
+  scm_c_export("initialize-pdu-variable" , NULL);
 }
 

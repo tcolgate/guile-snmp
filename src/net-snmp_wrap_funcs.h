@@ -14,11 +14,11 @@ _wrap_get_tree (SCM oidscm, SCM treehead)
   scm_to_oid(oidscm,&temp_oid,&len);
 
   struct tree* result = get_tree(temp_oid,len,node);
-  scm_remember_upto_here_1(treehead);
 
   SCM scmresult = make_tree_smob_from_ptr(result);
 
   scm_remember_upto_here_1(oidscm);
+  scm_remember_upto_here_1(treehead);
 
   return scmresult;
 }
@@ -76,6 +76,7 @@ _wrap_oid_from_tree_node (SCM s_0)
     } 
   }
 
+  scm_remember_upto_here_1(s_0);
   return scmresult;
 }
 
@@ -143,22 +144,20 @@ _wrap_snmp_parse_oid (SCM oidname)
      scmresult = scm_from_oid(oidstore,*oidlen);
    }; 
      
+   scm_remember_upto_here_1(oidname);
    return scmresult;
 }
 
 static SCM
 _wrap_snmp_sess_open (SCM s_0)
 {
-  scm_display(s_0, scm_current_output_port());
-  scm_newline(scm_current_output_port());
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
   void *sessp = snmp_sess_open(session);
-  printf("sessp %p\n",sessp);
   if(sessp == NULL){
     return SCM_BOOL_F;
   };
   SCM obj =  make_wrapped_pointer(smob_snmp_single_session ,(void*) sessp);
-  scm_permanent_object(obj);
+  scm_remember_upto_here_1(s_0);
   return obj;
 }
 
@@ -168,7 +167,7 @@ _wrap_snmp_sess_session (SCM s_0)
   void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
   struct snmp_session *childsess = snmp_sess_session(sessp);
   SCM obj = make_wrapped_pointer(smob_snmp_session ,(struct snmp_session*) childsess);
-  scm_permanent_object(obj);
+  scm_remember_upto_here_1(s_0);
   return obj;
 }
 
@@ -176,19 +175,13 @@ static SCM
 _wrap_snmp_sess_synch_response (SCM s_0, SCM s_1)
 {
   int res;
-  printf("%p %p\n", s_0, s_1);
- // scm_display(s_0, scm_current_output_port());
-  scm_display(s_1, scm_current_output_port());
-  scm_newline(scm_current_output_port());
   void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
-  printf("newsessp %p\n", sessp);
   netsnmp_pdu *pdu = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_1);
   netsnmp_pdu *respdu = NULL;
   SCM scmrespdu;
 
   res = snmp_sess_synch_response(sessp, pdu, &respdu);
   scmrespdu = make_wrapped_pointer( smob_pdu , respdu);
-  scm_permanent_object(scmrespdu);
 
   scm_remember_upto_here_1(s_0);
   scm_remember_upto_here_1(s_1);
@@ -201,6 +194,7 @@ _wrap_snmp_sess_close (SCM s_0)
 {
   void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
   snmp_sess_close(sessp);
+  scm_remember_upto_here_1(s_0);
   return SCM_UNSPECIFIED;
 }
 
@@ -208,7 +202,7 @@ static SCM
 _wrap_snmp_pdu_create (SCM s_0)
 {
   SCM obj = make_wrapped_pointer( smob_pdu , snmp_pdu_create( scm_int_from_constant("<snmp-msg>",s_0)));
-  scm_permanent_object(obj);
+  scm_remember_upto_here_1(s_0);
   return obj;
 }
 
@@ -259,7 +253,7 @@ _wrap_snmp_add_var (SCM s_0, SCM s_1, SCM s_2)
       scm_from_locale_string("Malformed data passed to set"));
   };
   
-  typespec = scm_int_from_constant("<asn-type",SCM_CAR(s_2));
+  typespec = scm_int_from_constant("<asn-type>",SCM_CAR(s_2));
   valscm = SCM_CDR(s_2);
   
   switch (typespec){
@@ -336,7 +330,11 @@ _wrap_snmp_add_var (SCM s_0, SCM s_1, SCM s_2)
     };
   };
   
-  int result = snmp_pdu_add_variable(pdu,temp_oid,oidlen,typespec,(void const *)pointer,len);
+  snmp_pdu_add_variable(pdu,temp_oid,oidlen,typespec,(void const *)pointer,len);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  scm_remember_upto_here_1(s_2);
 
   return SCM_UNSPECIFIED;
 }
@@ -346,6 +344,7 @@ _wrap_snmp_free_pdu (SCM s_0)
 {
   netsnmp_pdu *pdu = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
   snmp_free_pdu(pdu);
+  scm_remember_upto_here_1(s_0);
   return SCM_UNSPECIFIED;
 }
 
@@ -363,6 +362,8 @@ _wrap_netsnmp_oid_is_subtree (SCM s_0, SCM s_1)
   SCM scmresult = scm_from_signed_integer(netsnmp_oid_is_subtree(temp_oid1, len1, temp_oid2, len2));
 
 
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
   return scmresult;
 }
 

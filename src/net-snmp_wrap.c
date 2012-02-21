@@ -19,10 +19,13 @@
 #undef PACKAGE_TARNAME
 #undef PACKAGE_VERSION
 
+SCM make_func = SCM_EOL;
+
 #include "net-snmp_wrap_oid.h"
 #include "net-snmp_wrap_constants.h"
 #include "net-snmp_wrap_structs.h"
 #include "net-snmp_wrap_funcs.h"
+
 
 static void init_snmp_wrap(void *data)
 {
@@ -34,9 +37,13 @@ static void init_snmp_wrap(void *data)
   init_snmp_wrap_funcs();
 };
 
+
 SCM
 scm_init_snmp_net_snmp_module (void)
 {
+  make_func = scm_permanent_object(
+		      scm_variable_ref(scm_c_module_lookup(scm_c_resolve_module("oop goops"), "make")));
+
   scm_c_define_module("snmp net-snmp-primitive", init_snmp_wrap, NULL);
   return SCM_UNSPECIFIED;
 }

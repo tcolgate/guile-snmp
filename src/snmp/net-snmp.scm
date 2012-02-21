@@ -278,19 +278,19 @@
       
         (datum->syntax stx 
 		     `(begin
-			(define-class ,primname ()
+			(define-class ,class()
 				      ptr
 				      ,@slotdefs
 				      #:name (quote ,class))
-			(define-method (initialize (obj ,primname) initargs)
+			(define-method (initialize (obj ,class) initargs)
 			   (,initfunc obj initargs)
                            (next-method))
-			(re-export ,class)
+			(export ,class)
 			,@slotexps)))))
 
 (define-class-wrapped-struct tree label description type access status) 
 (define-class-wrapped-struct snmp-session community peername version context timeout retries) 
-(re-export <snmp-single-session>)
+(define-class-wrapped-struct snmp-single-session)
 (define-class-wrapped-struct pdu errstat variables)
 (define-class-wrapped-struct pdu-variable name type value)
 
