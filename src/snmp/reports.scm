@@ -24,7 +24,7 @@
     reports:autotranslate <snmp-reports-result> oid-list walk
     get getnext get-or-fail nextvar all walk-on-fail walk-func 
     set set-or-fail
-    fail old-fail one-of iid oid type tag value 
+    fail old-fail one-of base iid oid type tag value rawvarbind
     make-varbind-func tag-varbinds split-varbinds 
     filter-valid-next reach-each
     debug-reports)
@@ -98,19 +98,35 @@
 ; This class is used to represent answers. We use our own dedicated class
 ; to allow free'ing of results, avoid link lists and better allow cacheing
 (define-class <snmp-reports-result> ()
-  (oid #:init-value empty-oidvec)
-  (type #:init-value #f)
-  (value #:init-value #f)
-  (tag #:init-value empty-oidvec)
-  (base #:init-value empty-oidvec)
-  (iid #:init-value empty-oidvec)
-  (rawvarbind #:init-value #f))
+  (oid #:init-value empty-oidvec #:getter oid)
+  (type #:init-value #f #:getter type)
+  (value #:init-value #f #:getter value)
+  (tag #:init-value empty-oidvec #:getter tag)
+  (base #:init-value empty-oidvec #:getter base)
+  (iid #:init-value empty-oidvec #:getter iid)
+  (rawvarbind #:init-value #f #:getter rawvarbind))
 
 (define-method (display (this <snmp-reports-result>) port)
   (format port "#<snmp-reports-result>"))
 
 (define-method (write (this <snmp-reports-result>) port)
   (format port "#<snmp-reports-result>#"))
+
+(define-method  (oid (var <snmp-reports-result>) . args)
+  (var args 'oid))
+(define-method  (type (var <snmp-reports-result>) . args)
+  (var args 'type))
+(define-method  (value (var <snmp-reports-result>) . args)
+  (var args 'value))
+(define-method  (tag (var <snmp-reports-result>) . args)
+  (var args 'tag))
+(define-method  (base (var <snmp-reports-result>) . args)
+  (var args 'base))
+(define-method  (iid (var <snmp-reports-result>) . args)
+  (display args) (newline) 
+  (var args 'iid))
+(define-method  (rwvarbind (var <snmp-reports-result>) . args)
+  (var args 'rwvarbind))
 
 (define-class <snmp-reports-result-set> (<applicable-struct>)
   (results #:init-value '() #:init-keyword #:results))
@@ -148,10 +164,32 @@
           #f)))))
 
 (define-method (display (this <snmp-reports-result-set>) port)
-  (format port "#<snmp-reports-result-set ~a: ~s ~@[~a~]>#" (this 'oid) (this 'value) (if (> (length (this 'oidlist))) "..." #f)))
+  (format port "#<snmp-reports-result-set ~a: ~s ~@[~a~]>#" (this 'oid) (this 'value) (if (> (length (this 'oidlist)) 1) "..." #f)))
 
 (define-method (write (this <snmp-reports-result-set>) port)
-  (format port "#<snmp-reports-result-set ~a: ~s ~@[~a~]>#" (this 'oid) (this 'value) (if (> (length (this 'oidlist))) "..." #f)))
+  (format port "#<snmp-reports-result-set ~a: ~s ~@[~a~]>#" (this 'oid) (this 'value) (if (> (length (this 'oidlist)) 1) "..." #f)))
+
+; Functions and macros for queries.
+
+(define-method  (oid (varset <snmp-reports-result-set>) . args)
+  (varset args 'oid))
+(define-method  (type (varset <snmp-reports-result-set>) . args)
+  (varset args 'type))
+(define-method  (value (varset <snmp-reports-result-set>) . args)
+  (varset args 'value))
+(define-method  (tag (varset <snmp-reports-result-set>) . args)
+  (varset args 'tag))
+(define-method  (base (varset <snmp-reports-result-set>) . args)
+  (varset args 'base))
+
+(define-method  (iid (varset <snmp-reports-result-set>))
+  (varset 'iid))
+(define-method  (iid (varset <snmp-reports-result-set>) . args)
+  (display args) (newline)
+  (slot-ref (car  args) 'iid))
+
+(define-method  (rwvarbind (varset <snmp-reports-result-set>) . args)
+  (varset args 'rwvarbind))
 
 ; split the returned list of varbinds into an associated list of variables
 (define (split-varbinds input)
@@ -217,33 +255,6 @@
   ; Dump some error
   )
 	
-; These are convenience macros for accessing elements of a result
-;
-(define-syntax oid
-  (syntax-rules ()
-    ((_ varbind args ...) (varbind args ... 'oid))))
-
-(define-syntax tag
-  (syntax-rules ()
-    ((_ varbind args ...) (varbind args ... 'tag))))
-
-(define-syntax iid
-  (syntax-rules ()
-    ((_ varbind args ...) (varbind args ... 'iid))))
-
-(define-syntax index
-  (syntax-rules ()
-    ((_ varbind args ...) (varbind args ... 'index))))
-
-(define-syntax type
-  (syntax-rules ()
-    ((_ varbind args ...) (varbind args ... 'type))))
-
-(define-syntax value
-  (syntax-rules ()
-    ((_ varbind args ...) (varbind args ... 'value))))
-
-; Functions and macros for queries.
 
 ; Perform an synchronous SNMP query
 (define (synch-query querytype oids)
