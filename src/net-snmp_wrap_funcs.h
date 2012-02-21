@@ -40,6 +40,8 @@ _wrap_get_tree (SCM oidscm, SCM treehead)
 
   SCM scmresult = make_tree_smob_from_ptr(result);
 
+  free(temp_oid);
+
   scm_remember_upto_here_1(oidscm);
   scm_remember_upto_here_1(treehead);
 
@@ -391,6 +393,8 @@ _wrap_netsnmp_oid_is_subtree (SCM s_0, SCM s_1)
 
   SCM scmresult = scm_from_signed_integer(netsnmp_oid_is_subtree(temp_oid1, len1, temp_oid2, len2));
 
+  free(temp_oid1);
+  free(temp_oid2);
 
   scm_remember_upto_here_1(s_0);
   scm_remember_upto_here_1(s_1);
