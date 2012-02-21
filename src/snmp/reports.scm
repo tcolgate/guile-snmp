@@ -12,6 +12,7 @@
   #:use-module (srfi srfi-39)
   #:use-module (oop goops)
   #:use-module (ice-9 optargs)
+  #:use-module (ice-9 format)
   #:use-module (snmp net-snmp)
   #:use-module (snmp oids)
   #:use-module (snmp reports session)
@@ -147,10 +148,10 @@
           #f)))))
 
 (define-method (display (this <snmp-reports-result-set>) port)
-  (format port "#<snmp-reports-result-set ~a: ~s~@[ ...~]>#" (this 'oid) (this 'value) (> (length (this 'oidlist)) 1)))
+  (format port "#<snmp-reports-result-set ~a: ~s ~@[~a~]>#" (this 'oid) (this 'value) (if (> (length (this 'oidlist))) "..." #f)))
 
 (define-method (write (this <snmp-reports-result-set>) port)
-  (format port "#<snmp-reports-result-set ~a: ~s~@[ ...~]>#" (this 'oid) (this 'value) (> (length (this 'oidlist)) 1)))
+  (format port "#<snmp-reports-result-set ~a: ~s ~@[~a~]>#" (this 'oid) (this 'value) (if (> (length (this 'oidlist))) "..." #f)))
 
 ; split the returned list of varbinds into an associated list of variables
 (define (split-varbinds input)
@@ -247,7 +248,7 @@
 ; Perform an synchronous SNMP query
 (define (synch-query querytype oids)
   (if (debug-reports) (format (current-error-port) 
-                               "Attempting to perform a ~a for ~a from host ~a using ~a~%~!"
+                               "Attempting to perform a ~a for ~a from host ~a using ~a ~%"
                               querytype
                               oids
                               (current-host)
