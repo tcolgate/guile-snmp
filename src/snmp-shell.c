@@ -135,10 +135,10 @@ snmp_shell_module (void* arguments)
       scm_list_1(scm_c_eval_string(opt_eval)));
   };
 
- // if(NULL == opt_script && NULL == opt_eval){
+  if(NULL == opt_script && NULL == opt_eval){
     //scm_c_eval_string("(start-repl #:welcome #f)");
     scm_c_eval_string("(start-repl 'scheme)");
- // };
+  };
 
   return;
 }
@@ -146,8 +146,6 @@ snmp_shell_module (void* arguments)
 static void
 inner_main (void *closure, int argc, char **argv)
 {
-  /* module initializations would go here */
- // init_image_type();
   SCM scriptargs = SCM_EOL;
   int c;
   while(1){
