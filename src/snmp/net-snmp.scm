@@ -297,6 +297,7 @@
 (re-export init-mib)
 (re-export init-snmp)
 
+(re-export read-module)
 (re-export snmp-parse-oid)
 
 (re-export get-tree)

@@ -1,3 +1,26 @@
+static SCM
+_wrap_init_snmp (SCM name)
+{
+  init_snmp(scm_to_utf8_string (name));
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_init_mib (void)
+{
+  init_mib();
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_read_module (SCM s_0)
+{
+   char *name = scm_to_locale_string(s_0); 
+   read_module(name);
+
+   scm_remember_upto_here_1(s_0);
+   return SCM_UNSPECIFIED;
+}
 
 static SCM
 _wrap_get_tree_head (void)
@@ -113,20 +136,6 @@ _wrap_guile_snmp_async_response (SCM s_0, SCM s_1, SCM s_2, SCM s_3, SCM s_4)
   
   return scmresult;
 #undef FUNC_NAME
-}
-
-static SCM
-_wrap_init_snmp (SCM name)
-{
-  init_snmp(scm_to_utf8_string (name));
-  return SCM_UNSPECIFIED;
-}
-
-static SCM
-_wrap_init_mib (void)
-{
-  init_mib();
-  return SCM_UNSPECIFIED;
 }
 
 static SCM
@@ -404,6 +413,9 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("init-mib", 0, 0, 0, (void *) _wrap_init_mib);
   scm_c_export("init-mib" , NULL);
+
+  scm_c_define_gsubr("read-module", 1, 0, 0, (void *) _wrap_read_module);
+  scm_c_export("read-module" , NULL);
 
   scm_c_define_gsubr("init-snmp", 1, 0, 0, (void *) _wrap_init_snmp);
   scm_c_export("init-snmp" , NULL);
