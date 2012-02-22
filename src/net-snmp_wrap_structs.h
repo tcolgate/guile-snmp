@@ -480,7 +480,7 @@ _wrap_pdu_variable_value_get(SCM s_0)
     case ASN_OCTET_STR: 
     case ASN_BIT_STR: 
       // These should probably be handled differently
-      result = scm_from_locale_stringn((p->val).string,p->val_len);
+      result = scm_from_latin1_stringn((p->val).string,p->val_len);
       break;
     case ASN_INTEGER: 
     case ASN_GAUGE: 
