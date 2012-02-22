@@ -33,26 +33,30 @@
   (define oidvector-set! #f)
 
   (define-class <oid> ()
-		(_vec #:init-value empty-oidvec
+		(_vec #:init-form empty-oidvec
 		      #:init-keyword #:value))
 
   (define oid-translate (make-parameter #t))
 
-    (define-method (display (this <oid>) port)
-      (if (oid-translate)
-        (let* ((node     (get-tree this (get-tree-head)))
-               (basename (slot-ref node 'label))
-               (diff     (- (oid-from-tree-node node) this)))
-          (format port "~a~{.~d~}" basename (oid->list diff)))
-        (format port "~{.~d~}" (oid->list this))))
-  
-    (define-method (write (this <oid>) port)
-      (if (oid-translate)
-       (let* ((node     (get-tree this (get-tree-head)))
-               (basename (slot-ref node 'label))
-               (diff     (- (oid-from-tree-node node) this)))
-          (format port "#<oid: ~a~{.~d~}>#" basename (oid->list  diff)))
-        (format port "#<oid: ~{.~d~}>#" (oid->list this))))
+  (define-method (display (this <oid>) port)
+		 (if (oid-translate)
+		   (if (> (length (oid->list this)) 0) 
+		     (let* ((node     (get-tree this (get-tree-head)))
+			    (basename (slot-ref node 'label))
+			    (diff     (- (oid-from-tree-node node) this)))
+		       (format port "~a~{.~d~}" basename (oid->list diff))) 
+		     (format port "(empty-oid)" ))
+		   (format port "~{.~d~}" (oid->list this))))
+
+  (define-method (write (this <oid>) port)
+		 (if (oid-translate)
+		   (if (> (length (oid->list this)) 0) 
+		     (let* ((node     (get-tree this (get-tree-head)))
+			    (basename (slot-ref node 'label))
+			    (diff     (- (oid-from-tree-node node) this)))
+		       (format port "#<oid: ~a~{.~d~}>#" basename (oid->list  diff))) 
+		     (format port "#<oid: (empty-oid>#")) 
+		   (format port "#<oid: ~{.~d~}>#" (oid->list this))))
 
   (define-method (equal? (a <oid>) (b <oid>))
 		 (equal? (slot-ref a '_vec) (slot-ref  b '_vec)))

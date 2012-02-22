@@ -36,6 +36,8 @@ _wrap_get_tree (SCM oidscm, SCM treehead)
   oid* temp_oid = (oid*)scm_calloc(len * sizeof(oid));
   scm_to_oid(oidscm,&temp_oid,&len);
 
+  if(len == 0) { return treehead ;};
+
   struct tree* result = get_tree(temp_oid,len,node);
 
   SCM scmresult = make_tree_smob_from_ptr(result);
