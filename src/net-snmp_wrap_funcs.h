@@ -8,6 +8,7 @@ _wrap_init_snmp (SCM name)
 static SCM
 _wrap_init_mib (void)
 {
+  snmp_set_save_descriptions(1);
   init_mib();
   return SCM_UNSPECIFIED;
 }
@@ -333,7 +334,7 @@ _wrap_snmp_add_var (SCM s_0, SCM s_1, SCM s_2)
             scm_from_locale_string("snmperror")),
           scm_from_locale_string("Data is not a string"));
       };
-      pointer = (void*) scm_to_locale_stringn(valscm, &len);
+      pointer = (void*) scm_to_latin1_stringn(valscm, &len);
     }; 
     break;
     
