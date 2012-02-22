@@ -292,7 +292,7 @@
 			(export ,class)
 			,@slotexps)))))
 
-(define-class-wrapped-struct tree label description type access status) 
+(define-class-wrapped-struct tree label description type access status display-hint units enums indexes) 
 (define-class-wrapped-struct snmp-session community peername version context timeout retries) 
 (define-class-wrapped-struct snmp-single-session)
 (define-class-wrapped-struct pdu errstat variables)

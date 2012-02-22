@@ -390,6 +390,55 @@ _wrap_tree_status_get (SCM tree)
   return scm_constant_name_from_int("<mib-status>", node->status);
 }
 
+static SCM
+_wrap_tree_units_get (SCM tree)
+{
+  struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
+  scm_remember_upto_here_1(tree);
+  return scm_from_utf8_string(node->units);
+}
+
+static SCM
+_wrap_tree_hint_get (SCM tree)
+{
+  struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
+  scm_remember_upto_here_1(tree);
+  return scm_from_utf8_string(node->hint);
+}
+
+static SCM
+_wrap_tree_enums_get (SCM tree)
+{
+  struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
+  SCM result = SCM_EOL;
+  struct enum_list* p = node->enums;
+  while(p != NULL){
+    result = scm_append(scm_list_2(result,
+			    scm_list_1(scm_cons(
+					    scm_from_signed_integer(p->value),
+					    scm_from_latin1_symbol(p->label)))));
+    p = p->next;
+  };
+  scm_remember_upto_here_1(tree);
+  return result;
+}
+
+static SCM
+_wrap_tree_indexes_get (SCM tree)
+{
+  struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
+  SCM result = SCM_EOL;
+  struct index_list* p = node->indexes;
+  while(p != NULL){
+    //result = scm_append(scm_list_2(result, scm_list_1(_wrap_snmp_parse_oid(scm_from_latin1_symbol(p->ilabel)))));
+    result = scm_append(scm_list_2(result, scm_list_1(scm_from_latin1_symbol(p->ilabel))));
+    p = p->next;
+  };
+
+  scm_remember_upto_here_1(tree);
+  return result;
+}
+
 /*
  * Wrap netsnmp_pdu* as pdu 
  */
@@ -577,6 +626,10 @@ static void init_snmp_wrap_structs(void)
   DEFINE_SLOT_READONLY("tree" , tree , "type" ,type)
   DEFINE_SLOT_READONLY("tree" , tree , "status" ,status)
   DEFINE_SLOT_READONLY("tree" , tree , "access" ,access)
+  DEFINE_SLOT_READONLY("tree" , tree , "units" ,units)
+  DEFINE_SLOT_READONLY("tree" , tree , "display-hint" ,hint)
+  DEFINE_SLOT_READONLY("tree" , tree , "enums" ,enums)
+  DEFINE_SLOT_READONLY("tree" , tree , "indexes" ,indexes)
   scm_c_define_gsubr ("initialize-tree", 2, 0, 0, _wrap_initialize_tree);
   scm_c_export("initialize-tree" , NULL);
 
