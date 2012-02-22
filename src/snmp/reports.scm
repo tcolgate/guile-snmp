@@ -7,10 +7,10 @@
 ;;-------------------------------------------------------------------
 
 (define-module (snmp reports)
+  #:use-module (oop goops)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-18)
   #:use-module (srfi srfi-39)
-  #:use-module (oop goops)
   #:use-module (ice-9 optargs)
   #:use-module (ice-9 format)
   #:use-module (snmp net-snmp)
@@ -39,18 +39,11 @@
     enable-query-cache
     disable-query-cache
     query-cache-enabled
-    dump-query-cache))
-
-; This routine is lifted from guile-gnome-platform by Andy Wingo
-(define-macro (re-export-modules . args)
-  (if (not (null? args))
-      (begin
-        (or (list? (car args))
-            (error "Invalid module specification" (car args)))
-        `(begin
-           (module-use! (module-public-interface (current-module))
-                        (resolve-interface ',(car args)))
-           (re-export-modules ,@(cdr args))))))
+    dump-query-cache
+    for-each
+    assoc
+    map
+    format))
 
 (define debug-reports (make-parameter #f))
 
@@ -112,21 +105,20 @@
 (define-method (write (this <snmp-reports-result>) port)
   (format port "#<snmp-reports-result>#"))
 
-(define-method  (oid (var <snmp-reports-result>) . args)
-  (var args 'oid))
-(define-method  (type (var <snmp-reports-result>) . args)
-  (var args 'type))
-(define-method  (value (var <snmp-reports-result>) . args)
-  (var args 'value))
-(define-method  (tag (var <snmp-reports-result>) . args)
-  (var args 'tag))
-(define-method  (base (var <snmp-reports-result>) . args)
-  (var args 'base))
-(define-method  (iid (var <snmp-reports-result>) . args)
-  (display args) (newline) 
-  (var args 'iid))
-(define-method  (rwvarbind (var <snmp-reports-result>) . args)
-  (var args 'rwvarbind))
+(define-method  (oid (var <snmp-reports-result>))
+  (slot-ref var 'oid))
+(define-method  (type (var <snmp-reports-result>))
+  (slot-ref var 'type))
+(define-method  (value (var <snmp-reports-result>))
+  (slot-ref var 'value))
+(define-method  (tag (var <snmp-reports-result>))
+  (slot-ref var 'tag))
+(define-method  (base (var <snmp-reports-result>))
+  (slot-ref var 'base))
+(define-method  (iid (var <snmp-reports-result>))
+  (slot-ref var 'iid))
+(define-method  (rwvarbind (var <snmp-reports-result>))
+  (slot-ref var 'rwvarbind))
 
 (define-class <snmp-reports-result-set> (<applicable-struct>)
   (results #:init-value '() #:init-keyword #:results))
@@ -171,25 +163,40 @@
 
 ; Functions and macros for queries.
 
+(define-method  (oid (varset <snmp-reports-result-set>))
+  (varset 'oid))
 (define-method  (oid (varset <snmp-reports-result-set>) . args)
-  (varset args 'oid))
+  (varset (car args) 'oid))
+
+(define-method  (type (varset <snmp-reports-result-set>))
+  (varset 'type))
 (define-method  (type (varset <snmp-reports-result-set>) . args)
-  (varset args 'type))
+  (varset (car args) 'type))
+
+(define-method  (value (varset <snmp-reports-result-set>))
+  (varset  'value))
 (define-method  (value (varset <snmp-reports-result-set>) . args)
-  (varset args 'value))
+  (varset (car args) 'value))
+
+(define-method  (tag (varset <snmp-reports-result-set>))
+  (varset 'tag))
 (define-method  (tag (varset <snmp-reports-result-set>) . args)
-  (varset args 'tag))
+  (varset (car args) 'tag))
+
+(define-method  (base (varset <snmp-reports-result-set>))
+  (varset 'base))
 (define-method  (base (varset <snmp-reports-result-set>) . args)
-  (varset args 'base))
+  (varset (car args) 'base))
 
 (define-method  (iid (varset <snmp-reports-result-set>))
   (varset 'iid))
 (define-method  (iid (varset <snmp-reports-result-set>) . args)
-  (display args) (newline)
-  (slot-ref (car  args) 'iid))
+  (varset (car args) 'iid))
 
+(define-method  (rwvarbind (varset <snmp-reports-result-set>))
+  (varset 'rwvarbind))
 (define-method  (rwvarbind (varset <snmp-reports-result-set>) . args)
-  (varset args 'rwvarbind))
+  (varset (car args) 'rwvarbind))
 
 ; split the returned list of varbinds into an associated list of variables
 (define (split-varbinds input)
@@ -466,7 +473,6 @@
       (map (lambda(old-thread) (thread-terminate! old-thread)) threads)
       result))))
 
-(re-export-modules (oop goops) (srfi srfi-39) (snmp reports session) (snmp net-snmp) (snmp oids))
 
 ; Set up the reports environement
 ;
