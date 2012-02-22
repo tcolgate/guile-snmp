@@ -43,6 +43,7 @@ snmp_shell_module (void* arguments)
 {
   scm_c_use_module("oop goops");
   scm_c_eval_string("(set-module-duplicates-handlers! (current-module) (list (module-ref duplicate-handlers 'merge-generics)))");
+  scm_c_use_module("ice-9 format");
   scm_c_use_module("ice-9 threads");
   scm_c_use_module("ice-9 getopt-long");
   scm_c_use_module("ice-9 common-list");
@@ -71,7 +72,9 @@ snmp_shell_module (void* arguments)
   scm_c_eval_string("(activate-readline)");
 
   scm_c_use_module("snmp net-snmp");
+  scm_c_use_module("snmp oids");
   scm_c_use_module("snmp reports");
+  scm_c_use_module("snmp reports cache");
   scm_c_use_module("snmp reports session");
 
   scm_c_eval_string("(init-reports)");
