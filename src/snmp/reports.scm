@@ -24,7 +24,7 @@
     reports:autotranslate <snmp-reports-result> oid-list walk
     get getnext get-or-fail nextvar all walk-on-fail walk-func 
     set set-or-fail
-    fail old-fail one-of base iid oid type tag value rawvarbind
+    fail old-fail one-of iid oid type tag value rawvarbind
     make-varbind-func tag-varbinds split-varbinds 
     filter-valid-next reach-each
     debug-reports)
@@ -95,7 +95,7 @@
   (type #:init-value #f #:getter type)
   (value #:init-value #f #:getter value)
   (tag #:init-value empty-oidvec #:getter tag)
-  (base #:init-value empty-oidvec #:getter base)
+  (base #:init-value empty-oidvec)
   (iid #:init-value empty-oidvec #:getter iid)
   (rawvarbind #:init-value #f #:getter rawvarbind))
 
@@ -113,12 +113,10 @@
   (slot-ref var 'value))
 (define-method  (tag (var <snmp-reports-result>))
   (slot-ref var 'tag))
-(define-method  (base (var <snmp-reports-result>))
-  (slot-ref var 'base))
 (define-method  (iid (var <snmp-reports-result>))
   (slot-ref var 'iid))
-(define-method  (rwvarbind (var <snmp-reports-result>))
-  (slot-ref var 'rwvarbind))
+(define-method  (rawvarbind (var <snmp-reports-result>))
+  (slot-ref var 'rawvarbind))
 
 (define-class <snmp-reports-result-set> (<applicable-struct>)
   (results #:init-value '() #:init-keyword #:results))
@@ -142,7 +140,7 @@
                     ((equal? (cdr msg) (list 'tag))     (slot-ref (cdr var) 'tag))
                     ((equal? (cdr msg) (list 'iid))     (slot-ref (cdr var) 'iid))
                     ((equal? (cdr msg) (list 'type))    (slot-ref (cdr var) 'type))
-                    ((equal? (cdr msg) (list 'varbind)) (slot-ref (cdr var) 'rawvarbind))
+                    ((equal? (cdr msg) (list 'rawvarbind)) (slot-ref (cdr var) 'rawvarbind))
                     ((equal? (cdr msg) (list 'value))   (slot-ref (cdr var) 'value))
                     (#t (slot-ref (cdr var) 'value))))))
             ((equal? (car msg) 'oidlist) (map car results))
@@ -150,7 +148,7 @@
             ((equal? (car msg) 'tag)     (slot-ref (cdr (car results)) 'tag))
             ((equal? (car msg) 'iid)     (slot-ref (cdr (car results)) 'iid))
             ((equal? (car msg) 'type)    (slot-ref (cdr (car results)) 'type))
-            ((equal? (car msg) 'varbind) (slot-ref (cdr (car results)) 'rawvarbind))
+            ((equal? (car msg) 'rawvarbind) (slot-ref (cdr (car results)) 'rawvarbind))
             ((equal? (car msg) 'value)   (slot-ref (cdr (car results)) 'value))
             (#t                          (slot-ref (cdr (car results)) 'value)))
           #f)))))
@@ -165,38 +163,33 @@
 
 (define-method  (oid (varset <snmp-reports-result-set>))
   (varset 'oid))
-(define-method  (oid (varset <snmp-reports-result-set>) . args)
-  (varset (car args) 'oid))
+(define-method  (oid (varset <snmp-reports-result-set>) (item <oid>))
+  (varset item 'oid))
 
 (define-method  (type (varset <snmp-reports-result-set>))
   (varset 'type))
-(define-method  (type (varset <snmp-reports-result-set>) . args)
-  (varset (car args) 'type))
+(define-method  (type (varset <snmp-reports-result-set>) (item <oid>))
+  (varset item 'type))
 
 (define-method  (value (varset <snmp-reports-result-set>))
   (varset  'value))
-(define-method  (value (varset <snmp-reports-result-set>) . args)
-  (varset (car args) 'value))
+(define-method  (value (varset <snmp-reports-result-set>) (item <oid>))
+  (varset item 'value))
 
 (define-method  (tag (varset <snmp-reports-result-set>))
   (varset 'tag))
-(define-method  (tag (varset <snmp-reports-result-set>) . args)
-  (varset (car args) 'tag))
-
-(define-method  (base (varset <snmp-reports-result-set>))
-  (varset 'base))
-(define-method  (base (varset <snmp-reports-result-set>) . args)
-  (varset (car args) 'base))
+(define-method  (tag (varset <snmp-reports-result-set>) (item <oid>))
+  (varset item 'tag))
 
 (define-method  (iid (varset <snmp-reports-result-set>))
   (varset 'iid))
-(define-method  (iid (varset <snmp-reports-result-set>) . args)
-  (varset (car args) 'iid))
+(define-method  (iid (varset <snmp-reports-result-set>) (item <oid>))
+  (varset item 'iid))
 
-(define-method  (rwvarbind (varset <snmp-reports-result-set>))
-  (varset 'rwvarbind))
-(define-method  (rwvarbind (varset <snmp-reports-result-set>) . args)
-  (varset (car args) 'rwvarbind))
+(define-method  (rawvarbind (varset <snmp-reports-result-set>))
+  (varset 'rawvarbind))
+(define-method  (rawvarbind (varset <snmp-reports-result-set>) (item <oid>))
+  (varset item 'rawvarbind))
 
 ; split the returned list of varbinds into an associated list of variables
 (define (split-varbinds input)
@@ -239,7 +232,6 @@
 ;; Currently assumes an ordered list
 ;;
 (define-generic tag-varbinds)
-
 (define-method (tag-varbinds (data <snmp-reports-result-set>) bases)
   (let ((result (copy-tree (slot-ref data 'results))))
     (for-each
@@ -258,9 +250,6 @@
       result bases)
     (make <snmp-reports-result-set> #:results result)))
 
-(define-method (tag-varbinds any)
-  ; Dump some error
-  )
 	
 
 ; Perform an synchronous SNMP query
