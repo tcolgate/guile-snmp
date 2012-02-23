@@ -293,6 +293,15 @@
 			,@slotexps)))))
 
 (define-class-wrapped-struct tree label description type access status display-hint units enums indexes) 
+(define-method (description (o <oid>)) (description (get-tree o (get-tree-head)))) 
+(define-method (type (o <oid>)) (type (get-tree o (get-tree-head)))) 
+(define-method (access (o <oid>)) (access (get-tree o (get-tree-head)))) 
+(define-method (status (o <oid>)) (status (get-tree o (get-tree-head)))) 
+(define-method (display-hint (o <oid>)) (display-hint (get-tree o (get-tree-head)))) 
+(define-method (units (o <oid>)) (units (get-tree o (get-tree-head)))) 
+(define-method (enums (o <oid>)) (enums (get-tree o (get-tree-head)))) 
+(define-method (indexes (o <oid>)) (indexes (get-tree o (get-tree-head)))) 
+
 (define-class-wrapped-struct snmp-session community peername version context timeout retries) 
 (define-class-wrapped-struct snmp-single-session)
 (define-class-wrapped-struct pdu errstat variables)
