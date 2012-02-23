@@ -8,7 +8,7 @@ _wrap_init_snmp (SCM name)
 static SCM
 _wrap_init_mib (void)
 {
-  snmp_set_save_descriptions(1);
+  //snmp_set_save_descriptions(1);
   init_mib();
   return SCM_UNSPECIFIED;
 }
