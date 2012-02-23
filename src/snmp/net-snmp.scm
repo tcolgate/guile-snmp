@@ -292,7 +292,8 @@
 			(export ,class)
 			,@slotexps)))))
 
-(define-class-wrapped-struct tree label description type access status display-hint units enums indexes) 
+(define-class-wrapped-struct tree label description type access status display-hint 
+			     units enums indexes varbinds parent peers children) 
 (define-method (description (o <oid>)) (description (get-tree o (get-tree-head)))) 
 (define-method (type (o <oid>)) (type (get-tree o (get-tree-head)))) 
 (define-method (access (o <oid>)) (access (get-tree o (get-tree-head)))) 
@@ -301,6 +302,15 @@
 (define-method (units (o <oid>)) (units (get-tree o (get-tree-head)))) 
 (define-method (enums (o <oid>)) (enums (get-tree o (get-tree-head)))) 
 (define-method (indexes (o <oid>)) (indexes (get-tree o (get-tree-head)))) 
+(define-method (varbinds (o <oid>)) (varbinds (get-tree o (get-tree-head)))) 
+(define-method (parent (o <oid>)) (parent (get-tree o (get-tree-head)))) 
+(define-method (peers (o <oid>)) (peers (get-tree o (get-tree-head)))) 
+(define-method (children (o <oid>)) (children (get-tree o (get-tree-head)))) 
+
+(define-method (display (this <tree>) port)
+	       (format port "<tree: ~a>" (oid-from-tree-node this)))
+(define-method (write (this <tree>) port)
+	       (format port "#<tree: ~a>" (oid-from-tree-node this)))
 
 (define-class-wrapped-struct snmp-session community peername version context timeout retries) 
 (define-class-wrapped-struct snmp-single-session)
