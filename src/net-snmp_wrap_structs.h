@@ -423,6 +423,8 @@ _wrap_tree_enums_get (SCM tree)
   return result;
 }
 
+static SCM _wrap_snmp_parse_oid (SCM oidname);
+
 static SCM
 _wrap_tree_indexes_get (SCM tree)
 {
@@ -430,8 +432,7 @@ _wrap_tree_indexes_get (SCM tree)
   SCM result = SCM_EOL;
   struct index_list* p = node->indexes;
   while(p != NULL){
-    //result = scm_append(scm_list_2(result, scm_list_1(_wrap_snmp_parse_oid(scm_from_latin1_symbol(p->ilabel)))));
-    result = scm_append(scm_list_2(result, scm_list_1(scm_from_latin1_symbol(p->ilabel))));
+    result = scm_append(scm_list_2(result, scm_list_1(_wrap_snmp_parse_oid(scm_from_latin1_string(p->ilabel)))));
     p = p->next;
   };
 
