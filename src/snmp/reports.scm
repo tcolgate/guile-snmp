@@ -394,7 +394,7 @@
     (lambda()
       (if (equal? '() prevres)
 	(if (not (equal? curroid #f))
-	  (let* ((results      (synch-query SNMP-MSG-GETNEXT (list curroid)))
+	  (let* ((results      (synch-query SNMP-MSG-GETBULK(list curroid)))
 		 (tresults     (tag-varbinds
 				 results 
 				 (make-list (length (slot-ref results 'results)) baseoid)))
@@ -416,6 +416,8 @@
 	(let ((rem (cdr prevres))
 	      (val (car prevres)))
 	   (set! prevres rem)
+	   (set! curroid (slot-ref (cdr (car (slot-ref val 'results))) 'oid))
+	   (set! currbase (slot-ref (cdr (car (slot-ref val 'results))) 'base))
 	   val)))))
 
 ; This is the simplest walk to use, returning all results in a list
