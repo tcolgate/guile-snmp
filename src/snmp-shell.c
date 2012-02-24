@@ -43,7 +43,7 @@ print_help(void)
           "  -h, --host HOSTNAME[:PORT]             Set the defuult session host nnd udp port\n"
           "                                         Default: localhost:161\n"
           "  -v, --snmp-version [2c|1]              Set the default SNMP version\n"
-          "                                         Default: localhost:161\n"
+          "                                         Default: 2c\n"
           "  -c, --community STRING                 Sst the default community string\n"
           "                                         Default: public\n"
           "  -C, --context STRING                   Set the default v2c/v3 context\n"
