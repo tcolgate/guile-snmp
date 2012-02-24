@@ -314,7 +314,7 @@
 
 (define-class-wrapped-struct snmp-session community peername version context timeout retries) 
 (define-class-wrapped-struct snmp-single-session)
-(define-class-wrapped-struct pdu errstat variables)
+(define-class-wrapped-struct pdu errstat variables non-repeaters max-repetitions)
 (define-class-wrapped-struct pdu-variable name type value)
 
 (re-export init-mib)

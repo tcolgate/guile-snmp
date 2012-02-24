@@ -538,6 +538,44 @@ _wrap_pdu_variables_get (SCM s_0)
   return res;
 }
 
+#undef non_repeaters
+static SCM
+_wrap_pdu_non_repeaters_get (SCM s_0)
+{
+  netsnmp_pdu *p = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
+  scm_remember_upto_here_1(s_0);
+  return scm_from_long(p->errstat);
+}
+
+static SCM
+_wrap_pdu_non_repeaters_set (SCM s_0, SCM s_1)
+{
+  netsnmp_pdu *p = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
+  p->errstat = scm_to_long(s_1);
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  return SCM_UNSPECIFIED;
+}
+
+#undef max_repeaters
+static SCM
+_wrap_pdu_max_repetitions_get (SCM s_0)
+{
+  netsnmp_pdu *p = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
+  scm_remember_upto_here_1(s_0);
+  return scm_from_long(p->errindex);
+}
+
+static SCM
+_wrap_pdu_max_repetitions_set (SCM s_0, SCM s_1)
+{
+  netsnmp_pdu *p = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
+  p->errindex = scm_to_long(s_1);
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  return SCM_UNSPECIFIED;
+}
+
 /*
  * Wrap struct variable_list
  */
@@ -705,6 +743,8 @@ static void init_snmp_wrap_structs(void)
 
   DEFINE_SLOT_READONLY("pdu" , pdu , "errstat" ,errstat)
   DEFINE_SLOT_READONLY("pdu" , pdu , "variables" ,variables)
+  DEFINE_SLOT_READWRITE("pdu" , pdu , "non-repeaters" ,non_repeaters)
+  DEFINE_SLOT_READWRITE("pdu" , pdu , "max-repetitions" ,max_repetitions)
   scm_c_define_gsubr ("initialize-pdu", 2, 0, 0, _wrap_initialize_pdu);
   scm_c_export("initialize-pdu" , NULL);
 

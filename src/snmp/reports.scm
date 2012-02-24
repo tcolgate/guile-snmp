@@ -22,7 +22,8 @@
   #:export (
     use-mibs
     reports:autotranslate <snmp-reports-result> oid-list walk
-    get getnext get-or-fail nextvar all walk-on-fail walk-func 
+    get getnext getbulk get-or-fail nextvar all walk-on-fail walk-func 
+    results
     set set-or-fail
     fail old-fail one-of iid oid type tag value rawvarbind
     make-varbind-func tag-varbinds split-varbinds 
@@ -119,7 +120,7 @@
   (slot-ref var 'rawvarbind))
 
 (define-class <snmp-reports-result-set> (<applicable-struct>)
-  (results #:init-value '() #:init-keyword #:results))
+  (results #:init-value '() #:init-keyword #:results #:accessor results))
 
 (define-method (initialize (result-set <snmp-reports-result-set>) initargs)
   (let ((results (get-keyword #:results initargs '())))
@@ -276,6 +277,10 @@
     (let ((qrs (if (equal? cms '())
                  '() ; Don't do anything if we have nothing to do
                  (let ((newpdu (snmp-pdu-create querytype)))
+		   (if (eq? SNMP-MSG-GETBULK querytype)
+		     (begin 
+		       (set! (non-repeaters newpdu) 0)
+		       (set! (max-repetitions newpdu) 10)))
                    (let addoids ((qs cms))
                      (if (not (eq? qs '()))
                        (begin
@@ -301,6 +306,11 @@
 (define (getnext . oid-terms)
   (tag-varbinds
     (synch-query SNMP-MSG-GETNEXT oid-terms)
+    oid-terms))
+
+(define (getbulk nrs rs . oid-terms)
+  (tag-varbinds
+    (synch-query SNMP-MSG-GETBULK oid-terms)
     oid-terms))
 
 (define (synch-set oid-value-pairs)
