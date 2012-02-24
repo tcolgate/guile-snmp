@@ -91,6 +91,7 @@
     oid->list 
     empty-oidvec)
 
+  ; TODO: This needs to track the library version really
   (load-extension "libguile_snmp_net-snmp" "scm_init_snmp_net_snmp_module"))
 
 (use-modules (oop goops))
