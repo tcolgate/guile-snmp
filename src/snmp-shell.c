@@ -24,25 +24,60 @@
 
 #include "config.h"
 
-void
-display_help()
+static void
+print_help(void)
 {
-  exit(0);
+  printf( "Usage: snmp-shell [OPTION] ... [FILE]\n" 
+          "A Guile Scheme based SNMP reporting environment\n"
+          "Part of %s\n"
+          "Mandatory arguments to long options are mandatory for short options too.\n"
+          "\n"
+          "  -H, --help                             Print this help message\n"
+          "  -V, --version                          Print the version of snmp-shell\n"
+          "  -e, --eval EXP                         Evaluate this expression and exit\n"
+          "  -s, --script FILE                      Run this file as a script and exit\n"
+          " \n"
+          "  If no script or expression are given, and interactive shell is run\n"
+          " \n"
+          "Default SNMP session prameters\n" 
+          "  -h, --host HOSTNAME[:PORT]             Set the defuult session host nnd udp port\n"
+          "                                         Default: localhost:161\n"
+          "  -v, --snmp-version [2c|1]              Set the default SNMP version\n"
+          "                                         Default: localhost:161\n"
+          "  -c, --community STRING                 Sst the default community string\n"
+          "                                         Default: public\n"
+          "  -C, --context STRING                   Set the default v2c/v3 context\n"
+          "                                         Default: (none)\n"
+          "Default MIB parsing options\n" 
+          " \n"
+          "  -D, --mib-descriptions                 Load and keep MIB textual descriptions when\n"
+          "                                         reading MIBs. This can use large amounts of memory\n"
+          , PACKAGE_STRING);
 };
 
-int help_flag = 0;
+static void
+print_version(void)
+{
+  printf( "snmp-shell from %s\n", PACKAGE_STRING);
+};
+
+int opt_help = 0;
+int opt_version = 0;
 char* opt_defversion = "2c";
 char* opt_defcommunity = "public";
 char* opt_defcontext = "";
 char* opt_defhost = "localhost";
 char* opt_script = NULL;
 char* opt_eval = NULL;
+int opt_mibdesc = 0;
 
 static void
 snmp_shell_module (void* arguments)
 {
   scm_c_use_module("oop goops");
-  scm_c_eval_string("(set-module-duplicates-handlers! (current-module) (list (module-ref duplicate-handlers 'merge-generics)))");
+  scm_c_eval_string("(set-module-duplicates-handlers! "
+                      "(current-module)"
+                      "(list (module-ref duplicate-handlers 'merge-generics)))");
   scm_c_use_module("ice-9 format");
   scm_c_use_module("ice-9 threads");
   scm_c_use_module("ice-9 getopt-long");
@@ -78,10 +113,6 @@ snmp_shell_module (void* arguments)
   scm_c_use_module("snmp reports session");
 
   scm_c_eval_string("(init-reports)");
-
-  if(0 != help_flag){
-    display_help();
-  };
 
   if(NULL != opt_defcommunity){
     scm_apply_1(
@@ -142,12 +173,12 @@ snmp_shell_module (void* arguments)
   };
 
   if(NULL == opt_script && NULL == opt_eval){
-    //scm_c_eval_string("(start-repl #:welcome #f)");
     scm_c_eval_string("(start-repl 'scheme)");
   };
 
   return;
 }
+
 
 static void
 inner_main (void *closure, int argc, char **argv)
@@ -157,14 +188,15 @@ inner_main (void *closure, int argc, char **argv)
   while(1){
     int option_index = 0;
     static struct option long_options[] = {
-      {"version"      ,no_argument       ,&help_flag ,  1},
-      {"help"         ,no_argument       ,&help_flag ,  1},
-      {"snmp-version" ,required_argument ,0             ,'v'},
-      {"host"         ,required_argument ,0             ,'h'},
-      {"community"    ,required_argument ,0             ,'c'},
-      {"context"      ,required_argument ,0             ,'C'},
-      {"eval"         ,required_argument ,0             ,'e'},
-      {"script"       ,required_argument ,0             ,'s'},
+      {"help"                   ,no_argument       ,&opt_help     ,1},
+      {"version"                ,no_argument       ,&opt_version  ,1},
+      {"eval"                   ,required_argument ,0             ,'e'},
+      {"script"                 ,required_argument ,0             ,'s'},
+      {"host"                   ,required_argument ,0             ,'h'},
+      {"snmp-version"           ,required_argument ,0             ,'v'},
+      {"community"              ,required_argument ,0             ,'c'},
+      {"context"                ,required_argument ,0             ,'C'},
+      {"mib-descriptions"       ,no_argument       ,&opt_mibdesc  ,1},
       {0, 0, 0, 0}
     }; 
     c = getopt_long (argc,argv,"VHv:h:c:C:e:s:",long_options, &option_index);
@@ -177,7 +209,7 @@ inner_main (void *closure, int argc, char **argv)
 
       case 'V':
       case 'H':
-        help_flag = 1;
+	opt_help=1;
         break;
 
       case 'v':
@@ -204,11 +236,25 @@ inner_main (void *closure, int argc, char **argv)
         opt_script = optarg;
         break;
 
+      case 'D':
+	opt_mibdesc=1;
+        break;
+
       default: 
         abort();
     };
   };
-  
+ 
+  if (opt_help){
+    print_help();
+    exit(0);
+  };
+
+  if (opt_version){ 
+    print_version();
+    exit(0);
+  };
+
   if (optind < argc){
     while (optind < argc){
       scriptargs = scm_append(
