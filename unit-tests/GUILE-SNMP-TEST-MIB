@@ -145,5 +145,43 @@ gstTabBData OBJECT-TYPE
 		"Test tableB entry data"
 	::= { gstTabBEntry 3 }
 
+gstLargeTableTable  OBJECT-TYPE
+	SYNTAX      SEQUENCE OF GstLargeTableEntry
+	MAX-ACCESS  not-accessible
+	STATUS      current
+	DESCRIPTION
+		"A test table with a single integer index"
+	::= { gstMibObjects 7 }
+
+gstLargeTableEntry  OBJECT-TYPE
+	SYNTAX	GstLargeTableEntry
+	MAX-ACCESS  not-accessible
+	STATUS      current
+	DESCRIPTION
+		"A test table"
+	INDEX	{ gstLargeTableIndex }
+	::= { gstLargeTableTable 1 }
+
+GstLargeTableEntry ::= SEQUENCE {
+		gstLargeTableIndex   Integer32,
+		gstLargeTableData    DisplayString,
+	}
+
+gstLargeTableIndex  OBJECT-TYPE
+	SYNTAX	Integer32 (0..32)
+	MAX-ACCESS  read-only
+	STATUS      current
+	DESCRIPTION
+		"A test LargeTable entry index"
+	::= { gstLargeTableEntry 1 }
+
+gstLargeTableData  OBJECT-TYPE
+	SYNTAX	DisplayString
+	MAX-ACCESS  read-only
+	STATUS      current
+	DESCRIPTION
+		"Test LargeTable entry data"
+	::= { gstLargeTableEntry 2 }
+
 END
 
