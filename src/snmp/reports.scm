@@ -21,9 +21,9 @@
 ;  #:re-export-syntax (session default-session)
   #:export (
     use-mibs
-    reports:autotranslate <snmp-reports-result> oid-list walk
+    reports:autotranslate <snmp-reports-result> oid-list walk bulk-walk
     get getnext getbulk get-or-fail nextvar all walk-on-fail walk-func 
-    results
+    bulk-walk-func results
     set set-or-fail
     fail old-fail one-of iid oid type tag value rawvarbind
     make-varbind-func tag-varbinds split-varbinds 
@@ -384,9 +384,57 @@
               cleanresults)))
         (throw 'walkend '())))))
 
+; This is the basic walk function and returns an iterator which returns a new element
+; each time it is called.
+; TODO: This needs collapsing into walk as an option
+(define (bulk-walk-func baseoid)
+  (let ((curroid   baseoid)
+        (currbase  baseoid)
+	(prevres  '()))
+    (lambda()
+      (if (equal? '() prevres)
+	(if (not (equal? curroid #f))
+	  (let* ((results      (synch-query SNMP-MSG-GETNEXT (list curroid)))
+		 (tresults     (tag-varbinds
+				 results 
+				 (make-list (length (slot-ref results 'results)) baseoid)))
+		 (cleanresults (filter-valid-next results)))
+	    (if (equal? (slot-ref  cleanresults 'results) '())
+	      (throw 'walkend '())
+	      (begin
+		(set! curroid (slot-ref (cdr (car (slot-ref cleanresults 'results))) 'oid))
+		(set! currbase (slot-ref (cdr (car (slot-ref cleanresults 'results))) 'base))
+		; We want to divide this individual result set into lots of seperate ones
+		; we can dish out one by one
+		(let ((supset (map 
+				(lambda (r)
+				  (make <snmp-reports-result-set> #:results (list r)))
+				(slot-ref  cleanresults 'results))))
+		  (set! prevres (cdr supset))
+		  (car supset)))))
+	  (throw 'walkend '()))
+	(let ((rem (cdr prevres))
+	      (val (car prevres)))
+	   (set! prevres rem)
+	   val)))))
+
 ; This is the simplest walk to use, returning all results in a list
 (define (walk baseoid)
   (let ((val  (walk-func baseoid)))
+    (let loop ((result '())
+               (finished #f))
+      (catch 'walkend
+        (lambda() (set! result (append result (list (val)))))
+        (lambda(ex . args)
+          (set! finished #t)))
+      (if finished
+        result
+        (loop result finished)))))
+
+; This is the simplest bulk walk to use, returning all results in a list
+; TODO: This needs collapsing into walk as an option
+(define (bulk-walk baseoid)
+  (let ((val  (bulk-walk-func baseoid)))
     (let loop ((result '())
                (finished #f))
       (catch 'walkend
