@@ -1,0 +1,62 @@
+%define ver          @VERSION@
+%define rel          1
+%define prefix       /usr
+%define home_page    @PACKAGE_URL@
+%define docprefix    %{prefix}/share
+
+Name: @PACKAGE@
+Summary: A guile binding for net-snmp
+Version: %{ver}
+Release: %{rel}
+URL: %{home_page}
+Source0: @PACKAGE_TARNAME@-%{version}.tar.gz
+License: GPLv3
+Group: Applications/System
+BuildRoot: %{_tmppath}/%{name}-root
+
+%description
+
+Guile SNMP is a wrapper for the Net-SNMP libraries. it is intended
+to provide a basic wrapper for direct use of the Net-SNMP libraries
+from Guile and an easy to use dialect of Scheme targeted at easier
+SNMP reporting.
+
+%prep
+%setup -q -n %{name}-%{version}
+
+%build
+[ ! -r configure ] && ./autogen.sh
+%configure --disable-static --disable-rpath
+sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+
+make
+
+%install
+rm -rf ${RPM_BUILD_ROOT}
+make DESTDIR=$RPM_BUILD_ROOT install-strip
+
+%clean
+rm -rf ${RPM_BUILD_ROOT}
+
+%files
+%defattr(-,root,root)
+%doc ChangeLog COPYING README
+%doc doc/*
+%{_bindir}/*
+%{_libdir}/*
+%{_prefix}/share/* 
+%{_mandir}/man1/*
+
+%post -p /sbin/ldconfig
+
+%postun -p /sbin/ldconfig
+
+%changelog
+* Sat Feb 25 2012 Tristan Colgate <tcolgate@gmail.com> 0.2.2-1
+  - Atuomatically include some of the version information from configure
+  - Resolve some rpmlint complaints
+
+* Fri Mar 2 2011 Tristan Colgate <tcolgate@gmail.com> 0.1-1
+  - Shamelessly stolen from swig since it's a very simple and elegant
+    spec file.

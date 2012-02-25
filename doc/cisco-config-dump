@@ -1,4 +1,4 @@
-#!/usr/local/bin/snmp-shell -s
+#!/usr/bin/snmp-shell -s
 !#
 ;;-------------------------------------------------------------------
 ;; Copyright (C) 2009-2012 Tristan Colgate 

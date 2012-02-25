@@ -2,9 +2,12 @@
 # Process this file with autoconf to produce a configure script.
 
 #AC_PREREQ(2.63)
-AC_INIT([guile-snmp],[0.2.2],[tcolgate@gmail.com])
-#AC_CONFIG_MACRO_DIR([m4/])
+AC_INIT([Guile SNMP],[0.2.2],[tcolgate <at> gmail.com],[guile-snmp],[http://github.com/tcolgate/guile-snmp])
 AC_CONFIG_MACRO_DIR([m4])
+AC_SUBST(PACKAGE_TARNAME)
+AC_SUBST(PACKAGE)
+AC_SUBST(PACKAGE_URL)
+AC_SUBST(PACKAGE_BUGREPORT)
 
 # Checks for programs.
 AC_PROG_CC
@@ -48,5 +51,6 @@ AC_CHECK_SIZEOF([oid],,[#include <net-snmp/net-snmp-config.h>
 AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile unit-tests/Makefile])
 AC_CONFIG_FILES([test-environ], [chmod +x test-environ])
 AC_CONFIG_FILES([build-environ], [chmod +x build-environ])
+AC_CONFIG_FILES([guile-snmp.spec])
 AC_OUTPUT
 

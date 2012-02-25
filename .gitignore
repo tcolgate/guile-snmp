@@ -36,5 +36,6 @@ src/snmp_client.h
 acinclude.m4
 src/snmp-shell
 unit-tests/.test-agent-pid
+src/snmp-shell.1
 /m4/
 

@@ -2,7 +2,7 @@ lib_LTLIBRARIES=libguile_snmp_net-snmp.la
 
 libguile_snmp_net_snmp_la_CFLAGS=@GUILE_CFLAGS@ 
 libguile_snmp_net_snmp_la_SOURCES=net-snmp_wrap.c net-snmp_wrap_oid.h net-snmp_wrap_constants.h net-snmp_wrap_structs.h net-snmp_wrap_funcs.h
-libguile_snmp_net_snmp_la_LDFLAGS=-version-info 2:0:0 @GUILE_LDFLAGS@ -module @NETSNMP_LDFLAGS@ @NETSNMPAGENT_LDFLAGS@
+libguile_snmp_net_snmp_la_LDFLAGS=-version-info 0:2:0 @GUILE_LDFLAGS@ -module @NETSNMP_LDFLAGS@ @NETSNMPAGENT_LDFLAGS@
 
 SCHEMESOURCES=snmp/net-snmp.scm\
               snmp/reports.scm\
@@ -36,8 +36,12 @@ guilereports_DATA = $(SCHEMESOURCES2) $(GOBJECTS2)
 
 bin_PROGRAMS = snmp-shell
 
+man_MANS = snmp-shell.1
+snmp-shell.1: ../src/snmp-shell
+	help2man -o snmp-shell.1 $<; 
+CLEANFILES=snmp-shell.1
+
 snmp_shell_SOURCES=snmp-shell.c
 snmp_shell_CFLAGS = $(GUILE_CFLAGS) $(AM_CFLAGS)
 snmp_shell_LDFLAGS = $(GUILE_LDFLAGS)
-
 

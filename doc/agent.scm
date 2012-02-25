@@ -1,4 +1,4 @@
-#!/usr/local/bin/snmp-shell
+#!/usr/bin/snmp-shell
 !#
 
 (let ((tds (netsnmp-create-table-data-set "stuff")))
