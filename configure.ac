@@ -48,9 +48,10 @@ AC_CHECK_SIZEOF([oid],,[#include <net-snmp/net-snmp-config.h>
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile unit-tests/Makefile])
+AC_CONFIG_FILES([Makefile doc/Makefile src/Makefile unit-tests/Makefile meta/Makefile])
 AC_CONFIG_FILES([test-environ], [chmod +x test-environ])
 AC_CONFIG_FILES([build-environ], [chmod +x build-environ])
+AC_CONFIG_FILES([meta/snmp-shell], [chmod +x meta/snmp-shell])
 AC_CONFIG_FILES([guile-snmp.spec])
 AC_OUTPUT
 

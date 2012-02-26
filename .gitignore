@@ -37,5 +37,7 @@ acinclude.m4
 src/snmp-shell
 unit-tests/.test-agent-pid
 src/snmp-shell.1
-/m4/
+m4/
+guile-snmp.spec
+meta/snmp-shell
 

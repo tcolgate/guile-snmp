@@ -1,0 +1,4 @@
+#!/bin/sh
+
+exec @top_builddir@/build-environ @top_builddir@/src/snmp-shell $*
+

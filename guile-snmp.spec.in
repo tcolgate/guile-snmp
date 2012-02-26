@@ -13,6 +13,9 @@ Source0: @PACKAGE_TARNAME@-%{version}.tar.gz
 License: GPLv3
 Group: Applications/System
 BuildRoot: %{_tmppath}/%{name}-root
+Requires: guile
+BuildRequires: guile-devel
+BuildRequires: net-snmp-devel
 
 %description
 
@@ -43,10 +46,11 @@ rm -rf ${RPM_BUILD_ROOT}
 %defattr(-,root,root)
 %doc ChangeLog COPYING README
 %doc doc/*
+%dir %{_prefix}/share/guile/site/2.0/snmp
+%{_prefix}/share/guile/site/2.0/snmp/*
 %{_bindir}/*
 %{_libdir}/*
-%{_prefix}/share/* 
-%{_mandir}/man1/*
+%{_mandir}/man1/snmp-shell.1*
 
 %post -p /sbin/ldconfig
 
