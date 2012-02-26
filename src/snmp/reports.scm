@@ -17,14 +17,13 @@
   #:use-module (snmp oids)
   #:use-module (snmp reports session)
   #:use-module (snmp reports cache)
-  #:export-syntax (init-reports set build-one build-set)
+  #:export-syntax (init-reports getbulk set build-one build-set)
 ;  #:re-export-syntax (session default-session)
   #:export (
     use-mibs
     reports:autotranslate <snmp-reports-result> oid-list walk bulk-walk
     get getnext getbulk get-or-fail nextvar all walk-on-fail walk-func 
-    bulk-walk-func results
-    set set-or-fail
+    default-getbulk-repetitions bulk-walk-func results
     fail old-fail one-of iid oid type tag value rawvarbind
     make-varbind-func tag-varbinds split-varbinds 
     filter-valid-next reach-each
@@ -254,7 +253,7 @@
 	
 
 ; Perform an synchronous SNMP query
-(define (synch-query querytype oids)
+(define* (synch-query querytype oids #:key (nrs 0) (reps 10))
   (if (debug-reports) (format (current-error-port) 
                                "Attempting to perform a ~a for ~a from host ~a using ~a ~%"
                               querytype
@@ -279,8 +278,8 @@
                  (let ((newpdu (snmp-pdu-create querytype)))
 		   (if (eq? SNMP-MSG-GETBULK querytype)
 		     (begin 
-		       (set! (non-repeaters newpdu) 0)
-		       (set! (max-repetitions newpdu) 10)))
+		       (set! (non-repeaters newpdu) nrs)
+		       (set! (max-repetitions newpdu) reps)))
                    (let addoids ((qs cms))
                      (if (not (eq? qs '()))
                        (begin
@@ -308,10 +307,20 @@
     (synch-query SNMP-MSG-GETNEXT oid-terms)
     oid-terms))
 
-(define (getbulk nrs rs . oid-terms)
-  (tag-varbinds
-    (synch-query SNMP-MSG-GETBULK oid-terms)
-    oid-terms))
+(define default-getbulk-repetitions 10)
+(define-syntax getbulk 
+  (syntax-rules ()
+                ((_ (oids-rep ...))
+                 (getbulk () default-getbulk-repetitions (oids-rep ...)))
+                ((_ (oids-once ...) (oids-rep ...))
+                 (getbulk (oids-once ...) default-getbulk-repetitions (oids-rep ...))) 
+                ((_ (oids-once ...) n (oids-rep ...))
+                 (let* ((getonce (list oids-once ...))
+                        (getreps (list oids-rep ...))
+                        (oid-terms (append getonce getreps)))
+                   (tag-varbinds
+                     (synch-query SNMP-MSG-GETBULK oid-terms #:nrs (length getonce) #:reps n)
+                     oid-terms)))))
 
 (define (synch-set oid-value-pairs)
   (if (equal? oid-value-pairs '())
@@ -387,14 +396,14 @@
 ; This is the basic walk function and returns an iterator which returns a new element
 ; each time it is called.
 ; TODO: This needs collapsing into walk as an option
-(define (bulk-walk-func baseoid)
+(define* (bulk-walk-func baseoid #:key (reps 10))
   (let ((curroid   baseoid)
         (currbase  baseoid)
 	(prevres  '()))
     (lambda()
       (if (equal? '() prevres)
 	(if (not (equal? curroid #f))
-	  (let* ((results      (synch-query SNMP-MSG-GETBULK(list curroid)))
+	  (let* ((results      (synch-query SNMP-MSG-GETBULK(list curroid) #:reps reps))
 		 (tresults     (tag-varbinds
 				 results 
 				 (make-list (length (slot-ref results 'results)) baseoid)))
