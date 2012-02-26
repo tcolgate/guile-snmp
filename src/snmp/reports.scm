@@ -298,11 +298,13 @@
        (make <snmp-reports-result-set> #:results (append crs qrs)))))
 
 (define (get . oid-terms)
+  "A gett is performaned for each oid in the list"
   (tag-varbinds
     (synch-query SNMP-MSG-GET oid-terms)
     oid-terms))
 
 (define (getnext . oid-terms)
+  "A getnext is performaned for each oid in the list"
   (tag-varbinds
     (synch-query SNMP-MSG-GETNEXT oid-terms)
     oid-terms))
@@ -310,6 +312,10 @@
 (define default-getbulk-repetitions 10)
 (define-syntax getbulk 
   (syntax-rules ()
+  "Performan an getbulk request. Several different forms of this request exist.
+     (getbulk (oids ...)): A getnext is executed for each OID. This is repeated default-getbulk-repetitions times.
+     (getbulk (oids1 ...) (oids2 ...)): OIDs in oids1 list are only fetched once, oid2 are repeated
+     (getbulk (oids1 ...) N (oids2 ...)): OIDs in oids1 list are only fetched once, oid2 are repeated N times"
                 ((_ (oids-rep ...))
                  (getbulk () default-getbulk-repetitions (oids-rep ...)))
                 ((_ (oids-once ...) (oids-rep ...))
@@ -356,6 +362,9 @@
 
 (define-syntax set
   (syntax-rules ()
+  "Performan a Set request. Each variable to be set must be given, with a corresponding value and options type:
+     (set ((sysName.0 \"billy\")
+           (sysLocation.0 (ASN-OCTET-STR \"My House\"))))"
     ((set (name1 val1)  ... )
      (synch-set (build-set (name1 val1) ... )))))
 

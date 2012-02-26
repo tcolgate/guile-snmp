@@ -32,6 +32,7 @@
 (define current-timeout (make-parameter 1000000))
 
 (define (new-snmp-session)
+  "Create a new snmp session using the current session defauts options"
   (let* ((bs (make <snmp-session>)))
     (slot-set! bs 'version (current-version))
     (slot-set! bs 'peername (current-host))
@@ -47,6 +48,7 @@
 
 (define-syntax default-session
   (lambda(stx)
+    "Adjust the global default session options"
     (let ((args (cdr (syntax->datum stx)))
           (handler (lambda* (#:key (host #f)
                                    (community #f)
@@ -79,6 +81,7 @@
 
 (define-syntax session
   (lambda(stx)
+    "Create a new snmp session."
     (let ((args (cdr (syntax->datum stx)))
           (handler (lambda* (#:key (host #f)
                                    (community #f)
