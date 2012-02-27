@@ -27,7 +27,8 @@
     fail old-fail one-of iid oid type tag value rawvarbind
     make-varbind-func tag-varbinds split-varbinds 
     filter-valid-next reach-each
-    enable-reports-debug disable-reports-debug)
+    enable-reports-debug disable-reports-debug
+    enable-query-aggregate disable-query-aggregate)
   #:re-export (
     current-session
     current-community
@@ -48,6 +49,15 @@
 (define debug-reports (make-parameter #f))
 (define (enable-reports-debug) (debug-reports #t)(display "Debugging enabled")(newline))
 (define (disable-reports-debug) (debug-reports #f)(display #t "Debugging disabled")(newline))
+
+(define query-aggregate (make-parameter #f))
+(define (enable-query-aggregate)
+  (if (not (query-cache-enabled))
+    (enable-query-cache))  
+  (display "Query aggregation enabled") (newline))
+
+(define (disable-query-aggregate)  (query-aggregate #f) (display #t "Query aggregation disabled") (newline))
+(define aggregate-records '())
 
 (define-syntax use-mibs
   (syntax-rules ()
@@ -121,11 +131,38 @@
   (slot-ref var 'rawvarbind))
 
 (define-class <snmp-reports-result-set> (<applicable-struct>)
-  (results #:init-value '() #:init-keyword #:results #:accessor results))
+  (_results #:init-value '())
+  (_delay_query #:init-value #f)
+  (results 
+    #:slot-ref (lambda(this) (let ((r (slot-ref this '_results))) 
+                               (if (promise? r) 
+                                 (force r)
+                                 r)))
+    #:slot-set! (lambda(this val)(slot-set! this '_results val))
+    #:init-keyword #:results 
+    #:allocation #:virtual
+    #:accessor results))
 
 (define-method (initialize (result-set <snmp-reports-result-set>) initargs)
-  (let ((results (get-keyword #:results initargs '())))
+  (let ((results (get-keyword #:results initargs '()))
+        (query   (get-keyword #:query initargs #f))
+        (bases   (get-keyword #:bases initargs #f))
+        (nrs     (get-keyword #:nrs initargs 0))
+        (reps    (get-keyword #:reps initargs 10)))
     (next-method)
+    (if (not (eq? #f query)) 
+      (begin (slot-set! result-set '_results 
+                        (let* ((results      (synch-query (car query) (cdr query)  #:nrs nrs #:reps reps))
+                               (tresults     (tag-varbinds
+                                               results 
+                                               (if (eq? bases #f) 
+                                                 (if (eq? (car query) SNMP-MSG-GETBULK)
+                                                   (make-list (length results) (cadr query))
+                                                   (cdr query)) 
+                                                 bases)))) 
+                          tresults)))
+      (slot-set! result-set 'results results))
+    (set! results (slot-ref result-set 'results))
     (slot-set!  result-set 'procedure
       (lambda( . msg)
         (if (not (null? results))
@@ -205,10 +242,8 @@
         (cons (slot-ref newvar 'oid)  newvar)))
     input))
 
-(define-generic filter-valid-next)
-
-(define-method (filter-valid-next (results <snmp-reports-result-set>))
-  (make <snmp-reports-result-set> #:results (filter
+(define (filter-valid-next results)
+  (filter
     (lambda(thisres)   
       (cond
         ((equal? (slot-ref (cdr thisres) 'type) SNMP-ENDOFMIBVIEW)
@@ -220,12 +255,8 @@
         ((null? (slot-ref (cdr thisres) 'base)) 
           #f)
         (#t #t)))
-    (slot-ref results 'results))))
+    results))
 
-(define-method (filter-valid-next any)
-  ; Dump some error
-  )
- 
 ;; Given a varbind list and the oids requested that
 ;; generated it. return a copy with each result tagged
 ;; with the based oid and compute the iid.
@@ -233,9 +264,8 @@
 ;; find the most specific match.
 ;; Currently assumes an ordered list
 ;;
-(define-generic tag-varbinds)
-(define-method (tag-varbinds (data <snmp-reports-result-set>) bases)
-  (let ((result (copy-tree (slot-ref data 'results))))
+(define (tag-varbinds data bases)
+  (let ((result (copy-tree data)))
     (for-each
       (lambda(varitem baseitem)
         (if (equal? (netsnmp-oid-is-subtree baseitem (slot-ref (cdr varitem) 'oid)) 0)
@@ -250,9 +280,7 @@
             (slot-set! (cdr varitem) 'base '())
             (slot-set! (cdr varitem) 'iid empty-oidvec))))
       result bases)
-    (make <snmp-reports-result-set> #:results result)))
-
-	
+    result))
 
 ; Perform an synchronous SNMP query
 (define* (synch-query querytype oids #:key (nrs 0) (reps 10))
@@ -299,19 +327,15 @@
            (lambda(cm qr)
              (query-cache-insert querytype cm qr nrs reps))
            (reverse cms) qrs))
-       (make <snmp-reports-result-set> #:results (append crs qrs)))))
+       (append crs qrs))))
 
 (define (get . oid-terms)
   "A gett is performaned for each oid in the list"
-  (tag-varbinds
-    (synch-query SNMP-MSG-GET oid-terms)
-    oid-terms))
+  (make <snmp-reports-result-set> #:query (cons SNMP-MSG-GET oid-terms)))
 
 (define (getnext . oid-terms)
   "A getnext is performaned for each oid in the list"
-  (tag-varbinds
-    (synch-query SNMP-MSG-GETNEXT oid-terms)
-    oid-terms))
+  (make <snmp-reports-result-set> #:query (cons SNMP-MSG-GETNEXT oid-terms)))
 
 (define default-getbulk-repetitions 10)
 (define-syntax getbulk 
@@ -328,9 +352,9 @@
                  (let* ((getonce (list oids-once ...))
                         (getreps (list oids-rep ...))
                         (oid-terms (append getonce getreps)))
-                   (tag-varbinds
-                     (synch-query SNMP-MSG-GETBULK oid-terms #:nrs (length getonce) #:reps n)
-                     oid-terms)))))
+                   (make <snmp-reports-result-set> 
+                         #:query (cons SNMP-MSG-GETBULK oid-terms) 
+                                       #:nrs (length getonce) #:reps n )))))
 
 (define (synch-set oid-value-pairs)
   (if (equal? oid-value-pairs '())
@@ -394,16 +418,17 @@
         (currbase  baseoid))
     (lambda()
       (if (not (equal? curroid #f))
-        (let* ((results      (tag-varbinds
-                               (synch-query SNMP-MSG-GETNEXT (list curroid))
-                               (list currbase)))
-               (cleanresults (filter-valid-next results)))
-          (if (equal? (slot-ref  cleanresults 'results) '())
+        (let*((res          (make <snmp-reports-result-set> 
+                                   #:query (cons SNMP-MSG-GETNEXT (list curroid))
+                                   #:bases (list currbase)))
+               (cleanres     (make <snmp-reports-result-set> 
+                                   #:results (filter-valid-next (slot-ref res 'results))))) 
+          (if (equal? (slot-ref  cleanres 'results) '())
             (throw 'walkend '())
             (begin
-              (set! curroid (slot-ref (cdr (car (slot-ref cleanresults 'results))) 'oid))
-              (set! currbase (slot-ref (cdr (car (slot-ref cleanresults 'results))) 'base))
-              cleanresults)))
+              (set! curroid (slot-ref (cdr (car (slot-ref cleanres 'results))) 'oid))
+              (set! currbase (slot-ref (cdr (car (slot-ref cleanres 'results))) 'base))
+              cleanres)))
         (throw 'walkend '())))))
 
 ; This is the basic walk function and returns an iterator which returns a new element
@@ -416,22 +441,21 @@
     (lambda()
       (if (equal? '() prevres)
 	(if (not (equal? curroid #f))
-	  (let* ((results      (synch-query SNMP-MSG-GETBULK(list curroid) #:reps reps))
-		 (tresults     (tag-varbinds
-				 results 
-				 (make-list (length (slot-ref results 'results)) baseoid)))
-		 (cleanresults (filter-valid-next results)))
-	    (if (equal? (slot-ref  cleanresults 'results) '())
+	  (let* ((res          (make <snmp-reports-result-set> 
+                                   #:query (cons SNMP-MSG-GETBULK (list curroid))))
+                 (cleanres     (make <snmp-reports-result-set> 
+                                   #:results (filter-valid-next (slot-ref res 'results)))))
+	    (if (equal? (slot-ref  cleanres 'results) '())
 	      (throw 'walkend '())
 	      (begin
-		(set! curroid (slot-ref (cdr (car (slot-ref cleanresults 'results))) 'oid))
-		(set! currbase (slot-ref (cdr (car (slot-ref cleanresults 'results))) 'base))
+		(set! curroid (slot-ref (cdr (car (slot-ref cleanres 'results))) 'oid))
+		(set! currbase (slot-ref (cdr (car (slot-ref cleanres 'results))) 'base))
 		; We want to divide this individual result set into lots of seperate ones
 		; we can dish out one by one
 		(let ((supset (map 
 				(lambda (r)
 				  (make <snmp-reports-result-set> #:results (list r)))
-				(slot-ref  cleanresults 'results))))
+				(slot-ref  cleanres 'results))))
 		  (set! prevres (cdr supset))
 		  (car supset)))))
 	  (throw 'walkend '()))
