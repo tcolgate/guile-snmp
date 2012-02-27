@@ -26,12 +26,12 @@
   (assert-equal 'noSuchObject
                 (session #:host "127.0.0.1:10161" 
                   ((get (snmp-parse-oid "ifName.1"))))))
-;
+
 (define-method (test-get-error-noInstance (self <test-reports>))
   (assert-equal 'noSuchInstance
                 (session #:host "127.0.0.1:10161" 
                   ((get (+ (snmp-parse-oid "gstTabAData") 100))))))
-;
+
 (define-method (test-get-error-Timeout (self <test-reports>))
   (assert-equal #t
                 (session #:host "127.0.0.1:10163" 
@@ -40,24 +40,29 @@
                       (lambda()((get (snmp-parse-oid "gstEndMib"))))
                       (lambda(x . args)(set! errstring  #t)))
                     errstring)))) 
-;
+
 (define-method (test-getnext-error-endOfMibView (self <test-reports>))
   (assert-equal 'endOfMibView
                 (session #:host "127.0.0.1:10161" 
                   ((getnext (+ (snmp-parse-oid "gstEndMib") 1))))))
-;
-;
+
 (define-method (test-get-multiple (self <test-reports>))
   (assert-equal (list "Guile-SNMP test string" 499)
                 (session #:host "127.0.0.1:10161" 
                   (let ((vals (get (snmp-parse-oid "gstTestString.0") (snmp-parse-oid "gstTestInt32.0"))))
                     (list (vals (snmp-parse-oid "gstTestString.0")) 
                           (vals (snmp-parse-oid "gstTestInt32.0")))))))
-;
+
 (define-method (test-getnext (self <test-reports>))
   (assert-equal "Guile-SNMP test string"
                 (session #:host "127.0.0.1:10161" 
                   ((getnext (snmp-parse-oid "gstTestString"))))))
+
+(define-method (test-getnext-multiple (self <test-reports>))
+  (assert-equal '("Guile-SNMP test string" 499)
+                (session #:host "127.0.0.1:10161" 
+                         (let ((res (getnext (snmp-parse-oid "gstTestString") (snmp-parse-oid "gstTestInt32"))))
+                           (map (lambda(x)(value res x)) (oidlist res))))))
 
 (define-method (test-walk-func (self <test-reports>))
   (assert-equal '(1 2)
@@ -82,6 +87,26 @@
                          (set! result (append result (list (val))))
                          (fail))
                        (lambda(ex . args) result))))))
+
+(define-method (test-getbulk (self <test-reports>))
+  (assert-equal '("LargeTable row 1" "LargeTable row 2" "LargeTable row 3" "LargeTable row 4" "LargeTable row 5")
+                (session #:host "127.0.0.1:10161" 
+                         (let ((res (getbulk () 5 ((snmp-parse-oid "gstLargeTableData")))))
+                           (map (lambda(x)(value res x)) (oidlist res))))))
+
+(define-method (test-bulkwalk-short (self <test-reports>))
+  (assert-equal '("LargeTable row 1" "LargeTable row 2" "LargeTable row 3" "LargeTable row 4" "LargeTable row 5"
+                  "LargeTable row 6" "LargeTable row 7" "LargeTable row 8" "LargeTable row 9" "LargeTable row 10"
+                  "LargeTable row 11" "LargeTable row 12" "LargeTable row 13" "LargeTable row 14" "LargeTable row 15")
+                (session #:host "127.0.0.1:10161" 
+                  (map (lambda(x)(value x)) (bulk-walk (snmp-parse-oid "gstLargeTableData"))))))
+
+(define-method (test-bulkwalk-long (self <test-reports>))
+  (assert-equal '("LargeTable row 1" "LargeTable row 2" "LargeTable row 3" "LargeTable row 4" "LargeTable row 5"
+                 "LargeTable row 6" "LargeTable row 7" "LargeTable row 8" "LargeTable row 9" "LargeTable row 10"
+                  "LargeTable row 11" "LargeTable row 12" "LargeTable row 13" "LargeTable row 14" "LargeTable row 15")
+                (session #:host "127.0.0.1:10161" 
+                  (map (lambda(x)(value x)) (bulk-walk (snmp-parse-oid "gstLargeTableData"))))))
 
 (define-method (test-set (self <test-reports>))
   (assert-equal #t

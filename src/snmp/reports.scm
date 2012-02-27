@@ -21,7 +21,7 @@
 ;  #:re-export-syntax (session default-session)
   #:export (
     use-mibs
-    reports:autotranslate <snmp-reports-result> oid-list walk bulk-walk
+    reports:autotranslate <snmp-reports-result> oidlist walk bulk-walk
     get getnext getbulk get-or-fail nextvar all walk-on-fail walk-func 
     default-getbulk-repetitions bulk-walk-func results
     fail old-fail one-of iid oid type tag value rawvarbind
@@ -212,6 +212,9 @@
   (format port "#<snmp-reports-result-set ~a: ~s ~@[~a~]>#" (this 'oid) (this 'value) (if (> (length (this 'oidlist)) 1) "..." #f)))
 
 ; Functions and macros for queries.
+
+(define-method  (oidlist (varset <snmp-reports-result-set>))
+  (varset 'oidlist))
 
 (define-method  (oid (varset <snmp-reports-result-set>))
   (varset 'oid))
