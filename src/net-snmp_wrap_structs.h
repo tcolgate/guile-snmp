@@ -1,3 +1,10 @@
+/*
+ * -------------------------------------------------------------------
+ *  Copyright (C) 2009-2012 Tristan Colgate
+ *
+ *  net-snmp_wrap_structs.h
+ * -------------------------------------------------------------------
+ */
 
 typedef size_t (*free_wrap_smob_f)(SCM);
 typedef SCM (*mark_wrap_smob_f)(SCM);

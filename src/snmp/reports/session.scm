@@ -1,5 +1,5 @@
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009,2010 Tristan Colgate 
+;; Copyright (C) 2009-2012 Tristan Colgate 
 ;;
 ;; session.scm - This file contains various bits of common state information
 ;; needed by other modules

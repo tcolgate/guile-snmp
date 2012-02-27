@@ -1,5 +1,5 @@
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009,2010 Tristan Colgate 
+;; Copyright (C) 2009-2012 Tristan Colgate 
 ;;
 ;; cache.scm - This file defines classes and utilities to maintain
 ;; a cache of snmp queries

@@ -1,3 +1,11 @@
+/*
+ * -------------------------------------------------------------------
+ *  Copyright (C) 2009-2012 Tristan Colgate
+ *
+ *  net-snmp_wrap_constants.h
+ * -------------------------------------------------------------------
+ */
+
 #define WRAP_CONSTANT(type, name) \
 static type wrap_const_ ## name = name ;
 

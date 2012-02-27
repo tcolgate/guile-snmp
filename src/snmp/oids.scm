@@ -1,5 +1,5 @@
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009,2010 Tristan Colgate 
+;; Copyright (C) 2009-2012 Tristan Colgate 
 ;;
 ;; oids.scm - This file defines classes and utilities to provide
 ;; oid manipulation and conversion fucntions.
