@@ -27,7 +27,7 @@
     fail old-fail one-of iid oid type tag value rawvarbind
     make-varbind-func tag-varbinds split-varbinds 
     filter-valid-next reach-each
-    debug-reports)
+    enable-reports-debug disable-reports-debug)
   #:re-export (
     current-session
     current-community
@@ -46,6 +46,8 @@
     format))
 
 (define debug-reports (make-parameter #f))
+(define (enable-reports-debug) (debug-reports #t)(display "Debugging enabled")(newline))
+(define (disable-reports-debug) (debug-reports #f)(display #t "Debugging disabled")(newline))
 
 (define-syntax use-mibs
   (syntax-rules ()
