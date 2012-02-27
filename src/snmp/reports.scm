@@ -51,12 +51,17 @@
 (define (disable-reports-debug) (debug-reports #f)(display #t "Debugging disabled")(newline))
 
 (define query-aggregate (make-parameter #f))
+
 (define (enable-query-aggregate)
   (if (not (query-cache-enabled))
-    (enable-query-cache))  
+    (enable-query-cache))
+  (query-aggregate #t)
   (display "Query aggregation enabled") (newline))
 
-(define (disable-query-aggregate)  (query-aggregate #f) (display #t "Query aggregation disabled") (newline))
+(define (disable-query-aggregate)  
+  (query-aggregate #f) 
+  (display #t "Query aggregation disabled") (newline))
+
 (define aggregate-records '())
 
 (define-syntax use-mibs
@@ -144,32 +149,38 @@
     #:accessor results))
 
 (define-method (initialize (result-set <snmp-reports-result-set>) initargs)
-  (let ((results (get-keyword #:results initargs '()))
-        (query   (get-keyword #:query initargs #f))
-        (bases   (get-keyword #:bases initargs #f))
-        (nrs     (get-keyword #:nrs initargs 0))
-        (reps    (get-keyword #:reps initargs 10)))
+  (let ((res        (get-keyword #:results initargs '()))
+        (query      (get-keyword #:query initargs #f))
+        (bases      (get-keyword #:bases initargs #f))
+        (nrs        (get-keyword #:nrs initargs 0))
+        (reps       (get-keyword #:reps initargs 10))
+        (will-delay (get-keyword #:reps initargs #f)))
     (next-method)
+
     (if (not (eq? #f query)) 
-      (begin (slot-set! result-set '_results 
-                        (let* ((results      (synch-query (car query) (cdr query)  #:nrs nrs #:reps reps))
-                               (tresults     (tag-varbinds
-                                               results 
-                                               (if (eq? bases #f) 
-                                                 (if (eq? (car query) SNMP-MSG-GETBULK)
-                                                   (make-list (length results) (cadr query))
-                                                   (cdr query)) 
-                                                 bases)))) 
-                          tresults)))
-      (slot-set! result-set 'results results))
-    (set! results (slot-ref result-set 'results))
+      (slot-set! result-set 'results
+        (delay 
+          (let* ((qres  (synch-query (car query) (cdr query)  #:nrs nrs #:reps reps))) 
+            (tag-varbinds
+              qres 
+              (let ((base (if (eq? bases #f) 
+                            (cdr query )
+                            bases)))
+                (if (eq? (car query) SNMP-MSG-GETBULK)
+                  (make-list (length qres) (car base))
+                  base))))))
+      (set! (results result-set) res))
+
+    (if (not (query-aggregate))
+      (results result-set))
+
     (slot-set!  result-set 'procedure
       (lambda( . msg)
-        (if (not (null? results))
+        (if (not (null? (results result-set)))
           (cond
-            ((eq? msg '()) (slot-ref (cdr (car results)) 'value))
+            ((eq? msg '()) (slot-ref (cdr (car (results result-set))) 'value))
             ((eq? <oid> (class-of (car msg)))
-              (let ((var (assoc (car msg) results)))
+              (let ((var (assoc (car msg) (results result-set))))
                 (if (not var)
                   (begin
                     (format #t "No such oid in result set~%") #f)
@@ -182,19 +193,21 @@
                     ((equal? (cdr msg) (list 'rawvarbind)) (slot-ref (cdr var) 'rawvarbind))
                     ((equal? (cdr msg) (list 'value))   (slot-ref (cdr var) 'value))
                     (#t (slot-ref (cdr var) 'value))))))
-            ((equal? (car msg) 'oidlist) (map car results))
-            ((equal? (car msg) 'oid)     (car (car results)))
-            ((equal? (car msg) 'tag)     (slot-ref (cdr (car results)) 'tag))
-            ((equal? (car msg) 'iid)     (slot-ref (cdr (car results)) 'iid))
-            ((equal? (car msg) 'type)    (slot-ref (cdr (car results)) 'type))
-            ((equal? (car msg) 'rawvarbind) (slot-ref (cdr (car results)) 'rawvarbind))
-            ((equal? (car msg) 'value)   (slot-ref (cdr (car results)) 'value))
-            (#t                          (slot-ref (cdr (car results)) 'value)))
-          #f)))))
+            ((equal? (car msg) 'oidlist) (map car (results result-set)))
+            ((equal? (car msg) 'oid)     (car (car (results result-set))))
+            ((equal? (car msg) 'tag)     (slot-ref (cdr (car (results result-set))) 'tag))
+            ((equal? (car msg) 'iid)     (slot-ref (cdr (car (results result-set))) 'iid))
+            ((equal? (car msg) 'type)    (slot-ref (cdr (car (results result-set))) 'type))
+            ((equal? (car msg) 'rawvarbind) (slot-ref (cdr (car (results result-set))) 'rawvarbind))
+            ((equal? (car msg) 'value)   (slot-ref (cdr (car (results result-set))) 'value))
+            (#t                          (slot-ref (cdr (car (results result-set))) 'value)))
+          #f))
+      )
+    ))
 
 (define-method (display (this <snmp-reports-result-set>) port)
   (format port "#<snmp-reports-result-set ~a: ~s ~@[~a~]>#" (this 'oid) (this 'value) (if (> (length (this 'oidlist)) 1) "..." #f)))
-
+;
 (define-method (write (this <snmp-reports-result-set>) port)
   (format port "#<snmp-reports-result-set ~a: ~s ~@[~a~]>#" (this 'oid) (this 'value) (if (> (length (this 'oidlist)) 1) "..." #f)))
 
@@ -442,7 +455,8 @@
       (if (equal? '() prevres)
 	(if (not (equal? curroid #f))
 	  (let* ((res          (make <snmp-reports-result-set> 
-                                   #:query (cons SNMP-MSG-GETBULK (list curroid))))
+                                   #:query (cons SNMP-MSG-GETBULK (list curroid)) 
+                                   #:bases (list currbase)))
                  (cleanres     (make <snmp-reports-result-set> 
                                    #:results (filter-valid-next (slot-ref res 'results)))))
 	    (if (equal? (slot-ref  cleanres 'results) '())
