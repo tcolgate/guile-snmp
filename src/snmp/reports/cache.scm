@@ -26,16 +26,18 @@
 
 ; Private cache interface
 ;
-(define (cache-key req oid)
+(define (cache-key req oid nrs reps)
   (with-output-to-string
     (lambda ()
-      (format #t "~a!~a!~a!~a!~a!~a"
+      (format #t "~a!~a!~a!~a!~a!~a!~a!~a"
         req
         (current-host)
         (current-version)
         (current-community)
         (current-context)
-        oid))))
+        oid
+        nrs
+        reps))))
 
 (define query-cache-enabled (make-parameter #t))
 (define report-query-cache  (make-hash-table 1024))
@@ -45,19 +47,21 @@
 (define (disable-query-cache) (query-cache-enabled #f))
 (define (clear-query-cache) (hash-clear! report-query-cache))
 
-(define (query-cache-lookup querytype oid)
-  (let ((rt (hash-ref report-query-cache (cache-key querytype oid))))
+(define (query-cache-lookup querytype oid nrs reps)
+  (let ((rt (hash-ref report-query-cache (cache-key querytype oid nrs reps))))
     (if (not rt)
       #f
       (acons (slot-ref rt 'oid) rt '()))))
 
-(define (query-cache-insert querytype oid answer)
+(define (query-cache-insert querytype oid answer nrs reps)
   (hash-set! report-query-cache 
-             (cache-key querytype oid)
+             (cache-key querytype oid nrs reps)
              (cdr answer)))
 
 (define (query-cache-statistics)
+  
+
   (format (current-output-port) ""))
 
 (define (dump-query-cache)
-  (pretty-print report-query-cache))
+  (hash-for-each (lambda(k v) (format #t "~a: ~a~%" k v)) report-query-cache))

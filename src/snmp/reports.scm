@@ -100,10 +100,10 @@
   (rawvarbind #:init-value #f #:getter rawvarbind))
 
 (define-method (display (this <snmp-reports-result>) port)
-  (format port "#<snmp-reports-result>"))
+  (format port "#<snmp-reports-result ~a: ~a>#" (slot-ref this 'oid) (slot-ref this 'value)))
 
 (define-method (write (this <snmp-reports-result>) port)
-  (format port "#<snmp-reports-result>#"))
+  (format port "#<snmp-reports-result ~a: ~a>#" (slot-ref this 'oid) (slot-ref this 'value)))
 
 (define-method  (oid (var <snmp-reports-result>))
   (slot-ref var 'oid))
@@ -264,8 +264,9 @@
         (cms (list))) ; records not in cache
     (for-each 
       (lambda(oid)
-        (let ((cr (if (query-cache-enabled)
-                    (query-cache-lookup querytype oid)
+        (let ((cr (if (and (query-cache-enabled)
+                           (not (eq? querytype SNMP-MSG-GETBULK))) 
+                    (query-cache-lookup querytype oid nrs reps)
                     #f)))
           (if (not cr)
             ; Cache miss
@@ -290,10 +291,11 @@
                       (throw 'snmperror (snmp-sess-error (current-session)))
                       (let ((results (slot-ref response 'variables)))
                         (split-varbinds results))))))))
-       (if (query-cache-enabled)
+       (if (and (query-cache-enabled)
+                (not (eq? querytype SNMP-MSG-GETBULK)))
          (for-each 
            (lambda(cm qr)
-             (query-cache-insert querytype cm qr))
+             (query-cache-insert querytype cm qr nrs reps))
            (reverse cms) qrs))
        (make <snmp-reports-result-set> #:results (append crs qrs)))))
 
