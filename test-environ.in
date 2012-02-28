@@ -2,10 +2,9 @@
 
 # Restarting the agent for each test is slower but tidier
 if [ ! -f @abs_srcdir@/unit-tests/.test-agent-pid ]; then
-  MIBDIRS=+@abs_srcdir@//unit-tests snmpd -r -C -p @abs_srcdir@/unit-tests/.test-agent-pid -Isystem_mib,override -c @abs_srcdir@/unit-tests/guileSnmpTestMIB-emulation.conf  
+  MIBDIRS=+@abs_srcdir@//unit-tests snmpd -r -C -p @abs_srcdir@/unit-tests/.test-agent-pid -IusmConf,vacm_conf,system_mib,override -c @abs_srcdir@/unit-tests/guileSnmpTestMIB-emulation.conf  
   sleep 1
 fi
-
 @abs_builddir@/build-environ $@
 RES=$?
 kill -KILL `cat @abs_srcdir@/unit-tests/.test-agent-pid`
