@@ -78,6 +78,7 @@
   (syntax-rules ()
     ((init-reports)
       (begin 
+	(init-snmp (car (command-line)))
         (define (oid-lazy-binder mod sym def?)
           (if (and reports:autotranslate (not def?))
               (let ((oid (snmp-parse-oid (symbol->string sym))))
