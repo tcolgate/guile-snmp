@@ -343,14 +343,14 @@ _wrap_snmp_session_securityLevel_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
   scm_remember_upto_here_1(s_0);
-  return scm_from_latin1_string(session->peername);
+  return scm_constant_name_from_int("<snmp-sec-level>", session->securityLevel);
 }
 
 static SCM
 _wrap_snmp_session_securityLevel_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  session->peername = scm_to_latin1_string(s_1);
+  session->securityLevel = scm_int_from_constant("<snmp-sec-level>",s_1);
 
   scm_remember_upto_here_1(s_0);
   return SCM_UNSPECIFIED;
@@ -361,16 +361,23 @@ _wrap_snmp_session_securityAuthProto_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
   scm_remember_upto_here_1(s_0);
-  return scm_from_latin1_string(session->peername);
+  return scm_from_oid(session->securityAuthProto,session->securityAuthProtoLen);
 }
 
 static SCM
 _wrap_snmp_session_securityAuthProto_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  session->peername = scm_to_latin1_string(s_1);
+
+  size_t oidlen = MAX_OID_LEN;
+  oid* temp_oid = (oid*)scm_calloc(oidlen * sizeof(oid));
+  scm_to_oid(s_1,&temp_oid,&oidlen);
+
+  session->securityAuthProto = temp_oid; 
+  session->securityAuthProtoLen = oidlen; 
 
   scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
   return SCM_UNSPECIFIED;
 }
 
@@ -383,20 +390,51 @@ _wrap_snmp_session_securityAuthKey_get (SCM s_0)
 }
 
 static SCM
+_wrap_snmp_session_securityAuthKey_set (SCM s_0, SCM s_1)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+
+  u_char* passphrase = scm_to_locale_string(s_1);
+  session->securityAuthKeyLen = USM_AUTH_KU_LEN;
+
+  if (generate_Ku(session->securityAuthProto,
+                  session->securityAuthProtoLen,
+                  (u_char *) passphrase, strlen(passphrase),
+                  session->securityAuthKey,
+                  &session->securityAuthKeyLen) != SNMPERR_SUCCESS) {
+    scm_throw(
+      scm_from_utf8_symbol("snmperror"),
+        scm_list_1(scm_from_utf8_string("Failed to generate AuthProtoKey")));
+  }
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
 _wrap_snmp_session_securityPrivProto_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
   scm_remember_upto_here_1(s_0);
-  return scm_from_latin1_string(session->peername);
+  return scm_from_oid(session->securityAuthProto,session->securityAuthProtoLen);
 }
 
 static SCM
 _wrap_snmp_session_securityPrivProto_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  session->peername = scm_to_latin1_string(s_1);
+
+  size_t oidlen = MAX_OID_LEN;
+  oid* temp_oid = (oid*)scm_calloc(oidlen * sizeof(oid));
+  scm_to_oid(s_1,&temp_oid,&oidlen);
+
+  session->securityPrivProto = temp_oid; 
+  session->securityPrivProtoLen = oidlen; 
 
   scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
   return SCM_UNSPECIFIED;
 }
 
@@ -408,6 +446,28 @@ _wrap_snmp_session_securityPrivKey_get (SCM s_0)
   return scm_from_latin1_string(session->securityPrivKey);
 }
 
+static SCM
+_wrap_snmp_session_securityPrivKey_set (SCM s_0, SCM s_1)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  session->securityPrivKeyLen = USM_PRIV_KU_LEN;
+
+  u_char* passphrase = scm_to_locale_string(s_1);
+  if (generate_Ku(session->securityPrivProto,
+                  session->securityPrivProtoLen,
+                  (u_char *) passphrase, strlen(passphrase),
+                  session->securityPrivKey,
+                  &session->securityPrivKeyLen) != SNMPERR_SUCCESS) {
+    scm_throw(
+      scm_from_utf8_symbol("snmperror"),
+        scm_list_1(scm_from_utf8_string("Failed to generate AuthProtoKey")));
+  }
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+
+  return SCM_UNSPECIFIED;
+}
 /*
  * Wrap struct void* as snmp-single-session
  */
@@ -834,9 +894,9 @@ static void init_snmp_wrap_structs(void)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "securityName" ,securityName)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "securityLevel" ,securityLevel)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "securityAuthProto" ,securityAuthProto)
-  DEFINE_SLOT_READONLY("snmp-session" , snmp_session , "securityAuthKey" ,securityAuthKey)
+  DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "securityAuthKey" ,securityAuthKey)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "securityPrivProto" ,securityPrivProto)
-  DEFINE_SLOT_READONLY("snmp-session" , snmp_session , "securityPrivKey" ,securityPrivKey)
+  DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "securityPrivKey" ,securityPrivKey)
   scm_c_define_gsubr ("initialize-snmp-session", 2, 0, 0, _wrap_initialize_snmp_session);
   scm_c_export("initialize-snmp-session" , NULL);
 

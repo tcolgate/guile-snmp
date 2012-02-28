@@ -254,6 +254,11 @@
 (define-constant <mib-status> MIB-STATUS-DEPRECATED)
 (define-constant <mib-status> MIB-STATUS-CURRENT)
 
+(define-constant-class <snmp-sec-level>)
+(define-constant <snmp-sec-level> SNMP-SEC-LEVEL-NOAUTH)
+(define-constant <snmp-sec-level> SNMP-SEC-LEVEL-AUTHNOPRIV)
+(define-constant <snmp-sec-level> SNMP-SEC-LEVEL-AUTHPRIV)
+
 (define-syntax define-class-wrapped-struct
   (lambda(stx)
     (let* ((input (syntax->datum stx))
@@ -314,7 +319,11 @@
 (define-method (write (this <tree>) port)
 	       (format port "#<tree: ~a>" (oid-from-tree-node this)))
 
-(define-class-wrapped-struct snmp-session community peername version context timeout retries) 
+(define-class-wrapped-struct snmp-session community peername version context 
+			     timeout retries securityName securityLevel 
+			     securityAuthProto securityAuthKey securityPrivProto 
+			     securityPrivKey)
+
 (define-class-wrapped-struct snmp-single-session)
 (define-class-wrapped-struct pdu errstat variables non-repeaters max-repetitions)
 (define-class-wrapped-struct pdu-variable name type value)
@@ -329,6 +338,10 @@
 (re-export get-tree-head)
 
 (re-export oid-from-tree-node)
+
+(re-export snmp-open)
+(re-export snmp-synch-response)
+(re-export snmp-close)
 
 (re-export snmp-sess-open)
 (re-export snmp-sess-session)
