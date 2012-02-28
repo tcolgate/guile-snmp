@@ -339,6 +339,7 @@
 
 (re-export oid-from-tree-node)
 
+(re-export snmp-sess-init)
 (re-export snmp-open)
 (re-export snmp-synch-response)
 (re-export snmp-close)

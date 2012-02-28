@@ -171,6 +171,14 @@ _wrap_snmp_parse_oid (SCM oidname)
 }
 
 static SCM
+_wrap_snmp_sess_init (SCM s_0)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  snmp_sess_init(session);
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
 _wrap_snmp_sess_open (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
@@ -493,6 +501,9 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("oid-from-tree-node", 1, 0, 0, (void *) _wrap_oid_from_tree_node);
   scm_c_export("oid-from-tree-node" , NULL);
+
+  scm_c_define_gsubr("snmp-sess-init", 1, 0, 0, (void *) _wrap_snmp_sess_init);
+  scm_c_export("snmp-sess-init" , NULL);
 
   scm_c_define_gsubr("snmp-sess-open", 1, 0, 0, (void *) _wrap_snmp_sess_open);
   scm_c_export("snmp-sess-open" , NULL);
