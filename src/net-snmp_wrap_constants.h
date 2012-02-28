@@ -118,6 +118,11 @@ WRAP_CONSTANT(unsigned int , MIB_STATUS_OBSOLETE)
 WRAP_CONSTANT(unsigned int , MIB_STATUS_DEPRECATED)
 WRAP_CONSTANT(unsigned int , MIB_STATUS_CURRENT)
 
+WRAP_CONSTANT(unsigned int , SNMP_SEC_LEVEL_NOAUTH)
+WRAP_CONSTANT(unsigned int , SNMP_SEC_LEVEL_AUTHNOPRIV)
+WRAP_CONSTANT(unsigned int , SNMP_SEC_LEVEL_AUTHPRIV)
+
+
 // Provide hook for the main module to hook into
 SCM constant_name_from_value_hook = SCM_BOOL_F;
 
@@ -272,4 +277,8 @@ init_snmp_wrap_constants(void)
   EXPORT_CONSTANT(MIB_STATUS_OBSOLETE , "MIB-STATUS-OBSOLETE" , scm_from_unsigned_integer)
   EXPORT_CONSTANT(MIB_STATUS_DEPRECATED , "MIB-STATUS-DEPRECATED" , scm_from_unsigned_integer)
   EXPORT_CONSTANT(MIB_STATUS_CURRENT , "MIB-STATUS-CURRENT" , scm_from_unsigned_integer)
+
+  EXPORT_CONSTANT(SNMP_SEC_LEVEL_NOAUTH , "SNMP-SEC-LEVEL-NOAUTH" , scm_from_unsigned_integer)
+  EXPORT_CONSTANT(SNMP_SEC_LEVEL_AUTHNOPRIV , "SNMP-SEC-LEVEL-AUTHNOPRIV" , scm_from_unsigned_integer)
+  EXPORT_CONSTANT(SNMP_SEC_LEVEL_AUTHPRIV , "SNMP-SEC-LEVEL-AUTHPRIV" , scm_from_unsigned_integer)
 }

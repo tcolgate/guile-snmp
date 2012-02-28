@@ -319,6 +319,95 @@ snmp_session_callback_set(struct snmp_session *p, SCM cb) {
   return SCM_UNSPECIFIED;
 };
 
+static SCM
+_wrap_snmp_session_securityName_get (SCM s_0)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  scm_remember_upto_here_1(s_0);
+  return scm_from_latin1_string(session->securityName);
+}
+
+static SCM
+_wrap_snmp_session_securityName_set (SCM s_0, SCM s_1)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  session->securityName = scm_to_latin1_string(s_1);
+  session->securityNameLen = strlen(session->securityName);
+
+  scm_remember_upto_here_1(s_0);
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_snmp_session_securityLevel_get (SCM s_0)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  scm_remember_upto_here_1(s_0);
+  return scm_from_latin1_string(session->peername);
+}
+
+static SCM
+_wrap_snmp_session_securityLevel_set (SCM s_0, SCM s_1)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  session->peername = scm_to_latin1_string(s_1);
+
+  scm_remember_upto_here_1(s_0);
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_snmp_session_securityAuthProto_get (SCM s_0)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  scm_remember_upto_here_1(s_0);
+  return scm_from_latin1_string(session->peername);
+}
+
+static SCM
+_wrap_snmp_session_securityAuthProto_set (SCM s_0, SCM s_1)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  session->peername = scm_to_latin1_string(s_1);
+
+  scm_remember_upto_here_1(s_0);
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_snmp_session_securityAuthKey_get (SCM s_0)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  scm_remember_upto_here_1(s_0);
+  return scm_from_latin1_string(session->securityAuthKey);
+}
+
+static SCM
+_wrap_snmp_session_securityPrivProto_get (SCM s_0)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  scm_remember_upto_here_1(s_0);
+  return scm_from_latin1_string(session->peername);
+}
+
+static SCM
+_wrap_snmp_session_securityPrivProto_set (SCM s_0, SCM s_1)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  session->peername = scm_to_latin1_string(s_1);
+
+  scm_remember_upto_here_1(s_0);
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_snmp_session_securityPrivKey_get (SCM s_0)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  scm_remember_upto_here_1(s_0);
+  return scm_from_latin1_string(session->securityPrivKey);
+}
+
 /*
  * Wrap struct void* as snmp-single-session
  */
@@ -742,6 +831,12 @@ static void init_snmp_wrap_structs(void)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "context" ,context)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "retries" ,retries)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "timeout" ,timeout)
+  DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "securityName" ,securityName)
+  DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "securityLevel" ,securityLevel)
+  DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "securityAuthProto" ,securityAuthProto)
+  DEFINE_SLOT_READONLY("snmp-session" , snmp_session , "securityAuthKey" ,securityAuthKey)
+  DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "securityPrivProto" ,securityPrivProto)
+  DEFINE_SLOT_READONLY("snmp-session" , snmp_session , "securityPrivKey" ,securityPrivKey)
   scm_c_define_gsubr ("initialize-snmp-session", 2, 0, 0, _wrap_initialize_snmp_session);
   scm_c_export("initialize-snmp-session" , NULL);
 
