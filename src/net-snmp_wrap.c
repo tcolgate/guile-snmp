@@ -21,6 +21,7 @@
 #include <net-snmp/library/snmp.h>
 #include <net-snmp/agent/net-snmp-agent-includes.h>
 // These clash with the net-snmp definitons
+#undef PACKAGE_URL
 #undef PACKAGE_BUGREPORT
 #undef PACKAGE_NAME
 #undef PACKAGE_STRING
