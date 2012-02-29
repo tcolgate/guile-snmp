@@ -453,14 +453,14 @@ _wrap_snmp_session_securityPrivKey_set (SCM s_0, SCM s_1)
   session->securityPrivKeyLen = USM_PRIV_KU_LEN;
 
   u_char* passphrase = scm_to_locale_string(s_1);
-  if (generate_Ku(session->securityPrivProto,
-                  session->securityPrivProtoLen,
+  if (generate_Ku(session->securityAuthProto,
+                  session->securityAuthProtoLen,
                   (u_char *) passphrase, strlen(passphrase),
                   session->securityPrivKey,
                   &session->securityPrivKeyLen) != SNMPERR_SUCCESS) {
     scm_throw(
       scm_from_utf8_symbol("snmperror"),
-        scm_list_1(scm_from_utf8_string("Failed to generate AuthProtoKey")));
+        scm_list_1(scm_from_utf8_string("Failed to generate PrivProtoKey")));
   }
 
   scm_remember_upto_here_1(s_0);
