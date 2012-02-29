@@ -36,6 +36,12 @@
     current-host
     current-version
     current-context
+    current-sec-level
+    current-sec-auth-proto
+    current-sec-priv-proto
+    current-sec-auth-key
+    current-sec-priv-key
+    current-sec-name
     new-snmp-session
     enable-query-cache
     disable-query-cache

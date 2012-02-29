@@ -5,11 +5,13 @@
  #:use-module (snmp net-snmp) 
  #:use-module (snmp reports) 
  #:use-module (snmp reports session) 
- #:use-module (unit-test)) 
+ #:use-module (unit-test)
+ #:use-module (ice-9 regex)) 
 
 (putenv "MIBDIRS=+.")
 (putenv "MIBS=+GUILE-SNMP-TEST-MIB")
 (init-reports)
+(disable-query-cache)
 
 (define-class <test-reports> (<test-case>))
   
@@ -21,6 +23,54 @@
   (assert-equal "Guile-SNMP test string"
                 (session #:host "127.0.0.1:10161" 
                   ((get (snmp-parse-oid "gstTestString.0"))))))
+
+(define-method (test-v3-get (self <test-reports>))
+  (assert-equal "Guile-SNMP test string"
+                (session #:host "127.0.0.1:10161" 
+                         #:version SNMP-VERSION-3
+                         #:secname "gsttest"
+                         #:seclevel SNMP-SEC-LEVEL-AUTHPRIV
+                         #:authproto AuthMD5
+                         #:privproto PrivDES
+                         #:authkey "Top_Secret_v3_user_password"
+                         #:privkey "Top_Secret_v3_user_password"
+                  ((get (snmp-parse-oid "gstTestString.0"))))))
+
+(define-method (test-v3-get-error-failauth (self <test-reports>))
+  (assert-equal #t
+                (session #:host "127.0.0.1:10161" 
+                         #:version SNMP-VERSION-3
+                         #:secname "gsttest"
+                         #:seclevel SNMP-SEC-LEVEL-AUTHPRIV
+                         #:authproto AuthMD5
+                         #:privproto PrivDES
+                         #:authkey "XXXTop_Secret_v3_user_password"
+                         #:privkey "Top_Secret_v3_user_password"
+                  (let ((errstring "No error"))
+                    (catch 'snmperror
+                      (lambda()((get (snmp-parse-oid "gstTestString.0"))))
+                      (lambda(x . args)(set! errstring (car args))))
+                    (if  (eq? #f (string-match "Authentication failure.*" errstring))
+                      errstring
+                      #t)))))
+
+(define-method (test-v3-get-error-failpriv (self <test-reports>))
+  (assert-equal #t
+                (session #:host "127.0.0.1:10161" 
+                         #:version SNMP-VERSION-3
+                         #:secname "gsttest"
+                         #:seclevel SNMP-SEC-LEVEL-AUTHPRIV
+                         #:authproto AuthMD5
+                         #:privproto PrivDES
+                         #:authkey "Top_Secret_v3_user_password"
+                         #:privkey "XXXTop_Secret_v3_user_password"
+                  (let ((errstring "No error"))
+                    (catch 'snmperror
+                      (lambda()((get (snmp-parse-oid "gstTestString.0"))))
+                      (lambda(x . args)(set! errstring (car args))))
+                    (if  (eq? #f (string-match "Timeout" errstring))
+                      errstring
+                      #t)))))
 
 (define-method (test-get-error-noSuchName (self <test-reports>))
   (assert-equal 'noSuchObject
