@@ -24,6 +24,7 @@ typedef enum snmp_wrap_smob_subtypes {
   smob_tree,
   smob_pdu,
   smob_pdu_variable,
+  smob_snmp_fdset,
   smob_last
 } snmp_wrap_smob_subtypes_e;
 
@@ -33,7 +34,9 @@ wrap_smob_typedef_t wrap_smob_types[] = {
   {"<snmp-single-session>", NULL, NULL, NULL, NULL},
   {"<tree>", NULL, NULL, NULL, NULL},
   {"<pdu>", NULL, NULL, NULL, NULL},
-  {"<pdu-variable>", NULL, NULL, NULL, NULL}
+  {"<pdu-variable>", NULL, NULL, NULL, NULL},
+  {"<snmp-fdset>", NULL, NULL, NULL, NULL},
+  {NULL, NULL, NULL, NULL, NULL}
 };
 
 size_t

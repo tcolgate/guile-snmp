@@ -77,7 +77,7 @@
 
 (define-syntax default-session
   (lambda(stx)
-    "Adjust the global default session options"
+    "Adjust the global default session options, see the (help session) for the list of options"
     (let ((args (cdr (syntax->datum stx)))
           (handler (lambda* (#:key (host #f)
                              (community #f)
@@ -134,7 +134,22 @@
 
 (define-syntax session
   (lambda(stx)
-    "Create a new snmp session."
+"Create a new snmp session. The following options cn be give:
+
+  (session
+    #:host
+    #:version
+    #:community
+    #:timeout
+    #:retries
+    #:seclevel
+    #:secname
+    #:authproto
+    #:authkey
+    #:privproto
+    #:privkey
+    ...)
+    "
     (let ((args (cdr (syntax->datum stx)))
           (handler (lambda* (#:key (host #f)
                              (community #f)

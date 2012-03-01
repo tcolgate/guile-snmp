@@ -288,6 +288,73 @@ _wrap_snmp_sess_error (SCM s_0)
 }
 
 static SCM
+_wrap_snmp_send (SCM s_0, SCM s_1)
+{
+  int res;
+  SCM scmres;
+  struct snmp_session *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  netsnmp_pdu *pdu = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_1);
+
+  res = snmp_send(sessp, pdu);
+  scmres = scm_constant_name_from_int( "<snmp-status>", res);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+
+  return scmres;
+}
+
+static SCM
+_wrap_snmp_sess_send (SCM s_0, SCM s_1)
+{
+  int res;
+  SCM scmres;
+  void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
+  netsnmp_pdu *pdu = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_1);
+
+  res = snmp_sess_send(sessp, pdu);
+  scmres = scm_constant_name_from_int( "<snmp-status>", res);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+
+  return scmres;
+}
+
+static SCM
+_wrap_snmp_sess_async_send (SCM s_0, SCM s_1, SCM s_2)
+{
+  int res;
+  SCM scmres;
+  void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
+  netsnmp_pdu *pdu = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_1);
+  void* *callbackdata = (void*) s_2; 
+
+  res = snmp_sess_async_send(sessp, pdu, guile_snmp_async_response, callbackdata);
+  scmres = scm_constant_name_from_int( "<snmp-status>", res);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  scm_remember_upto_here_1(s_2);
+
+  return scmres;
+}
+
+void
+_wrap_snmp_timeout(void)
+{
+  snmp_timeout();
+};
+
+void
+_wrap_snmp_sess_timeout(SCM s_0)
+{
+  void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
+  snmp_sess_timeout(sessp);
+  scm_remember_upto_here_1(s_0);
+};
+
+static SCM
 _wrap_snmp_pdu_create (SCM s_0)
 {
   SCM obj = make_wrapped_pointer( smob_pdu , snmp_pdu_create( scm_int_from_constant("<snmp-msg>",s_0)));
