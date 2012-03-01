@@ -5,7 +5,7 @@ Guile-SNMP
   Guile SNMP is a wrapper for the Net-SNMP libraries. it is intended
 to provide a basic wrapper for direct useage of the Net-SNMP libraries
 from Guile and an easy to use dialect of Scheme targeted at easier
-SNMP reqperting.
+SNMP reporting.
 
   The intial development was inspired by Yves Perrenoud's
 ( <yves@xpand.org>) work on yapsnmp.

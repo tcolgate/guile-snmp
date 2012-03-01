@@ -116,11 +116,6 @@ _wrap_oid_from_tree_node (SCM s_0)
   return scmresult;
 }
 
-int guile_snmp_async_response(int op, struct snmp_session *sp, int reqid,
-                     struct snmp_pdu *pdu, void *magic){
-  return 1;
-};
-
 static SCM
 _wrap_guile_snmp_async_response (SCM s_0, SCM s_1, SCM s_2, SCM s_3, SCM s_4)
 {

@@ -7,13 +7,11 @@
  */
 
 typedef size_t (*free_wrap_smob_f)(SCM);
-typedef SCM (*mark_wrap_smob_f)(SCM);
 typedef int (*print_wrap_smob_f)(SCM,SCM,scm_print_state*);
 typedef SCM (*equalp_wrap_smob_f)(SCM,SCM);
 typedef struct wrap_smob_typedef_s {
   char *name;
   free_wrap_smob_f free_func;
-  mark_wrap_smob_f mark_func;
   print_wrap_smob_f print_func;
   equalp_wrap_smob_f equalp_func;
   SCM ptrclass;
@@ -29,12 +27,13 @@ typedef enum snmp_wrap_smob_subtypes {
   smob_last
 } snmp_wrap_smob_subtypes_e;
 
+
 wrap_smob_typedef_t wrap_smob_types[] = {
-  {"<snmp-session>", NULL, NULL, NULL, NULL, NULL},
-  {"<snmp-single-session>", NULL, NULL, NULL, NULL, NULL},
-  {"<tree>", NULL, NULL, NULL, NULL, NULL},
-  {"<pdu>", NULL, NULL, NULL, NULL, NULL},
-  {"<pdu-variable>", NULL, NULL, NULL, NULL, NULL}
+  {"<snmp-session>", NULL, NULL, NULL, NULL},
+  {"<snmp-single-session>", NULL, NULL, NULL, NULL},
+  {"<tree>", NULL, NULL, NULL, NULL},
+  {"<pdu>", NULL, NULL, NULL, NULL},
+  {"<pdu-variable>", NULL, NULL, NULL, NULL}
 };
 
 size_t
@@ -47,19 +46,6 @@ free_snmp_wrap_smob (SCM smob)
   };
   scm_remember_upto_here_1(smob);
   return 0;
-}
-
-SCM
-mark_snmp_wrap_smob (SCM smob)
-{
-  scm_assert_smob_type (snmp_wrap_smob_tag, smob);
-  snmp_wrap_smob_subtypes_e subtype = SCM_SMOB_FLAGS(smob);
-  if(wrap_smob_types[SCM_SMOB_FLAGS(smob)].mark_func){
-    return wrap_smob_types[SCM_SMOB_FLAGS(smob)].mark_func(smob);
-  };
-
-  scm_remember_upto_here_1(smob);
-  return SCM_BOOL_F;
 }
 
 static int
@@ -103,7 +89,6 @@ init_snmp_wrap_smob_type (void)
 {
   snmp_wrap_smob_tag = scm_make_smob_type ("snmp_wrap_smob", sizeof (void*));
   scm_set_smob_free (snmp_wrap_smob_tag, free_snmp_wrap_smob);
-//  scm_set_smob_mark (snmp_wrap_smob_tag, mark_snmp_wrap_smob);
   scm_set_smob_mark (snmp_wrap_smob_tag, 0);
   scm_set_smob_print (snmp_wrap_smob_tag, print_snmp_wrap_smob);
   scm_set_smob_equalp (snmp_wrap_smob_tag, equalp_snmp_wrap_smob);
@@ -178,10 +163,12 @@ read_only_setter(SCM s_0, SCM s_1)
 static SCM
 _wrap_initialize_snmp_session (SCM obj, SCM args)
 {
-  void *ptr = scm_calloc(sizeof(struct snmp_session));
+  struct snmp_session *ptr = scm_calloc(sizeof(struct snmp_session));
   snmp_sess_init(ptr);
+  ptr->callback = NULL;
+  ptr->callback_magic = SCM_BOOL_F;
   SCM smob;
-  SCM_NEWSMOB (smob, snmp_wrap_smob_tag, ptr);
+  SCM_NEWSMOB (smob, snmp_wrap_smob_tag, (void*)ptr);
   SCM_SET_SMOB_FLAGS (smob, smob_snmp_session);
 
   SCM ptrsym = scm_from_utf8_symbol("ptr");
@@ -304,7 +291,10 @@ _wrap_snmp_session_context_set (SCM s_0, SCM s_1)
   return SCM_UNSPECIFIED;
 }
 
-int guile_snmp_async_response(int , struct snmp_session *, int , struct snmp_pdu *, void *);
+int guile_snmp_async_response(int op, struct snmp_session *sess, int reqid, struct snmp_pdu *pdu, void *magic)
+{
+	return 0;
+};
 
 SCM
 snmp_session_callback_get(struct snmp_session *p) {
@@ -313,6 +303,10 @@ snmp_session_callback_get(struct snmp_session *p) {
 
 SCM
 snmp_session_callback_set(struct snmp_session *p, SCM cb) {
+  if(cb == SCM_BOOL_F){
+    p->callback = NULL;
+    return SCM_UNSPECIFIED;
+  };
   p->callback = guile_snmp_async_response;
   p->callback_magic = cb;
   scm_remember_upto_here_1(cb);
