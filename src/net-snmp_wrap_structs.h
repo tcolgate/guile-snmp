@@ -163,7 +163,7 @@ read_only_setter(SCM s_0, SCM s_1)
 static SCM
 _wrap_initialize_snmp_session (SCM obj, SCM args)
 {
-  struct snmp_session *ptr = scm_calloc(sizeof(struct snmp_session));
+  struct snmp_session *ptr = scm_gc_calloc(sizeof(struct snmp_session), "snmp session");
   snmp_sess_init(ptr);
   ptr->callback = NULL;
   ptr->callback_magic = SCM_BOOL_F;
