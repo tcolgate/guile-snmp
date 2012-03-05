@@ -300,12 +300,12 @@ int guile_snmp_async_response(int op, struct snmp_session *sess, int reqid, stru
 };
 
 SCM
-snmp_session_callback_get(struct snmp_session *p) {
+_wrap_snmp_session_callback_get(struct snmp_session *p) {
   return (SCM) p->callback_magic;
 };
 
 SCM
-snmp_session_callback_set(struct snmp_session *p, SCM cb) {
+_wrap_snmp_session_callback_set(struct snmp_session *p, SCM cb) {
   if(cb == SCM_BOOL_F){
     p->callback = NULL;
     return SCM_UNSPECIFIED;
@@ -918,6 +918,7 @@ static void init_snmp_wrap_structs(void)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "context" ,context)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "retries" ,retries)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "timeout" ,timeout)
+  DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "callback" ,callback)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "securityName" ,securityName)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "securityLevel" ,securityLevel)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "securityAuthProto" ,securityAuthProto)

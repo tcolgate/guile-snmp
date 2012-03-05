@@ -416,6 +416,30 @@ _wrap_snmp_select(SCM s_0)
 
 
 static SCM
+_wrap_snmp_read(SCM s_0)
+{
+  snmp_fdinfo *fdinfo = (void*) pointer_from_wrapped_smob(smob_snmp_fdinfo, s_0);
+
+  snmp_read(&(fdinfo->fdss));
+
+  scm_remember_upto_here_1(s_0);
+  return SCM_UNSPECIFIED;
+};
+
+static SCM
+_wrap_snmp_sess_read(SCM s_0, SCM s_1)
+{
+  void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
+  snmp_fdinfo *fdinfo = (void*) pointer_from_wrapped_smob(smob_snmp_fdinfo, s_1);
+
+  snmp_sess_read(sessp, &(fdinfo->fdss));
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  return SCM_UNSPECIFIED;
+};
+
+static SCM
 _wrap_snmp_pdu_create (SCM s_0)
 {
   SCM obj = make_wrapped_pointer( smob_pdu , snmp_pdu_create( scm_int_from_constant("<snmp-msg>",s_0)));
@@ -657,6 +681,12 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("snmp-send", 1, 0, 0, (void *) _wrap_snmp_send);
   scm_c_export("snmp-send" , NULL);
+
+  scm_c_define_gsubr("snmp-sess-read", 2, 0, 0, (void *) _wrap_snmp_sess_read);
+  scm_c_export("snmp-sess-read" , NULL);
+
+  scm_c_define_gsubr("snmp-read", 1, 0, 0, (void *) _wrap_snmp_read);
+  scm_c_export("snmp-read" , NULL);
 
   scm_c_define_gsubr("snmp-pdu-create", 1, 0, 0, (void *) _wrap_snmp_pdu_create);
   scm_c_export("snmp-pdu-create" , NULL);

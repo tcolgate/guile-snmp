@@ -327,7 +327,7 @@
 	       (format port "#<tree: ~a>" (oid-from-tree-node this)))
 
 (define-class-wrapped-struct snmp-session community peername version context 
-			     timeout retries securityName securityLevel 
+			     timeout retries callback securityName securityLevel 
 			     securityAuthProto securityAuthKey securityPrivProto 
 			     securityPrivKey)
 
@@ -351,7 +351,7 @@
 (re-export snmp-open)
 (re-export snmp-synch-response)
 (re-export snmp-send)
-;(re-export snmp-read)
+(re-export snmp-read)
 (re-export snmp-close)
 (re-export snmp-select-info)
 (re-export snmp-timeout)
@@ -360,7 +360,7 @@
 (re-export snmp-sess-session)
 (re-export snmp-sess-synch-response)
 (re-export snmp-sess-send)
-;(re-export snmp-sess-read)
+(re-export snmp-sess-read)
 (re-export snmp-sess-close)
 (re-export snmp-sess-error)
 (re-export snmp-sess-select-info)
