@@ -296,7 +296,13 @@ _wrap_snmp_session_context_set (SCM s_0, SCM s_1)
 
 int guile_snmp_async_response(int op, struct snmp_session *sess, int reqid, struct snmp_pdu *pdu, void *magic)
 {
-	return 0;
+    SCM res = scm_call_4(
+      (SCM) magic,
+      scm_constant_name_from_int("<snmp-sec-level>", op),
+      make_wrapped_pointer(smob_snmp_session ,(void*) sess),
+      scm_from_int(reqid),
+      make_wrapped_pointer(smob_pdu ,(void*) pdu));
+    return scm_to_int(res);
 };
 
 SCM
