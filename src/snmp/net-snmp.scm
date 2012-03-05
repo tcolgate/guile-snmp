@@ -259,6 +259,13 @@
 (define-constant <snmp-sec-level> SNMP-SEC-LEVEL-AUTHNOPRIV)
 (define-constant <snmp-sec-level> SNMP-SEC-LEVEL-AUTHPRIV)
 
+(define-constant-class <callback-op>)
+(define-constant <callback-op> OP-RECEIVED-MESSAGE)
+(define-constant <callback-op> OP-TIMED-OUT)
+(define-constant <callback-op> OP-SEND-FAILED)
+(define-constant <callback-op> OP-CONNECT)
+(define-constant <callback-op> OP-DISCONNECT)
+
 (define-syntax define-class-wrapped-struct
   (lambda(stx)
     (let* ((input (syntax->datum stx))
