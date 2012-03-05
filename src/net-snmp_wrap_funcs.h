@@ -411,9 +411,8 @@ _wrap_snmp_select(SCM s_0)
       NULL,
       fdinfo->block ?NULL : &(fdinfo->timeout));
 
-  return SCM_UNSPECIFIED;
+  return scm_from_int(fdinfo->fds);
 };
-
 
 static SCM
 _wrap_snmp_read(SCM s_0)
@@ -679,7 +678,7 @@ init_snmp_wrap_funcs(void)
   scm_c_define_gsubr("snmp-sess-send", 2, 0, 0, (void *) _wrap_snmp_sess_send);
   scm_c_export("snmp-sess-send" , NULL);
 
-  scm_c_define_gsubr("snmp-send", 1, 0, 0, (void *) _wrap_snmp_send);
+  scm_c_define_gsubr("snmp-send", 2, 0, 0, (void *) _wrap_snmp_send);
   scm_c_export("snmp-send" , NULL);
 
   scm_c_define_gsubr("snmp-sess-read", 2, 0, 0, (void *) _wrap_snmp_sess_read);

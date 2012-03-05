@@ -366,6 +366,8 @@
 (re-export snmp-sess-select-info)
 (re-export snmp-sess-timeout)
 
+(re-export snmp-select)
+
 (re-export snmp-pdu-create)
 (re-export snmp-add-null-var)
 (re-export snmp-add-var)
