@@ -340,18 +340,20 @@ _wrap_snmp_sess_async_send (SCM s_0, SCM s_1, SCM s_2)
   return scmres;
 }
 
-void
+static SCM
 _wrap_snmp_timeout(void)
 {
   snmp_timeout();
+  return SCM_UNSPECIFIED;
 };
 
-void
+static SCM
 _wrap_snmp_sess_timeout(SCM s_0)
 {
   void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
   snmp_sess_timeout(sessp);
   scm_remember_upto_here_1(s_0);
+  return SCM_UNSPECIFIED;
 };
 
 static SCM
@@ -395,6 +397,21 @@ _wrap_snmp_sess_select_info(SCM s_0)
   scm_remember_upto_here_1(s_0);
 
   return obj;
+};
+
+static SCM
+_wrap_snmp_select(SCM s_0)
+{
+  snmp_fdinfo *fdinfo = (void*) pointer_from_wrapped_smob(smob_snmp_fdinfo, s_0);
+
+  fdinfo->fds = select(
+      fdinfo->fds,
+      &(fdinfo->fdss),
+      NULL,
+      NULL,
+      fdinfo->block ?NULL : &(fdinfo->timeout));
+
+  return SCM_UNSPECIFIED;
 };
 
 
@@ -635,6 +652,12 @@ init_snmp_wrap_funcs(void)
   scm_c_define_gsubr("snmp-close", 1, 0, 0, (void *) _wrap_snmp_close);
   scm_c_export("snmp-close" , NULL);
 
+  scm_c_define_gsubr("snmp-sess-send", 2, 0, 0, (void *) _wrap_snmp_sess_send);
+  scm_c_export("snmp-sess-send" , NULL);
+
+  scm_c_define_gsubr("snmp-send", 1, 0, 0, (void *) _wrap_snmp_send);
+  scm_c_export("snmp-send" , NULL);
+
   scm_c_define_gsubr("snmp-pdu-create", 1, 0, 0, (void *) _wrap_snmp_pdu_create);
   scm_c_export("snmp-pdu-create" , NULL);
 
@@ -658,5 +681,14 @@ init_snmp_wrap_funcs(void)
   
   scm_c_define_gsubr("snmp-sess-select-info", 1, 0, 0, (void *) _wrap_snmp_sess_select_info);
   scm_c_export("snmp-sess-select-info" , NULL);
+
+  scm_c_define_gsubr("snmp-select", 1, 0, 0, (void *) _wrap_snmp_select);
+  scm_c_export("snmp-select" , NULL);
+
+  scm_c_define_gsubr("snmp-timeout", 0, 0, 0, (void *) _wrap_snmp_timeout);
+  scm_c_export("snmp-timeout" , NULL);
+
+  scm_c_define_gsubr("snmp-sess-timeout", 1, 0, 0, (void *) _wrap_snmp_sess_timeout);
+  scm_c_export("snmp-sess-timeout" , NULL);
 }
 
