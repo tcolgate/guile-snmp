@@ -334,6 +334,7 @@
 (define-class-wrapped-struct snmp-single-session)
 (define-class-wrapped-struct pdu errstat variables non-repeaters max-repetitions)
 (define-class-wrapped-struct pdu-variable name type value)
+(define-class-wrapped-struct snmp-fdinfo)
 
 (re-export init-mib)
 (re-export init-snmp)
