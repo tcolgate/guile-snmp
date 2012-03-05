@@ -351,12 +351,14 @@
 (re-export snmp-open)
 (re-export snmp-synch-response)
 (re-export snmp-close)
+(re-export snmp-select-info)
 
 (re-export snmp-sess-open)
 (re-export snmp-sess-session)
 (re-export snmp-sess-synch-response)
 (re-export snmp-sess-close)
 (re-export snmp-sess-error)
+(re-export snmp-sess-select-info)
 
 (re-export snmp-pdu-create)
 (re-export snmp-add-null-var)

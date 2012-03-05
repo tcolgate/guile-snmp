@@ -355,6 +355,50 @@ _wrap_snmp_sess_timeout(SCM s_0)
 };
 
 static SCM
+_wrap_snmp_select_info(void)
+{
+  snmp_fdinfo *fdinfo;
+  fdinfo = (snmp_fdinfo*) scm_calloc(sizeof(snmp_fdinfo));
+  fdinfo->fds=0;
+  fdinfo->block=1;
+  FD_ZERO(&(fdinfo->fdss));
+
+  snmp_select_info(
+    &(fdinfo->fds),
+    &(fdinfo->fdss),
+    &(fdinfo->timeout),
+    &(fdinfo->block));
+
+  SCM obj = make_wrapped_pointer( smob_snmp_fdinfo , fdinfo);
+  return obj;
+};
+
+static SCM
+_wrap_snmp_sess_select_info(SCM s_0)
+{
+  void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
+
+  snmp_fdinfo *fdinfo;
+  fdinfo = (snmp_fdinfo*) scm_calloc(sizeof(snmp_fdinfo));
+  fdinfo->fds=0;
+  fdinfo->block=1;
+  FD_ZERO(&(fdinfo->fdss));
+
+  snmp_sess_select_info(
+    sessp,
+    &(fdinfo->fds),
+    &(fdinfo->fdss),
+    &(fdinfo->timeout),
+    &(fdinfo->block));
+
+  SCM obj = make_wrapped_pointer( smob_snmp_fdinfo , fdinfo);
+  scm_remember_upto_here_1(s_0);
+
+  return obj;
+};
+
+
+static SCM
 _wrap_snmp_pdu_create (SCM s_0)
 {
   SCM obj = make_wrapped_pointer( smob_pdu , snmp_pdu_create( scm_int_from_constant("<snmp-msg>",s_0)));
@@ -608,5 +652,11 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("mib-to-asn-type", 1, 0, 0, (void *) _wrap_mib_to_asn_type);
   scm_c_export("mib-to-asn-type" , NULL);
+
+  scm_c_define_gsubr("snmp-select-info", 0, 0, 0, (void *) _wrap_snmp_select_info);
+  scm_c_export("snmp-select-info" , NULL);
+  
+  scm_c_define_gsubr("snmp-sess-select-info", 1, 0, 0, (void *) _wrap_snmp_sess_select_info);
+  scm_c_export("snmp-sess-select-info" , NULL);
 }
 
