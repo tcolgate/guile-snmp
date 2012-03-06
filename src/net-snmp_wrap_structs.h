@@ -25,6 +25,7 @@ typedef enum snmp_wrap_smob_subtypes {
   smob_pdu,
   smob_pdu_variable,
   smob_snmp_fdinfo,
+  smob_netsnmp_transport,
   smob_last
 } snmp_wrap_smob_subtypes_e;
 
@@ -36,6 +37,7 @@ wrap_smob_typedef_t wrap_smob_types[] = {
   {"<pdu>", NULL, NULL, NULL, NULL},
   {"<pdu-variable>", NULL, NULL, NULL, NULL},
   {"<snmp-fdinfo>", NULL, NULL, NULL, NULL},
+  {"<netsnmp-transport>", NULL, NULL, NULL, NULL},
   {NULL, NULL, NULL, NULL, NULL}
 };
 
@@ -925,6 +927,26 @@ _wrap_initialize_snmp_fdinfo (SCM obj, SCM args)
   return SCM_UNSPECIFIED;
 }
 
+/*
+ * netsnmp_transport
+ */
+
+static SCM
+_wrap_initialize_netsnmp_transport (SCM obj, SCM args)
+{
+  netsnmp_transport *ptr = NULL;
+  SCM smob;
+  SCM_NEWSMOB (smob, snmp_wrap_smob_tag, ptr);
+  SCM_SET_SMOB_FLAGS (smob, smob_netsnmp_transport);
+
+  SCM ptrsym = scm_from_utf8_symbol("ptr");
+  scm_slot_set_x(obj,ptrsym,smob);
+  scm_remember_upto_here_1(obj);
+  scm_remember_upto_here_1(args);
+  return SCM_UNSPECIFIED;
+}
+
+
 #define DEFINE_SLOT_READWRITE(strtype , type , strslot , slot) \
   scm_c_define( strtype "-" strslot, scm_make_procedure_with_setter(\
     scm_c_define_gsubr( strtype "-" strslot "-get", 1, 0, 0, (void *) _wrap_ ## type ## _ ## slot ## _get),\
@@ -995,5 +1017,8 @@ static void init_snmp_wrap_structs(void)
 
   scm_c_define_gsubr ("initialize-snmp-fdinfo", 2, 0, 0, _wrap_initialize_snmp_fdinfo);
   scm_c_export("initialize-snmp-fdinfo" , NULL);
+
+  scm_c_define_gsubr ("initialize-netsnmp-transport", 2, 0, 0, _wrap_initialize_netsnmp_transport);
+  scm_c_export("initialize-netsnmp-transport" , NULL);
 }
 

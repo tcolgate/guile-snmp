@@ -335,6 +335,7 @@
 (define-class-wrapped-struct pdu errstat variables non-repeaters max-repetitions)
 (define-class-wrapped-struct pdu-variable name type value)
 (define-class-wrapped-struct snmp-fdinfo)
+(define-class-wrapped-struct netsnmp-transport)
 
 (re-export init-mib)
 (re-export init-snmp)
@@ -374,6 +375,10 @@
 (re-export snmp-add-null-var)
 (re-export snmp-add-var)
 (re-export snmp-free-pdu)
+
+(re-export netsnmp-tdomain-transport)
+(re-export snmp-add)
+(re-export snmp-sess-add)
 
 (re-export netsnmp-oid-is-subtree)
 (re-export mib-to-asn-type)

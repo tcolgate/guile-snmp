@@ -451,6 +451,49 @@ _wrap_snmp_add_null_var (SCM s_0, SCM s_1)
   return SCM_UNSPECIFIED;
 }
 
+static SCM
+_wrap_netsnmp_tdomain_transport (SCM s_0, SCM s_1, SCM s_2)
+{
+  char *location = scm_to_latin1_string(s_0);
+  int local = s_1 == SCM_BOOL_T ? 1 : 0;
+  char *trans = scm_to_latin1_string(s_2);
+
+  netsnmp_transport *trs = netsnmp_tdomain_transport(location,local,trans);
+  SCM obj = make_wrapped_pointer( smob_netsnmp_transport , trs);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  scm_remember_upto_here_1(s_2);
+  return obj;
+}
+
+static SCM
+_wrap_snmp_add (SCM s_0, SCM s_1)
+{
+  struct snmp_session *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  netsnmp_transport *trs = (void*) pointer_from_wrapped_smob(smob_netsnmp_transport, s_1);
+
+  snmp_add(sessp,trs,NULL,NULL);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_snmp_sess_add (SCM s_0, SCM s_1)
+{
+  void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
+  netsnmp_transport *trs = (void*) pointer_from_wrapped_smob(smob_netsnmp_transport, s_1);
+
+  snmp_sess_add(sessp,trs,NULL,NULL);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+
+  return SCM_UNSPECIFIED;
+}
 
 static SCM
 _wrap_snmp_add_var (SCM s_0, SCM s_1, SCM s_2)
@@ -689,6 +732,9 @@ init_snmp_wrap_funcs(void)
   scm_c_define_gsubr("snmp-add-var", 3, 0, 0, (void *) _wrap_snmp_add_var);
   scm_c_export("snmp-add-var" , NULL);
 
+  scm_c_define_gsubr("netsnmp-tdomain-transport", 3, 0, 0, (void *) _wrap_netsnmp_tdomain_transport);
+  scm_c_export("netsnmp-tdomain-transport" , NULL);
+
   scm_c_define_gsubr("snmp-free-pdu", 1, 0, 0, (void *) _wrap_snmp_free_pdu);
   scm_c_export("snmp-free-pdu" , NULL);
 
@@ -712,5 +758,11 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("snmp-sess-timeout", 1, 0, 0, (void *) _wrap_snmp_sess_timeout);
   scm_c_export("snmp-sess-timeout" , NULL);
+
+  scm_c_define_gsubr("snmp-add", 2, 0, 0, (void *) _wrap_snmp_add);
+  scm_c_export("snmp-add" , NULL);
+
+  scm_c_define_gsubr("snmp-sess-add", 2, 0, 0, (void *) _wrap_snmp_sess_add);
+  scm_c_export("snmp-sess-add" , NULL);
 }
 
