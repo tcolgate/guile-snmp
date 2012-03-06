@@ -21,10 +21,10 @@
 ;  #:re-export-syntax (session default-session)
   #:export (
     use-mibs
-    reports:autotranslate <snmp-reports-result> oidlist walk bulk-walk
-    get getnext getbulk get-or-fail nextvar all walk-on-fail walk-func 
-    default-getbulk-repetitions bulk-walk-func results
-    fail old-fail one-of iid oid type tag value rawvarbind
+    reports:autotranslate <snmp-reports-result> <snmp-reports-result-set> 
+    oidlist walk bulk-walk get getnext getbulk get-or-fail nextvar all 
+    walk-on-fail walk-func default-getbulk-repetitions bulk-walk-func 
+    results fail old-fail one-of iid oid type tag value rawvarbind
     make-varbind-func tag-varbinds split-varbinds 
     filter-valid-next reach-each
     enable-reports-debug disable-reports-debug
