@@ -117,36 +117,6 @@ _wrap_oid_from_tree_node (SCM s_0)
 }
 
 static SCM
-_wrap_guile_snmp_async_response (SCM s_0, SCM s_1, SCM s_2, SCM s_3, SCM s_4)
-{
-#define FUNC_NAME "guile-snmp-async-response"
-  int arg1 ;
-  struct snmp_session *arg2 = (struct snmp_session *) 0 ;
-  int arg3 ;
-  struct snmp_pdu *arg4 = (struct snmp_pdu *) 0 ;
-  void *arg5 = (void *) 0 ;
-  SCM scmresult;
-  int result;
-  
-  {
-    arg1 = (int) scm_to_int(s_0);
-  }
-  {
-    arg3 = (int) scm_to_int(s_2);
-  }
-  {
-    arg5 = (void *)SWIG_MustGetPtr(s_4, NULL, 5, 0);
-  }
-  result = (int)guile_snmp_async_response(arg1,arg2,arg3,arg4,arg5);
-  {
-    scmresult = scm_from_signed_integer(result);
-  }
-  
-  return scmresult;
-#undef FUNC_NAME
-}
-
-static SCM
 _wrap_snmp_parse_oid (SCM oidname)
 {
 	
@@ -317,6 +287,25 @@ _wrap_snmp_sess_send (SCM s_0, SCM s_1)
 
   scm_remember_upto_here_1(s_0);
   scm_remember_upto_here_1(s_1);
+
+  return scmres;
+}
+
+static SCM
+_wrap_snmp_async_send (SCM s_0, SCM s_1, SCM s_2)
+{
+  int res;
+  SCM scmres;
+  struct snmp_session *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  netsnmp_pdu *pdu = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_1);
+  void* *callbackdata = (void*) s_2; 
+
+  res = snmp_async_send(sessp, pdu, guile_snmp_async_response, callbackdata);
+  scmres = scm_constant_name_from_int( "<snmp-status>", res);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  scm_remember_upto_here_1(s_2);
 
   return scmres;
 }
@@ -625,8 +614,6 @@ static void
 init_snmp_wrap_funcs(void)
 {
 
-  scm_c_define_gsubr("guile-snmp-async-response", 5, 0, 0, (void *) _wrap_guile_snmp_async_response);
-
   scm_c_define_gsubr("init-mib", 0, 0, 0, (void *) _wrap_init_mib);
   scm_c_export("init-mib" , NULL);
 
@@ -680,6 +667,12 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("snmp-send", 2, 0, 0, (void *) _wrap_snmp_send);
   scm_c_export("snmp-send" , NULL);
+
+  scm_c_define_gsubr("snmp-sess-async-send", 3, 0, 0, (void *) _wrap_snmp_sess_async_send);
+  scm_c_export("snmp-sess-async-send" , NULL);
+
+  scm_c_define_gsubr("snmp-async-send", 3, 0, 0, (void *) _wrap_snmp_async_send);
+  scm_c_export("snmp-async-send" , NULL);
 
   scm_c_define_gsubr("snmp-sess-read", 2, 0, 0, (void *) _wrap_snmp_sess_read);
   scm_c_export("snmp-sess-read" , NULL);
