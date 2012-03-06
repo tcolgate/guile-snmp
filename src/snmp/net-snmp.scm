@@ -326,10 +326,10 @@
 (define-method (write (this <tree>) port)
 	       (format port "#<tree: ~a>" (oid-from-tree-node this)))
 
-(define-class-wrapped-struct snmp-session community peername version context 
-			     timeout retries callback securityName securityLevel 
-			     securityAuthProto securityAuthKey securityPrivProto 
-			     securityPrivKey)
+(define-class-wrapped-struct snmp-session community peername localname local-port 
+			     version context timeout retries callback securityName 
+			     securityLevel securityAuthProto securityAuthKey 
+			     securityPrivProto securityPrivKey)
 
 (define-class-wrapped-struct snmp-single-session)
 (define-class-wrapped-struct pdu errstat variables non-repeaters max-repetitions)

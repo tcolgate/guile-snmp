@@ -255,6 +255,43 @@ _wrap_snmp_session_peername_set (SCM s_0, SCM s_1)
 }
 
 static SCM
+_wrap_snmp_session_localname_get (SCM s_0)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  scm_remember_upto_here_1(s_0);
+  return scm_from_latin1_string(session->localname);
+}
+
+static SCM
+_wrap_snmp_session_localname_set (SCM s_0, SCM s_1)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  session->localname = scm_to_latin1_string(s_1);
+
+  scm_remember_upto_here_1(s_0);
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_snmp_session_local_port_get (SCM s_0)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  scm_remember_upto_here_1(s_0);
+  return scm_from_ushort(session->local_port);
+}
+
+static SCM
+_wrap_snmp_session_local_port_set (SCM s_0, SCM s_1)
+{
+  struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  session->local_port = scm_to_ushort(s_1);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
 _wrap_snmp_session_community_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
@@ -924,6 +961,8 @@ static void init_snmp_wrap_structs(void)
 
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "community" ,community)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "peername" ,peername)
+  DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "localname" ,localname)
+  DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "local-port" ,local_port)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "version" ,version)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "context" ,context)
   DEFINE_SLOT_READWRITE("snmp-session" , snmp_session , "retries" ,retries)
