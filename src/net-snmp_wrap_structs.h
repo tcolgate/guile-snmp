@@ -298,7 +298,7 @@ int guile_snmp_async_response(int op, struct snmp_session *sess, int reqid, stru
 {
     SCM res = scm_call_4(
       (SCM) magic,
-      scm_constant_name_from_int("<snmp-sec-level>", op),
+      scm_constant_name_from_int("<callback-op>", op),
       make_wrapped_pointer(smob_snmp_session ,(void*) sess),
       scm_from_int(reqid),
       make_wrapped_pointer(smob_pdu ,(void*) pdu));
@@ -306,19 +306,23 @@ int guile_snmp_async_response(int op, struct snmp_session *sess, int reqid, stru
 };
 
 SCM
-_wrap_snmp_session_callback_get(struct snmp_session *p) {
+_wrap_snmp_session_callback_get(SCM s_0) {
+  struct snmp_session *p = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
   return (SCM) p->callback_magic;
 };
 
 SCM
-_wrap_snmp_session_callback_set(struct snmp_session *p, SCM cb) {
-  if(cb == SCM_BOOL_F){
+_wrap_snmp_session_callback_set(SCM s_0, SCM s_1) {
+  struct snmp_session *p = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
+  if(s_1 == SCM_BOOL_F){
     p->callback = NULL;
     return SCM_UNSPECIFIED;
   };
   p->callback = guile_snmp_async_response;
-  p->callback_magic = cb;
-  scm_remember_upto_here_1(cb);
+  p->callback_magic = s_1;
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
   return SCM_UNSPECIFIED;
 };
 
