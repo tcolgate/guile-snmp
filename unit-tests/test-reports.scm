@@ -40,7 +40,7 @@
   (assert-equal #t
                 (session #:host "127.0.0.1:10161" 
                          #:version SNMP-VERSION-3
-                         #:secname "gsttest"
+                         #:secname "gsttest2"
                          #:seclevel SNMP-SEC-LEVEL-AUTHPRIV
                          #:authproto AuthMD5
                          #:privproto PrivDES
@@ -58,7 +58,7 @@
   (assert-equal #t
                 (session #:host "127.0.0.1:10161" 
                          #:version SNMP-VERSION-3
-                         #:secname "gsttest"
+                         #:secname "gsttest3"
                          #:seclevel SNMP-SEC-LEVEL-AUTHPRIV
                          #:authproto AuthMD5
                          #:privproto PrivDES
