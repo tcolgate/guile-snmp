@@ -165,17 +165,30 @@
     (next-method)
 
     (if (not (eq? #f query)) 
-      (slot-set! result-set 'results
-        (delay 
-          (let* ((qres  (synch-query (car query) (cdr query)  #:nrs nrs #:reps reps))) 
-            (tag-varbinds
-              qres 
-              (let ((base (if (eq? bases #f) 
-                            (cdr query )
-                            bases)))
-                (if (eq? (car query) SNMP-MSG-GETBULK)
-                  (make-list (length qres) (car base))
-                  base))))))
+      (if (query-aggregate)
+	; This is ugly, probably should use let-syntax or something
+	; to not repeat ourselves 
+	(slot-set! result-set 'results
+		   (delay 
+		     (let* ((qres  (synch-query (car query) (cdr query)  #:nrs nrs #:reps reps))) 
+		       (tag-varbinds
+			 qres 
+			 (let ((base (if (eq? bases #f) 
+				       (cdr query )
+				       bases)))
+			   (if (eq? (car query) SNMP-MSG-GETBULK)
+			     (make-list (length qres) (car base))
+			     base)))))) 
+	(slot-set! result-set 'results
+		   (let* ((qres  (synch-query (car query) (cdr query)  #:nrs nrs #:reps reps))) 
+		     (tag-varbinds
+		       qres 
+		       (let ((base (if (eq? bases #f) 
+				     (cdr query )
+				     bases)))
+			 (if (eq? (car query) SNMP-MSG-GETBULK)
+			   (make-list (length qres) (car base))
+			   base)))))) 
       (set! (results result-set) res))
 
     (if (not (query-aggregate))
