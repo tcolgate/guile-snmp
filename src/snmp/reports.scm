@@ -94,13 +94,12 @@
                                     ; looking through all the other modules that symbols could be
                                     ; devlared in, including the current module
                                     (if (and reports:autotranslate (eq? def? #f))
-                                      (if (=  (length 
-                                                (filter 
-                                                  (lambda (m) (module-symbol-interned? m sym)) 
-                                                  (filter 
-                                                    (lambda (x) (not (eq? mod x)))
-                                                    (module-uses (current-module)))))
-                                              0)
+                                      (if (let nextmodules ((mods (module-uses (current-module))))
+                                            (if (module-symbol-interned? (car mods) sym)
+                                              #f
+                                              (if (equal? (cdr mods) '()) 
+                                                #t
+                                                (nextmodules (cdr mods)))) ) 
                                         (let ((oid (snmp-parse-oid (symbol->string sym))))
                                           (if (unspecified? oid)
                                             #f

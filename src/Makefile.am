@@ -37,7 +37,7 @@ guilereports_DATA = $(SCHEMESOURCES2) $(GOBJECTS2)
 bin_PROGRAMS = snmp-shell
 
 dist_man_MANS = snmp-shell.1
-snmp-shell.1: ../src/snmp-shell
+snmp-shell.1: 
 	help2man -o snmp-shell.1 ../meta/snmp-shell; 
 CLEANFILES = snmp-shell.1
 
