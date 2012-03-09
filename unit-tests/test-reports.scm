@@ -10,6 +10,7 @@
 
 (putenv "MIBDIRS=+.")
 (putenv "MIBS=+GUILE-SNMP-TEST-MIB")
+
 (init-reports)
 (disable-query-cache)
 

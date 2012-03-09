@@ -123,8 +123,8 @@ _wrap_snmp_parse_oid (SCM oidname)
    size_t *oidlen = (size_t*)scm_calloc(sizeof(size_t));
    *oidlen=MAX_OID_LEN;
    oid *oidstore = (oid*)scm_calloc(*oidlen * sizeof(oid));
-
-   oid *result = snmp_parse_oid(scm_to_locale_string(oidname), oidstore, oidlen);
+   char *str = scm_to_locale_string(oidname);
+   oid *result = snmp_parse_oid(str, oidstore, oidlen);
   
    SCM scmresult = SCM_UNSPECIFIED; 
    if(result){

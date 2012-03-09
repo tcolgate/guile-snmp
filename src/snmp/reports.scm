@@ -81,35 +81,48 @@
 
 (define reports:autotranslate #t)
 (define-syntax init-reports
-  (syntax-rules ()
-    ((init-reports)
-      (begin 
-	(init-snmp (car (command-line)))
-        (define (oid-lazy-binder mod sym def?)
-          (if (and reports:autotranslate (not def?))
-              (let ((oid (snmp-parse-oid (symbol->string sym))))
-                (if (unspecified? oid)
-                  #f
-                  (let* ((var (make-variable oid)))
-                    (module-add! mod sym var)
-                    var)))
-              #f))
-        (let*((oidmodule (make-module 31 '() oid-lazy-binder))
-              (snmpdupli (lambda(module name int1 val1 int2 val2 var val)
-                                                         (if (equal? oidmodule
-                                                                     int1)
-                                                           (module-variable int2 name)
-                                                           #f)))
-              (dh (module-duplicates-handlers (current-module))))
-          (module-define! duplicate-handlers 'snmpdupli snmpdupli) 
-          (set-module-duplicates-handlers! (current-module)
-                                           (append (list snmpdupli)
-                                             (if (eq? dh #f)
-                                               (default-duplicate-binding-procedures)
-                                               dh)))
-          (set-module-name! oidmodule "(snmp oidbinder)")
-          (set-module-uses! (current-module) 
-            (append (list oidmodule) (module-uses (current-module)))))))))
+  (syntax-rules 
+    ()
+    ((_)
+     (begin 
+       (init-snmp (car (command-line)))
+       (let*((oidmodule (current-module)) 
+             (snmpdupli (lambda(module name int1 val1 int2 val2 var val)
+                          (if (equal? oidmodule
+                                      int1)
+                            (module-variable int2 name)
+                            #f)))
+             (dh (module-duplicates-handlers (current-module))))
+         (set-module-binder! oidmodule (lambda (mod sym def?)
+                                                ; Hitting snmp-parse-oid is expensive, we try and avoid it by
+                                                ; looking through all the other modules that symbols could be
+                                                ; devlared in, including the current module
+                                                (if (and reports:autotranslate (eq? def? #f))
+                                                  (if (=  (length 
+                                                            (append
+                                                              (filter 
+                                                                (lambda (m) (module-symbol-interned? m sym)) 
+                                                                (filter 
+                                                                  (lambda (x) (not (eq? mod x)))
+                                                                  (module-uses (current-module))))
+                                                              (if (module-symbol-interned? 
+                                                                    (current-module) sym)  
+                                                                (list #t)
+                                                                '())))
+                                                          0)
+                                                    (let ((oid (snmp-parse-oid (symbol->string sym))))
+                                                      (if (unspecified? oid)
+                                                        #f
+                                                        (make-variable oid)))
+                                                    #f) 
+                                                  #f))) 
+         (module-define! duplicate-handlers 'snmpdupli snmpdupli) 
+         (set-module-duplicates-handlers! oidmodule
+                                          (append (list snmpdupli)
+                                                  (if (eq? dh #f)
+                                                    (default-duplicate-binding-procedures)
+                                                    dh)))
+         (set! reports:autotranslate #t))))))
 
 
 ; This class is used to represent answers. We use our own dedicated class
@@ -608,7 +621,6 @@
 
 ; Set up the reports environement
 ;
-(set! reports:autotranslate #t)
 (eval-when (eval load compile)
   (init-mib))
 
