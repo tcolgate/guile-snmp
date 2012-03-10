@@ -332,14 +332,23 @@
 	       (format port "#<tree: ~a>" (oid-from-tree-node this)))
 
 (define-method (describe (obj <oid>)) 
-               (format #t "~%OID ~a(~{~d~^.~}):~%" obj (oid->list obj))                           
-               (format #t "~@[Access: ~a~%~]" (access obj)) 
-               (format #t "~@[Type: ~a~%~]" (type obj)) 
+               (format #t "~%OID ~a (~{~d~^.~}):~%~%" obj (oid->list obj))                           
+
+               (format #t "~@[Status: ~a~%~]" (status obj)) 
+               (format #t "~@[Access: ~a~%~%~]" (access obj)) 
+
+               (format #t "Description: ~a~%~%" (description obj))
+
+               (format #t "~@[Type: ~a~%~]" (if (eq? '() (varbinds obj)) 
+                                              (type obj)
+                                              'NOTIFICATION-TYPE)) 
+               (format #t "~@[Display-Hint: ~a~%~]" (display-hint obj)) 
+               (format #t "~@[Units: ~a~%~]" (units obj)) 
                (format #t "~@[Indicies:~%~{  ~a~%~}~]" 
                        (if (eq? '() (indexes obj))
                          #f 
                          (indexes obj))) 
-              (format #t "~@[Rows:~%~{  ~a~%~}~]" 
+               (format #t "~@[Rows:~%~{  ~a~%~}~]" 
                        (if (eq? '() (indexes obj))
                          #f 
                          (children obj))) 
@@ -350,7 +359,10 @@
                            (lambda (e)
                              (list (cdr e) (car e)))
                            (enums obj)))) 
-               (format #t "Description: ~a~%" (description obj))
+               (format #t "~@[Trap Varbinds:~%~{  ~a~%~}~]" 
+                       (if (eq? '() (varbinds obj))
+                         #f 
+                         (varbinds obj)))
                (format #t "~@[Children:~%~{  ~a~%~}~]" 
                        (if (or (not (eq? '() (indexes obj)))
                                (eq? '() (children obj))) 
@@ -374,6 +386,7 @@
 (re-export init-snmp)
 
 (re-export read-module)
+(re-export snmp-set-save-descriptions)
 (re-export snmp-parse-oid)
 
 (re-export get-tree)

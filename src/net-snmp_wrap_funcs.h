@@ -29,6 +29,18 @@ _wrap_read_module (SCM s_0)
    scm_remember_upto_here_1(s_0);
    return SCM_UNSPECIFIED;
 }
+static SCM
+_wrap_snmp_set_save_descriptions (SCM s_0)
+{
+  if(s_0 == SCM_BOOL_T){
+    snmp_set_save_descriptions(1);
+  } else {
+    snmp_set_save_descriptions(0);
+  };
+   
+  scm_remember_upto_here_1(s_0);
+  return SCM_UNSPECIFIED;
+}
 
 static SCM
 _wrap_get_tree_head (void)
@@ -661,6 +673,9 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("read-module", 1, 0, 0, (void *) _wrap_read_module);
   scm_c_export("read-module" , NULL);
+
+  scm_c_define_gsubr("snmp-set-save-descriptions", 1, 0, 0, (void *) _wrap_snmp_set_save_descriptions);
+  scm_c_export("snmp-set-save-descriptions" , NULL);
 
   scm_c_define_gsubr("init-snmp", 1, 0, 0, (void *) _wrap_init_snmp);
   scm_c_export("init-snmp" , NULL);

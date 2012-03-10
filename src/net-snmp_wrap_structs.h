@@ -597,7 +597,7 @@ _wrap_tree_units_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
   scm_remember_upto_here_1(tree);
-  return scm_from_utf8_string(node->units);
+  return node->units != NULL ? scm_from_utf8_string(node->units) : SCM_BOOL_F;
 }
 
 static SCM
@@ -605,7 +605,7 @@ _wrap_tree_hint_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
   scm_remember_upto_here_1(tree);
-  return scm_from_utf8_string(node->hint);
+  return node->hint != NULL ? scm_from_utf8_string(node->hint) : SCM_BOOL_F;
 }
 
 static SCM
