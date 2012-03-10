@@ -63,6 +63,7 @@ static void
 snmp_shell_module (void* arguments)
 {
   scm_c_use_module("oop goops");
+  scm_c_use_module("oop goops describe");
   scm_c_eval_string("(set-module-duplicates-handlers! "
                       "(current-module)"
                       "(list (module-ref duplicate-handlers 'merge-generics)))");
