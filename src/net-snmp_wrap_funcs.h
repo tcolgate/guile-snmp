@@ -29,6 +29,7 @@ _wrap_read_module (SCM s_0)
    scm_remember_upto_here_1(s_0);
    return SCM_UNSPECIFIED;
 }
+
 static SCM
 _wrap_snmp_set_save_descriptions (SCM s_0)
 {
@@ -663,6 +664,85 @@ _wrap_mib_to_asn_type (SCM s_0)
 			  scm_int_from_constant("<mib-type>",s_0)));
 }
 
+/*
+ *  Agent functions
+ */
+
+static SCM
+_wrap_init_agent (SCM name)
+{
+  init_agent(scm_to_utf8_string (name));
+  return SCM_UNSPECIFIED;
+}
+
+
+static SCM
+_wrap_init_master_agent ()
+{
+  init_master_agent();
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_snmp_set_agent_agentx (SCM s_0)
+{
+  if(s_0 == SCM_BOOL_T){
+    netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, NETSNMP_DS_AGENT_ROLE, 1);
+  } else {
+    netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, NETSNMP_DS_AGENT_ROLE, 0);
+  };
+   
+  scm_remember_upto_here_1(s_0);
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_init_vacm_vars ()
+{
+  init_vacm_vars();
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_init_usm_users ()
+{
+  init_usm_users();
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_netsnmp_daemonize (SCM s_0, SCM s_1)
+{
+  int quit = s_0 == SCM_BOOL_T ? 1 : 0;
+  int logstderr = s_1 == SCM_BOOL_T ? 1 : 0;
+
+  netsnmp_daemonize(quit, logstderr);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_agent_check_and_processs (SCM s_0)
+{
+  if(s_0 == SCM_BOOL_T){
+    agent_check_and_process(1);
+  } else {
+    agent_check_and_process(0);
+  };
+   
+  scm_remember_upto_here_1(s_0);
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_snmp_shutdown (SCM s_0)
+{
+  snmp_shutdown(scm_to_utf8_string (s_0));
+  return SCM_UNSPECIFIED;
+}
 
 static void 
 init_snmp_wrap_funcs(void)
@@ -671,14 +751,14 @@ init_snmp_wrap_funcs(void)
   scm_c_define_gsubr("init-mib", 0, 0, 0, (void *) _wrap_init_mib);
   scm_c_export("init-mib" , NULL);
 
+  scm_c_define_gsubr("init-snmp", 1, 0, 0, (void *) _wrap_init_snmp);
+  scm_c_export("init-snmp" , NULL);
+
   scm_c_define_gsubr("read-module", 1, 0, 0, (void *) _wrap_read_module);
   scm_c_export("read-module" , NULL);
 
   scm_c_define_gsubr("snmp-set-save-descriptions", 1, 0, 0, (void *) _wrap_snmp_set_save_descriptions);
   scm_c_export("snmp-set-save-descriptions" , NULL);
-
-  scm_c_define_gsubr("init-snmp", 1, 0, 0, (void *) _wrap_init_snmp);
-  scm_c_export("init-snmp" , NULL);
 
   scm_c_define_gsubr("snmp-parse-oid", 1, 0, 0, (void *) _wrap_snmp_parse_oid);
   scm_c_export("snmp-parse-oid" , NULL);
@@ -778,5 +858,29 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("snmp-sess-add", 2, 0, 0, (void *) _wrap_snmp_sess_add);
   scm_c_export("snmp-sess-add" , NULL);
+
+  scm_c_define_gsubr("init-agent", 1, 0, 0, (void *) _wrap_init_agent);
+  scm_c_export("init-agent" , NULL);
+
+  scm_c_define_gsubr("init-master-agent", 0, 0, 0, (void *) _wrap_init_master_agent);
+  scm_c_export("init-master-agent" , NULL);
+
+  scm_c_define_gsubr("snmp-set-agent-agentx", 1, 0, 0, (void *) _wrap_snmp_set_agent_agentx);
+  scm_c_export("snmp-set-agent-agentx" , NULL);
+
+  scm_c_define_gsubr("init-vacm-vars", 0, 0, 0, (void *) _wrap_init_vacm_vars);
+  scm_c_export("init-vacm-vars" , NULL);
+
+  scm_c_define_gsubr("init-usm-users", 0, 0, 0, (void *) _wrap_init_usm_users);
+  scm_c_export("init-usm-users" , NULL);
+
+  scm_c_define_gsubr("netsnmp-daemonize", 2, 0, 0, (void *) _wrap_netsnmp_daemonize);
+  scm_c_export("netsnmp-daemonize" , NULL);
+
+  scm_c_define_gsubr("agent-check-and-process", 1, 0, 0, (void *) _wrap_agent_check_and_processs);
+  scm_c_export("agent-check-and-process" , NULL);
+
+  scm_c_define_gsubr("snmp-shutdown", 1, 0, 0, (void *) _wrap_snmp_shutdown);
+  scm_c_export("snmp-shutdown" , NULL);
 }
 

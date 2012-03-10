@@ -428,3 +428,12 @@
 
 (re-export netsnmp-oid-is-subtree)
 (re-export mib-to-asn-type)
+
+(re-export init-agent)
+(re-export init-master-agent)
+(re-export snmp-set-agent-agentx)
+(re-export init-vacm-vars)
+(re-export init-usm-users)
+(re-export netsnmp-daemonize)
+(re-export agent-check-and-process)
+(re-export snmp-shutdown)
