@@ -308,23 +308,34 @@
 
 (define-class-wrapped-struct tree label description type access status display-hint 
 			     units enums indexes varbinds parent peers children) 
+
+; These provide a nicer interface to the tree structure when accessed as oids.
+; When used with trees these return types consistent with the raw net-snmp structure
 (define-method (description (o <oid>)) (description (get-tree o (get-tree-head)))) 
-(define-method (type (o <oid>)) (type (get-tree o (get-tree-head)))) 
+(define-method (type (o <oid>)) (mib-to-asn-type (type (get-tree o (get-tree-head))))) 
 (define-method (access (o <oid>)) (access (get-tree o (get-tree-head)))) 
 (define-method (status (o <oid>)) (status (get-tree o (get-tree-head)))) 
 (define-method (display-hint (o <oid>)) (display-hint (get-tree o (get-tree-head)))) 
 (define-method (units (o <oid>)) (units (get-tree o (get-tree-head)))) 
 (define-method (enums (o <oid>)) (enums (get-tree o (get-tree-head)))) 
-(define-method (indexes (o <oid>)) (indexes (get-tree o (get-tree-head)))) 
-(define-method (varbinds (o <oid>)) (varbinds (get-tree o (get-tree-head)))) 
-(define-method (parent (o <oid>)) (parent (get-tree o (get-tree-head)))) 
-(define-method (peers (o <oid>)) (peers (get-tree o (get-tree-head)))) 
-(define-method (children (o <oid>)) (children (get-tree o (get-tree-head)))) 
+(define-method (indexes (o <oid>)) (map snmp-parse-oid (indexes (get-tree o (get-tree-head))))) 
+(define-method (varbinds (o <oid>)) (map snmp-parse-oid (varbinds (get-tree o (get-tree-head))))) 
+(define-method (parent (o <oid>)) (oid-from-tree-node (parent (get-tree o (get-tree-head))))) 
+(define-method (peers (o <oid>)) (map oid-from-tree-node  (peers (get-tree o (get-tree-head))))) 
+(define-method (children (o <oid>)) (map oid-from-tree-node (children (get-tree o (get-tree-head))))) 
 
 (define-method (display (this <tree>) port)
 	       (format port "<tree: ~a>" (oid-from-tree-node this)))
 (define-method (write (this <tree>) port)
 	       (format port "#<tree: ~a>" (oid-from-tree-node this)))
+
+(define-method (describe (obj <oid>)) 
+  (format #t "MIB information for ~a:~%" obj)                           
+  (format #t "Access: ~a~%" (access obj)) 
+  (format #t "Type: ~a~%" (type obj)) 
+  (format #t "Description: ~a~%" (description obj))
+  (newline))
+(export describe)
 
 (define-class-wrapped-struct snmp-session community peername localname local-port 
 			     version context timeout retries callback securityName 
@@ -382,16 +393,3 @@
 
 (re-export netsnmp-oid-is-subtree)
 (re-export mib-to-asn-type)
-
-(define-method (describe (obj <oid>)) 
-  (format #t "MIB information for ~a:~%" obj)                           
-  (format #t "Access: ~a~%" (access obj)) 
-  (format #t "Type: ~a~%" (type obj)) 
-  (format #t "Description: ~a~%" (description obj))
-  (newline))
-
-(export describe)
-
-;(export 
-;  <snmp-session> 
-;  <oid>)
