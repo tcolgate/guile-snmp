@@ -433,7 +433,7 @@
 (re-export init-master-agent)
 (re-export snmp-set-agent-agentx)
 (re-export init-vacm-vars)
-(re-export init-usm-users)
+(re-export init-usm)
 (re-export netsnmp-daemonize)
 (re-export agent-check-and-process)
 (re-export snmp-shutdown)

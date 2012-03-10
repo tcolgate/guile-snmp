@@ -704,9 +704,9 @@ _wrap_init_vacm_vars ()
 }
 
 static SCM
-_wrap_init_usm_users ()
+_wrap_init_usm ()
 {
-  init_usm_users();
+  init_usm();
   return SCM_UNSPECIFIED;
 }
 
@@ -871,8 +871,8 @@ init_snmp_wrap_funcs(void)
   scm_c_define_gsubr("init-vacm-vars", 0, 0, 0, (void *) _wrap_init_vacm_vars);
   scm_c_export("init-vacm-vars" , NULL);
 
-  scm_c_define_gsubr("init-usm-users", 0, 0, 0, (void *) _wrap_init_usm_users);
-  scm_c_export("init-usm-users" , NULL);
+  scm_c_define_gsubr("init-usm", 0, 0, 0, (void *) _wrap_init_usm);
+  scm_c_export("init-usm" , NULL);
 
   scm_c_define_gsubr("netsnmp-daemonize", 2, 0, 0, (void *) _wrap_netsnmp_daemonize);
   scm_c_export("netsnmp-daemonize" , NULL);
