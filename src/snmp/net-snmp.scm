@@ -318,11 +318,13 @@
 (define-method (display-hint (o <oid>)) (display-hint (get-tree o (get-tree-head)))) 
 (define-method (units (o <oid>)) (units (get-tree o (get-tree-head)))) 
 (define-method (enums (o <oid>)) (enums (get-tree o (get-tree-head)))) 
-(define-method (indexes (o <oid>)) (map snmp-parse-oid (indexes (get-tree o (get-tree-head))))) 
 (define-method (varbinds (o <oid>)) (map snmp-parse-oid (varbinds (get-tree o (get-tree-head))))) 
 (define-method (parent (o <oid>)) (oid-from-tree-node (parent (get-tree o (get-tree-head))))) 
 (define-method (peers (o <oid>)) (map oid-from-tree-node  (peers (get-tree o (get-tree-head))))) 
 (define-method (children (o <oid>)) (map oid-from-tree-node (children (get-tree o (get-tree-head))))) 
+(define-method (indexes (o <oid>)) (map snmp-parse-oid (indexes (get-tree o (get-tree-head))))) 
+(define indicies indexes) 
+(export indicies)
 
 (define-method (display (this <tree>) port)
 	       (format port "<tree: ~a>" (oid-from-tree-node this)))
@@ -330,11 +332,31 @@
 	       (format port "#<tree: ~a>" (oid-from-tree-node this)))
 
 (define-method (describe (obj <oid>)) 
-  (format #t "MIB information for ~a:~%" obj)                           
-  (format #t "Access: ~a~%" (access obj)) 
-  (format #t "Type: ~a~%" (type obj)) 
-  (format #t "Description: ~a~%" (description obj))
-  (newline))
+               (format #t "~%OID ~a(~{~d~^.~}):~%" obj (oid->list obj))                           
+               (format #t "~@[Access: ~a~%~]" (access obj)) 
+               (format #t "~@[Type: ~a~%~]" (type obj)) 
+               (format #t "~@[Indicies:~%~{  ~a~%~}~]" 
+                       (if (eq? '() (indexes obj))
+                         #f 
+                         (indexes obj))) 
+              (format #t "~@[Rows:~%~{  ~a~%~}~]" 
+                       (if (eq? '() (indexes obj))
+                         #f 
+                         (children obj))) 
+               (format #t "~@[Enumerations:~%~:{  ~a(~a)~%~}~]" 
+                       (if (eq? '() (enums obj))
+                         #f 
+                         (map 
+                           (lambda (e)
+                             (list (cdr e) (car e)))
+                           (enums obj)))) 
+               (format #t "Description: ~a~%" (description obj))
+               (format #t "~@[Children:~%~{  ~a~%~}~]" 
+                       (if (or (not (eq? '() (indexes obj)))
+                               (eq? '() (children obj))) 
+                         #f 
+                         (children obj)))
+               (newline))
 (export describe)
 
 (define-class-wrapped-struct snmp-session community peername localname local-port 
