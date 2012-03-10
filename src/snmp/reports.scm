@@ -82,8 +82,9 @@
 (define reports:autotranslate #f)
 (define (init-reports) 
   (init-snmp (car (command-line)))
-  (let*((oidmodule (current-module)) 
+  (let*((oidmodule (make-module 31 '())) 
         (snmpdupli (lambda(module name int1 val1 int2 val2 var val)
+                     (format #t "~a ~a~%" int1 int2)
                      (if (equal? oidmodule
                                  int1)
                        (module-variable int2 name)
@@ -95,7 +96,7 @@
                                     ; devlared in, including the current module
                                     (if (and reports:autotranslate (eq? def? #f))
                                       (if (let nextmodules ((mods (module-uses (current-module))))
-                                            (if (module-symbol-interned? (car mods) sym)
+                                            (if(module-symbol-interned? (car mods) sym) 
                                               #f
                                               (if (equal? (cdr mods) '()) 
                                                 #t
@@ -105,7 +106,11 @@
                                             #f
                                             (make-variable oid)))
                                         #f) 
-                                      #f))) 
+                                      #f)))
+    (set-module-name! oidmodule "(snmp oidbinder)")
+    (set-module-uses! (current-module)
+                      (append (list oidmodule)  (module-uses (current-module))))
+
     (module-define! duplicate-handlers 'snmpdupli snmpdupli) 
     (set-module-duplicates-handlers! oidmodule
                                      (append (list snmpdupli)
