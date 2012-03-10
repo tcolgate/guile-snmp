@@ -688,7 +688,7 @@ _wrap_tree_children_get (SCM tree)
   struct tree* p = node->child_list;
   while(p != NULL){
     result = scm_append(scm_list_2(result, scm_list_1(make_wrapped_pointer(smob_tree ,p))));
-    p = p->child_list;
+    p = p->next_peer;
   };
 
   scm_remember_upto_here_1(tree);

@@ -383,6 +383,15 @@
 (re-export netsnmp-oid-is-subtree)
 (re-export mib-to-asn-type)
 
+(define-method (describe (obj <oid>)) 
+  (format #t "MIB information for ~a:~%" obj)                           
+  (format #t "Access: ~a~%" (access obj)) 
+  (format #t "Type: ~a~%" (type obj)) 
+  (format #t "Description: ~a~%" (description obj))
+  (newline))
+
+(export describe)
+
 ;(export 
 ;  <snmp-session> 
 ;  <oid>)
