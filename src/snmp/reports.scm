@@ -84,7 +84,6 @@
   (init-snmp (car (command-line)))
   (let*((oidmodule (make-module 31 '())) 
         (snmpdupli (lambda(module name int1 val1 int2 val2 var val)
-                     (format #t "~a ~a~%" int1 int2)
                      (if (equal? oidmodule
                                  int1)
                        (module-variable int2 name)
@@ -102,7 +101,6 @@
                                                 #t
                                                 (nextmodules (cdr mods)))) ) 
                                         (let ((oid (snmp-parse-oid (symbol->string sym))))
-                                          (format #t "parsed ~a~%" sym)
                                           (if (unspecified? oid)
                                             #f
                                             (make-variable oid)))
