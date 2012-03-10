@@ -102,6 +102,7 @@
                                                 #t
                                                 (nextmodules (cdr mods)))) ) 
                                         (let ((oid (snmp-parse-oid (symbol->string sym))))
+                                          (format #t "parsed ~a~%" sym)
                                           (if (unspecified? oid)
                                             #f
                                             (make-variable oid)))

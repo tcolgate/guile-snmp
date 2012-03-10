@@ -187,7 +187,7 @@ inner_main (void *closure, int argc, char **argv)
       {"mib-descriptions"       ,no_argument       ,&opt_mibdesc  ,1},
       {0, 0, 0, 0}
     }; 
-    c = getopt_long (argc,argv,"VHv:h:c:C:e:s:",long_options, &option_index);
+    c = getopt_long (argc,argv,"VHDv:h:c:C:e:s:",long_options, &option_index);
 
     if (c == -1) break;
     
@@ -241,6 +241,11 @@ inner_main (void *closure, int argc, char **argv)
   if (opt_version){ 
     print_version();
     exit(0);
+  };
+
+  if (opt_mibdesc){ 
+    // This should be available to scheme too
+    snmp_set_save_descriptions(1);
   };
 
   if (optind < argc){
