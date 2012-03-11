@@ -392,6 +392,7 @@
 (re-export init-snmp)
 
 (re-export read-module)
+(re-export which-module)
 (re-export snmp-set-save-descriptions)
 (re-export snmp-parse-oid)
 

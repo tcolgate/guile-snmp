@@ -31,6 +31,17 @@ _wrap_read_module (SCM s_0)
 }
 
 static SCM
+_wrap_which_module (SCM s_0)
+{
+   char *name = scm_to_locale_string(s_0); 
+   int modid = which_module(name);
+   struct module *p = find_module(modid);
+   SCM obj =  make_wrapped_pointer(smob_mib_module ,(void*) p);
+   scm_remember_upto_here_1(s_0);
+   return obj;
+}
+
+static SCM
 _wrap_snmp_set_save_descriptions (SCM s_0)
 {
   if(s_0 == SCM_BOOL_T){
@@ -756,6 +767,9 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("read-module", 1, 0, 0, (void *) _wrap_read_module);
   scm_c_export("read-module" , NULL);
+
+  scm_c_define_gsubr("which-module", 1, 0, 0, (void *) _wrap_which_module);
+  scm_c_export("which-module" , NULL);
 
   scm_c_define_gsubr("snmp-set-save-descriptions", 1, 0, 0, (void *) _wrap_snmp_set_save_descriptions);
   scm_c_export("snmp-set-save-descriptions" , NULL);
