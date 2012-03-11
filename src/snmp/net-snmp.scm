@@ -309,6 +309,7 @@
 (define-class-wrapped-struct tree label description type access status display-hint 
 			     units enums indexes varbinds parent peers children mib-module) 
 
+
 ; These provide a nicer interface to the tree structure when accessed as oids.
 ; When used with trees these return types consistent with the raw net-snmp structure
 (define-method (description (o <oid>)) (description (get-tree o (get-tree-head)))) 
@@ -331,6 +332,12 @@
 	       (format port "<tree: ~a>" (oid-from-tree-node this)))
 (define-method (write (this <tree>) port)
 	       (format port "#<tree: ~a>" (oid-from-tree-node this)))
+
+(define-method (find-mib-root-node (root <oid>) mib)
+  (oid-from-tree-node (find-mib-root-node (get-tree root (get-tree-head)) mib)))
+
+(define-method (find-mib-root-node mib)
+  (find-mib-root-node (snmp-parse-oid "iso") mib))
 
 (define-method (describe (obj <oid>)) 
                (format #t "~%OID ~a (~{~d~^.~}) from ~a (~a):~%~%" 
@@ -387,6 +394,30 @@
 (define-class-wrapped-struct snmp-fdinfo)
 (define-class-wrapped-struct netsnmp-transport)
 (define-class-wrapped-struct mib-module name file)
+
+(define-method (find-mib-root-node (root <tree>) (mib <mib-module>))
+  (let walkloop ((nodes (children root)))
+    (if (not (equal? '() nodes))
+      (if (equal? (name mib) (name (mib-module (car nodes))))
+        (car nodes)
+        (walkloop (append (cdr nodes)  (children (car nodes))))))))
+
+(define-method (find-mib-root-node (root <tree>) (mib-name <string>))
+  (find-mib-root-node root (which-module mib-name)))
+
+(define-method (describe (obj <mib-module>))
+               (describe (find-mib-root-node obj)))
+
+(export find-mib-root-node)
+
+(define-syntax describe-mib
+  (syntax-rules ()
+                ((_ mib)
+                 (begin
+                   (read-module (symbol->string (quote mib)))
+                   (describe (which-module (symbol->string (quote mib))))))))
+
+(export-syntax describe-mib)
 
 (re-export init-mib)
 (re-export init-snmp)
