@@ -307,11 +307,12 @@
 			,@slotexps)))))
 
 (define-class-wrapped-struct tree label description type access status display-hint 
-			     units enums indexes varbinds parent peers children) 
+			     units enums indexes varbinds parent peers children mib-module) 
 
 ; These provide a nicer interface to the tree structure when accessed as oids.
 ; When used with trees these return types consistent with the raw net-snmp structure
 (define-method (description (o <oid>)) (description (get-tree o (get-tree-head)))) 
+(define-method (mib-module (o <oid>)) (mib-module (get-tree o (get-tree-head)))) 
 (define-method (type (o <oid>)) (mib-to-asn-type (type (get-tree o (get-tree-head))))) 
 (define-method (access (o <oid>)) (access (get-tree o (get-tree-head)))) 
 (define-method (status (o <oid>)) (status (get-tree o (get-tree-head)))) 
@@ -332,7 +333,11 @@
 	       (format port "#<tree: ~a>" (oid-from-tree-node this)))
 
 (define-method (describe (obj <oid>)) 
-               (format #t "~%OID ~a (~{~d~^.~}):~%~%" obj (oid->list obj))                           
+               (format #t "~%OID ~a (~{~d~^.~}) from ~a (~a):~%~%" 
+                       obj 
+                       (oid->list obj) 
+                       (name (mib-module obj))
+                       (file (mib-module obj)))                           
 
                (format #t "~@[Status: ~a~%~]" (status obj)) 
                (format #t "~@[Access: ~a~%~%~]" (access obj)) 
@@ -381,6 +386,7 @@
 (define-class-wrapped-struct pdu-variable name type value)
 (define-class-wrapped-struct snmp-fdinfo)
 (define-class-wrapped-struct netsnmp-transport)
+(define-class-wrapped-struct mib-module name file)
 
 (re-export init-mib)
 (re-export init-snmp)

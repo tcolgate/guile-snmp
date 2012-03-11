@@ -22,6 +22,7 @@ typedef enum snmp_wrap_smob_subtypes {
   smob_snmp_session = 0,
   smob_snmp_single_session,
   smob_tree,
+  smob_mib_module,
   smob_pdu,
   smob_pdu_variable,
   smob_snmp_fdinfo,
@@ -34,6 +35,7 @@ wrap_smob_typedef_t wrap_smob_types[] = {
   {"<snmp-session>", NULL, NULL, NULL, NULL},
   {"<snmp-single-session>", NULL, NULL, NULL, NULL},
   {"<tree>", NULL, NULL, NULL, NULL},
+  {"<mib-module>", NULL, NULL, NULL, NULL},
   {"<pdu>", NULL, NULL, NULL, NULL},
   {"<pdu-variable>", NULL, NULL, NULL, NULL},
   {"<snmp-fdinfo>", NULL, NULL, NULL, NULL},
@@ -696,6 +698,40 @@ _wrap_tree_children_get (SCM tree)
   return result;
 }
 
+static SCM
+_wrap_tree_module_get (SCM tree)
+{
+  struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
+  scm_remember_upto_here_1(tree);
+  return make_wrapped_pointer(smob_mib_module ,find_module(node->modid));
+}
+
+/*
+ * Wrap struct module
+ */
+
+static SCM
+_wrap_initialize_module (SCM obj)
+{
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_module_name_get (SCM s_0)
+{
+  struct module *p = (struct module*) pointer_from_wrapped_smob(smob_mib_module, s_0);
+  scm_remember_upto_here_1(s_0);
+  return p->name != NULL ? scm_from_utf8_string(p->name) : SCM_BOOL_F;
+}
+
+static SCM
+_wrap_module_file_get (SCM s_0)
+{
+  struct module *p = (struct module*) pointer_from_wrapped_smob(smob_mib_module, s_0);
+  scm_remember_upto_here_1(s_0);
+  return p->file != NULL ? scm_from_utf8_string(p->file) : SCM_BOOL_F;
+}
+
 /*
  * Wrap netsnmp_pdu* as pdu 
  */
@@ -979,6 +1015,7 @@ static void init_snmp_wrap_structs(void)
   DEFINE_SLOT_READONLY("tree" , tree , "parent" ,parent)
   DEFINE_SLOT_READONLY("tree" , tree , "peers" ,peers)
   DEFINE_SLOT_READONLY("tree" , tree , "children" ,children)
+  DEFINE_SLOT_READONLY("tree" , tree , "mib-module" ,module)
   scm_c_define_gsubr ("initialize-tree", 2, 0, 0, _wrap_initialize_tree);
   scm_c_export("initialize-tree" , NULL);
 
@@ -1021,5 +1058,10 @@ static void init_snmp_wrap_structs(void)
 
   scm_c_define_gsubr ("initialize-netsnmp-transport", 2, 0, 0, _wrap_initialize_netsnmp_transport);
   scm_c_export("initialize-netsnmp-transport" , NULL);
+
+  DEFINE_SLOT_READONLY("mib-module" , module, "name" ,name)
+  DEFINE_SLOT_READONLY("mib-module" , module, "file" ,file)
+  scm_c_define_gsubr ("initialize-mib-module", 2, 0, 0, _wrap_initialize_module);
+  scm_c_export("initialize-mib-module" , NULL);
 }
 
