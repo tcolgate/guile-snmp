@@ -415,7 +415,8 @@
                 ((_ mib)
                  (begin
                    (read-module (symbol->string (quote mib)))
-                   (describe (which-module (symbol->string (quote mib))))))))
+                   (define mib (which-module (symbol->string (quote mib))))
+                   (describe mib)))))
 
 (export-syntax describe-mib)
 
