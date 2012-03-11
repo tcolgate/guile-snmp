@@ -72,12 +72,15 @@
 
 (define-syntax use-mibs
   (syntax-rules ()
-    ((_ names ...)
-     (eval-when (eval load compile)
-       (for-each 
-          (lambda(mib)
-            (read-module (symbol->string mib)))
-          '(names  ...))))))
+                ((_ name)
+                 (eval-when (eval load compile)
+                   (begin
+                     (read-module (symbol->string (quote name)))
+                     (define name (which-module (symbol->string (quote name)))))))
+                ((_ name names ...)
+                 (begin
+                   (use-mibs name) 
+                   (use-mibs names ...)))))
 
 (define reports:autotranslate #f)
 (define (init-reports) 
