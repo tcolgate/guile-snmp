@@ -15,8 +15,7 @@
     mac-as-oid
     ipstr-to-str
     str-to-ipstr
-    get-oid-type
-  ))
+    get-oid-type))
 
 (enable-primitive-generic! +)
 
