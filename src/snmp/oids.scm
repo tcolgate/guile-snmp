@@ -103,6 +103,14 @@
 (define-method (% (s <integer>)(id <oid>))
   (oidvector-ref (slot-ref id '_vec) (- s 1)))
 
+(define-generic /)
+
+(define-method (/ (oid1 <oid>)(oid2 <oid>))
+   "Check if oid2 is a prefix of oid1"
+   (if (< (oid-length oid2) (oid-length oid1))
+     (equal? oid2 (% 1 (oid-length oid2) oid1))
+     #f))
+
 (define (get-oid-type oid)
    (slot-ref (get-tree oid (get-tree-head)) 'type))
 

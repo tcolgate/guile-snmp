@@ -42,20 +42,24 @@
   (define-method (display (this <oid>) port)
 		 (if (oid-translate)
 		   (if (> (length (oid->list this)) 0) 
-		     (let* ((node     (get-tree this (get-tree-head)))
-			    (basename (slot-ref node 'label))
-			    (diff     (- (oid-from-tree-node node) this)))
-		       (format port "~a~{.~d~}" basename (oid->list diff))) 
+		    (let ((node (get-tree this (get-tree-head))))
+		       (if (oid? node)
+			 (let* ((basename (slot-ref node 'label))
+				(diff     (- (oid-from-tree-node node) this)))
+			   (format port "~a~{.~d~}" basename (oid->list diff)))
+			 (format port "~{.~d~}" (oid->list this)))) 
 		     (format port "(empty-oid)" ))
 		   (format port "~{.~d~}" (oid->list this))))
 
   (define-method (write (this <oid>) port)
 		 (if (oid-translate)
 		   (if (> (length (oid->list this)) 0) 
-		     (let* ((node     (get-tree this (get-tree-head)))
-			    (basename (slot-ref node 'label))
-			    (diff     (- (oid-from-tree-node node) this)))
-		       (format port "#<oid: ~a~{.~d~}>#" basename (oid->list  diff))) 
+		     (let ((node (get-tree this (get-tree-head))))
+		       (if (oid? node)
+			 (let* ((basename (slot-ref node 'label))
+				(diff     (- (oid-from-tree-node node) this)))
+			   (format port "~a~{.~d~}" basename (oid->list diff)))
+			 (format port "~{.~d~}" (oid->list this))))
 		     (format port "#<oid: (empty-oid>#")) 
 		   (format port "#<oid: ~{.~d~}>#" (oid->list this))))
 
@@ -80,6 +84,9 @@
   (define (oid-length this)
     (length (oid->list this)))
 
+  (define (oid? this)
+    (eq?  (class-of this) <oid>))
+
   (export 
     <oid> 
     oid-translate
@@ -94,6 +101,7 @@
     list->oid 
     oid->list 
     oid-length
+    oid?
     empty-oidvec)
 
   ; TODO: This needs to track the library version really

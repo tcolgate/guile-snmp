@@ -72,7 +72,10 @@ _wrap_get_tree (SCM oidscm, SCM treehead)
 
   struct tree* result = get_tree(temp_oid,len,node);
 
-  SCM scmresult = make_tree_smob_from_ptr(result);
+  SCM scmresult = SCM_BOOL_F;
+  if(NULL != result){
+    scmresult = make_tree_smob_from_ptr(result);
+  };
 
   free(temp_oid);
 
