@@ -1,4 +1,4 @@
-(define-module (test-reporst)
+(define-module (test-reports)
  #:use-module (oop goops)
  #:duplicates (merge-generics)
  #:use-module (srfi srfi-1) 
