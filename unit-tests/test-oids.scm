@@ -16,6 +16,12 @@
 (define-method (test-length (self <test-oids>))
   (assert-equal 4 (oid-length (oid1 self))))
 
+(define-method (test-oid?-1 (self <test-oids>))
+  (assert-equal #t (oid? (oid1 self))))
+
+(define-method (test-oid?-2 (self <test-oids>))
+  (assert-equal #f (oid? (list 1 2 3 4))))
+
 (define-method (test-add-oids (self <test-oids>))
   (assert-equal (list->oid (list 1 2 3 4 1 2 3 4 5 6))
                 (+ (oid1 self) (oid2 self))))
