@@ -77,6 +77,9 @@
   (define-method (list->oid this)
 		 (make <oid> #:value (list->oidvector this)))
 
+  (define (oid-length this)
+    (length (oid->list this)))
+
   (export 
     <oid> 
     oid-translate
@@ -90,6 +93,7 @@
     oidvector-set!
     list->oid 
     oid->list 
+    oid-length
     empty-oidvec)
 
   ; TODO: This needs to track the library version really
