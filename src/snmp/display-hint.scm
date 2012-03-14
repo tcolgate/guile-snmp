@@ -37,28 +37,42 @@
 
 (define (apply-display-hint bv formatter)
   ; The last formatter
-  (let ((finalhint (list-ref formatter (- (length formatter) 1)))
-	(wip "")
-	(s 0)
-	(e 10))
+  (let* ((finalhint (list-ref formatter (- (length formatter) 1)))
+  	 (wip "")
+	 (s 0)
+	 (len 36)
+	 (consume (lambda (n)
+		    (if (> (+ s n)  len) (throw 'empty (list 'blah)))
+;		    (let ((c (bytevector-u8-ref bv s))
+		    (let ((c (make-list n 2))) 
+			  (set! s (+ s n)) 
+			  c)))
+	 (left    (lambda () (- len s)))
+	 (apply-subhint (lambda (h)
+			  (let* ((rep?    (list-ref h 0))
+				 (i       (list-ref h 1))
+				 (radix   (list-ref h 2))
+				 (repsep? (list-ref h 3))
+				 (reptrm? (list-ref h 4))
+				 (reps    (if rep?
+					    (car (consume 1)) 
+					    1)))
+			    (let reploop ((r reps))
+			      (if (> r 0)
+				(begin
+                                  (format #t "format ~a chars as ~a. ~a times: got ~a~%" 
+					  i radix reps (consume i))
+				  (reploop (- r 1)))))))))
 
     (let dhintloop ((f formatter))
       (if (not (eq? f '()))
-	(let* ((subhint (car f))
-	       (rep?    (list-ref subhint 0))
-	       (i       (list-ref subhint 1))
-	       (radix   (list-ref subhint 2))
-	       (repsep? (list-ref subhint 3))
-	       (reptrm? (list-ref subhint 4))
-	       (reps    (if rep?
-			  ;(let ((c (bytevector-u8-ref))) (set! s (+ s 1)) c)
-			  2
-			  1)))
-	  (let reploop ((r reps))
-	    (if (> r 0)
-	      (begin
-		(format #t "pull ~a bytes and format as ~a~%" i radix)
-		(reploop (- r 1)))))
-	  (dhintloop (cdr f)))))))
+	(begin (apply-subhint (car f))
+	  (dhintloop (cdr f)))))
 
+    (let finalloop ((l (left))) 
+      (if(> (left) 0)
+	(begin 
+	  (apply-subhint finalhint)
+	  (finalloop (left)))))))
 
+(apply-display-hint ""  (dhint->formatter "0a[2x:2x:2x:2x:2x:2x:2x:2x]0a:2d"))
