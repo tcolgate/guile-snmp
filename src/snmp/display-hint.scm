@@ -40,7 +40,7 @@
   (let* ((finalhint (list-ref formatter (- (length formatter) 1)))
   	 (wip "")
 	 (s 0)
-	 (len 36) 
+	 (len (bytevector-length bv)) 
 	 (consume (lambda (n)
 		    (if (> (+ s n)  len) (throw 'empty (list 'blah))
 		    (let* ((r (make-bytevector n))) 
@@ -57,12 +57,13 @@
 				 (reptrm? (list-ref h 4))
 				 (reps    (if rep?
 					    (bytevector-u8-ref (consume 1)) 
-					    1)))
+					    1))
+				 (use     (min i (left))))
 			    (let reploop ((r reps))
 			      (if (> r 0)
 				(begin
                                   (format #t "format ~a chars as ~a. ~a times: got ~a~%" 
-					  i radix reps (consume i))
+					  use radix reps (consume use))
 				  (reploop (- r 1))))))))) 
 
     (let dhintloop ((f formatter))
@@ -77,5 +78,4 @@
 	  (finalloop (left)))))))
 
 (define testbv #vu8(2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1))
-(display testbv) (newline)
 (apply-display-hint testbv  (dhint->formatter "0a[2x:2x:2x:2x:2x:2x:2x:2x]0a:2d"))
