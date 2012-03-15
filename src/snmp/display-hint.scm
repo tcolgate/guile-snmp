@@ -25,8 +25,8 @@
 							     ((#\d) 10)
 							     ((#\o) 8)
 							     ((#\x) 16)
-							     ((#\a) 'ascii)
-							     ((#\t) 'unicode))
+							     ((#\a) #\a)
+							     ((#\t) #\t))
 							   #f)
 							 (if (not (string=? (match:substring match 4) ""))
 							   (string-ref (match:substring match 4) 0) #f)
@@ -56,15 +56,26 @@
 				 (repsep? (list-ref h 3))
 				 (reptrm? (list-ref h 4))
 				 (reps    (if rep?
-					    (bytevector-u8-ref (consume 1)) 
+					    (bytevector-u8-ref (consume 1) 0) 
 					    1))
 				 (use     (min i (left))))
 			    (let reploop ((r reps))
 			      (if (> r 0)
-				(begin
-                                  (format #t "format ~a chars as ~a. ~a times: got ~a~%" 
-					  use radix reps (consume use))
-				  (reploop (- r 1))))))))) 
+				(if (> i 0)
+				  (let ((bytes (consume use)))
+				    (set! wip 
+				      (string-append 
+					wip  
+					(case radix
+					  ((#\a)
+					   (utf8->string bytes)) 
+					  ((#\t)
+					   (utf8->string bytes)) 
+					  (else
+					    (let ((num (bytevector-uint-ref bytes 0 (endianness big) use)))
+					      (number->string num radix)))))))) 
+				(reploop (- r 1)))))
+			  wip))) 
 
     (let dhintloop ((f formatter))
       (if (not (eq? f '()))
@@ -75,7 +86,22 @@
       (if(> (left) 0)
 	(begin 
 	  (apply-subhint finalhint)
-	  (finalloop (left)))))))
+	  (finalloop (left)))))
+    wip))
 
-(define testbv #vu8(2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1))
-(apply-display-hint testbv  (dhint->formatter "0a[2x:2x:2x:2x:2x:2x:2x:2x]0a:2d"))
+(define testbv #vu8(255 255 127 127 255 1 1 1 1 1 0 0 0 0 0 0 0 0))
+(display (apply-display-hint testbv  (dhint->formatter "0a[2x:2x:2x:2x:2x:2x:2x:2x]0a:2d"))) 
+(newline)
+
+(define testbv2 (string->utf8 "Hello World"))
+(display (apply-display-hint testbv2  (dhint->formatter "255a"))) 
+(newline)
+
+(define testbv3 (string->utf8 "Hello World"))
+(display (apply-display-hint testbv3  (dhint->formatter "4a"))) 
+(newline)
+
+(define testbv4 (string->utf8 "Hello World"))
+(display (apply-display-hint testbv4  (dhint->formatter "255t"))) 
+(newline)
+
