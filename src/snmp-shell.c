@@ -96,6 +96,7 @@ snmp_shell_module (void* arguments)
   scm_c_eval_string("(activate-readline)");
 
   scm_c_use_module("snmp net-snmp");
+  scm_c_use_module("snmp display-hint");
   scm_c_use_module("snmp oids");
   scm_c_use_module("snmp reports");
   scm_c_use_module("snmp reports cache");

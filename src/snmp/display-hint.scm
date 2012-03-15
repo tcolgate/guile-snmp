@@ -40,9 +40,10 @@
 				     (append hints (list hintform)))))))
     subhints))
 
-(define (apply-octet-str-display-hint bv formatter)
+(define (apply-octet-str-display-hint bv formatstr)
   ; The last formatter
-  (let* ((finalhint (list-ref formatter (- (length formatter) 1)))
+  (let* ((formatter (dhint->formatter formatstr)) 
+	 (finalhint (list-ref formatter (- (length formatter) 1)))
   	 (wip "")
 	 (s 0)
 	 (len (bytevector-length bv)) 

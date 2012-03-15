@@ -406,7 +406,7 @@
 
 (define-class-wrapped-struct snmp-single-session)
 (define-class-wrapped-struct pdu errstat variables non-repeaters max-repetitions)
-(define-class-wrapped-struct pdu-variable name type value)
+(define-class-wrapped-struct pdu-variable name type value value-bytes)
 (define-class-wrapped-struct snmp-fdinfo)
 (define-class-wrapped-struct netsnmp-transport)
 (define-class-wrapped-struct mib-module name file)

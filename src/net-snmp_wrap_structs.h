@@ -991,6 +991,25 @@ _wrap_pdu_variable_value_get(SCM s_0)
   return result;
 };
 
+SCM 
+_wrap_pdu_variable_value_bytes_get(SCM s_0) 
+{ 
+  SCM result = SCM_UNSPECIFIED;
+  netsnmp_variable_list *p = (netsnmp_variable_list*) pointer_from_wrapped_smob(smob_pdu_variable, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+
+  int len = p->val_len;
+  scm_t_uint8 *data = p->val.string;
+  result = scm_c_make_bytevector (len);
+  int i;
+  for(i = 0; i < len ; i++){
+    scm_c_bytevector_set_x(result,i,data[i]);
+  };
+
+  scm_remember_upto_here_1(s_0);
+  return result;
+};
+
 /*
  * Asynch fdset info
  */
@@ -1108,6 +1127,7 @@ static void init_snmp_wrap_structs(void)
   DEFINE_SLOT_READONLY("pdu-variable" , pdu_variable, "name" ,name)
   DEFINE_SLOT_READONLY("pdu-variable" , pdu_variable, "type" ,type)
   DEFINE_SLOT_READONLY("pdu-variable" , pdu_variable, "value" ,value)
+  DEFINE_SLOT_READONLY("pdu-variable" , pdu_variable, "value-bytes" ,value_bytes)
   scm_c_define_gsubr ("initialize-pdu-variable", 2, 0, 0, _wrap_initialize_pdu_variable);
   scm_c_export("initialize-pdu-variable" , NULL);
 
