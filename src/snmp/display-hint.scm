@@ -8,7 +8,12 @@
 ;;
 (define-module (snmp display-hint)
 	       #:use-module (ice-9 regex)
-	       #:use-module (rnrs bytevectors))
+	       #:use-module (rnrs bytevectors)
+	       #:export (
+		dhint-integer-regex
+		dhint-octect-str-regex
+		dhint->formatter
+		apply-octet-str-display-hint))
 
 (define dhint-integer-regex (make-regexp "([xoat]|(d(-[0-9]+){0,1}))"))
 
@@ -29,13 +34,13 @@
 							     ((#\t) #\t))
 							   #f)
 							 (if (not (string=? (match:substring match 4) ""))
-							   (string-ref (match:substring match 4) 0) #f)
+							   (match:substring match 4) #f)
 							 (if (not (string=? (match:substring match 5) ""))
-							   (string-ref (match:substring match 5) 0) #f) )))
+							   (match:substring match 5) #f) )))
 				     (append hints (list hintform)))))))
     subhints))
 
-(define (apply-display-hint bv formatter)
+(define (apply-octet-str-display-hint bv formatter)
   ; The last formatter
   (let* ((finalhint (list-ref formatter (- (length formatter) 1)))
   	 (wip "")
@@ -53,28 +58,40 @@
 			  (let* ((rep?    (list-ref h 0))
 				 (i       (list-ref h 1))
 				 (radix   (list-ref h 2))
-				 (repsep? (list-ref h 3))
-				 (reptrm? (list-ref h 4))
+				 (dispsep (list-ref h 3))
+				 (reptrm  (list-ref h 4))
 				 (reps    (if rep?
 					    (bytevector-u8-ref (consume 1) 0) 
 					    1))
 				 (use     (min i (left))))
 			    (let reploop ((r reps))
 			      (if (> r 0)
-				(if (> i 0)
-				  (let ((bytes (consume use)))
-				    (set! wip 
-				      (string-append 
-					wip  
-					(case radix
-					  ((#\a)
-					   (utf8->string bytes)) 
-					  ((#\t)
-					   (utf8->string bytes)) 
-					  (else
-					    (let ((num (bytevector-uint-ref bytes 0 (endianness big) use)))
-					      (number->string num radix)))))))) 
-				(reploop (- r 1)))))
+				(begin
+				  (if (> i 0)
+				    (let ((bytes (consume use)))
+				      (set! wip 
+					(string-append 
+					  wip  
+					  (case radix
+					    ((#\a)
+					     (utf8->string bytes)) 
+					    ((#\t)
+					     (utf8->string bytes)) 
+					    (else
+					      (let ((num (bytevector-uint-ref bytes 0 (endianness big) use)))
+						(number->string num radix)))))))) 
+				  (if (and (not (eq? #f dispsep)); If a display seperator is provided
+					   (if(eq? #f reptrm)    ; AND we aren't about to display a repeat
+					     #t                  ; seperator, AND there is still stuff left to display
+					     (> r 1))
+					   (not (eq? (left) 0))) 
+				    (set! wip (string-append wip dispsep)))
+				  (reploop (- r 1)))
+				(if (and  
+				      rep? 
+				      (not (eq? #f reptrm)) 
+				      (not (eq? (left) 0)))
+				  (set! wip (string-append wip reptrm))))))
 			  wip))) 
 
     (let dhintloop ((f formatter))
@@ -88,20 +105,4 @@
 	  (apply-subhint finalhint)
 	  (finalloop (left)))))
     wip))
-
-(define testbv #vu8(255 255 127 127 255 1 1 1 1 1 0 0 0 0 0 0 0 0))
-(display (apply-display-hint testbv  (dhint->formatter "0a[2x:2x:2x:2x:2x:2x:2x:2x]0a:2d"))) 
-(newline)
-
-(define testbv2 (string->utf8 "Hello World"))
-(display (apply-display-hint testbv2  (dhint->formatter "255a"))) 
-(newline)
-
-(define testbv3 (string->utf8 "Hello World"))
-(display (apply-display-hint testbv3  (dhint->formatter "4a"))) 
-(newline)
-
-(define testbv4 (string->utf8 "Hello World"))
-(display (apply-display-hint testbv4  (dhint->formatter "255t"))) 
-(newline)
 
