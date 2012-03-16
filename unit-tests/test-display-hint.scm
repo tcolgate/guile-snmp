@@ -6,6 +6,12 @@
 
 (define-class <test-display-hint> (<test-case>))
 
+(define-method (test-empty-string (self <test-display-hint>))
+	       (assert-equal ""
+			     (apply-octet-str-display-hint 
+			       #vu8() 
+			       "2x:")))
+
 (define-method (test-ascii-string (self <test-display-hint>))
 	       (assert-equal "Hello World"
 			     (apply-octet-str-display-hint 
