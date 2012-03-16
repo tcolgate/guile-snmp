@@ -278,6 +278,27 @@
 (define-constant <callback-op> OP-CONNECT)
 (define-constant <callback-op> OP-DISCONNECT)
 
+(define-constant-class <mib-handler>)
+(define-constant <mib-handler> MIB-HANDLER-AUTO-NEXT)
+(define-constant <mib-handler> MIB-HANDLER-AUTO-NEXT-OVERRIDE-ONCE)
+(define-constant <mib-handler> MIB-HANDLER-INSTANCE)
+(define-constant <mib-handler> MIB-HANDLER-CUSTOM4)
+(define-constant <mib-handler> MIB-HANDLER-CUSTOM3)
+(define-constant <mib-handler> MIB-HANDLER-CUSTOM2)
+(define-constant <mib-handler> MIB-HANDLER-CUSTOM1)
+
+(define-constant-class <mib-handler-cap>)
+(define-constant <mib-handler-cap> HANDLER-CAN-GETANDGETNEXT)
+(define-constant <mib-handler-cap> HANDLER-CAN-SET)
+(define-constant <mib-handler-cap> HANDLER_CAN-GETBULK)
+(define-constant <mib-handler-cap> HANDLER-CAN-NOT-CREATE)
+(define-constant <mib-handler-cap> HANDLER-CAN-BABY-STEP)
+(define-constant <mib-handler-cap> HANDLER-CAN-STASH)
+(define-constant <mib-handler-cap> HANDLER-CAN-RONLY)
+(define-constant <mib-handler-cap> HANDLER-CAN-RWRITE)
+(define-constant <mib-handler-cap> HANDLER-CAN-SET_ONLY)
+(define-constant <mib-handler-cap> HANDLER-CAN-DEFAULT)
+
 (define-syntax define-class-wrapped-struct
   (lambda(stx)
     (let* ((input (syntax->datum stx))
