@@ -68,7 +68,7 @@
 			    (let reploop ((r reps))
 			      (if (> r 0)
 				(begin
-				  (if (> i 0)
+				  (if (> use 0)
 				    (let ((bytes (consume use)))
 				      (set! wip 
 					(string-append 
@@ -97,7 +97,10 @@
 
     (let dhintloop ((f formatter))
       (if (not (eq? f '()))
-	(begin (apply-subhint (car f))
+	(begin 
+	  (catch 'empty 
+		 (lambda () (apply-subhint (car f)))
+		 (lambda (ex . args) 1)) 
 	  (dhintloop (cdr f))))) 
 
     (let finalloop ((l (left))) 
