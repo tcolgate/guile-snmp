@@ -766,14 +766,12 @@ guile_snmp_Netsnmp_Node_Handler (netsnmp_mib_handler *handler,
   netsnmp_agent_request_info *reqinfo,
   netsnmp_request_info *requests)
 {
-  printf ("got here %p %p %p %p\n", handler, reginfo, reqinfo, requests);
   SCM handfunc = (SCM) handler->myvoid;
   SCM scmhandler = make_wrapped_pointer( smob_netsnmp_mib_handler , handler);
   SCM scmreginfo = make_wrapped_pointer( smob_netsnmp_handler_registration , reginfo);
   SCM scmreqinfo = make_wrapped_pointer( smob_netsnmp_agent_request_info , reqinfo);
   SCM scmrequests = make_wrapped_pointer( smob_netsnmp_request_info , requests);
-
-  int result = scm_to_int(
+  int result = scm_int_from_constant("<snmp-err-status>",
                  scm_call_4(
                    handfunc,
                    scmhandler,
