@@ -529,17 +529,9 @@ scm_to_netsnmp_value_bytes(SCM valscm, u_char typespec, void** bytes, size_t *by
   size_t len = 0;
   size_t iter = 0;
   
-  // Temporary storage
-  in_addr_t       atmp;
-  long            ltmp;
-  u_long          utmp;
-  int             itmp;
-  oid*            oidtmp;
-  struct counter64 c64tmp;
-  
-  
   switch (typespec){
   case ASN_INTEGER:
+  case ASN_GAUGE:
     {
       if ( ! scm_is_signed_integer(valscm, LONG_MIN, LONG_MAX) ){
         scm_throw(
@@ -547,33 +539,45 @@ scm_to_netsnmp_value_bytes(SCM valscm, u_char typespec, void** bytes, size_t *by
             scm_from_locale_string("snmperror")),
           scm_from_locale_string("Data is not a signed integer"));
       };
-      ltmp = scm_to_long(valscm);
-      pointer = &ltmp;
+      pointer =  (void*) (malloc(sizeof(long))); 
+      *((long*) pointer) = scm_to_long(valscm);
       len = sizeof(long);
     };
     break;
     
   case ASN_UINTEGER:
-  case ASN_GAUGE:
   case ASN_COUNTER:
   case ASN_TIMETICKS:
     {
-      if ( ! scm_is_unsigned_integer(valscm, LONG_MIN, LONG_MAX) ){
+      if ( ! scm_is_unsigned_integer(valscm, 0, ULONG_MAX) ){
         scm_throw(
           scm_string_to_symbol(
             scm_from_locale_string("snmperror")),
           scm_from_locale_string("Data is not an unsuigned integer"));
       };
-      utmp = scm_to_ulong(valscm);
-      pointer = (void*) &utmp;
-      len = sizeof(u_long);
+      pointer =  (void*) (malloc(sizeof(unsigned long))); 
+      *((unsigned long*) pointer) = scm_to_ulong(valscm);
+      len = sizeof(unsigned long);
+    };
+    break;
+
+  case ASN_COUNTER64:
+    {
+      if ( ! scm_to_int(scm_integer_length(valscm)) > 64){
+        scm_throw(
+          scm_string_to_symbol(
+            scm_from_locale_string("snmperror")),
+          scm_from_locale_string("Data is not an unsuigned integer"));
+      };
+      pointer =  (void*) (malloc(sizeof(struct counter64))); 
+      ((struct counter64*) pointer)->high = scm_to_ulong(scm_bit_extract(valscm, scm_from_int(31),scm_from_int(63)));
+      ((struct counter64*) pointer)->low = scm_to_ulong(scm_bit_extract(valscm, scm_from_int(0),scm_from_int(31)));
+      len = sizeof(struct counter64);
     };
     break;
     
-  case ASN_IPADDRESS:
   case ASN_OCTET_STR: 
-  case ASN_OPAQUE:
-  case ASN_NSAP:
+  case ASN_BIT_STR:
     {
       if ( ! scm_is_string(valscm) ){
         scm_throw(
@@ -587,18 +591,22 @@ scm_to_netsnmp_value_bytes(SCM valscm, u_char typespec, void** bytes, size_t *by
     
   case ASN_OBJECT_ID:
     {
-      if ( ! scm_is_true(SCM_OIDVECTOR_P (valscm) )){
-        scm_throw(
-          scm_string_to_symbol(
-            scm_from_locale_string("snmperror")),
-          scm_from_locale_string("Data is not an oid"));
-      };
-      pointer = (void*) SCM_OIDVECTOR_ELEMENTS(valscm, &handle, &len, &iter);
+      //if ( ! scm_is_true(SCM_OIDVECTOR_P (valscm) )){
+      //  scm_throw(
+      //    scm_string_to_symbol(
+      //      scm_from_locale_string("snmperror")),
+      //    scm_from_locale_string("Data is not an oid"));
+      //};
+      len = MAX_OID_LEN;
+      pointer = *bytes = (void*)scm_calloc(len * sizeof(oid));
+      scm_to_oid(valscm,(oid**) bytes,&len);
+      pointer = *bytes;
     };
     break;
     
-  case ASN_BIT_STR:
-  case ASN_COUNTER64:
+  case ASN_OPAQUE:
+  case ASN_NSAP:
+  case ASN_IPADDRESS:
   default:
     {
       // signal an error
