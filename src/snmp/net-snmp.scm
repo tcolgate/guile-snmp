@@ -463,7 +463,7 @@
 (define-class-wrapped-struct netsnmp-handler-args)
 (define-class-wrapped-struct netsnmp-delegated-cache)
 (define-class-wrapped-struct netsnmp-agent-request-info mode)
-(define-class-wrapped-struct netsnmp-request-info)
+(define-class-wrapped-struct netsnmp-request-info requestvb next prev)
 
 (define-method (find-mib-root-node (root <tree>) (mib <mib-module>))
   (let walkloop ((nodes (children root)))
@@ -551,3 +551,6 @@
 (re-export netsnmp-register-handler)
 (re-export netsnmp-unregister-handler)
 (re-export netsnmp-register-scalar)
+(re-export netsnmp-check-vb-type)
+(re-export netsnmp-set-request-error)
+(re-export snmp-set-var-typed-value)

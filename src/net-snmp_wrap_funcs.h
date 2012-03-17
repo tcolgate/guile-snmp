@@ -521,18 +521,10 @@ _wrap_snmp_sess_add (SCM s_0, SCM s_1)
   return SCM_UNSPECIFIED;
 }
 
-static SCM
-_wrap_snmp_add_var (SCM s_0, SCM s_1, SCM s_2)
+void
+scm_to_netsnmp_value_bytes(SCM valscm, u_char typespec, void** bytes, size_t *byteslen)
 {
-  netsnmp_pdu *pdu = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
-
-  size_t oidlen = MAX_OID_LEN;
-  oid* temp_oid = (oid*)scm_calloc(oidlen * sizeof(oid));
-  scm_to_oid(s_1,&temp_oid,&oidlen);
-
   scm_t_array_handle handle;
-  u_char typespec; 
-  SCM valscm;
   void* pointer = NULL; 
   size_t len = 0;
   size_t iter = 0;
@@ -545,16 +537,6 @@ _wrap_snmp_add_var (SCM s_0, SCM s_1, SCM s_2)
   oid*            oidtmp;
   struct counter64 c64tmp;
   
-  if (! SCM_CONSP(s_2) ){
-    // signal an error
-    scm_throw(
-      scm_string_to_symbol(
-        scm_from_locale_string("snmperror")),
-      scm_from_locale_string("Malformed data passed to set"));
-  };
-  
-  typespec = scm_int_from_constant("<asn-type>",SCM_CAR(s_2));
-  valscm = SCM_CDR(s_2);
   
   switch (typespec){
   case ASN_INTEGER:
@@ -625,11 +607,38 @@ _wrap_snmp_add_var (SCM s_0, SCM s_1, SCM s_2)
         scm_string_append(
           scm_list_3(
             scm_from_locale_string("Unhandled type("),
-            scm_number_to_string( scm_char_to_integer (SCM_CAR(s_2)),SCM_UNDEFINED),
+            scm_number_to_string(scm_char_to_integer(scm_from_char(typespec)),SCM_UNDEFINED),
             scm_from_locale_string(") in set data"))));
     };
   };
+
+  *bytes = pointer;
+  *byteslen = len;
+};
+
+static SCM
+_wrap_snmp_add_var (SCM s_0, SCM s_1, SCM s_2)
+{
+  netsnmp_pdu *pdu = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
+  void* pointer = NULL; 
+  size_t len = 0;
+
+  size_t oidlen = MAX_OID_LEN;
+  oid* temp_oid = (oid*)scm_calloc(oidlen * sizeof(oid));
+  scm_to_oid(s_1,&temp_oid,&oidlen);
+
+  if (! SCM_CONSP(s_2) ){
+    // signal an error
+    scm_throw(
+      scm_string_to_symbol(
+        scm_from_locale_string("snmperror")),
+      scm_from_locale_string("Malformed data passed to set"));
+  };
   
+  u_char typespec = scm_int_from_constant("<asn-type>",SCM_CAR(s_2));
+  SCM valscm = SCM_CDR(s_2);
+
+  scm_to_netsnmp_value_bytes(valscm, typespec, &pointer, &len);
   snmp_pdu_add_variable(pdu,temp_oid,oidlen,typespec,(void const *)pointer,len);
 
   scm_remember_upto_here_1(s_0);
@@ -867,6 +876,47 @@ _wrap_netsnmp_register_scalar(SCM s_0)
   return SCM_UNSPECIFIED;
 };
 
+SCM
+_wrap_netsnmp_check_vb_type(SCM s_0, SCM s_1)
+{
+  netsnmp_variable_list *p = pointer_from_wrapped_smob(smob_pdu_variable, s_0);
+  int type = scm_int_from_constant("<asn-type>",s_1);
+  SCM result = SCM_UNSPECIFIED;
+
+  result = scm_constant_name_from_int("<snmp-err-status>", netsnmp_check_vb_type(p, type));
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  return result;
+};
+
+SCM
+_wrap_netsnmp_set_request_error(SCM s_0, SCM s_1, SCM s_2)
+{
+  netsnmp_agent_request_info *reqinfo = pointer_from_wrapped_smob(smob_netsnmp_agent_request_info, s_0);
+  netsnmp_request_info *requests = pointer_from_wrapped_smob(smob_netsnmp_request_info, s_1);
+  int err = scm_int_from_constant("<snmp-err-status>",s_2);
+  netsnmp_set_request_error(reqinfo, requests, err );
+  return SCM_UNSPECIFIED;
+};
+
+SCM
+_wrap_snmp_set_var_typed_value(SCM s_0, SCM s_1, SCM s_2)
+{
+  netsnmp_variable_list *p = pointer_from_wrapped_smob(smob_pdu_variable, s_0);
+  int type = scm_int_from_constant("<asn-type>",s_1);
+  void* pointer = NULL;
+  size_t len = 0;
+
+  scm_to_netsnmp_value_bytes(s_2, type, &pointer, &len);
+  snmp_set_var_typed_value(p, type, pointer,len);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  scm_remember_upto_here_1(s_2);
+  return SCM_UNSPECIFIED;
+};
+
 
 
 static void 
@@ -1025,5 +1075,14 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("netsnmp-register-scalar", 1, 0, 0, (void *) _wrap_netsnmp_register_scalar);
   scm_c_export("netsnmp-register-scalar" , NULL);
+  
+  scm_c_define_gsubr("netsnmp-check-vb-type", 2, 0, 0, (void *) _wrap_netsnmp_check_vb_type);
+  scm_c_export("netsnmp-check-vb-type" , NULL);
+
+  scm_c_define_gsubr("netsnmp-set-request-error", 3, 0, 0, (void *) _wrap_netsnmp_set_request_error);
+  scm_c_export("netsnmp-set-request-error" , NULL);
+
+  scm_c_define_gsubr("snmp-set-var-typed-value", 3, 0, 0, (void *) _wrap_snmp_set_var_typed_value);
+  scm_c_export("snmp-set-var-typed-value" , NULL);
 }
 

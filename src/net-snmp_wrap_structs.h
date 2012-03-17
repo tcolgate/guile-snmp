@@ -1200,6 +1200,47 @@ _wrap_initialize_netsnmp_request_info (SCM obj, SCM args)
   return SCM_UNSPECIFIED;
 }
 
+static SCM
+_wrap_netsnmp_request_info_requestvb_get (SCM s_0)
+{
+  SCM result = SCM_UNSPECIFIED;
+  netsnmp_request_info *p = (netsnmp_request_info*) pointer_from_wrapped_smob(smob_netsnmp_request_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+
+  netsnmp_variable_list *res = p->requestvb;
+  result = make_wrapped_pointer(smob_pdu_variable,res);
+
+  scm_remember_upto_here_1(s_0);
+  return result;
+}
+
+static SCM
+_wrap_netsnmp_request_info_next_get (SCM s_0)
+{
+  SCM result = SCM_UNSPECIFIED;
+  netsnmp_request_info *p = (netsnmp_request_info*) pointer_from_wrapped_smob(smob_netsnmp_request_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+
+  netsnmp_request_info *res = p->next;
+  result = make_wrapped_pointer(smob_netsnmp_request_info,res);
+
+  scm_remember_upto_here_1(s_0);
+  return result;
+}
+
+static SCM
+_wrap_netsnmp_request_info_prev_get (SCM s_0)
+{
+  SCM result = SCM_UNSPECIFIED;
+  netsnmp_request_info *p = (netsnmp_request_info*) pointer_from_wrapped_smob(smob_netsnmp_request_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+
+  netsnmp_request_info *res = p->prev;
+  result = make_wrapped_pointer(smob_netsnmp_request_info,res);
+
+  scm_remember_upto_here_1(s_0);
+  return result;
+}
 
 
 #define DEFINE_SLOT_READWRITE(strtype , type , strslot , slot) \
@@ -1296,6 +1337,9 @@ static void init_snmp_wrap_structs(void)
   DEFINE_SLOT_READONLY("netsnmp-agent-request-info" ,netsnmp_agent_request_info, "mode" ,mode)
   scm_c_define_gsubr ("initialize-netsnmp-agent-request-info", 2, 0, 0, _wrap_initialize_netsnmp_agent_request_info);
   scm_c_export("initialize-netsnmp-agent-request-info" , NULL);
+  DEFINE_SLOT_READONLY("netsnmp-request-info" ,netsnmp_request_info, "requestvb" ,requestvb)
+  DEFINE_SLOT_READONLY("netsnmp-request-info" ,netsnmp_request_info, "next" ,next)
+  DEFINE_SLOT_READONLY("netsnmp-request-info" ,netsnmp_request_info, "prev" ,prev)
   scm_c_define_gsubr ("initialize-netsnmp-request-info", 2, 0, 0, _wrap_initialize_netsnmp_request_info);
   scm_c_export("initialize-netsnmp-request-info" , NULL);
 
