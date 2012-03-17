@@ -758,6 +758,36 @@ _wrap_snmp_shutdown (SCM s_0)
   return SCM_UNSPECIFIED;
 }
 
+int 
+guile_snmp_Netsnmp_Node_Handler (netsnmp_mib_handler *handler,
+  /** pointer to registration struct */
+  netsnmp_handler_registration *reginfo,
+  /** pointer to current transaction */
+  netsnmp_agent_request_info *reqinfo,
+  netsnmp_request_info *requests)
+{
+  return 0;
+}
+
+void
+guile_snmp_Netsnmp_Node_Handler_data_free(void* p)
+{
+  return;
+}
+
+static SCM
+_wrap_netsnmp_create_handler(SCM s_0, SCM s_1)
+{
+  char* name = scm_to_latin1_string(s_0);
+  netsnmp_mib_handler *p = netsnmp_create_handler(name, guile_snmp_Netsnmp_Node_Handler);
+  p->myvoid = (void*) s_1;
+  p->data_free = guile_snmp_Netsnmp_Node_Handler_data_free;
+  SCM obj = make_wrapped_pointer( smob_netsnmp_mib_handler , p);
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  return obj;
+};
+
 static void 
 init_snmp_wrap_funcs(void)
 {
@@ -899,5 +929,8 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("snmp-shutdown", 1, 0, 0, (void *) _wrap_snmp_shutdown);
   scm_c_export("snmp-shutdown" , NULL);
+
+  scm_c_define_gsubr("netsnmp-create-handler", 2, 0, 0, (void *) _wrap_netsnmp_create_handler);
+  scm_c_export("netsnmp-create-handler" , NULL);
 }
 

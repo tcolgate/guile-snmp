@@ -431,6 +431,10 @@
 (define-class-wrapped-struct snmp-fdinfo)
 (define-class-wrapped-struct netsnmp-transport)
 (define-class-wrapped-struct mib-module name file)
+(define-class-wrapped-struct netsnmp-mib-handler)
+(define-class-wrapped-struct netsnmp-mib-handler-registration)
+(define-class-wrapped-struct netsnmp-handler-args)
+(define-class-wrapped-struct netsnmp-delegated-cache)
 
 (define-method (find-mib-root-node (root <tree>) (mib <mib-module>))
   (let walkloop ((nodes (children root)))
@@ -513,3 +517,4 @@
 (re-export netsnmp-daemonize)
 (re-export agent-check-and-process)
 (re-export snmp-shutdown)
+(re-export netsnmp-create-handler) 
