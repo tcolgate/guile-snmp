@@ -766,6 +766,7 @@ guile_snmp_Netsnmp_Node_Handler (netsnmp_mib_handler *handler,
   netsnmp_agent_request_info *reqinfo,
   netsnmp_request_info *requests)
 {
+  printf ("got here %p %p %p %p\n", handler, reginfo, reqinfo, requests);
   return 0;
 }
 
@@ -787,6 +788,55 @@ _wrap_netsnmp_create_handler(SCM s_0, SCM s_1)
   scm_remember_upto_here_1(s_1);
   return obj;
 };
+
+SCM
+_wrap_netsnmp_handler_registration_create(SCM s_0, SCM s_1, SCM s_2, SCM s_3)
+{
+  char* name = scm_to_latin1_string(s_0);
+  netsnmp_mib_handler *handler = pointer_from_wrapped_smob(smob_netsnmp_mib_handler, s_1);
+  size_t temp_oidlen = MAX_OID_LEN;
+  oid* temp_oid = (oid*)scm_calloc(temp_oidlen * sizeof(oid));
+  scm_to_oid(s_2,&temp_oid,&temp_oidlen);
+  int mode = HANDLER_CAN_RWRITE;
+
+  netsnmp_handler_registration* p = 
+    netsnmp_handler_registration_create(name, handler, temp_oid, temp_oidlen, mode);
+  SCM obj = make_wrapped_pointer( smob_netsnmp_handler_registration , p);
+
+  free(temp_oid);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  scm_remember_upto_here_1(s_2);
+  scm_remember_upto_here_1(s_3);
+  return obj;
+};
+
+SCM
+_wrap_netsnmp_register_handler(SCM s_0)
+{
+  netsnmp_handler_registration *p = pointer_from_wrapped_smob(smob_netsnmp_handler_registration, s_0);
+
+  int res = 0;
+  res = netsnmp_register_handler(p);
+
+  scm_remember_upto_here_1(s_0);
+  return SCM_UNSPECIFIED;
+};
+
+SCM
+_wrap_netsnmp_unregister_handler(SCM s_0)
+{
+  netsnmp_handler_registration *p = pointer_from_wrapped_smob(smob_netsnmp_handler_registration, s_0);
+
+  int res = 0;
+  res = netsnmp_unregister_handler(p);
+
+  scm_remember_upto_here_1(s_0);
+  return SCM_UNSPECIFIED;
+};
+
+
 
 static void 
 init_snmp_wrap_funcs(void)
@@ -932,5 +982,14 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("netsnmp-create-handler", 2, 0, 0, (void *) _wrap_netsnmp_create_handler);
   scm_c_export("netsnmp-create-handler" , NULL);
+
+  scm_c_define_gsubr("netsnmp-handler-registration-create", 4, 0, 0, (void *) _wrap_netsnmp_handler_registration_create);
+  scm_c_export("netsnmp-handler-registration-create" , NULL);
+
+  scm_c_define_gsubr("netsnmp-register-handler", 1, 0, 0, (void *) _wrap_netsnmp_register_handler);
+  scm_c_export("netsnmp-register-handler" , NULL);
+
+  scm_c_define_gsubr("netsnmp-unregister-handler", 1, 0, 0, (void *) _wrap_netsnmp_unregister_handler);
+  scm_c_export("netsnmp-unregister-handler" , NULL);
 }
 

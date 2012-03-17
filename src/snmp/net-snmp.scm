@@ -518,3 +518,6 @@
 (re-export agent-check-and-process)
 (re-export snmp-shutdown)
 (re-export netsnmp-create-handler) 
+(re-export netsnmp-handler-registration-create) 
+(re-export netsnmp-register-handler)
+(re-export netsnmp-unregister-handler)
