@@ -462,7 +462,7 @@
 (define-class-wrapped-struct netsnmp-mib-handler-registration)
 (define-class-wrapped-struct netsnmp-handler-args)
 (define-class-wrapped-struct netsnmp-delegated-cache)
-(define-class-wrapped-struct netsnmp-agent-request-info)
+(define-class-wrapped-struct netsnmp-agent-request-info mode)
 (define-class-wrapped-struct netsnmp-request-info)
 
 (define-method (find-mib-root-node (root <tree>) (mib <mib-module>))
@@ -550,3 +550,4 @@
 (re-export netsnmp-handler-registration-create) 
 (re-export netsnmp-register-handler)
 (re-export netsnmp-unregister-handler)
+(re-export netsnmp-register-scalar)

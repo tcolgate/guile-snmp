@@ -1168,6 +1168,19 @@ _wrap_initialize_netsnmp_agent_request_info (SCM obj, SCM args)
   return SCM_UNSPECIFIED;
 }
 
+SCM 
+_wrap_netsnmp_agent_request_info_mode_get(SCM s_0) 
+{ 
+  SCM result = SCM_UNSPECIFIED;
+  netsnmp_agent_request_info *p = (netsnmp_agent_request_info*) pointer_from_wrapped_smob(smob_netsnmp_agent_request_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+
+  result = scm_constant_name_from_int("<mib-handler-mode>", p->mode);
+
+  scm_remember_upto_here_1(s_0);
+  return result;
+};
+
 /*
  * netsnmp_mib_request_info
  */
@@ -1279,6 +1292,8 @@ static void init_snmp_wrap_structs(void)
   scm_c_export("initialize-netsnmp-handler-args" , NULL);
   scm_c_define_gsubr ("initialize-netsnmp-delegated-cache", 2, 0, 0, _wrap_initialize_netsnmp_delegated_cache);
   scm_c_export("initialize-netsnmp-delegated-cache" , NULL);
+
+  DEFINE_SLOT_READONLY("netsnmp-agent-request-info" ,netsnmp_agent_request_info, "mode" ,mode)
   scm_c_define_gsubr ("initialize-netsnmp-agent-request-info", 2, 0, 0, _wrap_initialize_netsnmp_agent_request_info);
   scm_c_export("initialize-netsnmp-agent-request-info" , NULL);
   scm_c_define_gsubr ("initialize-netsnmp-request-info", 2, 0, 0, _wrap_initialize_netsnmp_request_info);

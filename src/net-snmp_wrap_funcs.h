@@ -787,6 +787,7 @@ guile_snmp_Netsnmp_Node_Handler (netsnmp_mib_handler *handler,
   scm_remember_upto_here_1(scmreginfo);
   scm_remember_upto_here_1(scmreqinfo);
   scm_remember_upto_here_1(scmrequests);
+  printf ("got %d\n", result);
   return result;
 }
 
@@ -851,6 +852,18 @@ _wrap_netsnmp_unregister_handler(SCM s_0)
 
   int res = 0;
   res = netsnmp_unregister_handler(p);
+
+  scm_remember_upto_here_1(s_0);
+  return SCM_UNSPECIFIED;
+};
+
+SCM
+_wrap_netsnmp_register_scalar(SCM s_0)
+{
+  netsnmp_handler_registration *p = pointer_from_wrapped_smob(smob_netsnmp_handler_registration, s_0);
+
+  int res = 0;
+  res = netsnmp_register_scalar(p);
 
   scm_remember_upto_here_1(s_0);
   return SCM_UNSPECIFIED;
@@ -1011,5 +1024,8 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("netsnmp-unregister-handler", 1, 0, 0, (void *) _wrap_netsnmp_unregister_handler);
   scm_c_export("netsnmp-unregister-handler" , NULL);
+
+  scm_c_define_gsubr("netsnmp-register-scalar", 1, 0, 0, (void *) _wrap_netsnmp_register_scalar);
+  scm_c_export("netsnmp-register-scalar" , NULL);
 }
 
