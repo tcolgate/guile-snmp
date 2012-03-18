@@ -1137,7 +1137,7 @@ init_snmp_wrap_funcs(void)
   scm_c_define_gsubr("netsnmp-set-request-error", 3, 0, 0, (void *) _wrap_netsnmp_set_request_error);
   scm_c_export("netsnmp-set-request-error" , NULL);
 
-  scm_c_define_gsubr("snmp-set-var-typed-value", 3, 0, 0, (void *) _wrap_register_sysor_table);
+  scm_c_define_gsubr("snmp-set-var-typed-value", 3, 0, 0, (void *) _wrap_snmp_set_var_typed_value);
   scm_c_export("snmp-set-var-typed-value" , NULL);
 
   scm_c_define_gsubr("register-sysor-table", 2, 0, 0, (void *) _wrap_register_sysor_table);
