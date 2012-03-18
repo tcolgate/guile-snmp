@@ -924,26 +924,51 @@ _wrap_pdu_variable_value_get(SCM s_0)
 { 
   SCM result = SCM_UNSPECIFIED;
   netsnmp_variable_list *p = (netsnmp_variable_list*) pointer_from_wrapped_smob(smob_pdu_variable, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
 
   switch(p->type){
+    case ASN_OPAQUE:
+    case ASN_NSAP:
     case ASN_OCTET_STR: 
     case ASN_BIT_STR: 
-      // These should probably be handled differently
-      result = scm_from_latin1_stringn((p->val).string,p->val_len);
+      {
+        // These should probably be handled differently
+        result = scm_from_latin1_stringn((p->val).string,p->val_len);
+      }
       break;
+
     case ASN_INTEGER: 
     case ASN_GAUGE: 
-      result = scm_from_int(*((p->val).integer));
+      {
+        result = scm_from_int(*((p->val).integer));
+      }
       break;
+
+    case ASN_UINTEGER: 
     case ASN_COUNTER: 
     case ASN_TIMETICKS: 
-      result = scm_from_uint(*((p->val).integer));
+      {
+        result = scm_from_uint(*((p->val).integer));
+      }
       break;
+
+    case ASN_COUNTER64: 
+      {
+        SCM high = scm_from_int(((p->val).counter64)->high);
+        SCM low = scm_from_int(((p->val).counter64)->low);
+        result = scm_sum(
+            scm_ash(high,scm_from_int(32)),
+            low);
+      };
+      break;
+
     case ASN_NULL: 
-      //lambda pdu: None,
-      result = SCM_EOL;
+      {
+        //lambda pdu: None,
+        result = SCM_EOL;
+      }
       break;
+
     case ASN_OBJECT_ID: 
       {
         // Guile wants to take ownership of the array
@@ -951,10 +976,11 @@ _wrap_pdu_variable_value_get(SCM s_0)
         oid* temp = (oid*)scm_calloc(p->val_len);
         memcpy(temp,(p->val).objid,p->val_len);
         result = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,
-            SCM_TAKE_OIDVECTOR((SCM_T_OID *)temp, (p->val_len)/sizeof(oid))
-          ),SCM_EOL);
+              SCM_TAKE_OIDVECTOR((SCM_T_OID *)temp, (p->val_len)/sizeof(oid))
+              ),SCM_EOL);
       }; 
       break;
+
     case ASN_IPADDRESS: 
       //Since snmp session takes a string we will rewturn
       // these as strings. would prefer a proper IP object
@@ -968,33 +994,37 @@ _wrap_pdu_variable_value_get(SCM s_0)
         result = scm_from_locale_string(temp);
       }
       break;
-    case ASN_COUNTER64: 
-      {
-        SCM high = scm_from_int(((p->val).counter64)->high);
-        SCM low = scm_from_int(((p->val).counter64)->low);
-        result = scm_sum(
-                   scm_ash(high,scm_from_int(32)),
-                   low);
-      };
-      break;
+
     case ASN_APP_FLOAT: 
-      result = scm_from_double((double)*((p->val).floatVal));
+      {
+        result = scm_from_double((double)*((p->val).floatVal));
+      }
       break;
+
     case ASN_APP_DOUBLE: 
-      result = scm_from_double(*((p->val).doubleVal));
+      {
+        result = scm_from_double(*((p->val).doubleVal));
+      }
       break;
-//    case ASN_BOOLEAN: 
-//      // Do not think this is a valid pdu type  
-//      break;
+
     case SNMP_NOSUCHOBJECT: 
-      result = scm_string_to_symbol(scm_from_locale_string("noSuchObject"));
+      {
+        result = scm_string_to_symbol(scm_from_locale_string("noSuchObject"));
+      }
       break;
+
     case SNMP_NOSUCHINSTANCE: 
-      result = scm_string_to_symbol(scm_from_locale_string("noSuchInstance"));
+      {
+        result = scm_string_to_symbol(scm_from_locale_string("noSuchInstance"));
+      }
       break;
+
     case SNMP_ENDOFMIBVIEW: 
-      result = scm_string_to_symbol(scm_from_locale_string("endOfMibView"));
+      {
+        result = scm_string_to_symbol(scm_from_locale_string("endOfMibView"));
+      }
       break;
+
     default: 
       // use snprint_value to format the value as a string
       break;
