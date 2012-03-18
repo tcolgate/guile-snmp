@@ -554,3 +554,5 @@
 (re-export netsnmp-check-vb-type)
 (re-export netsnmp-set-request-error)
 (re-export snmp-set-var-typed-value)
+(re-export register-sysor-table)
+(re-export unregister-sysor-table)

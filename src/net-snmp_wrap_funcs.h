@@ -853,7 +853,7 @@ _wrap_netsnmp_handler_registration_create(SCM s_0, SCM s_1, SCM s_2, SCM s_3)
   netsnmp_mib_handler *handler = pointer_from_wrapped_smob(smob_netsnmp_mib_handler, s_1);
   size_t temp_oidlen = MAX_OID_LEN;
   oid* temp_oid = (oid*)scm_calloc(temp_oidlen * sizeof(oid));
-  scm_to_oid(s_2,&temp_oid,&temp_oidlen);
+  scm_to_oid(s_0,&temp_oid,&temp_oidlen);
   int mode = HANDLER_CAN_RWRITE;
 
   netsnmp_handler_registration* p = 
@@ -946,7 +946,33 @@ _wrap_snmp_set_var_typed_value(SCM s_0, SCM s_1, SCM s_2)
   return SCM_UNSPECIFIED;
 };
 
+SCM
+_wrap_register_sysor_table(SCM s_0, SCM s_1)
+{
+  size_t temp_oidlen = MAX_OID_LEN;
+  oid* temp_oid = (oid*)scm_calloc(temp_oidlen * sizeof(oid));
+  scm_to_oid(s_0,&temp_oid,&temp_oidlen);
+  char *descr = scm_to_latin1_string(s_1);
 
+  REGISTER_SYSOR_TABLE(temp_oid, temp_oidlen, descr);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  return SCM_UNSPECIFIED;
+};
+
+SCM
+_wrap_unregister_sysor_table(SCM s_0)
+{
+  size_t temp_oidlen = MAX_OID_LEN;
+  oid* temp_oid = (oid*)scm_calloc(temp_oidlen * sizeof(oid));
+  scm_to_oid(s_0,&temp_oid,&temp_oidlen);
+
+  UNREGISTER_SYSOR_TABLE(temp_oid, temp_oidlen);
+
+  scm_remember_upto_here_1(s_0);
+  return SCM_UNSPECIFIED;
+};
 
 static void 
 init_snmp_wrap_funcs(void)
@@ -1111,7 +1137,14 @@ init_snmp_wrap_funcs(void)
   scm_c_define_gsubr("netsnmp-set-request-error", 3, 0, 0, (void *) _wrap_netsnmp_set_request_error);
   scm_c_export("netsnmp-set-request-error" , NULL);
 
-  scm_c_define_gsubr("snmp-set-var-typed-value", 3, 0, 0, (void *) _wrap_snmp_set_var_typed_value);
+  scm_c_define_gsubr("snmp-set-var-typed-value", 3, 0, 0, (void *) _wrap_register_sysor_table);
   scm_c_export("snmp-set-var-typed-value" , NULL);
+
+  scm_c_define_gsubr("register-sysor-table", 2, 0, 0, (void *) _wrap_register_sysor_table);
+  scm_c_export("register-sysor-table" , NULL);
+
+  scm_c_define_gsubr("unregister-sysor-table", 1, 0, 0, (void *) _wrap_unregister_sysor_table);
+  scm_c_export("unregister-sysor-table" , NULL);
+
 }
 
