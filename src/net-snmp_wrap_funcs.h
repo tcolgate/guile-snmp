@@ -853,8 +853,8 @@ _wrap_netsnmp_handler_registration_create(SCM s_0, SCM s_1, SCM s_2, SCM s_3)
   netsnmp_mib_handler *handler = pointer_from_wrapped_smob(smob_netsnmp_mib_handler, s_1);
   size_t temp_oidlen = MAX_OID_LEN;
   oid* temp_oid = (oid*)scm_calloc(temp_oidlen * sizeof(oid));
-  scm_to_oid(s_0,&temp_oid,&temp_oidlen);
-  int mode = HANDLER_CAN_RWRITE;
+  scm_to_oid(s_2,&temp_oid,&temp_oidlen);
+  int mode = scm_int_from_constant("<mib-handler-cap>",s_3);
 
   netsnmp_handler_registration* p = 
     netsnmp_handler_registration_create(name, handler, temp_oid, temp_oidlen, mode);
