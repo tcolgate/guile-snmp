@@ -728,13 +728,6 @@ _wrap_init_agent (SCM name)
   return SCM_UNSPECIFIED;
 }
 
-static SCM
-_wrap_init_agent_read_config (SCM name)
-{
-  init_agent_read_config(scm_to_utf8_string (name));
-  return SCM_UNSPECIFIED;
-}
-
 
 static SCM
 _wrap_init_master_agent ()
@@ -1101,9 +1094,6 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("init-agent", 1, 0, 0, (void *) _wrap_init_agent);
   scm_c_export("init-agent" , NULL);
-
-  scm_c_define_gsubr("init-agent-read-config", 1, 0, 0, (void *) _wrap_init_agent_read_config);
-  scm_c_export("init-agent-read-config" , NULL);
 
   scm_c_define_gsubr("init-master-agent", 0, 0, 0, (void *) _wrap_init_master_agent);
   scm_c_export("init-master-agent" , NULL);
