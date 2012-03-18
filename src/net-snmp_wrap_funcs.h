@@ -534,6 +534,7 @@ scm_to_netsnmp_value_bytes(SCM valscm, u_char typespec, void** bytes, size_t *by
     case ASN_NSAP:
     case ASN_OCTET_STR: 
     case ASN_BIT_STR:
+    case ASN_IPADDRESS:
       {
         if ( ! scm_is_string(valscm) ){
           scm_throw(
@@ -628,7 +629,6 @@ scm_to_netsnmp_value_bytes(SCM valscm, u_char typespec, void** bytes, size_t *by
       };
       break;
 
-    case ASN_IPADDRESS:
     default:
       {
         // signal an error
