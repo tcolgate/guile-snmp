@@ -938,13 +938,13 @@ _wrap_pdu_variable_value_get(SCM s_0)
       break;
 
     case ASN_INTEGER: 
-    case ASN_GAUGE: 
       {
         result = scm_from_int(*((p->val).integer));
       }
       break;
 
     case ASN_UINTEGER: 
+    case ASN_GAUGE: 
     case ASN_COUNTER: 
     case ASN_TIMETICKS: 
       {

@@ -546,7 +546,6 @@ scm_to_netsnmp_value_bytes(SCM valscm, u_char typespec, void** bytes, size_t *by
       break;
 
     case ASN_INTEGER:
-    case ASN_GAUGE:
       {
         if ( ! scm_is_signed_integer(valscm, LONG_MIN, LONG_MAX) ){
           scm_throw(
@@ -563,6 +562,7 @@ scm_to_netsnmp_value_bytes(SCM valscm, u_char typespec, void** bytes, size_t *by
     case ASN_UINTEGER:
     case ASN_COUNTER:
     case ASN_TIMETICKS:
+    case ASN_GAUGE:
       {
         if ( ! scm_is_unsigned_integer(valscm, 0, ULONG_MAX) ){
           scm_throw(
@@ -615,7 +615,7 @@ scm_to_netsnmp_value_bytes(SCM valscm, u_char typespec, void** bytes, size_t *by
     case ASN_APP_FLOAT:
       {
         pointer =  (void*) (malloc(sizeof(float))); 
-        *((float*) pointer) = scm_to_float(valscm);
+        *((float*) pointer) = (float) scm_to_double(valscm);
         len = sizeof(float);
       };
       break;
