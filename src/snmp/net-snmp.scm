@@ -539,6 +539,7 @@
 (re-export mib-to-asn-type)
 
 (re-export init-agent)
+(re-export init-agent-read-config)
 (re-export init-master-agent)
 (re-export snmp-set-agent-agentx)
 (re-export init-vacm-vars)
