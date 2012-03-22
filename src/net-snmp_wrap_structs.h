@@ -33,6 +33,8 @@ typedef enum snmp_wrap_smob_subtypes {
   smob_netsnmp_delegated_cache,
   smob_netsnmp_agent_request_info,
   smob_netsnmp_request_info,
+  smob_netsnmp_iterator_info,
+  smob_netsnmp_table_registration_info,
   smob_last
 } snmp_wrap_smob_subtypes_e;
 
@@ -52,6 +54,8 @@ wrap_smob_typedef_t wrap_smob_types[] = {
   {"<netsnmp-delegated-cache>", NULL, NULL, NULL, NULL},
   {"<netsnmp-agent-request-info>", NULL, NULL, NULL, NULL},
   {"<netsnmp-request-info>", NULL, NULL, NULL, NULL},
+  {"<netsnmp-iterator-info>", NULL, NULL, NULL, NULL},
+  {"<netsnmp-table-registration-info>", NULL, NULL, NULL, NULL},
   {NULL, NULL, NULL, NULL, NULL}
 };
 
@@ -1293,6 +1297,99 @@ _wrap_netsnmp_request_info_prev_get (SCM s_0)
   return result;
 }
 
+/*
+ * netsnmp_iterator_info
+ */
+
+static SCM
+_wrap_initialize_netsnmp_iterator_info (SCM obj, SCM args)
+{
+  netsnmp_iterator_info *ptr = SNMP_MALLOC_TYPEDEF(netsnmp_iterator_info);
+  SCM smob;
+  SCM_NEWSMOB (smob, snmp_wrap_smob_tag, ptr);
+  SCM_SET_SMOB_FLAGS (smob, smob_netsnmp_iterator_info);
+
+  SCM ptrsym = scm_from_utf8_symbol("ptr");
+  scm_slot_set_x(obj,ptrsym,smob);
+  scm_remember_upto_here_1(obj);
+  scm_remember_upto_here_1(args);
+  return SCM_UNSPECIFIED;
+}
+
+/*
+ * netsnmp_table_registration_info
+ */
+
+static SCM
+_wrap_initialize_netsnmp_table_registration_info (SCM obj, SCM args)
+{
+  netsnmp_table_registration_info *ptr = SNMP_MALLOC_TYPEDEF(netsnmp_table_registration_info);
+  SCM smob;
+  SCM_NEWSMOB (smob, snmp_wrap_smob_tag, ptr);
+  SCM_SET_SMOB_FLAGS (smob, smob_netsnmp_table_registration_info);
+
+  SCM ptrsym = scm_from_utf8_symbol("ptr");
+  scm_slot_set_x(obj,ptrsym,smob);
+  scm_remember_upto_here_1(obj);
+  scm_remember_upto_here_1(args);
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_netsnmp_table_registration_info_min_column_get (SCM s_0)
+{
+  SCM result = SCM_UNSPECIFIED;
+  netsnmp_table_registration_info *p = 
+    (netsnmp_table_registration_info*) pointer_from_wrapped_smob(smob_netsnmp_table_registration_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+
+  unsigned int res = p->min_column;
+  result = scm_from_uint(res);
+
+  scm_remember_upto_here_1(s_0);
+  return result;
+}
+
+static SCM
+_wrap_netsnmp_table_registration_info_min_column_set (SCM s_0, SCM s_1)
+{
+  netsnmp_table_registration_info *p = 
+    (netsnmp_table_registration_info*) pointer_from_wrapped_smob(smob_netsnmp_table_registration_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  p->min_column = scm_to_uint(s_1);
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_netsnmp_table_registration_info_max_column_get (SCM s_0)
+{
+  SCM result = SCM_UNSPECIFIED;
+  netsnmp_table_registration_info *p = 
+    (netsnmp_table_registration_info*) pointer_from_wrapped_smob(smob_netsnmp_table_registration_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+
+  unsigned int res = p->max_column;
+  result = scm_from_uint(res);
+
+  scm_remember_upto_here_1(s_0);
+  return result;
+}
+
+static SCM
+_wrap_netsnmp_table_registration_info_max_column_set (SCM s_0, SCM s_1)
+{
+  netsnmp_table_registration_info *p = 
+    (netsnmp_table_registration_info*) pointer_from_wrapped_smob(smob_netsnmp_table_registration_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  p->max_column = scm_to_uint(s_1);
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  return SCM_UNSPECIFIED;
+}
+
+
 
 #define DEFINE_SLOT_READWRITE(strtype , type , strslot , slot) \
   scm_c_define( strtype "-" strslot, scm_make_procedure_with_setter(\
@@ -1395,5 +1492,12 @@ static void init_snmp_wrap_structs(void)
   scm_c_define_gsubr ("initialize-netsnmp-request-info", 2, 0, 0, _wrap_initialize_netsnmp_request_info);
   scm_c_export("initialize-netsnmp-request-info" , NULL);
 
+  scm_c_define_gsubr ("initialize-netsnmp-iterator-info", 2, 0, 0, _wrap_initialize_netsnmp_iterator_info);
+  scm_c_export("initialize-netsnmp-iterator-info" , NULL);
+
+  DEFINE_SLOT_READWRITE("netsnmp-table-registration-info" , netsnmp_table_registration_info , "min-column" , min_column)
+  DEFINE_SLOT_READWRITE("netsnmp-table-registration-info" , netsnmp_table_registration_info , "max-column" , max_column)
+  scm_c_define_gsubr ("initialize-netsnmp-table-registration-info", 2, 0, 0, _wrap_initialize_netsnmp_table_registration_info);
+  scm_c_export("initialize-netsnmp-table-registration-info" , NULL);
 }
 

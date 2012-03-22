@@ -974,6 +974,19 @@ _wrap_unregister_sysor_table(SCM s_0)
   return SCM_UNSPECIFIED;
 };
 
+SCM
+_wrap_netsnmp_table_helper_add_index(SCM s_0, SCM s_1)
+{
+  netsnmp_table_registration_info *p = pointer_from_wrapped_smob(smob_netsnmp_table_registration_info, s_0);
+  int type = scm_int_from_constant("<asn-type>",s_1);
+
+  netsnmp_table_helper_add_index(p, type)
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  return SCM_UNSPECIFIED;
+};
+
 static void 
 init_snmp_wrap_funcs(void)
 {
@@ -1146,5 +1159,7 @@ init_snmp_wrap_funcs(void)
   scm_c_define_gsubr("unregister-sysor-table", 1, 0, 0, (void *) _wrap_unregister_sysor_table);
   scm_c_export("unregister-sysor-table" , NULL);
 
+  scm_c_define_gsubr("netsnmp-table-helper-add-index", 2, 0, 0, (void *) _wrap_netsnmp_table_helper_add_index);
+  scm_c_export("netsnmp-table-helper-add-index" , NULL);
 }
 
