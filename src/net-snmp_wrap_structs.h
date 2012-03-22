@@ -1083,6 +1083,27 @@ _wrap_initialize_snmp_fdinfo (SCM obj, SCM args)
   return SCM_UNSPECIFIED;
 }
 
+static SCM
+_wrap_snmp_fdinfo_fd_list_get(SCM s_0)
+{
+  snmp_fdinfo *p = (void*) pointer_from_wrapped_smob(smob_snmp_fdinfo, s_0);
+
+  int fd = 0;
+  SCM res = SCM_EOL;
+  for(fd = 0; fd < p->fds; fd++){
+    if(FD_ISSET(fd,&(p->fdss))){
+      res = scm_append(
+          scm_list_2(res,
+            scm_list_1(
+              scm_from_int(fd))));
+    };
+  };
+
+  scm_remember_upto_here_1(s_0);
+  return res;
+};
+
+
 /*
  * netsnmp_transport
  */
@@ -1343,6 +1364,7 @@ static void init_snmp_wrap_structs(void)
   scm_c_define_gsubr ("initialize-pdu-variable", 2, 0, 0, _wrap_initialize_pdu_variable);
   scm_c_export("initialize-pdu-variable" , NULL);
 
+  DEFINE_SLOT_READONLY("snmp-fdinfo" , snmp_fdinfo, "fd-list" ,fd_list)
   scm_c_define_gsubr ("initialize-snmp-fdinfo", 2, 0, 0, _wrap_initialize_snmp_fdinfo);
   scm_c_export("initialize-snmp-fdinfo" , NULL);
 
