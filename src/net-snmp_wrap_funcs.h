@@ -987,6 +987,19 @@ _wrap_netsnmp_table_helper_add_index(SCM s_0, SCM s_1)
   return SCM_UNSPECIFIED;
 };
 
+SCM
+_wrap_netsnmp_register_table_iterator(SCM s_0, SCM s_1)
+{
+  netsnmp_handler_registration *p1 = pointer_from_wrapped_smob(smob_netsnmp_handler_registration, s_0);
+  netsnmp_iterator_info *p2 = pointer_from_wrapped_smob(smob_netsnmp_iterator_info, s_1);
+
+  netsnmp_register_table_iterator(p1, p2);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  return SCM_UNSPECIFIED;
+};
+
 static void 
 init_snmp_wrap_funcs(void)
 {
@@ -1161,5 +1174,8 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("netsnmp-table-helper-add-index", 2, 0, 0, (void *) _wrap_netsnmp_table_helper_add_index);
   scm_c_export("netsnmp-table-helper-add-index" , NULL);
+
+  scm_c_define_gsubr("netsnmp-register-table-iterator", 2, 0, 0, (void *) _wrap_netsnmp_register_table_iterator);
+  scm_c_export("netsnmp-register-table-iterator" , NULL);
 }
 

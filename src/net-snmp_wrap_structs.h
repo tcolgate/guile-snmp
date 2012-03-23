@@ -1301,6 +1301,36 @@ _wrap_netsnmp_request_info_prev_get (SCM s_0)
  * netsnmp_iterator_info
  */
 
+netsnmp_variable_list *
+guileSnmp_Netsnmp_First_Data_Point(
+    void **my_loop_context,
+    void **my_data_context,
+    netsnmp_variable_list *put_index_data,
+    netsnmp_iterator_info *mydata)
+{
+  SCM gfdp = scm_list_ref(mydata->myvoid,scm_from_int(0));
+  *my_loop_context = (void*) scm_make_variable(SCM_BOOL_F);
+  *my_data_context = (void*) scm_make_variable(SCM_BOOL_F);
+  SCM vl = make_wrapped_pointer(smob_pdu_variable, put_index_data);
+  SCM ii = make_wrapped_pointer(smob_netsnmp_iterator_info, mydata);
+  SCM res = scm_call_4(gfdp, *my_loop_context, *my_data_context, vl, ii);
+  return res != SCM_BOOL_F ? pointer_from_wrapped_smob(smob_pdu_variable, res) : NULL ;
+}
+
+netsnmp_variable_list *
+guileSnmp_Netsnmp_Next_Data_Point(
+    void **my_loop_context,
+    void **my_data_context,
+    netsnmp_variable_list *put_index_data,
+    netsnmp_iterator_info *mydata)
+{
+  SCM gndp = scm_list_ref(mydata->myvoid,scm_from_int(1));
+  SCM vl = make_wrapped_pointer(smob_pdu_variable, put_index_data);
+  SCM ii = make_wrapped_pointer(smob_netsnmp_iterator_info, mydata);
+  SCM res = scm_call_4(gndp, *my_loop_context, *my_data_context, vl, ii);
+  return res != SCM_BOOL_F ? pointer_from_wrapped_smob(smob_pdu_variable, res) : NULL ;
+}
+
 static SCM
 _wrap_initialize_netsnmp_iterator_info (SCM obj, SCM args)
 {
@@ -1309,10 +1339,101 @@ _wrap_initialize_netsnmp_iterator_info (SCM obj, SCM args)
   SCM_NEWSMOB (smob, snmp_wrap_smob_tag, ptr);
   SCM_SET_SMOB_FLAGS (smob, smob_netsnmp_iterator_info);
 
+  ptr->myvoid = scm_list_2(SCM_BOOL_F,SCM_BOOL_F);
+  ptr->get_first_data_point = guileSnmp_Netsnmp_First_Data_Point;
+  ptr->get_next_data_point = guileSnmp_Netsnmp_Next_Data_Point;
+  ptr->table_reginfo = NULL;
+
   SCM ptrsym = scm_from_utf8_symbol("ptr");
   scm_slot_set_x(obj,ptrsym,smob);
   scm_remember_upto_here_1(obj);
   scm_remember_upto_here_1(args);
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_netsnmp_iterator_info_get_first_data_point_get (SCM s_0)
+{
+  SCM result = SCM_UNSPECIFIED;
+  netsnmp_iterator_info *p = 
+    (netsnmp_iterator_info*) pointer_from_wrapped_smob(smob_netsnmp_iterator_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+
+  SCM gfdp = scm_list_ref(p->myvoid,scm_from_int(0));
+
+  scm_remember_upto_here_1(s_0);
+  return gfdp;
+}
+
+static SCM
+_wrap_netsnmp_iterator_info_get_first_data_point_set (SCM s_0, SCM s_1)
+{
+  netsnmp_iterator_info *p = 
+    (netsnmp_iterator_info*) pointer_from_wrapped_smob(smob_netsnmp_iterator_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+
+  SCM gfdp = scm_list_set_x(p->myvoid,scm_from_int(0),s_1);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_netsnmp_iterator_info_get_next_data_point_get (SCM s_0)
+{
+  SCM result = SCM_UNSPECIFIED;
+  netsnmp_iterator_info *p = 
+    (netsnmp_iterator_info*) pointer_from_wrapped_smob(smob_netsnmp_iterator_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+
+  SCM gndp = scm_list_ref(p->myvoid,scm_from_int(1));
+
+  scm_remember_upto_here_1(s_0);
+  return gndp;
+}
+
+static SCM
+_wrap_netsnmp_iterator_info_get_next_data_point_set (SCM s_0, SCM s_1)
+{
+  netsnmp_iterator_info *p = 
+    (netsnmp_iterator_info*) pointer_from_wrapped_smob(smob_netsnmp_iterator_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+
+  SCM gndp = scm_list_set_x(p->myvoid,scm_from_int(1),s_1);
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_netsnmp_iterator_info_table_reginfo_get (SCM s_0)
+{
+  SCM result = SCM_UNSPECIFIED;
+  netsnmp_iterator_info *p = 
+    (netsnmp_iterator_info*) pointer_from_wrapped_smob(smob_netsnmp_iterator_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+
+  result = make_wrapped_pointer(smob_netsnmp_table_registration_info, p->table_reginfo);
+
+  scm_remember_upto_here_1(s_0);
+  return result;
+}
+
+static SCM
+_wrap_netsnmp_iterator_info_table_reginfo_set (SCM s_0, SCM s_1)
+{
+  netsnmp_iterator_info *p = 
+    (netsnmp_iterator_info*) pointer_from_wrapped_smob(smob_netsnmp_iterator_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  netsnmp_table_registration_info *ptinfo = 
+    (netsnmp_table_registration_info*) pointer_from_wrapped_smob(smob_netsnmp_table_registration_info, s_1);
+
+  p->table_reginfo = ptinfo;
+
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
   return SCM_UNSPECIFIED;
 }
 
@@ -1492,6 +1613,9 @@ static void init_snmp_wrap_structs(void)
   scm_c_define_gsubr ("initialize-netsnmp-request-info", 2, 0, 0, _wrap_initialize_netsnmp_request_info);
   scm_c_export("initialize-netsnmp-request-info" , NULL);
 
+  DEFINE_SLOT_READWRITE("netsnmp-iterator-info" , netsnmp_iterator_info , "get-first-data-point" , get_first_data_point)
+  DEFINE_SLOT_READWRITE("netsnmp-iterator-info" , netsnmp_iterator_info , "get-next-data-point" , get_next_data_point)
+  DEFINE_SLOT_READWRITE("netsnmp-iterator-info" , netsnmp_iterator_info , "table-reginfo" , table_reginfo)
   scm_c_define_gsubr ("initialize-netsnmp-iterator-info", 2, 0, 0, _wrap_initialize_netsnmp_iterator_info);
   scm_c_export("initialize-netsnmp-iterator-info" , NULL);
 

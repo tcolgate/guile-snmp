@@ -464,7 +464,7 @@
 (define-class-wrapped-struct netsnmp-delegated-cache)
 (define-class-wrapped-struct netsnmp-agent-request-info mode)
 (define-class-wrapped-struct netsnmp-request-info requestvb next prev)
-(define-class-wrapped-struct netsnmp-iterator-info)
+(define-class-wrapped-struct netsnmp-iterator-info get-first-data-point get-next-data-point table-reginfo)
 (define-class-wrapped-struct netsnmp-table-registration-info min-column max-column)
 
 (define-method (find-mib-root-node (root <tree>) (mib <mib-module>))
@@ -559,3 +559,4 @@
 (re-export register-sysor-table)
 (re-export unregister-sysor-table)
 (re-export netsnmp-table-helper-add-index)
+(re-export netsnmp-register-table-iterator)
