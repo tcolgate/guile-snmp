@@ -466,6 +466,7 @@
 (define-class-wrapped-struct netsnmp-request-info requestvb next prev)
 (define-class-wrapped-struct netsnmp-iterator-info get-first-data-point get-next-data-point table-reginfo)
 (define-class-wrapped-struct netsnmp-table-registration-info min-column max-column)
+(define-class-wrapped-struct netsnmp-table-request-info colnum)
 
 (define-method (find-mib-root-node (root <tree>) (mib <mib-module>))
   (let walkloop ((nodes (children root)))
@@ -560,3 +561,5 @@
 (re-export unregister-sysor-table)
 (re-export netsnmp-table-helper-add-index)
 (re-export netsnmp-register-table-iterator)
+(re-export netsnmp-extract-iterator-context)
+(re-export netsnmp-extract-table-info)

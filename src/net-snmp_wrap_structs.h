@@ -35,6 +35,7 @@ typedef enum snmp_wrap_smob_subtypes {
   smob_netsnmp_request_info,
   smob_netsnmp_iterator_info,
   smob_netsnmp_table_registration_info,
+  smob_netsnmp_table_request_info,
   smob_last
 } snmp_wrap_smob_subtypes_e;
 
@@ -56,6 +57,7 @@ wrap_smob_typedef_t wrap_smob_types[] = {
   {"<netsnmp-request-info>", NULL, NULL, NULL, NULL},
   {"<netsnmp-iterator-info>", NULL, NULL, NULL, NULL},
   {"<netsnmp-table-registration-info>", NULL, NULL, NULL, NULL},
+  {"<netsnmp-table-request-info>", NULL, NULL, NULL, NULL},
   {NULL, NULL, NULL, NULL, NULL}
 };
 
@@ -1339,6 +1341,8 @@ _wrap_initialize_netsnmp_iterator_info (SCM obj, SCM args)
   SCM_NEWSMOB (smob, snmp_wrap_smob_tag, ptr);
   SCM_SET_SMOB_FLAGS (smob, smob_netsnmp_iterator_info);
 
+// TODO Lifetime may be an issue here
+//  ptr->myvoid = scm_permanent_object(scm_list_2(SCM_BOOL_F,SCM_BOOL_F));
   ptr->myvoid = scm_list_2(SCM_BOOL_F,SCM_BOOL_F);
   ptr->get_first_data_point = guileSnmp_Netsnmp_First_Data_Point;
   ptr->get_next_data_point = guileSnmp_Netsnmp_Next_Data_Point;
@@ -1510,6 +1514,39 @@ _wrap_netsnmp_table_registration_info_max_column_set (SCM s_0, SCM s_1)
   return SCM_UNSPECIFIED;
 }
 
+/*
+ * netsnmp_table_request_info
+ */
+
+static SCM
+_wrap_initialize_netsnmp_table_request_info (SCM obj, SCM args)
+{
+  netsnmp_table_request_info *ptr = SNMP_MALLOC_TYPEDEF(netsnmp_table_request_info);
+  SCM smob;
+  SCM_NEWSMOB (smob, snmp_wrap_smob_tag, ptr);
+  SCM_SET_SMOB_FLAGS (smob, smob_netsnmp_table_request_info);
+
+  SCM ptrsym = scm_from_utf8_symbol("ptr");
+  scm_slot_set_x(obj,ptrsym,smob);
+  scm_remember_upto_here_1(obj);
+  scm_remember_upto_here_1(args);
+  return SCM_UNSPECIFIED;
+}
+
+static SCM
+_wrap_netsnmp_table_request_info_colnum_get (SCM s_0)
+{
+  SCM result = SCM_UNSPECIFIED;
+  netsnmp_table_request_info *p = 
+    (netsnmp_table_request_info*) pointer_from_wrapped_smob(smob_netsnmp_table_request_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+
+  unsigned int res = p->colnum;
+  result = scm_from_uint(res);
+
+  scm_remember_upto_here_1(s_0);
+  return result;
+}
 
 
 #define DEFINE_SLOT_READWRITE(strtype , type , strslot , slot) \
@@ -1623,5 +1660,9 @@ static void init_snmp_wrap_structs(void)
   DEFINE_SLOT_READWRITE("netsnmp-table-registration-info" , netsnmp_table_registration_info , "max-column" , max_column)
   scm_c_define_gsubr ("initialize-netsnmp-table-registration-info", 2, 0, 0, _wrap_initialize_netsnmp_table_registration_info);
   scm_c_export("initialize-netsnmp-table-registration-info" , NULL);
+
+  DEFINE_SLOT_READONLY("netsnmp-table-request-info" ,netsnmp_table_request_info, "colnum" ,colnum)
+  scm_c_define_gsubr ("initialize-netsnmp-table-request-info", 2, 0, 0, _wrap_initialize_netsnmp_table_request_info);
+  scm_c_export("initialize-netsnmp-table-request-info" , NULL);
 }
 

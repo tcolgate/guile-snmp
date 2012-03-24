@@ -924,8 +924,11 @@ _wrap_netsnmp_set_request_error(SCM s_0, SCM s_1, SCM s_2)
 {
   netsnmp_agent_request_info *reqinfo = pointer_from_wrapped_smob(smob_netsnmp_agent_request_info, s_0);
   netsnmp_request_info *requests = pointer_from_wrapped_smob(smob_netsnmp_request_info, s_1);
-  int err = scm_int_from_constant("<snmp-err-status>",s_2);
+  int err = scm_int_from_constant("<asn-type>",s_2);
   netsnmp_set_request_error(reqinfo, requests, err );
+  scm_remember_upto_here_1(s_0);
+  scm_remember_upto_here_1(s_1);
+  scm_remember_upto_here_1(s_2);
   return SCM_UNSPECIFIED;
 };
 
@@ -998,6 +1001,30 @@ _wrap_netsnmp_register_table_iterator(SCM s_0, SCM s_1)
   scm_remember_upto_here_1(s_0);
   scm_remember_upto_here_1(s_1);
   return SCM_UNSPECIFIED;
+};
+
+SCM
+_wrap_netsnmp_extract_iterator_context(SCM s_0)
+{
+  netsnmp_request_info *request = pointer_from_wrapped_smob(smob_netsnmp_request_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , request )
+  void* result = netsnmp_extract_iterator_context(request);
+   
+  scm_remember_upto_here_1(s_0);
+  return result != NULL ? (SCM) result : SCM_BOOL_F;
+};
+
+SCM
+_wrap_netsnmp_extract_table_info(SCM s_0)
+{
+  netsnmp_request_info *request = pointer_from_wrapped_smob(smob_netsnmp_request_info, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , request )
+  netsnmp_table_request_info *tinfo = netsnmp_extract_table_info(request);
+
+  SCM obj = make_wrapped_pointer( smob_netsnmp_table_request_info , tinfo);
+
+  scm_remember_upto_here_1(s_0);
+  return obj;
 };
 
 static void 
@@ -1177,5 +1204,11 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("netsnmp-register-table-iterator", 2, 0, 0, (void *) _wrap_netsnmp_register_table_iterator);
   scm_c_export("netsnmp-register-table-iterator" , NULL);
+
+  scm_c_define_gsubr("netsnmp-extract-iterator-context", 1, 0, 0, (void *) _wrap_netsnmp_extract_iterator_context);
+  scm_c_export("netsnmp-extract-iterator-context" , NULL);
+
+  scm_c_define_gsubr("netsnmp-extract-table-info", 1, 0, 0, (void *) _wrap_netsnmp_extract_table_info);
+  scm_c_export("netsnmp-extract-table-info" , NULL);
 }
 
