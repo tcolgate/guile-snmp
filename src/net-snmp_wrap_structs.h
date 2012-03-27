@@ -1017,13 +1017,15 @@ _wrap_pdu_variable_value_get(SCM s_0)
       }
       break;
 
-    case ASN_APP_FLOAT: 
+    case ASN_FLOAT: 
+    case ASN_OPAQUE_FLOAT: 
       {
         result = scm_from_double((double)*((p->val).floatVal));
       }
       break;
 
-    case ASN_APP_DOUBLE: 
+    case ASN_DOUBLE: 
+    case ASN_OPAQUE_DOUBLE: 
       {
         result = scm_from_double(*((p->val).doubleVal));
       }

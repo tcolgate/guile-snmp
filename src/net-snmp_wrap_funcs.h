@@ -613,7 +613,8 @@ scm_to_netsnmp_value_bytes(SCM valscm, u_char typespec, void** bytes, size_t *by
       };
       break;
 
-    case ASN_APP_FLOAT:
+    case ASN_FLOAT:
+    case ASN_OPAQUE_FLOAT:
       {
         pointer =  (void*) (malloc(sizeof(float))); 
         *((float*) pointer) = (float) scm_to_double(valscm);
@@ -621,7 +622,8 @@ scm_to_netsnmp_value_bytes(SCM valscm, u_char typespec, void** bytes, size_t *by
       };
       break;
 
-    case ASN_APP_DOUBLE:
+    case ASN_DOUBLE:
+    case ASN_OPAQUE_DOUBLE:
       {
         pointer =  (double*) (malloc(sizeof(double))); 
         *((double*) pointer) = scm_to_double(valscm);
