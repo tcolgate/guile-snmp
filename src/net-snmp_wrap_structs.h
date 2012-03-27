@@ -907,6 +907,22 @@ _wrap_initialize_pdu_variable (SCM obj, SCM args)
   return SCM_UNSPECIFIED;
 }
 
+static SCM
+_wrap_pdu_variable_variables_get (SCM s_0)
+{
+  netsnmp_variable_list *p = (netsnmp_variable_list*) pointer_from_wrapped_smob(smob_pdu_variable, s_0);
+  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+
+  netsnmp_variable_list *curr = p;
+  SCM res = SCM_EOL;
+  while(curr){
+    res = scm_append(scm_list_2(res, scm_list_1(make_wrapped_pointer(smob_pdu_variable,curr))));
+    curr = curr->next_variable;
+  };
+
+  scm_remember_upto_here_1(s_0);
+  return res;
+}
 SCM 
 _wrap_pdu_variable_name_get (SCM s_0)
 {
@@ -1342,8 +1358,7 @@ _wrap_initialize_netsnmp_iterator_info (SCM obj, SCM args)
   SCM_SET_SMOB_FLAGS (smob, smob_netsnmp_iterator_info);
 
 // TODO Lifetime may be an issue here
-//  ptr->myvoid = scm_permanent_object(scm_list_2(SCM_BOOL_F,SCM_BOOL_F));
-  ptr->myvoid = scm_list_2(SCM_BOOL_F,SCM_BOOL_F);
+  ptr->myvoid = scm_permanent_object(scm_list_2(SCM_BOOL_F,SCM_BOOL_F));
   ptr->get_first_data_point = guileSnmp_Netsnmp_First_Data_Point;
   ptr->get_next_data_point = guileSnmp_Netsnmp_Next_Data_Point;
   ptr->table_reginfo = NULL;
@@ -1612,6 +1627,7 @@ static void init_snmp_wrap_structs(void)
   scm_c_define_gsubr ("initialize-pdu", 2, 0, 0, _wrap_initialize_pdu);
   scm_c_export("initialize-pdu" , NULL);
 
+  DEFINE_SLOT_READONLY("pdu-variable" , pdu_variable, "variables" ,variables)
   DEFINE_SLOT_READONLY("pdu-variable" , pdu_variable, "name" ,name)
   DEFINE_SLOT_READONLY("pdu-variable" , pdu_variable, "type" ,type)
   DEFINE_SLOT_READONLY("pdu-variable" , pdu_variable, "value" ,value)
