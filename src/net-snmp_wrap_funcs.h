@@ -522,7 +522,7 @@ _wrap_snmp_sess_add (SCM s_0, SCM s_1)
 }
 
 void
-scm_to_netsnmp_value_bytes(SCM valscm, u_char typespec, void** bytes, size_t *byteslen)
+scm_to_netsnmp_value_bytes(SCM valscm, int typespec, void** bytes, size_t *byteslen)
 {
   scm_t_array_handle handle;
   void* pointer = NULL; 
@@ -610,6 +610,7 @@ scm_to_netsnmp_value_bytes(SCM valscm, u_char typespec, void** bytes, size_t *by
         pointer = *bytes = (void*)scm_calloc(len * sizeof(oid));
         scm_to_oid(valscm,(oid**) bytes,&len);
         pointer = *bytes;
+	len = len * sizeof(oid);
       };
       break;
 
@@ -667,7 +668,7 @@ _wrap_snmp_add_var (SCM s_0, SCM s_1, SCM s_2)
       scm_from_locale_string("Malformed data passed to set"));
   };
   
-  u_char typespec = scm_int_from_constant("<asn-type>",SCM_CAR(s_2));
+  int typespec = scm_int_from_constant("<asn-type>",SCM_CAR(s_2));
   SCM valscm = SCM_CDR(s_2);
 
   scm_to_netsnmp_value_bytes(valscm, typespec, &pointer, &len);
