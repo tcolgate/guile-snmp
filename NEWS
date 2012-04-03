@@ -1,0 +1,33 @@
+Changes in guile-snmp-0.2.3 (since guile-snmp-0.2.2)
+
+	* MIB browsing: You can now use goops' describe function to get
+	  information about a MIB module, or an oid e.g.:
+
+	  (use-mibs BRIDGE-MIB)
+          (describe BRIDGE-MIB)
+          (describe dot1dStpRootPort)
+
+        * (snmp display-hint) provides apply-octet-str-display-hint to
+	  value-bytes to a string using the relevant display hint. This
+	  will be automated in future
+
+	* Basic agent support: The net-snmp agent handler infrastructure
+	  for scalars and tables are now wrapped. This work as stand alone
+	  and AgentX
+
+	* Agents sysORTable registration via (un)register-sysor-table
+
+	* Some fixes to ASN-TYPE handling around signedness
+
+	* Fixes to setting/serving of ASN-OBJECT-ID varbinds
+
+	* Support ASN-FLOAT and ASN-DOUBLE
+
+	* Some more OID related routines:
+
+	  oid? predicate
+	  oid-length retrieves length of an oid
+	  (/ oid1 oid2) is oid2 a prefix of oid1 
+
+	* Various bug fixes for automated oid resolution
+
