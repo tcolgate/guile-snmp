@@ -16,8 +16,14 @@
 (define asn1-parser
   (lalr-parser
    ; Terminal symbols                                                  
-   (dot dotdot dotdotdot  comma semicolon lbrace rbrace
-    lbracket rbrack lparen rparen - | ::= \ < >
+   (dot dotdot dotdotdot  
+    comma 
+    semicolon 
+    lbrace rbrace
+    lbracket rbrack 
+    lparen rparen 
+    - | ::= \ < >
+
     ABSENT ENCODED INTEGER RELATIVE-OID
     ABSTRACT-SYNTAX END INTERSECTION SEQUENCE 
     ALL ENUMERATED SET APPLICATION EXCEPT MAX SIZE
@@ -38,16 +44,8 @@
     TEXTUAL-CONVENTION MODULE-COMPLIANCE OBJECT-GROUP
     NOTIFICATION-GROUP OBJECT-IDENTITY MODULE AGENT-CAPABILITIES
     WRITE-SYNTAX
-    :id :number :string )
 
-   ; Productions                                                       
-;   (e (e + t)    : (+ $1 $3)
-;      (e - t)    : (- $1 $3)
-;      (t)        : $1)
-;   (t (t * f)    : (* $1 $3)
-;      (t / f)    : (/ $1 $3)
-;      (f)        : $1)
-;   (f (ID)       : $1)))
+    :id :number :string )
 
   (%root 
     (%module-definition) : $1)
