@@ -184,7 +184,7 @@
 
 (define (read-string port)
   (let ((c (read-char port)))
-    (let ((terms (string c #\\ #\nl #\cr)))
+    (let ((terms (string c #\\)))
       (define (read-escape port)
         (let ((c (read-char port)))
           (case c
@@ -224,8 +224,7 @@
             (let ((echar (read-escape port)))
               (lp (string-append str (string echar)
                                  (read-until terms port)))))
-           (else
-            (syntax-error "string literals may not contain newlines" str))))))))
+           ))))))
 
 
 (define (read-identifier port)
