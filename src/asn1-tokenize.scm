@@ -89,27 +89,50 @@
     ("EMBEDDED" . EMBEDDED)
     ("INSTANCE" . INSTANCE)
     ("REAL" . REAL)
-    ("WITH" . WITH)))
+    ("WITH" . WITH)
+    
+    ("MACRO" . MACRO) 
+    ("TYPE" . TYPE) 
+    ("VALUE" . VALUE) 
+    ("NOTATION" . NOTATION) 
+    ("MODULE-IDENTITY" . MODULE-IDENTITY) 
+    ("OBJECT-TYPE" . OBJECT-TYPE) 
+    ("NOTIFICATION-TYPE" . NOTIFICATION-TYPE) 
+    ("TRAP-TYPE" . TRAP-TYPE) 
+    ("TEXTUAL-CONVENTION" . TEXTUAL-CONVENTION) 
+    ("MODULE-COMPLIANCE" . MODULE-COMPLIANCE) 
+    ("OBJECT-GROUP" . OBJECT-GROUP) 
+    ("NOTIFICATION-GROUP" . NOTIFICATION-GROUP) 
+    ("OBJECT-IDENTITY" . OBJECT-IDENTITY) 
+    ("MODULE" . MODULE) 
+    ("AGENT-CAPABILITIES" . AGENT-CAPABILITIES) 
+    ("WRITE-SYNTAX" . WRITE-SYNTAX) 
 
-(define *asn1-punctuation           
+    ))
+
+(define *asn1-punctuation*          
   '(; these characters require readahead
-    (#\. . dot)
-    (#\- . minus)
-    (#\: . colon)
-    (#\/ . forwardslash)
-    (#\\ . backslash)
-
-    ; Single character punctuations
-    (#\. . comma)
-    (#\{ . lbrace)
-    (#\} . rbrace)
-    (#\[ . lbracket)
-    (#\] . rbracket)
-    (#\< . langle)
-    (#\> . rangle)
-    (#\( . lparen)
-    (#\) . rparen)
-    (#\| . bar)))
+    ("." . dot)
+    (".." . dotdot)
+    ("..." . dotdotdot)
+    ("-" . minus)
+    ("--" . minusminus)
+    ("|" . bar) 
+    (":" . colon)
+    (";" . semicolon)
+    ("::=" . assign)
+    ("/" . forwardslash)
+    ("\\" . backslash)
+    ("," . comma)
+    ("{" . lbrace)
+    ("}" . rbrace)
+    ("[" . lbracket)
+    ("]" . rbracket)
+    ("(" . lparen)
+    (")" . rparen)
+    ("<" . langle)
+    (">" . rangle)
+  ))
 
 ; Single minux requires a lookahead
 (define (reader- port)
@@ -213,7 +236,7 @@
                      (char=? c #\-)
                      (char=? c #\_))))
         (let ((word (list->string (reverse chars))))
-          (cond ((assoc-ref *asn1-tokens*)
+          (cond ((assoc-ref *asn1-tokens* word)
                  `(,(string->symbol word) . #f))
                 (else `(:identifier . ,(string->symbol word)))))
         (begin (read-char port)
@@ -286,6 +309,34 @@
          (else
           acc)))))))
 
+(define read-punctuation
+  (let ((punc-tree (let lp ((nodes '())  (puncs *asn1-punctuation*))
+                     (cond ((null? puncs)
+                            nodes)
+                           ((assv-ref nodes (string-ref (caar puncs) 0))
+                            => (lambda (node-tail)
+                                 (if (= (string-length (caar puncs)) 1)
+                                   (set-car! node-tail (cdar puncs))
+                                   (set-cdr! node-tail
+                                             (lp (cdr node-tail)
+                                                 `((,(substring (caar puncs) 1)
+                                                     . ,(cdar puncs))))))
+                                 (lp nodes (cdr puncs))))
+                           (else
+                             (lp (cons (list (string-ref (caar puncs) 0) #f) nodes)
+                                 puncs))))))
+    (lambda (port)
+      (let lp ((c (peek-char port))  (tree punc-tree)  (candidate #f))
+        (cond
+          ((assv-ref tree c)
+           => (lambda (node-tail)
+                (read-char port)
+                (lp (peek-char port)  (cdr node-tail)  (car node-tail))))
+          (candidate
+            (cons candidate #f))
+          (else
+            (syntax-error "bad syntax: character not allowed" )))))))
+
 
 (define (next-token port div?)
   (let ((c (peek-char port))
@@ -293,30 +344,31 @@
                  (line . ,(port-line port))
                  (column . ,(port-column port)))))
     (let ((tok 
-           (case c
-             ((#\ht #\vt #\np #\space) ; whitespace
-              (read-char port)
-              (next-token port div?))
-             ((#\newline #\cr) ; line break
-              (read-char port)
-              (next-token port div?))
-             ((#\" #\') ; string literal
-              `(:string . ,(read-string port)))
-             (else
-              (cond
-               ((eof-object? c)
-                '*eoi*)
-               ((char-alphabetic? c)
-                ;; reserved word or identifier
-                (read-identifier port))
-               ((char-numeric? c)
-                ;; numeric -- also accept . FIXME, requires lookahead
-                `(:number . ,(read-numeric port)))
-               (else
-                (read-punctuastion port)))))))
+            (case c
+              ((#\ht #\vt #\np #\space) ; whitespace
+               (read-char port)
+               (next-token port div?))
+              ((#\newline #\cr) ; line break
+               (read-char port)
+               (next-token port div?))
+              ((#\" #\') ; string literal
+               `(:string . ,(read-string port)))
+              (else
+                (cond
+                  ((eof-object? c)
+                   '*eoi*)
+                  ((char-alphabetic? c)
+                   ;; reserved word or identifier
+                   (read-identifier port))
+                  ((char-numeric? c)
+                   ;; numeric -- also accept . FIXME, requires lookahead
+                   `(:number . ,(read-numeric port)))
+                  (else
+                    (read-punctuation port)))))))
       (if (pair? tok)
-          (set-source-properties! tok props))
-      (display tok)(newline)tok)))
+        (set-source-properties! tok props))
+      (display tok) (newline)
+      tok)))
 
 (define (make-tokenizer port)
   (let ((div? #f))
