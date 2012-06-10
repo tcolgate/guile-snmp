@@ -17,12 +17,22 @@
 ;;; Code:
 
 (define-module (asn1-tokenize)
+  #:use-module (system base lalr)
   #:use-module (ice-9 rdelim)
   #:use-module ((srfi srfi-1) #:select (unfold-right))
-  #:export (next-token make-tokenizer tokenize))
+  #:export (next-token make-asn1-tokenizer asn1-tokenize))
 
-(define (syntax-error message . args)
-  (apply throw 'SyntaxError message args))
+(define (syntax-error what loc form . args)
+  (throw 'syntax-error #f what
+         (and=> loc source-location->source-properties)
+         form #f args))
+
+(define (port-source-location port)
+  (make-source-location (port-filename port)
+                        (port-line port)
+                        (port-column port)
+                        (false-if-exception (ftell port))
+                        #f))
 
 ; keyworkds
 (define *asn1-tokens*           
@@ -116,7 +126,7 @@
     ("|" . bar) 
     (":" . colon)
     (";" . semicolon)
-    ("::=" . assign)
+    ("::=" . ::=)
     ("/" . forwardslash)
     ("\\" . backslash)
     ("," . comma)
@@ -130,29 +140,29 @@
     (">" . rangle)))
 
 ;; taken from SSAX, sorta
-(define (read-until delims port)
+(define (read-until delims port loc)
   (if (eof-object? (peek-char port))
-      (syntax-error "EOF while reading a token")
+      (syntax-error "EOF while reading a token" loc #f)
       (let ((token (read-delimited delims port 'peek)))
         (if (eof-object? (peek-char port))
-            (syntax-error "EOF while reading a token")
+            (syntax-error "EOF while reading a token" loc #f)
             token))))
 
 ; Single minux requires a lookahead
-(define (reader- port)
+(define (reader- port loc)
   (let ((first-char (read-char port))
         (next-char (peek-char port)))
     (case next-char
-      ((#\-) (reader-- port))
+      ((#\-) (reader-- port loc))
       ((#\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9)
        (let ((possible-number (read-numeric port)))
-         `(:number  . ,(- possible-number))))
+         (make-lexical-token ':number  loc (- possible-number))))
       (else (unread-char first-char port) '(minus . #f)))))
 
 ; Double minus is definitiely a comment
-(define (reader-- port)
+(define (reader-- port loc)
   (read-char port)
-  `(:comment .  ,(read-until (string #\newline) port)))
+  (make-lexical-token ':comment loc (read-until (string #\newline) port loc)))
 
 (define (char-hex? c)
   (and (not (eof-object? c))
@@ -168,7 +178,7 @@
       (digit->number c)
       (+ 10 (- (char->integer (char-downcase c)) (char->integer #\a)))))
 
-(define (read-string port)
+(define (read-string port loc)
   (let ((c (read-char port)))
     (let ((terms (string c #\\)))
       (define (read-escape port)
@@ -185,7 +195,7 @@
              (let ((next (peek-char port)))
                (cond ((eof-object? next) #\nul)
                      ((char-numeric? next)
-                      (syntax-error "octal escape sequences are not supported"))
+                      (syntax-error "octal escape sequences are not supported" loc #f))
                      (else #\nul))))
             ((#\x)
              (let* ((a (read-char port))
@@ -194,12 +204,12 @@
                 ((and (char-hex? a) (char-hex? b))
                  (integer->char (+ (* 16 (hex->number a)) (hex->number b))))
                 (else
-                 (syntax-error "bad hex character escape" a b)))))
+                 (syntax-error "bad hex character escape" loc #f)))))
             ((#\u)
-             (syntax-error "unicode not supported"))
+             (syntax-error "unicode not supported" loc #f))
             (else
              c))))
-      (let lp ((str (read-until terms port)))
+      (let lp ((str (read-until terms port loc)))
         (let ((terminator (peek-char port)))
           (cond
            ((char=? terminator c)
@@ -209,11 +219,9 @@
             (read-char port)
             (let ((echar (read-escape port)))
               (lp (string-append str (string echar)
-                                 (read-until terms port)))))
-           ))))))
+                                 (read-until terms port loc)))))))))))
 
-
-(define (read-identifier port)
+(define (read-identifier port loc)
   (let lp ((c (peek-char port)) (chars '()))
     (if (or (eof-object? c)
             (not (or (char-alphabetic? c)
@@ -222,12 +230,12 @@
                      (char=? c #\_))))
         (let ((word (list->string (reverse chars))))
           (cond ((assoc-ref *asn1-tokens* word)
-                 `(,(string->symbol word) . #f))
-                (else `(:identifier . ,(string->symbol word)))))
+                 (make-lexical-token (string->symbol word) loc #f))
+                (else (make-lexical-token ':id loc (string->symbol word)))))
         (begin (read-char port)
                (lp (peek-char port) (cons c chars))))))
 
-(define (read-numeric port)
+(define (read-numeric port loc)
   (let* ((c0 (if (char=? (peek-char port) #\.)
                  #\0
                  (read-char port)))
@@ -238,7 +246,7 @@
       (read-char port)
       (let ((c (peek-char port)))
         (if (not (char-hex? c))
-            (syntax-error "bad digit reading hexadecimal number" c))
+            (syntax-error "bad digit reading hexadecimal number" loc c))
         (let lp ((c c) (acc 0))
           (cond ((char-hex? c)
                  (read-char port)
@@ -251,7 +259,7 @@
         (cond ((eof-object? c) acc)
               ((char-numeric? c)
                (if (or (char=? c #\8) (char=? c #\9))
-                   (syntax-error "invalid digit in octal sequence" c))
+                   (syntax-error "invalid digit in octal sequence" loc c))
                (read-char port)
                (lp (peek-char port)
                    (+ (* 8 acc) (digit->number c))))
@@ -268,12 +276,12 @@
          ((or (char=? c1 #\e) (char=? c1 #\E))
           (read-char port)
           (let ((add (let ((c (peek-char port)))
-                       (cond ((eof-object? c) (syntax-error "error reading exponent: EOF"))
+                       (cond ((eof-object? c) (syntax-error "error reading exponent: EOF" loc #f))
                              ((char=? c #\+) (read-char port) +)
                              ((char=? c #\-) (read-char port) -)
                              ((char-numeric? c) +)
                              (else (syntax-error "error reading exponent: non-digit"
-                                                 c))))))
+                                                  loc c))))))
             (let lp ((c (peek-char port)) (e 0))
               (cond ((and (not (eof-object? c)) (char-numeric? c))
                      (read-char port)
@@ -310,7 +318,7 @@
                            (else
                              (lp (cons (list (string-ref (caar puncs) 0) #f) nodes)
                                  puncs))))))
-    (lambda (port)
+    (lambda (port loc)
       (let lp ((c (peek-char port))  (tree punc-tree)  (candidate #f))
         (cond
           ((assv-ref tree c)
@@ -318,46 +326,42 @@
                 (read-char port)
                 (lp (peek-char port)  (cdr node-tail)  (car node-tail))))
           (candidate
-            (cons candidate #f))
+            (make-lexical-token candidate loc #f))
           (else
-            (syntax-error "bad syntax: character not allowed" )))))))
+            (syntax-error "bad syntax: character not allowed" loc )))))))
 
 
 (define (next-token port div?)
-  (let ((c (peek-char port))
-        (props `((filename . ,(port-filename port))
-                 (line . ,(port-line port))
-                 (column . ,(port-column port)))))
-    (let ((tok 
-            (case c
-              ((#\ht #\vt #\np #\space) ; whitespace
-               (read-char port)
-               (next-token port div?))
-              ((#\newline #\cr) ; line break
-               (read-char port)
-               (next-token port div?))
-              ((#\" #\') ; string literal
-               `(:string . ,(read-string port)))
-              ((#\-)
-               (reader- port))
-              (else
-                (cond
-                  ((eof-object? c)
-                   '*eoi*)
-                  ((char-alphabetic? c)
-                   ;; reserved word or identifier
-                   (read-identifier port))
-                  ((char-numeric? c)
-                   ;; numeric -- also accept . FIXME, requires lookahead
-                   `(:number . ,(read-numeric port)))
-                  (else
-                    (read-punctuation port)))))))
-      (if (pair? tok)
-        (set-source-properties! tok props))
-      
-      tok)))
+  (let ((c (peek-char port)) 
+        (loc (port-source-location port)))
+    (case c
+      ((#\ht #\vt #\np #\space) ; whitespace
+       (read-char port)
+       (next-token port div?))
+      ((#\newline #\cr) ; line break
+       (read-char port)
+       (next-token port div?))
+      ((#\" #\') ; string literal
+       (make-lexical-token ':string loc (read-string port loc)))
+      ((#\-)
+       (let ((tok (reader- port loc)))
+         (if (eq? (lexical-token-category tok) ':comment)
+           (next-token port div?)
+           tok)))
+      (else
+        (cond
+          ((eof-object? c)
+           '*eoi*)
+          ((char-alphabetic? c)
+           ;; reserved word or identifier
+           (read-identifier port loc))
+          ((char-numeric? c)
+           ;; numeric -- also accept . FIXME, requires lookahead
+           (make-lexical-token ':number loc (read-numeric port loc)))
+          (else
+            (read-punctuation port loc)))))))
 
-(define (make-tokenizer port)
+(define (make-asn1-tokenizer port)
   (let ((div? #f))
     (lambda ()
       (let ((tok (next-token port div?)))
@@ -365,8 +369,8 @@
         tok))))
 
 
-(define (tokenize port)
-  (let ((next (make-tokenizer port)))
+(define (asn1-tokenize port)
+  (let ((next (make-asn1-tokenizer port)))
     (let lp ((out '()))
       (let ((tok (next)))
         (if (eq? tok '*eoi*)
