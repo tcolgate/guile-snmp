@@ -90,7 +90,6 @@
     ("INSTANCE" . INSTANCE)
     ("REAL" . REAL)
     ("WITH" . WITH)
-    
     ("MACRO" . MACRO) 
     ("TYPE" . TYPE) 
     ("VALUE" . VALUE) 
@@ -106,13 +105,10 @@
     ("OBJECT-IDENTITY" . OBJECT-IDENTITY) 
     ("MODULE" . MODULE) 
     ("AGENT-CAPABILITIES" . AGENT-CAPABILITIES) 
-    ("WRITE-SYNTAX" . WRITE-SYNTAX) 
-
-    ))
+    ("WRITE-SYNTAX" . WRITE-SYNTAX)))
 
 (define *asn1-punctuation*          
-  '(; these characters require readahead
-    ("." . dot)
+  '(("." . dot)
     (".." . dotdot)
     ("..." . dotdotdot)
     ("-" . minus)
@@ -131,34 +127,8 @@
     ("(" . lparen)
     (")" . rparen)
     ("<" . langle)
-    (">" . rangle)
-  ))
+    (">" . rangle)))
 
-; Single minux requires a lookahead
-(define (reader- port)
-  (let ((next-char (peak-char port)))
-    (case next-char
-      ((#\-) (reader-- port char next-char))
-      ((#\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9)
-       (unread-char next-char port)
-       (let ((possible-number (read port t nil t)))
-	 (etypecase possible-number
-	   (number (- possible-number))
-	   (symbol (intern (concatenate 'string "-"
-					(symbol-name possible-number)))))))
-      (else(unread-char next-char port) #\-))))
-
-; Double minus is definitiely a comment
-(define (reader-- port char1 char2)
-  (declare (ignore char1 char2))
-  (do ((last-char #\Null char)
-       (char (read-char port nil #\Newline t)
-             (read-char port nil #\Newline t)))
-      ((or (and (char= char #\-) (char= last-char #\-))
-           (char= char #\Newline))
-       (values))))
-
-;;
 ;; taken from SSAX, sorta
 (define (read-until delims port)
   (if (eof-object? (peek-char port))
@@ -167,6 +137,21 @@
         (if (eof-object? (peek-char port))
             (syntax-error "EOF while reading a token")
             token))))
+
+; Single minux requires a lookahead
+(define (reader- port)
+  (let ((next-char (peek-char port)))
+    (case next-char
+      ((#\-) (reader-- port))
+      ((#\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9)
+       (unread-char next-char port)
+       (let ((possible-number (read-numeric port)))
+         `(:number  . ,(- possible-number))))
+      (else (unread-char next-char port) '(minus . #f)))))
+
+; Double minus is definitiely a comment
+(define (reader-- port)
+  `(:comment .  ,(read-until (string #\newline) port)))
 
 (define (char-hex? c)
   (and (not (eof-object? c))
@@ -352,6 +337,8 @@
                (next-token port div?))
               ((#\" #\') ; string literal
                `(:string . ,(read-string port)))
+              ((#\-)
+               (reader- port))
               (else
                 (cond
                   ((eof-object? c)
@@ -366,7 +353,7 @@
                     (read-punctuation port)))))))
       (if (pair? tok)
         (set-source-properties! tok props))
-      (display tok) (newline)
+      
       tok)))
 
 (define (make-tokenizer port)
