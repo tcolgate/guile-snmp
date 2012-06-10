@@ -140,17 +140,18 @@
 
 ; Single minux requires a lookahead
 (define (reader- port)
-  (let ((next-char (peek-char port)))
+  (let ((first-char (read-char port))
+        (next-char (peek-char port)))
     (case next-char
       ((#\-) (reader-- port))
       ((#\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9)
-       (unread-char next-char port)
        (let ((possible-number (read-numeric port)))
          `(:number  . ,(- possible-number))))
-      (else (unread-char next-char port) '(minus . #f)))))
+      (else (unread-char first-char port) '(minus . #f)))))
 
 ; Double minus is definitiely a comment
 (define (reader-- port)
+  (read-char port)
   `(:comment .  ,(read-until (string #\newline) port)))
 
 (define (char-hex? c)
