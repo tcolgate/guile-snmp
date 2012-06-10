@@ -7,7 +7,7 @@
   (apply throw 'SyntaxError message args))
 
 (define (read-asn1 port)
-  (asn1-parser (make-tokenizer port) syntax-error))
+  (asn1-parser (make-asn1-tokenizer port) syntax-error))
 
 (define *eof-object*
   (call-with-input-string "" read-char))
@@ -22,7 +22,8 @@
     lbrace rbrace
     lbracket rbrack 
     lparen rparen 
-    - | ::= \ < >
+    langle rangle
+    minus bar ::= backslash
 
     ABSENT ENCODED INTEGER RELATIVE-OID
     ABSTRACT-SYNTAX END INTERSECTION SEQUENCE 
@@ -166,7 +167,7 @@
     () : (list))
 
   (%numbers+ 
-    (%numbers+ | %splited-numbers) : `(,@$1 ,$3)
+    (%numbers+ bar %splited-numbers) : `(,@$1 ,$3)
     (%splited-numbers) : `(,$1))
 
   (%integer-type
@@ -303,11 +304,11 @@
     (::=) : $1
     (lparen) : $1
     (rparen) : $1
-    (\) : $1
+    (backslash) : $1
     (lbrace) : $1
     (rbrace) : $1
-    (<) : $1
-    (>) : $1
+    (langle) : $1
+    (rangle) : $1
     (TYPE) : $1
     (VALUE) : $1
     (NOTATION) : $1
@@ -316,4 +317,5 @@
     (IDENTIFIER) : $1
     (INTEGER) : $1
     (IA5String) : $1)))
+
 
