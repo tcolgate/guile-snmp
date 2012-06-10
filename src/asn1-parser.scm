@@ -143,7 +143,7 @@
     (NULL) : `(:null))
 
   (%object-identifier-type 
-    (OBJECT IDENTIFIER) : :object-identifier)
+    (OBJECT IDENTIFIER) : `(:object-identifier))
 
   (%choice-type 
     (CHOICE lbrace %alternative-type-lists rbrace) : `(:choice ,$3))
