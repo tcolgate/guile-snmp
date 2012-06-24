@@ -164,6 +164,7 @@ snmp_shell_module (void* arguments)
 
   if(NULL == opt_script && NULL == opt_eval){
     scm_c_eval_string("(start-repl 'scheme)");
+    scm_c_eval_string("(write-history (getenv \"GUILE_HISTORY\"))");
   };
 
   return;
