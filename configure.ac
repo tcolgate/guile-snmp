@@ -39,7 +39,36 @@ NETSNMP_FLAGS
 
 AC_CHECK_LIB([snmp], [init_snmp])
 AC_CHECK_LIB([netsnmp], [init_snmp])
+if test "x$ac_cv_lib_snmp_init_snmp" != "xyes" || test "x$ac_cv_lib_netsnmp_init_snmp" != "xyes"; then
+  AC_MSG_ERROR([net-snmp libraries are not found.])
+fi
+
 # Checks for header files.
+
+AC_CHECK_HEADER([net-snmp/net-snmp-config.h])
+AC_CHECK_HEADER([net-snmp/net-snmp-includes.h],
+		,
+		[AC_MSG_ERROR([net-snmp headers are not found.])],
+		[
+#include <net-snmp/net-snmp-config.h>
+])
+
+AC_CHECK_HEADER([net-snmp/agent/net-snmp-agent-includes.h],
+		[AC_DEFINE([HAVE_AGENT_H],[1],[Found net-snmp agent headers])],
+		,
+		[
+#include <net-snmp/net-snmp-config.h>
+#include <net-snmp/net-snmp-includes.h>
+])
+
+AC_CHECK_HEADER([net-snmp/agent/sysORTable.h],
+		[AC_DEFINE([HAVE_SYSORTABLE_H],[1],[Found sysORTable headers])],
+		,
+		[
+#include <net-snmp/net-snmp-config.h>
+#include <net-snmp/net-snmp-includes.h>
+#include <net-snmp/agent/net-snmp-agent-includes.h>
+])
 
 # Checks for typedefs, structures, and compiler characteristics.
 
@@ -53,5 +82,6 @@ AC_CONFIG_FILES([test-environ], [chmod +x test-environ])
 AC_CONFIG_FILES([build-environ], [chmod +x build-environ])
 AC_CONFIG_FILES([meta/snmp-shell], [chmod +x meta/snmp-shell])
 AC_CONFIG_FILES([guile-snmp.spec])
+
 AC_OUTPUT
 

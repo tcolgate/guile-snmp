@@ -19,7 +19,11 @@
 #include <net-snmp/net-snmp-config.h>
 #include <net-snmp/net-snmp-includes.h>
 #include <net-snmp/agent/net-snmp-agent-includes.h>
+
+#ifdef HAVE_SYSORTABLE_H
 #include <net-snmp/agent/sysORTable.h>
+#endif
+
 // These clash with the net-snmp definitons
 #undef PACKAGE_URL
 #undef PACKAGE_BUGREPORT
