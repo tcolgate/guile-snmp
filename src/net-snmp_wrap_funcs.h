@@ -952,6 +952,7 @@ _wrap_snmp_set_var_typed_value(SCM s_0, SCM s_1, SCM s_2)
   return SCM_UNSPECIFIED;
 };
 
+#ifdef HAVE_SYSORTABLE_H
 SCM
 _wrap_register_sysor_table(SCM s_0, SCM s_1)
 {
@@ -979,6 +980,7 @@ _wrap_unregister_sysor_table(SCM s_0)
   scm_remember_upto_here_1(s_0);
   return SCM_UNSPECIFIED;
 };
+#endif
 
 SCM
 _wrap_netsnmp_table_helper_add_index(SCM s_0, SCM s_1)
@@ -1196,11 +1198,19 @@ init_snmp_wrap_funcs(void)
   scm_c_define_gsubr("snmp-set-var-typed-value", 3, 0, 0, (void *) _wrap_snmp_set_var_typed_value);
   scm_c_export("snmp-set-var-typed-value" , NULL);
 
+#ifdef HAVE_SYSORTABLE_H
   scm_c_define_gsubr("register-sysor-table", 2, 0, 0, (void *) _wrap_register_sysor_table);
   scm_c_export("register-sysor-table" , NULL);
 
   scm_c_define_gsubr("unregister-sysor-table", 1, 0, 0, (void *) _wrap_unregister_sysor_table);
   scm_c_export("unregister-sysor-table" , NULL);
+#else
+  scm_c_define("register-sysor-table", SCM_BOOL_F);
+  scm_c_export("register-sysor-table" , NULL);
+
+  scm_c_define("unregister-sysor-table", SCM_BOOL_F);
+  scm_c_export("unregister-sysor-table", NULL);
+#endif
 
   scm_c_define_gsubr("netsnmp-table-helper-add-index", 2, 0, 0, (void *) _wrap_netsnmp_table_helper_add_index);
   scm_c_export("netsnmp-table-helper-add-index" , NULL);
