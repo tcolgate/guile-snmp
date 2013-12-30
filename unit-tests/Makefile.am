@@ -1,3 +1,7 @@
+# Have to use serial tests as we run them through the agent so order
+# matters, this may be avoidable
+AUTOMAKE_OPTIONS=serial-tests
+
 TESTS=test-oids.scm test-net-snmp.scm test-net-snmp-v3.scm test-reports.scm test-display-hint.scm test-asn1-parse.scm
 
 TESTS_ENVIRONMENT=\
