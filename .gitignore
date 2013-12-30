@@ -11,6 +11,7 @@ config.log
 configure
 depcomp
 config.status
+test-driver
 config.sub
 config.guess
 install-sh
@@ -36,8 +37,11 @@ src/snmp_client.h
 acinclude.m4
 src/snmp-shell
 unit-tests/.test-agent-pid
+unit-tests/*.trs
+unit-tests/*.log
 src/snmp-shell.1
 m4/
 guile-snmp.spec
 meta/snmp-shell
+src/.cache
 
