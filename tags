@@ -1,0 +1,2080 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+#:community	doc/port-usage-report.scm	/^(default-session #:community "mycommunity")$/;"	f
+#:timeout	doc/drawospf.scm	/^(default-session #:timeout 10000000) $/;"	f
+%	src/snmp/oids.scm	/^(define-generic %)$/;"	f
+%	src/snmp/oids.scm	/^(define-method (% (s <integer>)(e <integer>) (id <oid>))$/;"	f
+%	src/snmp/oids.scm	/^(define-method (% (s <integer>)(id <oid>))$/;"	f
+%load-path	doc/port-usage-report.scm	/^(set! %load-path (cons "\/usr\/local\/bin" %load-path))$/;"	s
+*asn1-punctuation*	src/asn1-tokenize.scm	/^(define *asn1-punctuation*          $/;"	f
+*asn1-tokens*	src/asn1-tokenize.scm	/^(define *asn1-tokens*           $/;"	f
+*eof-object*	src/asn1-parser.scm	/^(define *eof-object*$/;"	f
++	src/snmp/oids.scm	/^(define-method (+ (id1 <integer>) (id2 <oid>))$/;"	f
++	src/snmp/oids.scm	/^(define-method (+ (id1 <oid>) (id2 <integer>))$/;"	f
++	src/snmp/oids.scm	/^(define-method (+ (id1 <oid>) (id2 <oid>))$/;"	f
++	src/snmp/oids.scm	/^(define-method (+ (id1 <oid>) (id2 <uvec>))$/;"	f
++	src/snmp/oids.scm	/^(define-method (+ (id1 <oid>))$/;"	f
++	src/snmp/oids.scm	/^(define-method (+ (id1 <uvec>) (id2 <oid>))$/;"	f
++	src/snmp/oids.scm	/^(define-method (+ (id1 <uvec>) (id2 <uvec>))$/;"	f
++	src/snmp/oids.scm	/^(define-method (+ . args)$/;"	f
++	src/snmp/oids.scm	/^(define-method (+)$/;"	f
+-	src/snmp/oids.scm	/^(define-method (- (base <oid>) (id <oid>))$/;"	f
+-	src/snmp/oids.scm	/^(define-method (- (base <oid>) (id <uvec>))$/;"	f
+-	src/snmp/oids.scm	/^(define-method (- (base <uvec>) (id <oid>))$/;"	f
+-	src/snmp/oids.scm	/^(define-method (- (base <uvec>) (id <uvec>))$/;"	f
+-	src/snmp/oids.scm	/^(define-method (- (id1 <oid>))$/;"	f
+-	src/snmp/oids.scm	/^(define-method (- (id1 <uvec>))$/;"	f
+-	src/snmp/oids.scm	/^(define-method (-)$/;"	f
+/	src/snmp/oids.scm	/^(define-generic \/)$/;"	f
+/	src/snmp/oids.scm	/^(define-method (\/ (oid1 <oid>)(oid2 <oid>))$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-BIT-STR)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-BOOLEAN)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-COUNTER)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-COUNTER64)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-DOUBLE)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-FLOAT)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-GAUGE)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-INTEGER)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-INTEGER64)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-IPADDRESS)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-NSAP)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-NULL)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-OBJECT-ID)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-OCTET-STR)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-OPAQUE)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-OPAQUE-DOUBLE)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-OPAQUE-FLOAT)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-SEQUENCE)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-SET)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-TIMETICKS)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-UINTEGER)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-UNSIGNED)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> ASN-UNSIGNED64)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> SNMP-ENDOFMIBVIEW)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> SNMP-NOSUCHINSTANCE)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant <asn-type> SNMP-NOSUCHOBJECT)$/;"	f
+<asn-type>	src/snmp/net-snmp.scm	/^(define-constant-class <asn-type>)$/;"	f
+<callback-op>	src/snmp/net-snmp.scm	/^(define-constant <callback-op> OP-CONNECT)$/;"	f
+<callback-op>	src/snmp/net-snmp.scm	/^(define-constant <callback-op> OP-DISCONNECT)$/;"	f
+<callback-op>	src/snmp/net-snmp.scm	/^(define-constant <callback-op> OP-RECEIVED-MESSAGE)$/;"	f
+<callback-op>	src/snmp/net-snmp.scm	/^(define-constant <callback-op> OP-SEND-FAILED)$/;"	f
+<callback-op>	src/snmp/net-snmp.scm	/^(define-constant <callback-op> OP-TIMED-OUT)$/;"	f
+<callback-op>	src/snmp/net-snmp.scm	/^(define-constant-class <callback-op>)$/;"	f
+<ipv4-address>	doc/ipv4-router.scm	/^(define-class <ipv4-address> ()$/;"	f
+<ipv4-network>	doc/ipv4-router.scm	/^(define-class <ipv4-network> ()$/;"	f
+<ipv4-route>	doc/ipv4-router.scm	/^(define-class <ipv4-route> ()$/;"	f
+<ipv4-table>	doc/ipv4-router.scm	/^(define-class <ipv4-table> ()$/;"	f
+<mib-access>	src/snmp/net-snmp.scm	/^(define-constant <mib-access> MIB-ACCESS-CREATE)$/;"	f
+<mib-access>	src/snmp/net-snmp.scm	/^(define-constant <mib-access> MIB-ACCESS-NOACCESS)$/;"	f
+<mib-access>	src/snmp/net-snmp.scm	/^(define-constant <mib-access> MIB-ACCESS-NOTIFY)$/;"	f
+<mib-access>	src/snmp/net-snmp.scm	/^(define-constant <mib-access> MIB-ACCESS-READONLY)$/;"	f
+<mib-access>	src/snmp/net-snmp.scm	/^(define-constant <mib-access> MIB-ACCESS-READWRITE)$/;"	f
+<mib-access>	src/snmp/net-snmp.scm	/^(define-constant <mib-access> MIB-ACCESS-WRITEHONLY)$/;"	f
+<mib-access>	src/snmp/net-snmp.scm	/^(define-constant-class <mib-access>)$/;"	f
+<mib-handler-cap>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-cap> HANDLER-CAN-BABY-STEP)$/;"	f
+<mib-handler-cap>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-cap> HANDLER-CAN-DEFAULT)$/;"	f
+<mib-handler-cap>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-cap> HANDLER-CAN-GETANDGETNEXT)$/;"	f
+<mib-handler-cap>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-cap> HANDLER-CAN-NOT-CREATE)$/;"	f
+<mib-handler-cap>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-cap> HANDLER-CAN-RONLY)$/;"	f
+<mib-handler-cap>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-cap> HANDLER-CAN-RWRITE)$/;"	f
+<mib-handler-cap>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-cap> HANDLER-CAN-SET)$/;"	f
+<mib-handler-cap>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-cap> HANDLER-CAN-SET_ONLY)$/;"	f
+<mib-handler-cap>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-cap> HANDLER-CAN-STASH)$/;"	f
+<mib-handler-cap>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-cap> HANDLER_CAN-GETBULK)$/;"	f
+<mib-handler-cap>	src/snmp/net-snmp.scm	/^(define-constant-class <mib-handler-cap>)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-BSTEP-CHECK-CONSISTENCY)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-BSTEP-CHECK-VALUE)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-BSTEP-COMMIT)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-BSTEP-IRREVERSIBLE-COMMIT)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-BSTEP-OBJECT-LOOKUP)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-BSTEP-POST-REQUEST)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-BSTEP-PRE-REQUEST)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-BSTEP-ROW-CREATE)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-BSTEP-SET-VALUE)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-BSTEP-UNDO-CLEANUP)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-BSTEP-UNDO-COMMIT)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-BSTEP-UNDO-SET)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-BSTEP-UNDO-SETUP)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-GET)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-GET-STASH)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-GETBULK)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-GETNEXT)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-SET-ACTION)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-SET-BEGIN)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-SET-COMMIT)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-SET-FREE)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-SET-RESERVE1)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-SET-RESERVE2)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler-mode> MODE-SET-UNDO)$/;"	f
+<mib-handler-mode>	src/snmp/net-snmp.scm	/^(define-constant-class <mib-handler-mode>)$/;"	f
+<mib-handler>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler> MIB-HANDLER-AUTO-NEXT)$/;"	f
+<mib-handler>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler> MIB-HANDLER-AUTO-NEXT-OVERRIDE-ONCE)$/;"	f
+<mib-handler>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler> MIB-HANDLER-CUSTOM1)$/;"	f
+<mib-handler>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler> MIB-HANDLER-CUSTOM2)$/;"	f
+<mib-handler>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler> MIB-HANDLER-CUSTOM3)$/;"	f
+<mib-handler>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler> MIB-HANDLER-CUSTOM4)$/;"	f
+<mib-handler>	src/snmp/net-snmp.scm	/^(define-constant <mib-handler> MIB-HANDLER-INSTANCE)$/;"	f
+<mib-handler>	src/snmp/net-snmp.scm	/^(define-constant-class <mib-handler>)$/;"	f
+<mib-status>	src/snmp/net-snmp.scm	/^(define-constant <mib-status> MIB-STATUS-CURRENT)$/;"	f
+<mib-status>	src/snmp/net-snmp.scm	/^(define-constant <mib-status> MIB-STATUS-DEPRECATED)$/;"	f
+<mib-status>	src/snmp/net-snmp.scm	/^(define-constant <mib-status> MIB-STATUS-MANDATORY)$/;"	f
+<mib-status>	src/snmp/net-snmp.scm	/^(define-constant <mib-status> MIB-STATUS-OBSOLETE)$/;"	f
+<mib-status>	src/snmp/net-snmp.scm	/^(define-constant <mib-status> MIB-STATUS-OPTIONAL)$/;"	f
+<mib-status>	src/snmp/net-snmp.scm	/^(define-constant-class <mib-status>)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-AGENTCAP)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-BITSTRING)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-COUNTER)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-COUNTER64)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-GAUGE)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-INTEGER)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-INTEGER32)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-IPADDR)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-MODCOMP)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-MODID)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-NETADDR)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-NOTIFGROUP)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-NOTIFTYPE)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-NSAPADDRESS)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-NULL)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-OBJGROUP)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-OBJID)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-OBJIDENTITY)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-OCTETSTR)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-OPAQUE)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-OTHER)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-SIMPLE-LAST)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-TIMETICKS)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-TRAPTYPE)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-UINTEGER)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant <mib-type> MIB-TYPE-UNSIGNED32)$/;"	f
+<mib-type>	src/snmp/net-snmp.scm	/^(define-constant-class <mib-type>)$/;"	f
+<node>	doc/nodes.scm	/^(define-class <node> ()$/;"	f
+<snmp-constant>	src/snmp/net-snmp.scm	/^(define-class <snmp-constant> ()$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-AUTHORIZATIONERROR)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-BADVALUE)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-COMMITFAILED)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-GENERR)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-INCONSISTENTNAME)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-INCONSISTENTVALUE)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-NOACCESS)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-NOCREATION)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-NOERROR)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-NOSUCHNAME)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-NOTWRITABLE)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-READONLY)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-RESOURCEUNAVAILABLE)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-TOOBIG)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-UNDOFAILED)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-WRONGENCODING)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-WRONGLENGTH)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-WRONGTYPE)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-err-status> SNMP-ERR-WRONGVALUE)$/;"	f
+<snmp-err-status>	src/snmp/net-snmp.scm	/^(define-constant-class <snmp-err-status>)$/;"	f
+<snmp-msg>	src/snmp/net-snmp.scm	/^(define-constant <snmp-msg> SNMP-MSG-GET)$/;"	f
+<snmp-msg>	src/snmp/net-snmp.scm	/^(define-constant <snmp-msg> SNMP-MSG-GETBULK)$/;"	f
+<snmp-msg>	src/snmp/net-snmp.scm	/^(define-constant <snmp-msg> SNMP-MSG-GETNEXT)$/;"	f
+<snmp-msg>	src/snmp/net-snmp.scm	/^(define-constant <snmp-msg> SNMP-MSG-INFORM)$/;"	f
+<snmp-msg>	src/snmp/net-snmp.scm	/^(define-constant <snmp-msg> SNMP-MSG-REPORT)$/;"	f
+<snmp-msg>	src/snmp/net-snmp.scm	/^(define-constant <snmp-msg> SNMP-MSG-RESPONSE)$/;"	f
+<snmp-msg>	src/snmp/net-snmp.scm	/^(define-constant <snmp-msg> SNMP-MSG-SET)$/;"	f
+<snmp-msg>	src/snmp/net-snmp.scm	/^(define-constant <snmp-msg> SNMP-MSG-TRAP)$/;"	f
+<snmp-msg>	src/snmp/net-snmp.scm	/^(define-constant <snmp-msg> SNMP-MSG-TRAP2)$/;"	f
+<snmp-msg>	src/snmp/net-snmp.scm	/^(define-constant-class <snmp-msg>)$/;"	f
+<snmp-reports-result-set>	src/snmp/reports.scm	/^(define-class <snmp-reports-result-set> (<applicable-struct>)$/;"	f
+<snmp-reports-result>	src/snmp/reports.scm	/^(define-class <snmp-reports-result> ()$/;"	f
+<snmp-sec-level>	src/snmp/net-snmp.scm	/^(define-constant <snmp-sec-level> SNMP-SEC-LEVEL-AUTHNOPRIV)$/;"	f
+<snmp-sec-level>	src/snmp/net-snmp.scm	/^(define-constant <snmp-sec-level> SNMP-SEC-LEVEL-AUTHPRIV)$/;"	f
+<snmp-sec-level>	src/snmp/net-snmp.scm	/^(define-constant <snmp-sec-level> SNMP-SEC-LEVEL-NOAUTH)$/;"	f
+<snmp-sec-level>	src/snmp/net-snmp.scm	/^(define-constant-class <snmp-sec-level>)$/;"	f
+<snmp-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-status> STAT-ERROR)$/;"	f
+<snmp-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-status> STAT-SUCCESS)$/;"	f
+<snmp-status>	src/snmp/net-snmp.scm	/^(define-constant <snmp-status> STAT-TIMEOUT)$/;"	f
+<snmp-status>	src/snmp/net-snmp.scm	/^(define-constant-class <snmp-status>)$/;"	f
+<snmp-version>	src/snmp/net-snmp.scm	/^(define-constant <snmp-version> SNMP-VERSION-1) $/;"	f
+<snmp-version>	src/snmp/net-snmp.scm	/^(define-constant <snmp-version> SNMP-VERSION-2c) $/;"	f
+<snmp-version>	src/snmp/net-snmp.scm	/^(define-constant <snmp-version> SNMP-VERSION-2p) $/;"	f
+<snmp-version>	src/snmp/net-snmp.scm	/^(define-constant <snmp-version> SNMP-VERSION-2star) $/;"	f
+<snmp-version>	src/snmp/net-snmp.scm	/^(define-constant <snmp-version> SNMP-VERSION-2u) $/;"	f
+<snmp-version>	src/snmp/net-snmp.scm	/^(define-constant <snmp-version> SNMP-VERSION-3) $/;"	f
+<snmp-version>	src/snmp/net-snmp.scm	/^(define-constant <snmp-version> SNMP-VERSION-sec) $/;"	f
+<snmp-version>	src/snmp/net-snmp.scm	/^(define-constant-class <snmp-version>)$/;"	f
+<test-asn1>	unit-tests/test-asn1-parse.scm	/^(define-class <test-asn1> (<test-case>))$/;"	f
+<test-display-hint>	unit-tests/test-display-hint.scm	/^(define-class <test-display-hint> (<test-case>))$/;"	f
+<test-ipv4-route>	unit-tests/test-ipv4-route.scm	/^(define-class <test-ipv4-route> (<test-case>)$/;"	f
+<test-net-snmp-v3>	unit-tests/test-net-snmp-v3.scm	/^(define-class <test-net-snmp-v3> (<test-case>)$/;"	f
+<test-net-snmp>	unit-tests/test-net-snmp.scm	/^(define-class <test-net-snmp> (<test-case>)$/;"	f
+<test-oids>	unit-tests/test-oids.scm	/^(define-class <test-oids> (<test-case>)$/;"	f
+<test-reports>	unit-tests/test-reports.scm	/^(define-class <test-reports> (<test-case>))$/;"	f
+<trie-node>	doc/ipv4-router.scm	/^(define-class <trie-node> ()$/;"	f
+ACLOCAL	Makefile	/^ACLOCAL = aclocal-1.14$/;"	m
+ACLOCAL	doc/Makefile	/^ACLOCAL = aclocal-1.14$/;"	m
+ACLOCAL	meta/Makefile	/^ACLOCAL = aclocal-1.14$/;"	m
+ACLOCAL	src/Makefile	/^ACLOCAL = aclocal-1.14$/;"	m
+ACLOCAL	unit-tests/Makefile	/^ACLOCAL = aclocal-1.14$/;"	m
+ACLOCAL_AMFLAGS	Makefile	/^ACLOCAL_AMFLAGS = -I m4$/;"	m
+ACLOCAL_M4	Makefile	/^ACLOCAL_M4 = $(top_srcdir)\/aclocal.m4$/;"	m
+ACLOCAL_M4	doc/Makefile	/^ACLOCAL_M4 = $(top_srcdir)\/aclocal.m4$/;"	m
+ACLOCAL_M4	meta/Makefile	/^ACLOCAL_M4 = $(top_srcdir)\/aclocal.m4$/;"	m
+ACLOCAL_M4	src/Makefile	/^ACLOCAL_M4 = $(top_srcdir)\/aclocal.m4$/;"	m
+ACLOCAL_M4	unit-tests/Makefile	/^ACLOCAL_M4 = $(top_srcdir)\/aclocal.m4$/;"	m
+AMTAR	Makefile	/^AMTAR = $${TAR-tar}$/;"	m
+AMTAR	doc/Makefile	/^AMTAR = $${TAR-tar}$/;"	m
+AMTAR	meta/Makefile	/^AMTAR = $${TAR-tar}$/;"	m
+AMTAR	src/Makefile	/^AMTAR = $${TAR-tar}$/;"	m
+AMTAR	unit-tests/Makefile	/^AMTAR = $${TAR-tar}$/;"	m
+AM_DEFAULT_VERBOSITY	Makefile	/^AM_DEFAULT_VERBOSITY = 1$/;"	m
+AM_DEFAULT_VERBOSITY	doc/Makefile	/^AM_DEFAULT_VERBOSITY = 1$/;"	m
+AM_DEFAULT_VERBOSITY	meta/Makefile	/^AM_DEFAULT_VERBOSITY = 1$/;"	m
+AM_DEFAULT_VERBOSITY	src/Makefile	/^AM_DEFAULT_VERBOSITY = 1$/;"	m
+AM_DEFAULT_VERBOSITY	unit-tests/Makefile	/^AM_DEFAULT_VERBOSITY = 1$/;"	m
+AM_RECURSIVE_TARGETS	Makefile	/^AM_RECURSIVE_TARGETS = $(am__recursive_targets:-recursive=) TAGS CTAGS \\$/;"	m
+AM_V_CC	src/Makefile	/^AM_V_CC = $(am__v_CC_$(V))$/;"	m
+AM_V_CCLD	src/Makefile	/^AM_V_CCLD = $(am__v_CCLD_$(V))$/;"	m
+AM_V_GEN	Makefile	/^AM_V_GEN = $(am__v_GEN_$(V))$/;"	m
+AM_V_GEN	doc/Makefile	/^AM_V_GEN = $(am__v_GEN_$(V))$/;"	m
+AM_V_GEN	meta/Makefile	/^AM_V_GEN = $(am__v_GEN_$(V))$/;"	m
+AM_V_GEN	src/Makefile	/^AM_V_GEN = $(am__v_GEN_$(V))$/;"	m
+AM_V_GEN	unit-tests/Makefile	/^AM_V_GEN = $(am__v_GEN_$(V))$/;"	m
+AM_V_P	Makefile	/^AM_V_P = $(am__v_P_$(V))$/;"	m
+AM_V_P	doc/Makefile	/^AM_V_P = $(am__v_P_$(V))$/;"	m
+AM_V_P	meta/Makefile	/^AM_V_P = $(am__v_P_$(V))$/;"	m
+AM_V_P	src/Makefile	/^AM_V_P = $(am__v_P_$(V))$/;"	m
+AM_V_P	unit-tests/Makefile	/^AM_V_P = $(am__v_P_$(V))$/;"	m
+AM_V_at	Makefile	/^AM_V_at = $(am__v_at_$(V))$/;"	m
+AM_V_at	doc/Makefile	/^AM_V_at = $(am__v_at_$(V))$/;"	m
+AM_V_at	meta/Makefile	/^AM_V_at = $(am__v_at_$(V))$/;"	m
+AM_V_at	src/Makefile	/^AM_V_at = $(am__v_at_$(V))$/;"	m
+AM_V_at	unit-tests/Makefile	/^AM_V_at = $(am__v_at_$(V))$/;"	m
+AM_V_lt	src/Makefile	/^AM_V_lt = $(am__v_lt_$(V))$/;"	m
+AR	Makefile	/^AR = ar$/;"	m
+AR	doc/Makefile	/^AR = ar$/;"	m
+AR	meta/Makefile	/^AR = ar$/;"	m
+AR	src/Makefile	/^AR = ar$/;"	m
+AR	unit-tests/Makefile	/^AR = ar$/;"	m
+ASSERT_NOT_NULL_PTR	src/net-snmp_wrap_structs.h	168;"	d
+AUTOCONF	Makefile	/^AUTOCONF = autoconf$/;"	m
+AUTOCONF	doc/Makefile	/^AUTOCONF = autoconf$/;"	m
+AUTOCONF	meta/Makefile	/^AUTOCONF = autoconf$/;"	m
+AUTOCONF	src/Makefile	/^AUTOCONF = autoconf$/;"	m
+AUTOCONF	unit-tests/Makefile	/^AUTOCONF = autoconf$/;"	m
+AUTOHEADER	Makefile	/^AUTOHEADER = autoheader$/;"	m
+AUTOHEADER	doc/Makefile	/^AUTOHEADER = autoheader$/;"	m
+AUTOHEADER	meta/Makefile	/^AUTOHEADER = autoheader$/;"	m
+AUTOHEADER	src/Makefile	/^AUTOHEADER = autoheader$/;"	m
+AUTOHEADER	unit-tests/Makefile	/^AUTOHEADER = autoheader$/;"	m
+AUTOMAKE	Makefile	/^AUTOMAKE = automake-1.14$/;"	m
+AUTOMAKE	doc/Makefile	/^AUTOMAKE = automake-1.14$/;"	m
+AUTOMAKE	meta/Makefile	/^AUTOMAKE = automake-1.14$/;"	m
+AUTOMAKE	src/Makefile	/^AUTOMAKE = automake-1.14$/;"	m
+AUTOMAKE	unit-tests/Makefile	/^AUTOMAKE = automake-1.14$/;"	m
+AUTOMAKE_OPTIONS	unit-tests/Makefile	/^AUTOMAKE_OPTIONS = serial-tests$/;"	m
+AWK	Makefile	/^AWK = mawk$/;"	m
+AWK	doc/Makefile	/^AWK = mawk$/;"	m
+AWK	meta/Makefile	/^AWK = mawk$/;"	m
+AWK	src/Makefile	/^AWK = mawk$/;"	m
+AWK	unit-tests/Makefile	/^AWK = mawk$/;"	m
+AuthMD5	src/snmp/reports/session.scm	/^(define AuthMD5  (list->oid (list 1 3 6 1 6 3 10 1 1 2))) ; (snmp-parse-oid "usmHMACMD5AuthProtocol")) $/;"	f
+AuthNone	src/snmp/reports/session.scm	/^(define AuthNone (list->oid (list 1 3 6 1 6 3 10 1 1 1))) ; (snmp-parse-oid "usmNoAuthProtocol")) $/;"	f
+AuthSHA1	src/snmp/reports/session.scm	/^(define AuthSHA1 (list->oid (list 1 3 6 1 6 3 10 1 1 3))) ; (snmp-parse-oid "usmHMACSHA1AuthProtocol")) $/;"	f
+CC	Makefile	/^CC = gcc$/;"	m
+CC	doc/Makefile	/^CC = gcc$/;"	m
+CC	meta/Makefile	/^CC = gcc$/;"	m
+CC	src/Makefile	/^CC = gcc$/;"	m
+CC	unit-tests/Makefile	/^CC = gcc$/;"	m
+CCDEPMODE	Makefile	/^CCDEPMODE = depmode=gcc3$/;"	m
+CCDEPMODE	doc/Makefile	/^CCDEPMODE = depmode=gcc3$/;"	m
+CCDEPMODE	meta/Makefile	/^CCDEPMODE = depmode=gcc3$/;"	m
+CCDEPMODE	src/Makefile	/^CCDEPMODE = depmode=gcc3$/;"	m
+CCDEPMODE	unit-tests/Makefile	/^CCDEPMODE = depmode=gcc3$/;"	m
+CCLD	src/Makefile	/^CCLD = $(CC)$/;"	m
+CFLAGS	Makefile	/^CFLAGS = -g -O2$/;"	m
+CFLAGS	doc/Makefile	/^CFLAGS = -g -O2$/;"	m
+CFLAGS	meta/Makefile	/^CFLAGS = -g -O2$/;"	m
+CFLAGS	src/Makefile	/^CFLAGS = -g -O2$/;"	m
+CFLAGS	unit-tests/Makefile	/^CFLAGS = -g -O2$/;"	m
+CLEANFILES	src/Makefile	/^CLEANFILES = snmp-shell.1$/;"	m
+COMPILE	src/Makefile	/^COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \\$/;"	m
+CONFIG_CLEAN_FILES	Makefile	/^CONFIG_CLEAN_FILES = test-environ build-environ guile-snmp.spec$/;"	m
+CONFIG_CLEAN_FILES	doc/Makefile	/^CONFIG_CLEAN_FILES =$/;"	m
+CONFIG_CLEAN_FILES	meta/Makefile	/^CONFIG_CLEAN_FILES = snmp-shell$/;"	m
+CONFIG_CLEAN_FILES	src/Makefile	/^CONFIG_CLEAN_FILES =$/;"	m
+CONFIG_CLEAN_FILES	unit-tests/Makefile	/^CONFIG_CLEAN_FILES =$/;"	m
+CONFIG_CLEAN_VPATH_FILES	Makefile	/^CONFIG_CLEAN_VPATH_FILES =$/;"	m
+CONFIG_CLEAN_VPATH_FILES	doc/Makefile	/^CONFIG_CLEAN_VPATH_FILES =$/;"	m
+CONFIG_CLEAN_VPATH_FILES	meta/Makefile	/^CONFIG_CLEAN_VPATH_FILES =$/;"	m
+CONFIG_CLEAN_VPATH_FILES	src/Makefile	/^CONFIG_CLEAN_VPATH_FILES =$/;"	m
+CONFIG_CLEAN_VPATH_FILES	unit-tests/Makefile	/^CONFIG_CLEAN_VPATH_FILES =$/;"	m
+CONFIG_HEADER	Makefile	/^CONFIG_HEADER = $(top_builddir)\/src\/config.h$/;"	m
+CONFIG_HEADER	doc/Makefile	/^CONFIG_HEADER = $(top_builddir)\/src\/config.h$/;"	m
+CONFIG_HEADER	meta/Makefile	/^CONFIG_HEADER = $(top_builddir)\/src\/config.h$/;"	m
+CONFIG_HEADER	src/Makefile	/^CONFIG_HEADER = config.h$/;"	m
+CONFIG_HEADER	unit-tests/Makefile	/^CONFIG_HEADER = $(top_builddir)\/src\/config.h$/;"	m
+CPP	Makefile	/^CPP = gcc -E$/;"	m
+CPP	doc/Makefile	/^CPP = gcc -E$/;"	m
+CPP	meta/Makefile	/^CPP = gcc -E$/;"	m
+CPP	src/Makefile	/^CPP = gcc -E$/;"	m
+CPP	unit-tests/Makefile	/^CPP = gcc -E$/;"	m
+CPPFLAGS	Makefile	/^CPPFLAGS = $/;"	m
+CPPFLAGS	doc/Makefile	/^CPPFLAGS = $/;"	m
+CPPFLAGS	meta/Makefile	/^CPPFLAGS = $/;"	m
+CPPFLAGS	src/Makefile	/^CPPFLAGS = $/;"	m
+CPPFLAGS	unit-tests/Makefile	/^CPPFLAGS = $/;"	m
+CSCOPE	Makefile	/^CSCOPE = cscope$/;"	m
+CTAGS	Makefile	/^CTAGS = ctags$/;"	m
+CTAGS	src/Makefile	/^CTAGS = ctags$/;"	m
+CYGPATH_W	Makefile	/^CYGPATH_W = echo$/;"	m
+CYGPATH_W	doc/Makefile	/^CYGPATH_W = echo$/;"	m
+CYGPATH_W	meta/Makefile	/^CYGPATH_W = echo$/;"	m
+CYGPATH_W	src/Makefile	/^CYGPATH_W = echo$/;"	m
+CYGPATH_W	unit-tests/Makefile	/^CYGPATH_W = echo$/;"	m
+CreateProcess	libtool	/^   CreateProcess().  We must quote the arguments since Win32 CreateProcess()$/;"	f
+CreateProcess	ltmain.sh	/^   CreateProcess().  We must quote the arguments since Win32 CreateProcess()$/;"	f
+DATA	src/Makefile	/^DATA = $(guilereports_DATA) $(guilesnmp_DATA)$/;"	m
+DEFAULT_INCLUDES	src/Makefile	/^DEFAULT_INCLUDES = -I.$/;"	m
+DEFINE_SLOT_READONLY	src/net-snmp_wrap_structs.h	1577;"	d
+DEFINE_SLOT_READWRITE	src/net-snmp_wrap_structs.h	1569;"	d
+DEFS	Makefile	/^DEFS = -DHAVE_CONFIG_H$/;"	m
+DEFS	doc/Makefile	/^DEFS = -DHAVE_CONFIG_H$/;"	m
+DEFS	meta/Makefile	/^DEFS = -DHAVE_CONFIG_H$/;"	m
+DEFS	src/Makefile	/^DEFS = -DHAVE_CONFIG_H$/;"	m
+DEFS	unit-tests/Makefile	/^DEFS = -DHAVE_CONFIG_H$/;"	m
+DEPDIR	Makefile	/^DEPDIR = .deps$/;"	m
+DEPDIR	doc/Makefile	/^DEPDIR = .deps$/;"	m
+DEPDIR	meta/Makefile	/^DEPDIR = .deps$/;"	m
+DEPDIR	src/Makefile	/^DEPDIR = .deps$/;"	m
+DEPDIR	unit-tests/Makefile	/^DEPDIR = .deps$/;"	m
+DISTFILES	Makefile	/^DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)$/;"	m
+DISTFILES	doc/Makefile	/^DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)$/;"	m
+DISTFILES	meta/Makefile	/^DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)$/;"	m
+DISTFILES	src/Makefile	/^DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)$/;"	m
+DISTFILES	unit-tests/Makefile	/^DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)$/;"	m
+DIST_ARCHIVES	Makefile	/^DIST_ARCHIVES = $(distdir).tar.gz$/;"	m
+DIST_COMMON	Makefile	/^DIST_COMMON = INSTALL NEWS README AUTHORS ChangeLog \\$/;"	m
+DIST_COMMON	doc/Makefile	/^DIST_COMMON = $(srcdir)\/Makefile.in $(srcdir)\/Makefile.am$/;"	m
+DIST_COMMON	meta/Makefile	/^DIST_COMMON = $(srcdir)\/Makefile.in $(srcdir)\/Makefile.am \\$/;"	m
+DIST_COMMON	src/Makefile	/^DIST_COMMON = $(srcdir)\/Makefile.in $(srcdir)\/Makefile.am \\$/;"	m
+DIST_COMMON	unit-tests/Makefile	/^DIST_COMMON = $(srcdir)\/Makefile.in $(srcdir)\/Makefile.am$/;"	m
+DIST_SOURCES	Makefile	/^DIST_SOURCES =$/;"	m
+DIST_SOURCES	doc/Makefile	/^DIST_SOURCES =$/;"	m
+DIST_SOURCES	meta/Makefile	/^DIST_SOURCES =$/;"	m
+DIST_SOURCES	src/Makefile	/^DIST_SOURCES = $(libguile_snmp_net_snmp_la_SOURCES) \\$/;"	m
+DIST_SOURCES	unit-tests/Makefile	/^DIST_SOURCES =$/;"	m
+DIST_SUBDIRS	Makefile	/^DIST_SUBDIRS = $(SUBDIRS)$/;"	m
+DIST_TARGETS	Makefile	/^DIST_TARGETS = dist-gzip$/;"	m
+DLLTOOL	Makefile	/^DLLTOOL = false$/;"	m
+DLLTOOL	doc/Makefile	/^DLLTOOL = false$/;"	m
+DLLTOOL	meta/Makefile	/^DLLTOOL = false$/;"	m
+DLLTOOL	src/Makefile	/^DLLTOOL = false$/;"	m
+DLLTOOL	unit-tests/Makefile	/^DLLTOOL = false$/;"	m
+DSYMUTIL	Makefile	/^DSYMUTIL = $/;"	m
+DSYMUTIL	doc/Makefile	/^DSYMUTIL = $/;"	m
+DSYMUTIL	meta/Makefile	/^DSYMUTIL = $/;"	m
+DSYMUTIL	src/Makefile	/^DSYMUTIL = $/;"	m
+DSYMUTIL	unit-tests/Makefile	/^DSYMUTIL = $/;"	m
+DUMPBIN	Makefile	/^DUMPBIN = $/;"	m
+DUMPBIN	doc/Makefile	/^DUMPBIN = $/;"	m
+DUMPBIN	meta/Makefile	/^DUMPBIN = $/;"	m
+DUMPBIN	src/Makefile	/^DUMPBIN = $/;"	m
+DUMPBIN	unit-tests/Makefile	/^DUMPBIN = $/;"	m
+ECHO_C	Makefile	/^ECHO_C = $/;"	m
+ECHO_C	doc/Makefile	/^ECHO_C = $/;"	m
+ECHO_C	meta/Makefile	/^ECHO_C = $/;"	m
+ECHO_C	src/Makefile	/^ECHO_C = $/;"	m
+ECHO_C	unit-tests/Makefile	/^ECHO_C = $/;"	m
+ECHO_N	Makefile	/^ECHO_N = -n$/;"	m
+ECHO_N	doc/Makefile	/^ECHO_N = -n$/;"	m
+ECHO_N	meta/Makefile	/^ECHO_N = -n$/;"	m
+ECHO_N	src/Makefile	/^ECHO_N = -n$/;"	m
+ECHO_N	unit-tests/Makefile	/^ECHO_N = -n$/;"	m
+ECHO_T	Makefile	/^ECHO_T = $/;"	m
+ECHO_T	doc/Makefile	/^ECHO_T = $/;"	m
+ECHO_T	meta/Makefile	/^ECHO_T = $/;"	m
+ECHO_T	src/Makefile	/^ECHO_T = $/;"	m
+ECHO_T	unit-tests/Makefile	/^ECHO_T = $/;"	m
+EGREP	Makefile	/^EGREP = \/bin\/grep -E$/;"	m
+EGREP	doc/Makefile	/^EGREP = \/bin\/grep -E$/;"	m
+EGREP	meta/Makefile	/^EGREP = \/bin\/grep -E$/;"	m
+EGREP	src/Makefile	/^EGREP = \/bin\/grep -E$/;"	m
+EGREP	unit-tests/Makefile	/^EGREP = \/bin\/grep -E$/;"	m
+ETAGS	Makefile	/^ETAGS = etags$/;"	m
+ETAGS	src/Makefile	/^ETAGS = etags$/;"	m
+EXEEXT	Makefile	/^EXEEXT = $/;"	m
+EXEEXT	doc/Makefile	/^EXEEXT = $/;"	m
+EXEEXT	meta/Makefile	/^EXEEXT = $/;"	m
+EXEEXT	src/Makefile	/^EXEEXT = $/;"	m
+EXEEXT	unit-tests/Makefile	/^EXEEXT = $/;"	m
+EXPORT_CONSTANT	src/net-snmp_wrap_constants.h	218;"	d
+EXTRA_DIST	Makefile	/^EXTRA_DIST = build-environ build-environ.in test-environ.in test-environ guile-snmp.spec guile-snmp.spec.in$/;"	m
+EXTRA_DIST	doc/Makefile	/^EXTRA_DIST = test-script find-host find-host-on-port showroute drawstp port-usage-report.scm nodes.scm agent.scm$/;"	m
+EXTRA_DIST	meta/Makefile	/^EXTRA_DIST = snmp-shell snmp-shell.in$/;"	m
+EXTRA_DIST	src/Makefile	/^EXTRA_DIST = snmp $(SCHEMESOURCES) $(SCHEMESOURCES2) $/;"	m
+EXTRA_DIST	unit-tests/Makefile	/^EXTRA_DIST = $(TESTS) GUILE-SNMP-TEST-MIB guileSnmpTestMIB-emulation.conf$/;"	m
+FGREP	Makefile	/^FGREP = \/bin\/grep -F$/;"	m
+FGREP	doc/Makefile	/^FGREP = \/bin\/grep -F$/;"	m
+FGREP	meta/Makefile	/^FGREP = \/bin\/grep -F$/;"	m
+FGREP	src/Makefile	/^FGREP = \/bin\/grep -F$/;"	m
+FGREP	unit-tests/Makefile	/^FGREP = \/bin\/grep -F$/;"	m
+GOBJECTS	src/Makefile	/^GOBJECTS = $(SCHEMESOURCES:%.scm=%.go)$/;"	m
+GOBJECTS2	src/Makefile	/^GOBJECTS2 = $(SCHEMESOURCES2:%.scm=%.go)$/;"	m
+GREP	Makefile	/^GREP = \/bin\/grep$/;"	m
+GREP	doc/Makefile	/^GREP = \/bin\/grep$/;"	m
+GREP	meta/Makefile	/^GREP = \/bin\/grep$/;"	m
+GREP	src/Makefile	/^GREP = \/bin\/grep$/;"	m
+GREP	unit-tests/Makefile	/^GREP = \/bin\/grep$/;"	m
+GUILE	Makefile	/^GUILE = \/usr\/local\/bin\/guile$/;"	m
+GUILE	doc/Makefile	/^GUILE = \/usr\/local\/bin\/guile$/;"	m
+GUILE	meta/Makefile	/^GUILE = \/usr\/local\/bin\/guile$/;"	m
+GUILE	src/Makefile	/^GUILE = \/usr\/local\/bin\/guile$/;"	m
+GUILE	unit-tests/Makefile	/^GUILE = \/usr\/local\/bin\/guile$/;"	m
+GUILE_CFLAGS	Makefile	/^GUILE_CFLAGS = -pthread -I\/usr\/local\/include\/guile\/2.2 -I\/usr\/local\/include  $/;"	m
+GUILE_CFLAGS	doc/Makefile	/^GUILE_CFLAGS = -pthread -I\/usr\/local\/include\/guile\/2.2 -I\/usr\/local\/include  $/;"	m
+GUILE_CFLAGS	meta/Makefile	/^GUILE_CFLAGS = -pthread -I\/usr\/local\/include\/guile\/2.2 -I\/usr\/local\/include  $/;"	m
+GUILE_CFLAGS	src/Makefile	/^GUILE_CFLAGS = -pthread -I\/usr\/local\/include\/guile\/2.2 -I\/usr\/local\/include  $/;"	m
+GUILE_CFLAGS	unit-tests/Makefile	/^GUILE_CFLAGS = -pthread -I\/usr\/local\/include\/guile\/2.2 -I\/usr\/local\/include  $/;"	m
+GUILE_COMPILE	Makefile	/^GUILE_COMPILE = \/usr\/local\/bin\/guile-tools compile$/;"	m
+GUILE_COMPILE	doc/Makefile	/^GUILE_COMPILE = \/usr\/local\/bin\/guile-tools compile$/;"	m
+GUILE_COMPILE	meta/Makefile	/^GUILE_COMPILE = \/usr\/local\/bin\/guile-tools compile$/;"	m
+GUILE_COMPILE	src/Makefile	/^GUILE_COMPILE = \/usr\/local\/bin\/guile-tools compile$/;"	m
+GUILE_COMPILE	unit-tests/Makefile	/^GUILE_COMPILE = \/usr\/local\/bin\/guile-tools compile$/;"	m
+GUILE_CONFIG	Makefile	/^GUILE_CONFIG = \/usr\/local\/bin\/guile-config$/;"	m
+GUILE_CONFIG	doc/Makefile	/^GUILE_CONFIG = \/usr\/local\/bin\/guile-config$/;"	m
+GUILE_CONFIG	meta/Makefile	/^GUILE_CONFIG = \/usr\/local\/bin\/guile-config$/;"	m
+GUILE_CONFIG	src/Makefile	/^GUILE_CONFIG = \/usr\/local\/bin\/guile-config$/;"	m
+GUILE_CONFIG	unit-tests/Makefile	/^GUILE_CONFIG = \/usr\/local\/bin\/guile-config$/;"	m
+GUILE_LDFLAGS	Makefile	/^GUILE_LDFLAGS = -L\/usr\/local\/lib -lguile-2.2 -lgc  $/;"	m
+GUILE_LDFLAGS	doc/Makefile	/^GUILE_LDFLAGS = -L\/usr\/local\/lib -lguile-2.2 -lgc  $/;"	m
+GUILE_LDFLAGS	meta/Makefile	/^GUILE_LDFLAGS = -L\/usr\/local\/lib -lguile-2.2 -lgc  $/;"	m
+GUILE_LDFLAGS	src/Makefile	/^GUILE_LDFLAGS = -L\/usr\/local\/lib -lguile-2.2 -lgc  $/;"	m
+GUILE_LDFLAGS	unit-tests/Makefile	/^GUILE_LDFLAGS = -L\/usr\/local\/lib -lguile-2.2 -lgc  $/;"	m
+GUILE_PREFIX	Makefile	/^GUILE_PREFIX = \/usr\/local$/;"	m
+GUILE_PREFIX	doc/Makefile	/^GUILE_PREFIX = \/usr\/local$/;"	m
+GUILE_PREFIX	meta/Makefile	/^GUILE_PREFIX = \/usr\/local$/;"	m
+GUILE_PREFIX	src/Makefile	/^GUILE_PREFIX = \/usr\/local$/;"	m
+GUILE_PREFIX	unit-tests/Makefile	/^GUILE_PREFIX = \/usr\/local$/;"	m
+GUILE_SITE	Makefile	/^GUILE_SITE = \/usr\/local\/share\/guile\/site\/2.2$/;"	m
+GUILE_SITE	doc/Makefile	/^GUILE_SITE = \/usr\/local\/share\/guile\/site\/2.2$/;"	m
+GUILE_SITE	meta/Makefile	/^GUILE_SITE = \/usr\/local\/share\/guile\/site\/2.2$/;"	m
+GUILE_SITE	src/Makefile	/^GUILE_SITE = \/usr\/local\/share\/guile\/site\/2.2$/;"	m
+GUILE_SITE	unit-tests/Makefile	/^GUILE_SITE = \/usr\/local\/share\/guile\/site\/2.2$/;"	m
+GUILE_TOOLS	Makefile	/^GUILE_TOOLS = \/usr\/local\/bin\/guile-tools$/;"	m
+GUILE_TOOLS	doc/Makefile	/^GUILE_TOOLS = \/usr\/local\/bin\/guile-tools$/;"	m
+GUILE_TOOLS	meta/Makefile	/^GUILE_TOOLS = \/usr\/local\/bin\/guile-tools$/;"	m
+GUILE_TOOLS	src/Makefile	/^GUILE_TOOLS = \/usr\/local\/bin\/guile-tools$/;"	m
+GUILE_TOOLS	unit-tests/Makefile	/^GUILE_TOOLS = \/usr\/local\/bin\/guile-tools$/;"	m
+GZIP_ENV	Makefile	/^GZIP_ENV = --best$/;"	m
+HAVE_AGENT_H	src/config.h	5;"	d
+HAVE_DLFCN_H	src/config.h	8;"	d
+HAVE_INTTYPES_H	src/config.h	11;"	d
+HAVE_LIBNETSNMP	src/config.h	14;"	d
+HAVE_LIBSNMP	src/config.h	17;"	d
+HAVE_MEMORY_H	src/config.h	20;"	d
+HAVE_STDINT_H	src/config.h	23;"	d
+HAVE_STDLIB_H	src/config.h	26;"	d
+HAVE_STRINGS_H	src/config.h	29;"	d
+HAVE_STRING_H	src/config.h	32;"	d
+HAVE_SYSORTABLE_H	src/config.h	35;"	d
+HAVE_SYS_STAT_H	src/config.h	38;"	d
+HAVE_SYS_TYPES_H	src/config.h	41;"	d
+HAVE_UNISTD_H	src/config.h	44;"	d
+INSTALL	Makefile	/^INSTALL = \/usr\/bin\/install -c$/;"	m
+INSTALL	doc/Makefile	/^INSTALL = \/usr\/bin\/install -c$/;"	m
+INSTALL	meta/Makefile	/^INSTALL = \/usr\/bin\/install -c$/;"	m
+INSTALL	src/Makefile	/^INSTALL = \/usr\/bin\/install -c$/;"	m
+INSTALL	unit-tests/Makefile	/^INSTALL = \/usr\/bin\/install -c$/;"	m
+INSTALL_DATA	Makefile	/^INSTALL_DATA = ${INSTALL} -m 644$/;"	m
+INSTALL_DATA	doc/Makefile	/^INSTALL_DATA = ${INSTALL} -m 644$/;"	m
+INSTALL_DATA	meta/Makefile	/^INSTALL_DATA = ${INSTALL} -m 644$/;"	m
+INSTALL_DATA	src/Makefile	/^INSTALL_DATA = ${INSTALL} -m 644$/;"	m
+INSTALL_DATA	unit-tests/Makefile	/^INSTALL_DATA = ${INSTALL} -m 644$/;"	m
+INSTALL_HEADER	Makefile	/^INSTALL_HEADER = $(INSTALL_DATA)$/;"	m
+INSTALL_HEADER	doc/Makefile	/^INSTALL_HEADER = $(INSTALL_DATA)$/;"	m
+INSTALL_HEADER	meta/Makefile	/^INSTALL_HEADER = $(INSTALL_DATA)$/;"	m
+INSTALL_HEADER	src/Makefile	/^INSTALL_HEADER = $(INSTALL_DATA)$/;"	m
+INSTALL_HEADER	unit-tests/Makefile	/^INSTALL_HEADER = $(INSTALL_DATA)$/;"	m
+INSTALL_PROGRAM	Makefile	/^INSTALL_PROGRAM = ${INSTALL}$/;"	m
+INSTALL_PROGRAM	doc/Makefile	/^INSTALL_PROGRAM = ${INSTALL}$/;"	m
+INSTALL_PROGRAM	meta/Makefile	/^INSTALL_PROGRAM = ${INSTALL}$/;"	m
+INSTALL_PROGRAM	src/Makefile	/^INSTALL_PROGRAM = ${INSTALL}$/;"	m
+INSTALL_PROGRAM	unit-tests/Makefile	/^INSTALL_PROGRAM = ${INSTALL}$/;"	m
+INSTALL_SCRIPT	Makefile	/^INSTALL_SCRIPT = ${INSTALL}$/;"	m
+INSTALL_SCRIPT	doc/Makefile	/^INSTALL_SCRIPT = ${INSTALL}$/;"	m
+INSTALL_SCRIPT	meta/Makefile	/^INSTALL_SCRIPT = ${INSTALL}$/;"	m
+INSTALL_SCRIPT	src/Makefile	/^INSTALL_SCRIPT = ${INSTALL}$/;"	m
+INSTALL_SCRIPT	unit-tests/Makefile	/^INSTALL_SCRIPT = ${INSTALL}$/;"	m
+INSTALL_STRIP_PROGRAM	Makefile	/^INSTALL_STRIP_PROGRAM = $(install_sh) -c -s$/;"	m
+INSTALL_STRIP_PROGRAM	doc/Makefile	/^INSTALL_STRIP_PROGRAM = $(install_sh) -c -s$/;"	m
+INSTALL_STRIP_PROGRAM	meta/Makefile	/^INSTALL_STRIP_PROGRAM = $(install_sh) -c -s$/;"	m
+INSTALL_STRIP_PROGRAM	src/Makefile	/^INSTALL_STRIP_PROGRAM = $(install_sh) -c -s$/;"	m
+INSTALL_STRIP_PROGRAM	unit-tests/Makefile	/^INSTALL_STRIP_PROGRAM = $(install_sh) -c -s$/;"	m
+LD	Makefile	/^LD = \/usr\/bin\/ld -m elf_x86_64$/;"	m
+LD	doc/Makefile	/^LD = \/usr\/bin\/ld -m elf_x86_64$/;"	m
+LD	meta/Makefile	/^LD = \/usr\/bin\/ld -m elf_x86_64$/;"	m
+LD	src/Makefile	/^LD = \/usr\/bin\/ld -m elf_x86_64$/;"	m
+LD	unit-tests/Makefile	/^LD = \/usr\/bin\/ld -m elf_x86_64$/;"	m
+LDFLAGS	Makefile	/^LDFLAGS = $/;"	m
+LDFLAGS	doc/Makefile	/^LDFLAGS = $/;"	m
+LDFLAGS	meta/Makefile	/^LDFLAGS = $/;"	m
+LDFLAGS	src/Makefile	/^LDFLAGS = $/;"	m
+LDFLAGS	unit-tests/Makefile	/^LDFLAGS = $/;"	m
+LIBOBJS	Makefile	/^LIBOBJS = $/;"	m
+LIBOBJS	doc/Makefile	/^LIBOBJS = $/;"	m
+LIBOBJS	meta/Makefile	/^LIBOBJS = $/;"	m
+LIBOBJS	src/Makefile	/^LIBOBJS = $/;"	m
+LIBOBJS	unit-tests/Makefile	/^LIBOBJS = $/;"	m
+LIBS	Makefile	/^LIBS = -lnetsnmp -lsnmp $/;"	m
+LIBS	doc/Makefile	/^LIBS = -lnetsnmp -lsnmp $/;"	m
+LIBS	meta/Makefile	/^LIBS = -lnetsnmp -lsnmp $/;"	m
+LIBS	src/Makefile	/^LIBS = -lnetsnmp -lsnmp $/;"	m
+LIBS	unit-tests/Makefile	/^LIBS = -lnetsnmp -lsnmp $/;"	m
+LIBTOOL	Makefile	/^LIBTOOL = $(SHELL) $(top_builddir)\/libtool$/;"	m
+LIBTOOL	doc/Makefile	/^LIBTOOL = $(SHELL) $(top_builddir)\/libtool$/;"	m
+LIBTOOL	meta/Makefile	/^LIBTOOL = $(SHELL) $(top_builddir)\/libtool$/;"	m
+LIBTOOL	src/Makefile	/^LIBTOOL = $(SHELL) $(top_builddir)\/libtool$/;"	m
+LIBTOOL	unit-tests/Makefile	/^LIBTOOL = $(SHELL) $(top_builddir)\/libtool$/;"	m
+LINK	src/Makefile	/^LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \\$/;"	m
+LIPO	Makefile	/^LIPO = $/;"	m
+LIPO	doc/Makefile	/^LIPO = $/;"	m
+LIPO	meta/Makefile	/^LIPO = $/;"	m
+LIPO	src/Makefile	/^LIPO = $/;"	m
+LIPO	unit-tests/Makefile	/^LIPO = $/;"	m
+LN_S	Makefile	/^LN_S = ln -s$/;"	m
+LN_S	doc/Makefile	/^LN_S = ln -s$/;"	m
+LN_S	meta/Makefile	/^LN_S = ln -s$/;"	m
+LN_S	src/Makefile	/^LN_S = ln -s$/;"	m
+LN_S	unit-tests/Makefile	/^LN_S = ln -s$/;"	m
+LTCOMPILE	src/Makefile	/^LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \\$/;"	m
+LTLIBOBJS	Makefile	/^LTLIBOBJS = $/;"	m
+LTLIBOBJS	doc/Makefile	/^LTLIBOBJS = $/;"	m
+LTLIBOBJS	meta/Makefile	/^LTLIBOBJS = $/;"	m
+LTLIBOBJS	src/Makefile	/^LTLIBOBJS = $/;"	m
+LTLIBOBJS	unit-tests/Makefile	/^LTLIBOBJS = $/;"	m
+LTLIBRARIES	src/Makefile	/^LTLIBRARIES = $(lib_LTLIBRARIES)$/;"	m
+LT_OBJDIR	src/config.h	48;"	d
+MAKEINFO	Makefile	/^MAKEINFO = makeinfo$/;"	m
+MAKEINFO	doc/Makefile	/^MAKEINFO = makeinfo$/;"	m
+MAKEINFO	meta/Makefile	/^MAKEINFO = makeinfo$/;"	m
+MAKEINFO	src/Makefile	/^MAKEINFO = makeinfo$/;"	m
+MAKEINFO	unit-tests/Makefile	/^MAKEINFO = makeinfo$/;"	m
+MANIFEST_TOOL	Makefile	/^MANIFEST_TOOL = :$/;"	m
+MANIFEST_TOOL	doc/Makefile	/^MANIFEST_TOOL = :$/;"	m
+MANIFEST_TOOL	meta/Makefile	/^MANIFEST_TOOL = :$/;"	m
+MANIFEST_TOOL	src/Makefile	/^MANIFEST_TOOL = :$/;"	m
+MANIFEST_TOOL	unit-tests/Makefile	/^MANIFEST_TOOL = :$/;"	m
+MANS	src/Makefile	/^MANS = $(dist_man_MANS)$/;"	m
+MKDIR_P	Makefile	/^MKDIR_P = \/bin\/mkdir -p$/;"	m
+MKDIR_P	doc/Makefile	/^MKDIR_P = \/bin\/mkdir -p$/;"	m
+MKDIR_P	meta/Makefile	/^MKDIR_P = \/bin\/mkdir -p$/;"	m
+MKDIR_P	src/Makefile	/^MKDIR_P = \/bin\/mkdir -p$/;"	m
+MKDIR_P	unit-tests/Makefile	/^MKDIR_P = \/bin\/mkdir -p$/;"	m
+NETSNMPAGENT_LDFLAGS	Makefile	/^NETSNMPAGENT_LDFLAGS = -Wl,-z,relro -Wl,-z,now -L\/usr\/lib\/x86_64-linux-gnu -lnetsnmpmibs -lsensors -ldl -lnetsnmpagent -lwrap -Wl,-E -lnetsnmp -lcrypto -lm$/;"	m
+NETSNMPAGENT_LDFLAGS	doc/Makefile	/^NETSNMPAGENT_LDFLAGS = -Wl,-z,relro -Wl,-z,now -L\/usr\/lib\/x86_64-linux-gnu -lnetsnmpmibs -lsensors -ldl -lnetsnmpagent -lwrap -Wl,-E -lnetsnmp -lcrypto -lm$/;"	m
+NETSNMPAGENT_LDFLAGS	meta/Makefile	/^NETSNMPAGENT_LDFLAGS = -Wl,-z,relro -Wl,-z,now -L\/usr\/lib\/x86_64-linux-gnu -lnetsnmpmibs -lsensors -ldl -lnetsnmpagent -lwrap -Wl,-E -lnetsnmp -lcrypto -lm$/;"	m
+NETSNMPAGENT_LDFLAGS	src/Makefile	/^NETSNMPAGENT_LDFLAGS = -Wl,-z,relro -Wl,-z,now -L\/usr\/lib\/x86_64-linux-gnu -lnetsnmpmibs -lsensors -ldl -lnetsnmpagent -lwrap -Wl,-E -lnetsnmp -lcrypto -lm$/;"	m
+NETSNMPAGENT_LDFLAGS	unit-tests/Makefile	/^NETSNMPAGENT_LDFLAGS = -Wl,-z,relro -Wl,-z,now -L\/usr\/lib\/x86_64-linux-gnu -lnetsnmpmibs -lsensors -ldl -lnetsnmpagent -lwrap -Wl,-E -lnetsnmp -lcrypto -lm$/;"	m
+NETSNMP_CFLAGS	Makefile	/^NETSNMP_CFLAGS = -DNETSNMP_ENABLE_IPV6 -fno-strict-aliasing -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -DNETSNMP_USE_INLINE -Ulinux -Dlinux=linux -D_REENTRANT -D_GNU_SOURCE -DDEBIAN -fstack-protector -fno-strict-aliasing -pipe -I\/usr\/local\/include -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -I\/usr\/lib\/perl\/5.18\/CORE -D_FORTIFY_SOURCE=2 -I. -I\/usr\/include$/;"	m
+NETSNMP_CFLAGS	doc/Makefile	/^NETSNMP_CFLAGS = -DNETSNMP_ENABLE_IPV6 -fno-strict-aliasing -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -DNETSNMP_USE_INLINE -Ulinux -Dlinux=linux -D_REENTRANT -D_GNU_SOURCE -DDEBIAN -fstack-protector -fno-strict-aliasing -pipe -I\/usr\/local\/include -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -I\/usr\/lib\/perl\/5.18\/CORE -D_FORTIFY_SOURCE=2 -I. -I\/usr\/include$/;"	m
+NETSNMP_CFLAGS	meta/Makefile	/^NETSNMP_CFLAGS = -DNETSNMP_ENABLE_IPV6 -fno-strict-aliasing -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -DNETSNMP_USE_INLINE -Ulinux -Dlinux=linux -D_REENTRANT -D_GNU_SOURCE -DDEBIAN -fstack-protector -fno-strict-aliasing -pipe -I\/usr\/local\/include -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -I\/usr\/lib\/perl\/5.18\/CORE -D_FORTIFY_SOURCE=2 -I. -I\/usr\/include$/;"	m
+NETSNMP_CFLAGS	src/Makefile	/^NETSNMP_CFLAGS = -DNETSNMP_ENABLE_IPV6 -fno-strict-aliasing -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -DNETSNMP_USE_INLINE -Ulinux -Dlinux=linux -D_REENTRANT -D_GNU_SOURCE -DDEBIAN -fstack-protector -fno-strict-aliasing -pipe -I\/usr\/local\/include -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -I\/usr\/lib\/perl\/5.18\/CORE -D_FORTIFY_SOURCE=2 -I. -I\/usr\/include$/;"	m
+NETSNMP_CFLAGS	unit-tests/Makefile	/^NETSNMP_CFLAGS = -DNETSNMP_ENABLE_IPV6 -fno-strict-aliasing -g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -DNETSNMP_USE_INLINE -Ulinux -Dlinux=linux -D_REENTRANT -D_GNU_SOURCE -DDEBIAN -fstack-protector -fno-strict-aliasing -pipe -I\/usr\/local\/include -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -I\/usr\/lib\/perl\/5.18\/CORE -D_FORTIFY_SOURCE=2 -I. -I\/usr\/include$/;"	m
+NETSNMP_CONFIG	Makefile	/^NETSNMP_CONFIG = \/usr\/bin\/net-snmp-config$/;"	m
+NETSNMP_CONFIG	doc/Makefile	/^NETSNMP_CONFIG = \/usr\/bin\/net-snmp-config$/;"	m
+NETSNMP_CONFIG	meta/Makefile	/^NETSNMP_CONFIG = \/usr\/bin\/net-snmp-config$/;"	m
+NETSNMP_CONFIG	src/Makefile	/^NETSNMP_CONFIG = \/usr\/bin\/net-snmp-config$/;"	m
+NETSNMP_CONFIG	unit-tests/Makefile	/^NETSNMP_CONFIG = \/usr\/bin\/net-snmp-config$/;"	m
+NETSNMP_LDFLAGS	Makefile	/^NETSNMP_LDFLAGS = -Wl,-z,relro -Wl,-z,now -L\/usr\/lib\/x86_64-linux-gnu -lnetsnmp -lcrypto -lm$/;"	m
+NETSNMP_LDFLAGS	doc/Makefile	/^NETSNMP_LDFLAGS = -Wl,-z,relro -Wl,-z,now -L\/usr\/lib\/x86_64-linux-gnu -lnetsnmp -lcrypto -lm$/;"	m
+NETSNMP_LDFLAGS	meta/Makefile	/^NETSNMP_LDFLAGS = -Wl,-z,relro -Wl,-z,now -L\/usr\/lib\/x86_64-linux-gnu -lnetsnmp -lcrypto -lm$/;"	m
+NETSNMP_LDFLAGS	src/Makefile	/^NETSNMP_LDFLAGS = -Wl,-z,relro -Wl,-z,now -L\/usr\/lib\/x86_64-linux-gnu -lnetsnmp -lcrypto -lm$/;"	m
+NETSNMP_LDFLAGS	unit-tests/Makefile	/^NETSNMP_LDFLAGS = -Wl,-z,relro -Wl,-z,now -L\/usr\/lib\/x86_64-linux-gnu -lnetsnmp -lcrypto -lm$/;"	m
+NETSNMP_PREFIX	Makefile	/^NETSNMP_PREFIX = \/usr$/;"	m
+NETSNMP_PREFIX	doc/Makefile	/^NETSNMP_PREFIX = \/usr$/;"	m
+NETSNMP_PREFIX	meta/Makefile	/^NETSNMP_PREFIX = \/usr$/;"	m
+NETSNMP_PREFIX	src/Makefile	/^NETSNMP_PREFIX = \/usr$/;"	m
+NETSNMP_PREFIX	unit-tests/Makefile	/^NETSNMP_PREFIX = \/usr$/;"	m
+NM	Makefile	/^NM = \/usr\/bin\/nm -B$/;"	m
+NM	doc/Makefile	/^NM = \/usr\/bin\/nm -B$/;"	m
+NM	meta/Makefile	/^NM = \/usr\/bin\/nm -B$/;"	m
+NM	src/Makefile	/^NM = \/usr\/bin\/nm -B$/;"	m
+NM	unit-tests/Makefile	/^NM = \/usr\/bin\/nm -B$/;"	m
+NMEDIT	Makefile	/^NMEDIT = $/;"	m
+NMEDIT	doc/Makefile	/^NMEDIT = $/;"	m
+NMEDIT	meta/Makefile	/^NMEDIT = $/;"	m
+NMEDIT	src/Makefile	/^NMEDIT = $/;"	m
+NMEDIT	unit-tests/Makefile	/^NMEDIT = $/;"	m
+NORMAL_INSTALL	Makefile	/^NORMAL_INSTALL = :$/;"	m
+NORMAL_INSTALL	doc/Makefile	/^NORMAL_INSTALL = :$/;"	m
+NORMAL_INSTALL	meta/Makefile	/^NORMAL_INSTALL = :$/;"	m
+NORMAL_INSTALL	src/Makefile	/^NORMAL_INSTALL = :$/;"	m
+NORMAL_INSTALL	unit-tests/Makefile	/^NORMAL_INSTALL = :$/;"	m
+NORMAL_UNINSTALL	Makefile	/^NORMAL_UNINSTALL = :$/;"	m
+NORMAL_UNINSTALL	doc/Makefile	/^NORMAL_UNINSTALL = :$/;"	m
+NORMAL_UNINSTALL	meta/Makefile	/^NORMAL_UNINSTALL = :$/;"	m
+NORMAL_UNINSTALL	src/Makefile	/^NORMAL_UNINSTALL = :$/;"	m
+NORMAL_UNINSTALL	unit-tests/Makefile	/^NORMAL_UNINSTALL = :$/;"	m
+NROFF	src/Makefile	/^NROFF = nroff$/;"	m
+OBJDUMP	Makefile	/^OBJDUMP = objdump$/;"	m
+OBJDUMP	doc/Makefile	/^OBJDUMP = objdump$/;"	m
+OBJDUMP	meta/Makefile	/^OBJDUMP = objdump$/;"	m
+OBJDUMP	src/Makefile	/^OBJDUMP = objdump$/;"	m
+OBJDUMP	unit-tests/Makefile	/^OBJDUMP = objdump$/;"	m
+OBJEXT	Makefile	/^OBJEXT = o$/;"	m
+OBJEXT	doc/Makefile	/^OBJEXT = o$/;"	m
+OBJEXT	meta/Makefile	/^OBJEXT = o$/;"	m
+OBJEXT	src/Makefile	/^OBJEXT = o$/;"	m
+OBJEXT	unit-tests/Makefile	/^OBJEXT = o$/;"	m
+OTOOL	Makefile	/^OTOOL = $/;"	m
+OTOOL	doc/Makefile	/^OTOOL = $/;"	m
+OTOOL	meta/Makefile	/^OTOOL = $/;"	m
+OTOOL	src/Makefile	/^OTOOL = $/;"	m
+OTOOL	unit-tests/Makefile	/^OTOOL = $/;"	m
+OTOOL64	Makefile	/^OTOOL64 = $/;"	m
+OTOOL64	doc/Makefile	/^OTOOL64 = $/;"	m
+OTOOL64	meta/Makefile	/^OTOOL64 = $/;"	m
+OTOOL64	src/Makefile	/^OTOOL64 = $/;"	m
+OTOOL64	unit-tests/Makefile	/^OTOOL64 = $/;"	m
+PACKAGE	Makefile	/^PACKAGE = guile-snmp$/;"	m
+PACKAGE	doc/Makefile	/^PACKAGE = guile-snmp$/;"	m
+PACKAGE	meta/Makefile	/^PACKAGE = guile-snmp$/;"	m
+PACKAGE	src/Makefile	/^PACKAGE = guile-snmp$/;"	m
+PACKAGE	src/config.h	54;"	d
+PACKAGE	unit-tests/Makefile	/^PACKAGE = guile-snmp$/;"	m
+PACKAGE_BUGREPORT	Makefile	/^PACKAGE_BUGREPORT = tcolgate <at> gmail.com$/;"	m
+PACKAGE_BUGREPORT	doc/Makefile	/^PACKAGE_BUGREPORT = tcolgate <at> gmail.com$/;"	m
+PACKAGE_BUGREPORT	meta/Makefile	/^PACKAGE_BUGREPORT = tcolgate <at> gmail.com$/;"	m
+PACKAGE_BUGREPORT	src/Makefile	/^PACKAGE_BUGREPORT = tcolgate <at> gmail.com$/;"	m
+PACKAGE_BUGREPORT	src/config.h	57;"	d
+PACKAGE_BUGREPORT	src/net-snmp_wrap.c	30;"	d	file:
+PACKAGE_BUGREPORT	unit-tests/Makefile	/^PACKAGE_BUGREPORT = tcolgate <at> gmail.com$/;"	m
+PACKAGE_NAME	Makefile	/^PACKAGE_NAME = Guile SNMP$/;"	m
+PACKAGE_NAME	doc/Makefile	/^PACKAGE_NAME = Guile SNMP$/;"	m
+PACKAGE_NAME	meta/Makefile	/^PACKAGE_NAME = Guile SNMP$/;"	m
+PACKAGE_NAME	src/Makefile	/^PACKAGE_NAME = Guile SNMP$/;"	m
+PACKAGE_NAME	src/config.h	60;"	d
+PACKAGE_NAME	src/net-snmp_wrap.c	31;"	d	file:
+PACKAGE_NAME	unit-tests/Makefile	/^PACKAGE_NAME = Guile SNMP$/;"	m
+PACKAGE_STRING	Makefile	/^PACKAGE_STRING = Guile SNMP 0.2.3$/;"	m
+PACKAGE_STRING	doc/Makefile	/^PACKAGE_STRING = Guile SNMP 0.2.3$/;"	m
+PACKAGE_STRING	meta/Makefile	/^PACKAGE_STRING = Guile SNMP 0.2.3$/;"	m
+PACKAGE_STRING	src/Makefile	/^PACKAGE_STRING = Guile SNMP 0.2.3$/;"	m
+PACKAGE_STRING	src/config.h	63;"	d
+PACKAGE_STRING	src/net-snmp_wrap.c	32;"	d	file:
+PACKAGE_STRING	unit-tests/Makefile	/^PACKAGE_STRING = Guile SNMP 0.2.3$/;"	m
+PACKAGE_TARNAME	Makefile	/^PACKAGE_TARNAME = guile-snmp$/;"	m
+PACKAGE_TARNAME	doc/Makefile	/^PACKAGE_TARNAME = guile-snmp$/;"	m
+PACKAGE_TARNAME	meta/Makefile	/^PACKAGE_TARNAME = guile-snmp$/;"	m
+PACKAGE_TARNAME	src/Makefile	/^PACKAGE_TARNAME = guile-snmp$/;"	m
+PACKAGE_TARNAME	src/config.h	66;"	d
+PACKAGE_TARNAME	src/net-snmp_wrap.c	33;"	d	file:
+PACKAGE_TARNAME	unit-tests/Makefile	/^PACKAGE_TARNAME = guile-snmp$/;"	m
+PACKAGE_URL	Makefile	/^PACKAGE_URL = http:\/\/github.com\/tcolgate\/guile-snmp$/;"	m
+PACKAGE_URL	doc/Makefile	/^PACKAGE_URL = http:\/\/github.com\/tcolgate\/guile-snmp$/;"	m
+PACKAGE_URL	meta/Makefile	/^PACKAGE_URL = http:\/\/github.com\/tcolgate\/guile-snmp$/;"	m
+PACKAGE_URL	src/Makefile	/^PACKAGE_URL = http:\/\/github.com\/tcolgate\/guile-snmp$/;"	m
+PACKAGE_URL	src/config.h	69;"	d
+PACKAGE_URL	src/net-snmp_wrap.c	29;"	d	file:
+PACKAGE_URL	unit-tests/Makefile	/^PACKAGE_URL = http:\/\/github.com\/tcolgate\/guile-snmp$/;"	m
+PACKAGE_VERSION	Makefile	/^PACKAGE_VERSION = 0.2.3$/;"	m
+PACKAGE_VERSION	doc/Makefile	/^PACKAGE_VERSION = 0.2.3$/;"	m
+PACKAGE_VERSION	meta/Makefile	/^PACKAGE_VERSION = 0.2.3$/;"	m
+PACKAGE_VERSION	src/Makefile	/^PACKAGE_VERSION = 0.2.3$/;"	m
+PACKAGE_VERSION	src/config.h	72;"	d
+PACKAGE_VERSION	src/net-snmp_wrap.c	34;"	d	file:
+PACKAGE_VERSION	unit-tests/Makefile	/^PACKAGE_VERSION = 0.2.3$/;"	m
+PATH_SEPARATOR	Makefile	/^PATH_SEPARATOR = :$/;"	m
+PATH_SEPARATOR	doc/Makefile	/^PATH_SEPARATOR = :$/;"	m
+PATH_SEPARATOR	meta/Makefile	/^PATH_SEPARATOR = :$/;"	m
+PATH_SEPARATOR	src/Makefile	/^PATH_SEPARATOR = :$/;"	m
+PATH_SEPARATOR	unit-tests/Makefile	/^PATH_SEPARATOR = :$/;"	m
+POST_INSTALL	Makefile	/^POST_INSTALL = :$/;"	m
+POST_INSTALL	doc/Makefile	/^POST_INSTALL = :$/;"	m
+POST_INSTALL	meta/Makefile	/^POST_INSTALL = :$/;"	m
+POST_INSTALL	src/Makefile	/^POST_INSTALL = :$/;"	m
+POST_INSTALL	unit-tests/Makefile	/^POST_INSTALL = :$/;"	m
+POST_UNINSTALL	Makefile	/^POST_UNINSTALL = :$/;"	m
+POST_UNINSTALL	doc/Makefile	/^POST_UNINSTALL = :$/;"	m
+POST_UNINSTALL	meta/Makefile	/^POST_UNINSTALL = :$/;"	m
+POST_UNINSTALL	src/Makefile	/^POST_UNINSTALL = :$/;"	m
+POST_UNINSTALL	unit-tests/Makefile	/^POST_UNINSTALL = :$/;"	m
+PRE_INSTALL	Makefile	/^PRE_INSTALL = :$/;"	m
+PRE_INSTALL	doc/Makefile	/^PRE_INSTALL = :$/;"	m
+PRE_INSTALL	meta/Makefile	/^PRE_INSTALL = :$/;"	m
+PRE_INSTALL	src/Makefile	/^PRE_INSTALL = :$/;"	m
+PRE_INSTALL	unit-tests/Makefile	/^PRE_INSTALL = :$/;"	m
+PRE_UNINSTALL	Makefile	/^PRE_UNINSTALL = :$/;"	m
+PRE_UNINSTALL	doc/Makefile	/^PRE_UNINSTALL = :$/;"	m
+PRE_UNINSTALL	meta/Makefile	/^PRE_UNINSTALL = :$/;"	m
+PRE_UNINSTALL	src/Makefile	/^PRE_UNINSTALL = :$/;"	m
+PRE_UNINSTALL	unit-tests/Makefile	/^PRE_UNINSTALL = :$/;"	m
+PROGRAMS	src/Makefile	/^PROGRAMS = $(bin_PROGRAMS)$/;"	m
+PrivAES	src/snmp/reports/session.scm	/^(define PrivAES  (list->oid (list 1 3 6 1 6 3 10 1 2 4))) ; (snmp-parse-oid "usmAESPrivProtocol"))$/;"	f
+PrivDES	src/snmp/reports/session.scm	/^(define PrivDES  (list->oid (list 1 3 6 1 6 3 10 1 2 2))) ; (snmp-parse-oid "usmDESPrivProtocol")) $/;"	f
+PrivNone	src/snmp/reports/session.scm	/^(define PrivNone (list->oid (list 1 3 6 1 6 3 10 1 2 1))) ; (snmp-parse-oid "usmNoPrivProtocol")) $/;"	f
+RANLIB	Makefile	/^RANLIB = ranlib$/;"	m
+RANLIB	doc/Makefile	/^RANLIB = ranlib$/;"	m
+RANLIB	meta/Makefile	/^RANLIB = ranlib$/;"	m
+RANLIB	src/Makefile	/^RANLIB = ranlib$/;"	m
+RANLIB	unit-tests/Makefile	/^RANLIB = ranlib$/;"	m
+RECURSIVE_CLEAN_TARGETS	Makefile	/^RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\\$/;"	m
+RECURSIVE_TARGETS	Makefile	/^RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \\$/;"	m
+SCHEMESOURCES	src/Makefile	/^SCHEMESOURCES = snmp\/net-snmp.scm\\$/;"	m
+SCHEMESOURCES2	src/Makefile	/^SCHEMESOURCES2 = snmp\/reports\/cache.scm\\$/;"	m
+SCM_LIST_TO_OIDVECTOR	src/net-snmp_wrap_oid.h	24;"	d
+SCM_OIDVECTOR_ELEMENTS	src/net-snmp_wrap_oid.h	22;"	d
+SCM_OIDVECTOR_ELEMENTS	src/net-snmp_wrap_oid.h	28;"	d
+SCM_OIDVECTOR_P	src/net-snmp_wrap_oid.h	23;"	d
+SCM_OIDVECTOR_P	src/net-snmp_wrap_oid.h	29;"	d
+SCM_TAKE_OIDVECTOR	src/net-snmp_wrap_oid.h	21;"	d
+SCM_TAKE_OIDVECTOR	src/net-snmp_wrap_oid.h	27;"	d
+SCM_T_OID	src/net-snmp_wrap_oid.h	20;"	d
+SCM_T_OID	src/net-snmp_wrap_oid.h	26;"	d
+SED	Makefile	/^SED = \/bin\/sed$/;"	m
+SED	doc/Makefile	/^SED = \/bin\/sed$/;"	m
+SED	meta/Makefile	/^SED = \/bin\/sed$/;"	m
+SED	src/Makefile	/^SED = \/bin\/sed$/;"	m
+SED	unit-tests/Makefile	/^SED = \/bin\/sed$/;"	m
+SET_MAKE	Makefile	/^SET_MAKE = $/;"	m
+SET_MAKE	doc/Makefile	/^SET_MAKE = $/;"	m
+SET_MAKE	meta/Makefile	/^SET_MAKE = $/;"	m
+SET_MAKE	src/Makefile	/^SET_MAKE = $/;"	m
+SET_MAKE	unit-tests/Makefile	/^SET_MAKE = $/;"	m
+SHELL	Makefile	/^SHELL = \/bin\/bash$/;"	m
+SHELL	doc/Makefile	/^SHELL = \/bin\/bash$/;"	m
+SHELL	meta/Makefile	/^SHELL = \/bin\/bash$/;"	m
+SHELL	src/Makefile	/^SHELL = \/bin\/bash$/;"	m
+SHELL	unit-tests/Makefile	/^SHELL = \/bin\/bash$/;"	m
+SIZEOF_OID	src/config.h	75;"	d
+SOURCES	Makefile	/^SOURCES =$/;"	m
+SOURCES	doc/Makefile	/^SOURCES =$/;"	m
+SOURCES	meta/Makefile	/^SOURCES =$/;"	m
+SOURCES	src/Makefile	/^SOURCES = $(libguile_snmp_net_snmp_la_SOURCES) $(snmp_shell_SOURCES)$/;"	m
+SOURCES	unit-tests/Makefile	/^SOURCES =$/;"	m
+STDC_HEADERS	src/config.h	78;"	d
+STRIP	Makefile	/^STRIP = strip$/;"	m
+STRIP	doc/Makefile	/^STRIP = strip$/;"	m
+STRIP	meta/Makefile	/^STRIP = strip$/;"	m
+STRIP	src/Makefile	/^STRIP = strip$/;"	m
+STRIP	unit-tests/Makefile	/^STRIP = strip$/;"	m
+SUBDIRS	Makefile	/^SUBDIRS = src unit-tests doc meta$/;"	m
+SUFFIXES	src/Makefile	/^SUFFIXES = .scm .go$/;"	m
+TESTS	unit-tests/Makefile	/^TESTS = test-oids.scm test-net-snmp.scm test-net-snmp-v3.scm test-reports.scm test-display-hint.scm test-asn1-parse.scm$/;"	m
+TESTS_ENVIRONMENT	unit-tests/Makefile	/^TESTS_ENVIRONMENT = \\$/;"	m
+VERSION	Makefile	/^VERSION = 0.2.3$/;"	m
+VERSION	doc/Makefile	/^VERSION = 0.2.3$/;"	m
+VERSION	meta/Makefile	/^VERSION = 0.2.3$/;"	m
+VERSION	src/Makefile	/^VERSION = 0.2.3$/;"	m
+VERSION	src/config.h	81;"	d
+VERSION	unit-tests/Makefile	/^VERSION = 0.2.3$/;"	m
+WRAP_CONSTANT	src/net-snmp_wrap_constants.h	9;"	d
+_wrap_agent_check_and_processs	src/net-snmp_wrap_funcs.h	/^_wrap_agent_check_and_processs (SCM s_0)$/;"	f
+_wrap_get_tree	src/net-snmp_wrap_funcs.h	/^_wrap_get_tree (SCM oidscm, SCM treehead)$/;"	f
+_wrap_get_tree_head	src/net-snmp_wrap_funcs.h	/^_wrap_get_tree_head (void)$/;"	f
+_wrap_init_agent	src/net-snmp_wrap_funcs.h	/^_wrap_init_agent (SCM name)$/;"	f
+_wrap_init_master_agent	src/net-snmp_wrap_funcs.h	/^_wrap_init_master_agent ()$/;"	f
+_wrap_init_mib	src/net-snmp_wrap_funcs.h	/^_wrap_init_mib (void)$/;"	f
+_wrap_init_snmp	src/net-snmp_wrap_funcs.h	/^_wrap_init_snmp (SCM name)$/;"	f
+_wrap_init_usm	src/net-snmp_wrap_funcs.h	/^_wrap_init_usm ()$/;"	f
+_wrap_init_vacm_vars	src/net-snmp_wrap_funcs.h	/^_wrap_init_vacm_vars ()$/;"	f
+_wrap_initialize_module	src/net-snmp_wrap_structs.h	/^_wrap_initialize_module (SCM obj)$/;"	f
+_wrap_initialize_netsnmp_agent_request_info	src/net-snmp_wrap_structs.h	/^_wrap_initialize_netsnmp_agent_request_info (SCM obj, SCM args)$/;"	f
+_wrap_initialize_netsnmp_delegated_cache	src/net-snmp_wrap_structs.h	/^_wrap_initialize_netsnmp_delegated_cache (SCM obj, SCM args)$/;"	f
+_wrap_initialize_netsnmp_handler_args	src/net-snmp_wrap_structs.h	/^_wrap_initialize_netsnmp_handler_args (SCM obj, SCM args)$/;"	f
+_wrap_initialize_netsnmp_handler_registration	src/net-snmp_wrap_structs.h	/^_wrap_initialize_netsnmp_handler_registration (SCM obj, SCM args)$/;"	f
+_wrap_initialize_netsnmp_iterator_info	src/net-snmp_wrap_structs.h	/^_wrap_initialize_netsnmp_iterator_info (SCM obj, SCM args)$/;"	f
+_wrap_initialize_netsnmp_mib_handler	src/net-snmp_wrap_structs.h	/^_wrap_initialize_netsnmp_mib_handler (SCM obj, SCM args)$/;"	f
+_wrap_initialize_netsnmp_request_info	src/net-snmp_wrap_structs.h	/^_wrap_initialize_netsnmp_request_info (SCM obj, SCM args)$/;"	f
+_wrap_initialize_netsnmp_table_registration_info	src/net-snmp_wrap_structs.h	/^_wrap_initialize_netsnmp_table_registration_info (SCM obj, SCM args)$/;"	f
+_wrap_initialize_netsnmp_table_request_info	src/net-snmp_wrap_structs.h	/^_wrap_initialize_netsnmp_table_request_info (SCM obj, SCM args)$/;"	f
+_wrap_initialize_netsnmp_transport	src/net-snmp_wrap_structs.h	/^_wrap_initialize_netsnmp_transport (SCM obj, SCM args)$/;"	f
+_wrap_initialize_pdu	src/net-snmp_wrap_structs.h	/^_wrap_initialize_pdu (SCM obj, SCM args)$/;"	f
+_wrap_initialize_pdu_variable	src/net-snmp_wrap_structs.h	/^_wrap_initialize_pdu_variable (SCM obj, SCM args)$/;"	f
+_wrap_initialize_snmp_fdinfo	src/net-snmp_wrap_structs.h	/^_wrap_initialize_snmp_fdinfo (SCM obj, SCM args)$/;"	f
+_wrap_initialize_snmp_session	src/net-snmp_wrap_structs.h	/^_wrap_initialize_snmp_session (SCM obj, SCM args)$/;"	f
+_wrap_initialize_snmp_single_session	src/net-snmp_wrap_structs.h	/^_wrap_initialize_snmp_single_session (SCM obj, SCM args)$/;"	f
+_wrap_initialize_tree	src/net-snmp_wrap_structs.h	/^_wrap_initialize_tree (SCM obj)$/;"	f
+_wrap_mib_to_asn_type	src/net-snmp_wrap_funcs.h	/^_wrap_mib_to_asn_type (SCM s_0)$/;"	f
+_wrap_module_file_get	src/net-snmp_wrap_structs.h	/^_wrap_module_file_get (SCM s_0)$/;"	f
+_wrap_module_name_get	src/net-snmp_wrap_structs.h	/^_wrap_module_name_get (SCM s_0)$/;"	f
+_wrap_netsnmp_agent_request_info_mode_get	src/net-snmp_wrap_structs.h	/^_wrap_netsnmp_agent_request_info_mode_get(SCM s_0) $/;"	f
+_wrap_netsnmp_check_vb_type	src/net-snmp_wrap_funcs.h	/^_wrap_netsnmp_check_vb_type(SCM s_0, SCM s_1)$/;"	f
+_wrap_netsnmp_create_handler	src/net-snmp_wrap_funcs.h	/^_wrap_netsnmp_create_handler(SCM s_0, SCM s_1)$/;"	f
+_wrap_netsnmp_daemonize	src/net-snmp_wrap_funcs.h	/^_wrap_netsnmp_daemonize (SCM s_0, SCM s_1)$/;"	f
+_wrap_netsnmp_extract_iterator_context	src/net-snmp_wrap_funcs.h	/^_wrap_netsnmp_extract_iterator_context(SCM s_0)$/;"	f
+_wrap_netsnmp_extract_table_info	src/net-snmp_wrap_funcs.h	/^_wrap_netsnmp_extract_table_info(SCM s_0)$/;"	f
+_wrap_netsnmp_handler_registration_create	src/net-snmp_wrap_funcs.h	/^_wrap_netsnmp_handler_registration_create(SCM s_0, SCM s_1, SCM s_2, SCM s_3)$/;"	f
+_wrap_netsnmp_iterator_info_get_first_data_point_get	src/net-snmp_wrap_structs.h	/^_wrap_netsnmp_iterator_info_get_first_data_point_get (SCM s_0)$/;"	f
+_wrap_netsnmp_iterator_info_get_first_data_point_set	src/net-snmp_wrap_structs.h	/^_wrap_netsnmp_iterator_info_get_first_data_point_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_netsnmp_iterator_info_get_next_data_point_get	src/net-snmp_wrap_structs.h	/^_wrap_netsnmp_iterator_info_get_next_data_point_get (SCM s_0)$/;"	f
+_wrap_netsnmp_iterator_info_get_next_data_point_set	src/net-snmp_wrap_structs.h	/^_wrap_netsnmp_iterator_info_get_next_data_point_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_netsnmp_iterator_info_table_reginfo_get	src/net-snmp_wrap_structs.h	/^_wrap_netsnmp_iterator_info_table_reginfo_get (SCM s_0)$/;"	f
+_wrap_netsnmp_iterator_info_table_reginfo_set	src/net-snmp_wrap_structs.h	/^_wrap_netsnmp_iterator_info_table_reginfo_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_netsnmp_oid_is_subtree	src/net-snmp_wrap_funcs.h	/^_wrap_netsnmp_oid_is_subtree (SCM s_0, SCM s_1)$/;"	f
+_wrap_netsnmp_register_handler	src/net-snmp_wrap_funcs.h	/^_wrap_netsnmp_register_handler(SCM s_0)$/;"	f
+_wrap_netsnmp_register_scalar	src/net-snmp_wrap_funcs.h	/^_wrap_netsnmp_register_scalar(SCM s_0)$/;"	f
+_wrap_netsnmp_register_table_iterator	src/net-snmp_wrap_funcs.h	/^_wrap_netsnmp_register_table_iterator(SCM s_0, SCM s_1)$/;"	f
+_wrap_netsnmp_request_info_next_get	src/net-snmp_wrap_structs.h	/^_wrap_netsnmp_request_info_next_get (SCM s_0)$/;"	f
+_wrap_netsnmp_request_info_prev_get	src/net-snmp_wrap_structs.h	/^_wrap_netsnmp_request_info_prev_get (SCM s_0)$/;"	f
+_wrap_netsnmp_request_info_requestvb_get	src/net-snmp_wrap_structs.h	/^_wrap_netsnmp_request_info_requestvb_get (SCM s_0)$/;"	f
+_wrap_netsnmp_set_request_error	src/net-snmp_wrap_funcs.h	/^_wrap_netsnmp_set_request_error(SCM s_0, SCM s_1, SCM s_2)$/;"	f
+_wrap_netsnmp_table_helper_add_index	src/net-snmp_wrap_funcs.h	/^_wrap_netsnmp_table_helper_add_index(SCM s_0, SCM s_1)$/;"	f
+_wrap_netsnmp_table_registration_info_max_column_get	src/net-snmp_wrap_structs.h	/^_wrap_netsnmp_table_registration_info_max_column_get (SCM s_0)$/;"	f
+_wrap_netsnmp_table_registration_info_max_column_set	src/net-snmp_wrap_structs.h	/^_wrap_netsnmp_table_registration_info_max_column_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_netsnmp_table_registration_info_min_column_get	src/net-snmp_wrap_structs.h	/^_wrap_netsnmp_table_registration_info_min_column_get (SCM s_0)$/;"	f
+_wrap_netsnmp_table_registration_info_min_column_set	src/net-snmp_wrap_structs.h	/^_wrap_netsnmp_table_registration_info_min_column_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_netsnmp_table_request_info_colnum_get	src/net-snmp_wrap_structs.h	/^_wrap_netsnmp_table_request_info_colnum_get (SCM s_0)$/;"	f
+_wrap_netsnmp_tdomain_transport	src/net-snmp_wrap_funcs.h	/^_wrap_netsnmp_tdomain_transport (SCM s_0, SCM s_1, SCM s_2)$/;"	f
+_wrap_netsnmp_unregister_handler	src/net-snmp_wrap_funcs.h	/^_wrap_netsnmp_unregister_handler(SCM s_0)$/;"	f
+_wrap_oid_from_tree_node	src/net-snmp_wrap_funcs.h	/^_wrap_oid_from_tree_node (SCM s_0)$/;"	f
+_wrap_pdu_errstat_get	src/net-snmp_wrap_structs.h	/^_wrap_pdu_errstat_get (SCM s_0)$/;"	f
+_wrap_pdu_max_repetitions_get	src/net-snmp_wrap_structs.h	/^_wrap_pdu_max_repetitions_get (SCM s_0)$/;"	f
+_wrap_pdu_max_repetitions_set	src/net-snmp_wrap_structs.h	/^_wrap_pdu_max_repetitions_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_pdu_non_repeaters_get	src/net-snmp_wrap_structs.h	/^_wrap_pdu_non_repeaters_get (SCM s_0)$/;"	f
+_wrap_pdu_non_repeaters_set	src/net-snmp_wrap_structs.h	/^_wrap_pdu_non_repeaters_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_pdu_variable_name_get	src/net-snmp_wrap_structs.h	/^_wrap_pdu_variable_name_get (SCM s_0)$/;"	f
+_wrap_pdu_variable_type_get	src/net-snmp_wrap_structs.h	/^_wrap_pdu_variable_type_get (SCM s_0)$/;"	f
+_wrap_pdu_variable_value_bytes_get	src/net-snmp_wrap_structs.h	/^_wrap_pdu_variable_value_bytes_get(SCM s_0) $/;"	f
+_wrap_pdu_variable_value_get	src/net-snmp_wrap_structs.h	/^_wrap_pdu_variable_value_get(SCM s_0) $/;"	f
+_wrap_pdu_variable_variables_get	src/net-snmp_wrap_structs.h	/^_wrap_pdu_variable_variables_get (SCM s_0)$/;"	f
+_wrap_pdu_variables_get	src/net-snmp_wrap_structs.h	/^_wrap_pdu_variables_get (SCM s_0)$/;"	f
+_wrap_read_module	src/net-snmp_wrap_funcs.h	/^_wrap_read_module (SCM s_0)$/;"	f
+_wrap_register_sysor_table	src/net-snmp_wrap_funcs.h	/^_wrap_register_sysor_table(SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_add	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_add (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_add_null_var	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_add_null_var (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_add_var	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_add_var (SCM s_0, SCM s_1, SCM s_2)$/;"	f
+_wrap_snmp_async_send	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_async_send (SCM s_0, SCM s_1, SCM s_2)$/;"	f
+_wrap_snmp_close	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_close (SCM s_0)$/;"	f
+_wrap_snmp_fdinfo_fd_list_get	src/net-snmp_wrap_structs.h	/^_wrap_snmp_fdinfo_fd_list_get(SCM s_0)$/;"	f
+_wrap_snmp_free_pdu	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_free_pdu (SCM s_0)$/;"	f
+_wrap_snmp_open	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_open (SCM s_0)$/;"	f
+_wrap_snmp_parse_oid	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_parse_oid (SCM oidname)$/;"	f
+_wrap_snmp_pdu_create	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_pdu_create (SCM s_0)$/;"	f
+_wrap_snmp_read	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_read(SCM s_0)$/;"	f
+_wrap_snmp_select	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_select(SCM s_0)$/;"	f
+_wrap_snmp_select_info	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_select_info(void)$/;"	f
+_wrap_snmp_send	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_send (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_sess_add	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_sess_add (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_sess_async_send	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_sess_async_send (SCM s_0, SCM s_1, SCM s_2)$/;"	f
+_wrap_snmp_sess_close	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_sess_close (SCM s_0)$/;"	f
+_wrap_snmp_sess_error	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_sess_error (SCM s_0)$/;"	f
+_wrap_snmp_sess_init	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_sess_init (SCM s_0)$/;"	f
+_wrap_snmp_sess_open	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_sess_open (SCM s_0)$/;"	f
+_wrap_snmp_sess_read	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_sess_read(SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_sess_select_info	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_sess_select_info(SCM s_0)$/;"	f
+_wrap_snmp_sess_send	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_sess_send (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_sess_session	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_sess_session (SCM s_0)$/;"	f
+_wrap_snmp_sess_synch_response	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_sess_synch_response (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_sess_timeout	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_sess_timeout(SCM s_0)$/;"	f
+_wrap_snmp_session_callback_get	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_callback_get(SCM s_0) {$/;"	f
+_wrap_snmp_session_callback_set	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_callback_set(SCM s_0, SCM s_1) {$/;"	f
+_wrap_snmp_session_community_get	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_community_get (SCM s_0)$/;"	f
+_wrap_snmp_session_community_set	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_community_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_session_context_get	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_context_get (SCM s_0)$/;"	f
+_wrap_snmp_session_context_set	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_context_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_session_local_port_get	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_local_port_get (SCM s_0)$/;"	f
+_wrap_snmp_session_local_port_set	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_local_port_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_session_localname_get	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_localname_get (SCM s_0)$/;"	f
+_wrap_snmp_session_localname_set	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_localname_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_session_peername_get	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_peername_get (SCM s_0)$/;"	f
+_wrap_snmp_session_peername_set	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_peername_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_session_retries_get	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_retries_get (SCM s_0)$/;"	f
+_wrap_snmp_session_retries_set	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_retries_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_session_securityAuthKey_get	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_securityAuthKey_get (SCM s_0)$/;"	f
+_wrap_snmp_session_securityAuthKey_set	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_securityAuthKey_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_session_securityAuthProto_get	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_securityAuthProto_get (SCM s_0)$/;"	f
+_wrap_snmp_session_securityAuthProto_set	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_securityAuthProto_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_session_securityLevel_get	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_securityLevel_get (SCM s_0)$/;"	f
+_wrap_snmp_session_securityLevel_set	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_securityLevel_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_session_securityName_get	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_securityName_get (SCM s_0)$/;"	f
+_wrap_snmp_session_securityName_set	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_securityName_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_session_securityPrivKey_get	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_securityPrivKey_get (SCM s_0)$/;"	f
+_wrap_snmp_session_securityPrivKey_set	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_securityPrivKey_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_session_securityPrivProto_get	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_securityPrivProto_get (SCM s_0)$/;"	f
+_wrap_snmp_session_securityPrivProto_set	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_securityPrivProto_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_session_timeout_get	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_timeout_get (SCM s_0)$/;"	f
+_wrap_snmp_session_timeout_set	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_timeout_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_session_version_get	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_version_get (SCM s_0)$/;"	f
+_wrap_snmp_session_version_set	src/net-snmp_wrap_structs.h	/^_wrap_snmp_session_version_set (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_set_agent_agentx	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_set_agent_agentx (SCM s_0)$/;"	f
+_wrap_snmp_set_save_descriptions	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_set_save_descriptions (SCM s_0)$/;"	f
+_wrap_snmp_set_var_typed_value	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_set_var_typed_value(SCM s_0, SCM s_1, SCM s_2)$/;"	f
+_wrap_snmp_shutdown	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_shutdown (SCM s_0)$/;"	f
+_wrap_snmp_synch_response	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_synch_response (SCM s_0, SCM s_1)$/;"	f
+_wrap_snmp_timeout	src/net-snmp_wrap_funcs.h	/^_wrap_snmp_timeout(void)$/;"	f
+_wrap_tree_access_get	src/net-snmp_wrap_structs.h	/^_wrap_tree_access_get (SCM tree)$/;"	f
+_wrap_tree_children_get	src/net-snmp_wrap_structs.h	/^_wrap_tree_children_get (SCM tree)$/;"	f
+_wrap_tree_description_get	src/net-snmp_wrap_structs.h	/^_wrap_tree_description_get (SCM tree)$/;"	f
+_wrap_tree_enums_get	src/net-snmp_wrap_structs.h	/^_wrap_tree_enums_get (SCM tree)$/;"	f
+_wrap_tree_hint_get	src/net-snmp_wrap_structs.h	/^_wrap_tree_hint_get (SCM tree)$/;"	f
+_wrap_tree_indexes_get	src/net-snmp_wrap_structs.h	/^_wrap_tree_indexes_get (SCM tree)$/;"	f
+_wrap_tree_label_get	src/net-snmp_wrap_structs.h	/^_wrap_tree_label_get (SCM tree)$/;"	f
+_wrap_tree_module_get	src/net-snmp_wrap_structs.h	/^_wrap_tree_module_get (SCM tree)$/;"	f
+_wrap_tree_parent_get	src/net-snmp_wrap_structs.h	/^_wrap_tree_parent_get (SCM tree)$/;"	f
+_wrap_tree_peers_get	src/net-snmp_wrap_structs.h	/^_wrap_tree_peers_get (SCM tree)$/;"	f
+_wrap_tree_status_get	src/net-snmp_wrap_structs.h	/^_wrap_tree_status_get (SCM tree)$/;"	f
+_wrap_tree_type_get	src/net-snmp_wrap_structs.h	/^_wrap_tree_type_get (SCM tree)$/;"	f
+_wrap_tree_units_get	src/net-snmp_wrap_structs.h	/^_wrap_tree_units_get (SCM tree)$/;"	f
+_wrap_tree_varbinds_get	src/net-snmp_wrap_structs.h	/^_wrap_tree_varbinds_get (SCM tree)$/;"	f
+_wrap_unregister_sysor_table	src/net-snmp_wrap_funcs.h	/^_wrap_unregister_sysor_table(SCM s_0)$/;"	f
+_wrap_which_module	src/net-snmp_wrap_funcs.h	/^_wrap_which_module (SCM s_0)$/;"	f
+abs_builddir	Makefile	/^abs_builddir = \/home\/tristan\/src\/guile-snmp$/;"	m
+abs_builddir	doc/Makefile	/^abs_builddir = \/home\/tristan\/src\/guile-snmp\/doc$/;"	m
+abs_builddir	meta/Makefile	/^abs_builddir = \/home\/tristan\/src\/guile-snmp\/meta$/;"	m
+abs_builddir	src/Makefile	/^abs_builddir = \/home\/tristan\/src\/guile-snmp\/src$/;"	m
+abs_builddir	unit-tests/Makefile	/^abs_builddir = \/home\/tristan\/src\/guile-snmp\/unit-tests$/;"	m
+abs_srcdir	Makefile	/^abs_srcdir = \/home\/tristan\/src\/guile-snmp$/;"	m
+abs_srcdir	doc/Makefile	/^abs_srcdir = \/home\/tristan\/src\/guile-snmp\/doc$/;"	m
+abs_srcdir	meta/Makefile	/^abs_srcdir = \/home\/tristan\/src\/guile-snmp\/meta$/;"	m
+abs_srcdir	src/Makefile	/^abs_srcdir = \/home\/tristan\/src\/guile-snmp\/src$/;"	m
+abs_srcdir	unit-tests/Makefile	/^abs_srcdir = \/home\/tristan\/src\/guile-snmp\/unit-tests$/;"	m
+abs_top_builddir	Makefile	/^abs_top_builddir = \/home\/tristan\/src\/guile-snmp$/;"	m
+abs_top_builddir	doc/Makefile	/^abs_top_builddir = \/home\/tristan\/src\/guile-snmp$/;"	m
+abs_top_builddir	meta/Makefile	/^abs_top_builddir = \/home\/tristan\/src\/guile-snmp$/;"	m
+abs_top_builddir	src/Makefile	/^abs_top_builddir = \/home\/tristan\/src\/guile-snmp$/;"	m
+abs_top_builddir	unit-tests/Makefile	/^abs_top_builddir = \/home\/tristan\/src\/guile-snmp$/;"	m
+abs_top_srcdir	Makefile	/^abs_top_srcdir = \/home\/tristan\/src\/guile-snmp$/;"	m
+abs_top_srcdir	doc/Makefile	/^abs_top_srcdir = \/home\/tristan\/src\/guile-snmp$/;"	m
+abs_top_srcdir	meta/Makefile	/^abs_top_srcdir = \/home\/tristan\/src\/guile-snmp$/;"	m
+abs_top_srcdir	src/Makefile	/^abs_top_srcdir = \/home\/tristan\/src\/guile-snmp$/;"	m
+abs_top_srcdir	unit-tests/Makefile	/^abs_top_srcdir = \/home\/tristan\/src\/guile-snmp$/;"	m
+ac_ct_AR	Makefile	/^ac_ct_AR = ar$/;"	m
+ac_ct_AR	doc/Makefile	/^ac_ct_AR = ar$/;"	m
+ac_ct_AR	meta/Makefile	/^ac_ct_AR = ar$/;"	m
+ac_ct_AR	src/Makefile	/^ac_ct_AR = ar$/;"	m
+ac_ct_AR	unit-tests/Makefile	/^ac_ct_AR = ar$/;"	m
+ac_ct_CC	Makefile	/^ac_ct_CC = gcc$/;"	m
+ac_ct_CC	doc/Makefile	/^ac_ct_CC = gcc$/;"	m
+ac_ct_CC	meta/Makefile	/^ac_ct_CC = gcc$/;"	m
+ac_ct_CC	src/Makefile	/^ac_ct_CC = gcc$/;"	m
+ac_ct_CC	unit-tests/Makefile	/^ac_ct_CC = gcc$/;"	m
+ac_ct_DUMPBIN	Makefile	/^ac_ct_DUMPBIN = $/;"	m
+ac_ct_DUMPBIN	doc/Makefile	/^ac_ct_DUMPBIN = $/;"	m
+ac_ct_DUMPBIN	meta/Makefile	/^ac_ct_DUMPBIN = $/;"	m
+ac_ct_DUMPBIN	src/Makefile	/^ac_ct_DUMPBIN = $/;"	m
+ac_ct_DUMPBIN	unit-tests/Makefile	/^ac_ct_DUMPBIN = $/;"	m
+ac_fn_c_check_func	configure	/^ac_fn_c_check_func ()$/;"	f
+ac_fn_c_check_header_compile	configure	/^ac_fn_c_check_header_compile ()$/;"	f
+ac_fn_c_check_header_mongrel	configure	/^ac_fn_c_check_header_mongrel ()$/;"	f
+ac_fn_c_compute_int	configure	/^ac_fn_c_compute_int ()$/;"	f
+ac_fn_c_try_compile	configure	/^ac_fn_c_try_compile ()$/;"	f
+ac_fn_c_try_cpp	configure	/^ac_fn_c_try_cpp ()$/;"	f
+ac_fn_c_try_link	configure	/^ac_fn_c_try_link ()$/;"	f
+ac_fn_c_try_run	configure	/^ac_fn_c_try_run ()$/;"	f
+access	src/snmp/net-snmp.scm	/^(define-method (access (o <oid>)) (access (get-tree o (get-tree-head)))) $/;"	f
+add-device	doc/nodes.scm	/^(defmacro* add-device (name #:key ip community version)$/;"	f
+add-ipv4-route	doc/ipv4-router.scm	/^(define-generic add-ipv4-route)$/;"	f
+add-ipv4-route	doc/ipv4-router.scm	/^(define-method (add-ipv4-route (table <ipv4-table>)(route <ipv4-route>))$/;"	f
+add-ipv4-route!	doc/ipv4-router.scm	/^(define-generic add-ipv4-route!)$/;"	f
+add-ipv4-route!	doc/ipv4-router.scm	/^(define-method (add-ipv4-route! (table <ipv4-table>)(route <ipv4-route>))$/;"	f
+add-trie-node	doc/ipv4-router.scm	/^(define-generic add-trie-node)$/;"	f
+add-trie-node	doc/ipv4-router.scm	/^(define-method (add-trie-node (root <trie-node>) $/;"	f
+agentx	doc/agent.scm	/^(define agentx #t)$/;"	f
+aggregate-records	src/snmp/reports.scm	/^(define aggregate-records '())$/;"	f
+aix_post_process_depfile	depcomp	/^aix_post_process_depfile ()$/;"	f
+all	src/snmp/reports.scm	/^(define-syntax all$/;"	f
+alldevs	doc/port-usage-report.scm	/^(define alldevs (list$/;"	f
+am__CONFIG_DISTCLEAN_FILES	Makefile	/^am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \\$/;"	m
+am__aclocal_m4_deps	Makefile	/^am__aclocal_m4_deps = $(top_srcdir)\/m4\/guile.m4 \\$/;"	m
+am__aclocal_m4_deps	doc/Makefile	/^am__aclocal_m4_deps = $(top_srcdir)\/m4\/guile.m4 \\$/;"	m
+am__aclocal_m4_deps	meta/Makefile	/^am__aclocal_m4_deps = $(top_srcdir)\/m4\/guile.m4 \\$/;"	m
+am__aclocal_m4_deps	src/Makefile	/^am__aclocal_m4_deps = $(top_srcdir)\/m4\/guile.m4 \\$/;"	m
+am__aclocal_m4_deps	unit-tests/Makefile	/^am__aclocal_m4_deps = $(top_srcdir)\/m4\/guile.m4 \\$/;"	m
+am__base_list	src/Makefile	/^am__base_list = \\$/;"	m
+am__can_run_installinfo	Makefile	/^am__can_run_installinfo = \\$/;"	m
+am__can_run_installinfo	doc/Makefile	/^am__can_run_installinfo = \\$/;"	m
+am__can_run_installinfo	meta/Makefile	/^am__can_run_installinfo = \\$/;"	m
+am__can_run_installinfo	src/Makefile	/^am__can_run_installinfo = \\$/;"	m
+am__can_run_installinfo	unit-tests/Makefile	/^am__can_run_installinfo = \\$/;"	m
+am__cd	Makefile	/^am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd$/;"	m
+am__cd	doc/Makefile	/^am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd$/;"	m
+am__cd	meta/Makefile	/^am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd$/;"	m
+am__cd	src/Makefile	/^am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd$/;"	m
+am__cd	unit-tests/Makefile	/^am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd$/;"	m
+am__configure_deps	Makefile	/^am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \\$/;"	m
+am__configure_deps	doc/Makefile	/^am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \\$/;"	m
+am__configure_deps	meta/Makefile	/^am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \\$/;"	m
+am__configure_deps	src/Makefile	/^am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \\$/;"	m
+am__configure_deps	unit-tests/Makefile	/^am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \\$/;"	m
+am__define_uniq_tagged_files	Makefile	/^am__define_uniq_tagged_files = \\$/;"	m
+am__define_uniq_tagged_files	src/Makefile	/^am__define_uniq_tagged_files = \\$/;"	m
+am__depfiles_maybe	src/Makefile	/^am__depfiles_maybe = depfiles$/;"	m
+am__distuninstallcheck_listfiles	Makefile	/^am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \\$/;"	m
+am__include	Makefile	/^am__include = include$/;"	m
+am__include	doc/Makefile	/^am__include = include$/;"	m
+am__include	meta/Makefile	/^am__include = include$/;"	m
+am__include	src/Makefile	/^am__include = include$/;"	m
+am__include	unit-tests/Makefile	/^am__include = include$/;"	m
+am__install_max	src/Makefile	/^am__install_max = 40$/;"	m
+am__installdirs	src/Makefile	/^am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \\$/;"	m
+am__is_gnu_make	Makefile	/^am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'$/;"	m
+am__is_gnu_make	doc/Makefile	/^am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'$/;"	m
+am__is_gnu_make	meta/Makefile	/^am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'$/;"	m
+am__is_gnu_make	src/Makefile	/^am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'$/;"	m
+am__is_gnu_make	unit-tests/Makefile	/^am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'$/;"	m
+am__leading_dot	Makefile	/^am__leading_dot = .$/;"	m
+am__leading_dot	doc/Makefile	/^am__leading_dot = .$/;"	m
+am__leading_dot	meta/Makefile	/^am__leading_dot = .$/;"	m
+am__leading_dot	src/Makefile	/^am__leading_dot = .$/;"	m
+am__leading_dot	unit-tests/Makefile	/^am__leading_dot = .$/;"	m
+am__make_dryrun	Makefile	/^am__make_dryrun = (target_option=n; $(am__make_running_with_option))$/;"	m
+am__make_dryrun	doc/Makefile	/^am__make_dryrun = (target_option=n; $(am__make_running_with_option))$/;"	m
+am__make_dryrun	meta/Makefile	/^am__make_dryrun = (target_option=n; $(am__make_running_with_option))$/;"	m
+am__make_dryrun	src/Makefile	/^am__make_dryrun = (target_option=n; $(am__make_running_with_option))$/;"	m
+am__make_dryrun	unit-tests/Makefile	/^am__make_dryrun = (target_option=n; $(am__make_running_with_option))$/;"	m
+am__make_keepgoing	Makefile	/^am__make_keepgoing = (target_option=k; $(am__make_running_with_option))$/;"	m
+am__make_keepgoing	doc/Makefile	/^am__make_keepgoing = (target_option=k; $(am__make_running_with_option))$/;"	m
+am__make_keepgoing	meta/Makefile	/^am__make_keepgoing = (target_option=k; $(am__make_running_with_option))$/;"	m
+am__make_keepgoing	src/Makefile	/^am__make_keepgoing = (target_option=k; $(am__make_running_with_option))$/;"	m
+am__make_keepgoing	unit-tests/Makefile	/^am__make_keepgoing = (target_option=k; $(am__make_running_with_option))$/;"	m
+am__make_running_with_option	Makefile	/^am__make_running_with_option = \\$/;"	m
+am__make_running_with_option	doc/Makefile	/^am__make_running_with_option = \\$/;"	m
+am__make_running_with_option	meta/Makefile	/^am__make_running_with_option = \\$/;"	m
+am__make_running_with_option	src/Makefile	/^am__make_running_with_option = \\$/;"	m
+am__make_running_with_option	unit-tests/Makefile	/^am__make_running_with_option = \\$/;"	m
+am__mv	src/Makefile	/^am__mv = mv -f$/;"	m
+am__nobase_list	src/Makefile	/^am__nobase_list = $(am__nobase_strip_setup); \\$/;"	m
+am__nobase_strip	src/Makefile	/^am__nobase_strip = \\$/;"	m
+am__nobase_strip_setup	src/Makefile	/^am__nobase_strip_setup = \\$/;"	m
+am__post_remove_distdir	Makefile	/^am__post_remove_distdir = $(am__remove_distdir)$/;"	m
+am__quote	Makefile	/^am__quote = $/;"	m
+am__quote	doc/Makefile	/^am__quote = $/;"	m
+am__quote	meta/Makefile	/^am__quote = $/;"	m
+am__quote	src/Makefile	/^am__quote = $/;"	m
+am__quote	unit-tests/Makefile	/^am__quote = $/;"	m
+am__recursive_targets	Makefile	/^am__recursive_targets = \\$/;"	m
+am__relativize	Makefile	/^am__relativize = \\$/;"	m
+am__remove_distdir	Makefile	/^am__remove_distdir = \\$/;"	m
+am__strip_dir	src/Makefile	/^am__strip_dir = f=`echo $$p | sed -e 's|^.*\/||'`;$/;"	m
+am__tagged_files	Makefile	/^am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)$/;"	m
+am__tagged_files	doc/Makefile	/^am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)$/;"	m
+am__tagged_files	meta/Makefile	/^am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)$/;"	m
+am__tagged_files	src/Makefile	/^am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) \\$/;"	m
+am__tagged_files	unit-tests/Makefile	/^am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)$/;"	m
+am__tar	Makefile	/^am__tar = $${TAR-tar} chof - "$$tardir"$/;"	m
+am__tar	doc/Makefile	/^am__tar = $${TAR-tar} chof - "$$tardir"$/;"	m
+am__tar	meta/Makefile	/^am__tar = $${TAR-tar} chof - "$$tardir"$/;"	m
+am__tar	src/Makefile	/^am__tar = $${TAR-tar} chof - "$$tardir"$/;"	m
+am__tar	unit-tests/Makefile	/^am__tar = $${TAR-tar} chof - "$$tardir"$/;"	m
+am__tty_colors	unit-tests/Makefile	/^am__tty_colors = { \\$/;"	m
+am__tty_colors_dummy	unit-tests/Makefile	/^am__tty_colors_dummy = \\$/;"	m
+am__uninstall_files_from_dir	src/Makefile	/^am__uninstall_files_from_dir = { \\$/;"	m
+am__uniquify_input	Makefile	/^am__uniquify_input = $(AWK) '\\$/;"	m
+am__uniquify_input	src/Makefile	/^am__uniquify_input = $(AWK) '\\$/;"	m
+am__untar	Makefile	/^am__untar = $${TAR-tar} xf -$/;"	m
+am__untar	doc/Makefile	/^am__untar = $${TAR-tar} xf -$/;"	m
+am__untar	meta/Makefile	/^am__untar = $${TAR-tar} xf -$/;"	m
+am__untar	src/Makefile	/^am__untar = $${TAR-tar} xf -$/;"	m
+am__untar	unit-tests/Makefile	/^am__untar = $${TAR-tar} xf -$/;"	m
+am__v_CCLD_	src/Makefile	/^am__v_CCLD_ = $(am__v_CCLD_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_CCLD_0	src/Makefile	/^am__v_CCLD_0 = @echo "  CCLD    " $@;$/;"	m
+am__v_CCLD_1	src/Makefile	/^am__v_CCLD_1 = $/;"	m
+am__v_CC_	src/Makefile	/^am__v_CC_ = $(am__v_CC_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_CC_0	src/Makefile	/^am__v_CC_0 = @echo "  CC      " $@;$/;"	m
+am__v_CC_1	src/Makefile	/^am__v_CC_1 = $/;"	m
+am__v_GEN_	Makefile	/^am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_GEN_	doc/Makefile	/^am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_GEN_	meta/Makefile	/^am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_GEN_	src/Makefile	/^am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_GEN_	unit-tests/Makefile	/^am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_GEN_0	Makefile	/^am__v_GEN_0 = @echo "  GEN     " $@;$/;"	m
+am__v_GEN_0	doc/Makefile	/^am__v_GEN_0 = @echo "  GEN     " $@;$/;"	m
+am__v_GEN_0	meta/Makefile	/^am__v_GEN_0 = @echo "  GEN     " $@;$/;"	m
+am__v_GEN_0	src/Makefile	/^am__v_GEN_0 = @echo "  GEN     " $@;$/;"	m
+am__v_GEN_0	unit-tests/Makefile	/^am__v_GEN_0 = @echo "  GEN     " $@;$/;"	m
+am__v_GEN_1	Makefile	/^am__v_GEN_1 = $/;"	m
+am__v_GEN_1	doc/Makefile	/^am__v_GEN_1 = $/;"	m
+am__v_GEN_1	meta/Makefile	/^am__v_GEN_1 = $/;"	m
+am__v_GEN_1	src/Makefile	/^am__v_GEN_1 = $/;"	m
+am__v_GEN_1	unit-tests/Makefile	/^am__v_GEN_1 = $/;"	m
+am__v_P_	Makefile	/^am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_P_	doc/Makefile	/^am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_P_	meta/Makefile	/^am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_P_	src/Makefile	/^am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_P_	unit-tests/Makefile	/^am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_P_0	Makefile	/^am__v_P_0 = false$/;"	m
+am__v_P_0	doc/Makefile	/^am__v_P_0 = false$/;"	m
+am__v_P_0	meta/Makefile	/^am__v_P_0 = false$/;"	m
+am__v_P_0	src/Makefile	/^am__v_P_0 = false$/;"	m
+am__v_P_0	unit-tests/Makefile	/^am__v_P_0 = false$/;"	m
+am__v_P_1	Makefile	/^am__v_P_1 = :$/;"	m
+am__v_P_1	doc/Makefile	/^am__v_P_1 = :$/;"	m
+am__v_P_1	meta/Makefile	/^am__v_P_1 = :$/;"	m
+am__v_P_1	src/Makefile	/^am__v_P_1 = :$/;"	m
+am__v_P_1	unit-tests/Makefile	/^am__v_P_1 = :$/;"	m
+am__v_at_	Makefile	/^am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_at_	doc/Makefile	/^am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_at_	meta/Makefile	/^am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_at_	src/Makefile	/^am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_at_	unit-tests/Makefile	/^am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_at_0	Makefile	/^am__v_at_0 = @$/;"	m
+am__v_at_0	doc/Makefile	/^am__v_at_0 = @$/;"	m
+am__v_at_0	meta/Makefile	/^am__v_at_0 = @$/;"	m
+am__v_at_0	src/Makefile	/^am__v_at_0 = @$/;"	m
+am__v_at_0	unit-tests/Makefile	/^am__v_at_0 = @$/;"	m
+am__v_at_1	Makefile	/^am__v_at_1 = $/;"	m
+am__v_at_1	doc/Makefile	/^am__v_at_1 = $/;"	m
+am__v_at_1	meta/Makefile	/^am__v_at_1 = $/;"	m
+am__v_at_1	src/Makefile	/^am__v_at_1 = $/;"	m
+am__v_at_1	unit-tests/Makefile	/^am__v_at_1 = $/;"	m
+am__v_lt_	src/Makefile	/^am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))$/;"	m
+am__v_lt_0	src/Makefile	/^am__v_lt_0 = --silent$/;"	m
+am__v_lt_1	src/Makefile	/^am__v_lt_1 = $/;"	m
+am__vpath_adj	src/Makefile	/^am__vpath_adj = case $$p in \\$/;"	m
+am__vpath_adj_setup	src/Makefile	/^am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;$/;"	m
+am_libguile_snmp_net_snmp_la_OBJECTS	src/Makefile	/^am_libguile_snmp_net_snmp_la_OBJECTS =  \\$/;"	m
+am_snmp_shell_OBJECTS	src/Makefile	/^am_snmp_shell_OBJECTS = snmp_shell-snmp-shell.$(OBJEXT)$/;"	m
+apply-octet-str-display-hint	src/snmp/display-hint.scm	/^(define (apply-octet-str-display-hint bv formatstr)$/;"	f
+as_fn_append	config.status	/^  as_fn_append ()$/;"	f
+as_fn_append	configure	/^  as_fn_append ()$/;"	f
+as_fn_arith	config.status	/^  as_fn_arith ()$/;"	f
+as_fn_arith	configure	/^  as_fn_arith ()$/;"	f
+as_fn_error	config.status	/^as_fn_error ()$/;"	f
+as_fn_error	configure	/^as_fn_error ()$/;"	f
+as_fn_executable_p	config.status	/^as_fn_executable_p ()$/;"	f
+as_fn_executable_p	configure	/^as_fn_executable_p ()$/;"	f
+as_fn_exit	config.status	/^as_fn_exit ()$/;"	f
+as_fn_exit	configure	/^as_fn_exit ()$/;"	f
+as_fn_failure	configure	/^as_fn_failure () { as_fn_return 1; }$/;"	f
+as_fn_mkdir_p	config.status	/^as_fn_mkdir_p ()$/;"	f
+as_fn_mkdir_p	configure	/^as_fn_mkdir_p ()$/;"	f
+as_fn_ret_failure	configure	/^as_fn_ret_failure () { return 1; }$/;"	f
+as_fn_ret_success	configure	/^as_fn_ret_success () { return 0; }$/;"	f
+as_fn_set_status	config.status	/^as_fn_set_status ()$/;"	f
+as_fn_set_status	configure	/^as_fn_set_status ()$/;"	f
+as_fn_success	configure	/^as_fn_success () { as_fn_return 0; }$/;"	f
+as_fn_unset	config.status	/^as_fn_unset ()$/;"	f
+as_fn_unset	configure	/^as_fn_unset ()$/;"	f
+asn1-parser	src/asn1-parser.scm	/^(define asn1-parser$/;"	f
+asn1-parser	src/asn1-parser.scm	/^(define-module (asn1-parser)$/;"	f
+asn1-tokenize	src/asn1-tokenize.scm	/^(define (asn1-tokenize port)$/;"	f
+asn1-tokenize	src/asn1-tokenize.scm	/^(define-module (asn1-tokenize)$/;"	f
+assert_smob_subtype	src/net-snmp_wrap_structs.h	/^assert_smob_subtype(snmp_wrap_smob_subtypes_e type, SCM smob)$/;"	f
+bin_PROGRAMS	src/Makefile	/^bin_PROGRAMS = snmp-shell$(EXEEXT)$/;"	m
+bindir	Makefile	/^bindir = ${exec_prefix}\/bin$/;"	m
+bindir	doc/Makefile	/^bindir = ${exec_prefix}\/bin$/;"	m
+bindir	meta/Makefile	/^bindir = ${exec_prefix}\/bin$/;"	m
+bindir	src/Makefile	/^bindir = ${exec_prefix}\/bin$/;"	m
+bindir	unit-tests/Makefile	/^bindir = ${exec_prefix}\/bin$/;"	m
+block	src/net-snmp_wrap_structs.h	/^  int block;$/;"	m	struct:snmp_fdinfo_s
+build	Makefile	/^build = x86_64-unknown-linux-gnu$/;"	m
+build	doc/Makefile	/^build = x86_64-unknown-linux-gnu$/;"	m
+build	meta/Makefile	/^build = x86_64-unknown-linux-gnu$/;"	m
+build	src/Makefile	/^build = x86_64-unknown-linux-gnu$/;"	m
+build	unit-tests/Makefile	/^build = x86_64-unknown-linux-gnu$/;"	m
+build-netmap	doc/drawroute.scm	/^(define (build-netmap)$/;"	f
+build-one	src/snmp/reports.scm	/^(define-syntax build-one$/;"	f
+build-set	src/snmp/reports.scm	/^(define-syntax build-set$/;"	f
+build_alias	Makefile	/^build_alias = $/;"	m
+build_alias	doc/Makefile	/^build_alias = $/;"	m
+build_alias	meta/Makefile	/^build_alias = $/;"	m
+build_alias	src/Makefile	/^build_alias = $/;"	m
+build_alias	unit-tests/Makefile	/^build_alias = $/;"	m
+build_cpu	Makefile	/^build_cpu = x86_64$/;"	m
+build_cpu	doc/Makefile	/^build_cpu = x86_64$/;"	m
+build_cpu	meta/Makefile	/^build_cpu = x86_64$/;"	m
+build_cpu	src/Makefile	/^build_cpu = x86_64$/;"	m
+build_cpu	unit-tests/Makefile	/^build_cpu = x86_64$/;"	m
+build_os	Makefile	/^build_os = linux-gnu$/;"	m
+build_os	doc/Makefile	/^build_os = linux-gnu$/;"	m
+build_os	meta/Makefile	/^build_os = linux-gnu$/;"	m
+build_os	src/Makefile	/^build_os = linux-gnu$/;"	m
+build_os	unit-tests/Makefile	/^build_os = linux-gnu$/;"	m
+build_triplet	Makefile	/^build_triplet = x86_64-unknown-linux-gnu$/;"	m
+build_triplet	doc/Makefile	/^build_triplet = x86_64-unknown-linux-gnu$/;"	m
+build_triplet	meta/Makefile	/^build_triplet = x86_64-unknown-linux-gnu$/;"	m
+build_triplet	src/Makefile	/^build_triplet = x86_64-unknown-linux-gnu$/;"	m
+build_triplet	unit-tests/Makefile	/^build_triplet = x86_64-unknown-linux-gnu$/;"	m
+build_vendor	Makefile	/^build_vendor = unknown$/;"	m
+build_vendor	doc/Makefile	/^build_vendor = unknown$/;"	m
+build_vendor	meta/Makefile	/^build_vendor = unknown$/;"	m
+build_vendor	src/Makefile	/^build_vendor = unknown$/;"	m
+build_vendor	unit-tests/Makefile	/^build_vendor = unknown$/;"	m
+builddir	Makefile	/^builddir = .$/;"	m
+builddir	doc/Makefile	/^builddir = .$/;"	m
+builddir	meta/Makefile	/^builddir = .$/;"	m
+builddir	src/Makefile	/^builddir = .$/;"	m
+builddir	unit-tests/Makefile	/^builddir = .$/;"	m
+bulk-walk	src/snmp/reports.scm	/^(define (bulk-walk baseoid)$/;"	f
+bulk-walk-func	src/snmp/reports.scm	/^(define* (bulk-walk-func baseoid #:key (reps 10))$/;"	f
+cache-key	src/snmp/reports/cache.scm	/^(define (cache-key req oid nrs reps)$/;"	f
+char-hex?	src/asn1-tokenize.scm	/^(define (char-hex? c)$/;"	f
+children	src/snmp/net-snmp.scm	/^(define-method (children (o <oid>)) (map oid-from-tree-node (children (get-tree o (get-tree-head))))) $/;"	f
+clear-query-cache	src/snmp/reports/cache.scm	/^(define (clear-query-cache) (hash-clear! report-query-cache))$/;"	f
+constant-classes	src/snmp/net-snmp.scm	/^(define constant-classes (make-hash-table 20))$/;"	f
+constant-name-from-value	src/snmp/net-snmp.scm	/^(define (constant-name-from-value class val)$/;"	f
+constant_name_from_value_hook	src/net-snmp_wrap_constants.h	/^SCM constant_name_from_value_hook = SCM_BOOL_F;$/;"	v
+current-community	src/snmp/reports/session.scm	/^(define current-community (make-parameter "public"))$/;"	f
+current-context	src/snmp/reports/session.scm	/^(define current-context (make-parameter #f))$/;"	f
+current-host	src/snmp/reports/session.scm	/^(define current-host (make-parameter "localhost"))$/;"	f
+current-retries	src/snmp/reports/session.scm	/^(define current-retries (make-parameter 1))$/;"	f
+current-sec-auth-key	src/snmp/reports/session.scm	/^(define current-sec-auth-key (make-parameter #f)) $/;"	f
+current-sec-auth-proto	src/snmp/reports/session.scm	/^(define current-sec-auth-proto (make-parameter AuthNone)) $/;"	f
+current-sec-level	src/snmp/reports/session.scm	/^(define current-sec-level (make-parameter SNMP-SEC-LEVEL-NOAUTH)) $/;"	f
+current-sec-name	src/snmp/reports/session.scm	/^(define current-sec-name (make-parameter #f)) $/;"	f
+current-sec-priv-key	src/snmp/reports/session.scm	/^(define current-sec-priv-key (make-parameter #f)) $/;"	f
+current-sec-priv-proto	src/snmp/reports/session.scm	/^(define current-sec-priv-proto (make-parameter PrivNone)) $/;"	f
+current-session	src/snmp/reports/session.scm	/^(define current-session (make-parameter (new-snmp-session)))$/;"	f
+current-timeout	src/snmp/reports/session.scm	/^(define current-timeout (make-parameter 1000000))$/;"	f
+current-version	src/snmp/reports/session.scm	/^(define current-version (make-parameter SNMP-VERSION-2c ))$/;"	f
+datadir	Makefile	/^datadir = ${datarootdir}$/;"	m
+datadir	doc/Makefile	/^datadir = ${datarootdir}$/;"	m
+datadir	meta/Makefile	/^datadir = ${datarootdir}$/;"	m
+datadir	src/Makefile	/^datadir = ${datarootdir}$/;"	m
+datadir	unit-tests/Makefile	/^datadir = ${datarootdir}$/;"	m
+datarootdir	Makefile	/^datarootdir = ${prefix}\/share$/;"	m
+datarootdir	doc/Makefile	/^datarootdir = ${prefix}\/share$/;"	m
+datarootdir	meta/Makefile	/^datarootdir = ${prefix}\/share$/;"	m
+datarootdir	src/Makefile	/^datarootdir = ${prefix}\/share$/;"	m
+datarootdir	unit-tests/Makefile	/^datarootdir = ${prefix}\/share$/;"	m
+debug-reports	src/snmp/reports.scm	/^(define debug-reports (make-parameter #f))$/;"	f
+default-getbulk-repetitions	src/snmp/reports.scm	/^(define default-getbulk-repetitions 10)$/;"	f
+default-session	src/snmp/reports/session.scm	/^(define-syntax default-session$/;"	f
+define-class-wrapped-struct	src/snmp/net-snmp.scm	/^(define-syntax define-class-wrapped-struct$/;"	f
+define-constant	src/snmp/net-snmp.scm	/^(define-syntax define-constant$/;"	f
+define-constant-class	src/snmp/net-snmp.scm	/^(define-syntax define-constant-class$/;"	f
+delete-trie-node	doc/ipv4-router.scm	/^(define-generic delete-trie-node)$/;"	f
+delete-trie-node	doc/ipv4-router.scm	/^(define-method (delete-trie-node (rootnode <trie-node>) (prefix <integer>)))$/;"	f
+depcomp	src/Makefile	/^depcomp = $(SHELL) $(top_srcdir)\/depcomp$/;"	m
+describe	src/snmp/net-snmp.scm	/^(define-method (describe (obj <mib-module>))$/;"	f
+describe	src/snmp/net-snmp.scm	/^(define-method (describe (obj <oid>)) $/;"	f
+describe-mib	src/snmp/net-snmp.scm	/^(define-syntax describe-mib$/;"	f
+description	src/snmp/net-snmp.scm	/^(define-method (description (o <oid>)) (description (get-tree o (get-tree-head)))) $/;"	f
+dhint->formatter	src/snmp/display-hint.scm	/^(define (dhint->formatter dhint)$/;"	f
+dhint-integer-regex	src/snmp/display-hint.scm	/^(define dhint-integer-regex (make-regexp "([xoat]|(d(-[0-9]+){0,1}))"))$/;"	f
+dhint-octect-str-regex	src/snmp/display-hint.scm	/^(define dhint-octect-str-regex (make-regexp "(\\\\*{0,1})([0-9]+)([xoatd])([^0-9\\\\*]{0,1})([^0-9\\\\*]{0,1})"))$/;"	f
+digit->number	src/asn1-tokenize.scm	/^(define (digit->number c)$/;"	f
+disable-query-aggregate	src/snmp/reports.scm	/^(define (disable-query-aggregate)  $/;"	f
+disable-query-cache	src/snmp/reports/cache.scm	/^(define (disable-query-cache) (query-cache-enabled #f))$/;"	f
+disable-reports-debug	src/snmp/reports.scm	/^(define (disable-reports-debug) (debug-reports #f)(display #t "Debugging disabled")(newline))$/;"	f
+display	doc/ipv4-router.scm	/^(define-method (display (this <ipv4-address>) port)$/;"	f
+display	doc/ipv4-router.scm	/^(define-method (display (this <ipv4-network>) port)$/;"	f
+display	doc/ipv4-router.scm	/^(define-method (display (this <ipv4-route>) port)$/;"	f
+display	doc/ipv4-router.scm	/^(define-method (display (this <trie-node>) port)$/;"	f
+display	src/snmp/net-snmp.scm	/^(define-method (display (this <snmp-constant>) port)$/;"	f
+display	src/snmp/net-snmp.scm	/^(define-method (display (this <tree>) port)$/;"	f
+display	src/snmp/reports.scm	/^(define-method (display (this <snmp-reports-result-set>) port)$/;"	f
+display	src/snmp/reports.scm	/^(define-method (display (this <snmp-reports-result>) port)$/;"	f
+display-hint	src/snmp/net-snmp.scm	/^(define-method (display-hint (o <oid>)) (display-hint (get-tree o (get-tree-head)))) $/;"	f
+dist_man_MANS	src/Makefile	/^dist_man_MANS = snmp-shell.1$/;"	m
+distcleancheck_listfiles	Makefile	/^distcleancheck_listfiles = find . -type f -print$/;"	m
+distdir	Makefile	/^distdir = $(PACKAGE)-$(VERSION)$/;"	m
+distuninstallcheck_listfiles	Makefile	/^distuninstallcheck_listfiles = find . -type f -print$/;"	m
+docdir	Makefile	/^docdir = ${datarootdir}\/doc\/${PACKAGE_TARNAME}$/;"	m
+docdir	doc/Makefile	/^docdir = ${datarootdir}\/doc\/${PACKAGE_TARNAME}$/;"	m
+docdir	meta/Makefile	/^docdir = ${datarootdir}\/doc\/${PACKAGE_TARNAME}$/;"	m
+docdir	src/Makefile	/^docdir = ${datarootdir}\/doc\/${PACKAGE_TARNAME}$/;"	m
+docdir	unit-tests/Makefile	/^docdir = ${datarootdir}\/doc\/${PACKAGE_TARNAME}$/;"	m
+download_gnulib_config_guess	autogen.sh	/^download_gnulib_config_guess () {$/;"	f
+drawospf	doc/drawospf.scm	/^(define (drawospf port)$/;"	f
+dump-query-cache	src/snmp/reports/cache.scm	/^(define (dump-query-cache)$/;"	f
+dvidir	Makefile	/^dvidir = ${docdir}$/;"	m
+dvidir	doc/Makefile	/^dvidir = ${docdir}$/;"	m
+dvidir	meta/Makefile	/^dvidir = ${docdir}$/;"	m
+dvidir	src/Makefile	/^dvidir = ${docdir}$/;"	m
+dvidir	unit-tests/Makefile	/^dvidir = ${docdir}$/;"	m
+enable-query-aggregate	src/snmp/reports.scm	/^(define (enable-query-aggregate)$/;"	f
+enable-query-cache	src/snmp/reports/cache.scm	/^(define (enable-query-cache) (query-cache-enabled #t))$/;"	f
+enable-reports-debug	src/snmp/reports.scm	/^(define (enable-reports-debug) (debug-reports #t)(display "Debugging enabled")(newline))$/;"	f
+enums	src/snmp/net-snmp.scm	/^(define-method (enums (o <oid>)) (enums (get-tree o (get-tree-head)))) $/;"	f
+equalp_func	src/net-snmp_wrap_structs.h	/^  equalp_wrap_smob_f equalp_func;$/;"	m	struct:wrap_smob_typedef_s
+equalp_snmp_wrap_smob	src/net-snmp_wrap_structs.h	/^equalp_snmp_wrap_smob (SCM smob1, SCM smob2)$/;"	f
+equalp_wrap_smob_f	src/net-snmp_wrap_structs.h	/^typedef SCM (*equalp_wrap_smob_f)(SCM,SCM);$/;"	t
+exec_prefix	Makefile	/^exec_prefix = ${prefix}$/;"	m
+exec_prefix	doc/Makefile	/^exec_prefix = ${prefix}$/;"	m
+exec_prefix	meta/Makefile	/^exec_prefix = ${prefix}$/;"	m
+exec_prefix	src/Makefile	/^exec_prefix = ${prefix}$/;"	m
+exec_prefix	unit-tests/Makefile	/^exec_prefix = ${prefix}$/;"	m
+fail	src/snmp/reports.scm	/^(define fail$/;"	f
+fds	src/net-snmp_wrap_structs.h	/^  int fds; $/;"	m	struct:snmp_fdinfo_s
+fdss	src/net-snmp_wrap_structs.h	/^  fd_set fdss;$/;"	m	struct:snmp_fdinfo_s
+filter-valid-next	src/snmp/reports.scm	/^(define (filter-valid-next results)$/;"	f
+find-ip-from-mac	doc/port-usage-report.scm	/^(define (find-ip-from-mac comm mac)$/;"	f
+find-ipv4-route	doc/ipv4-router.scm	/^(define-generic find-ipv4-route)$/;"	f
+find-ipv4-route	doc/ipv4-router.scm	/^(define-method (find-ipv4-route (table <ipv4-table>)(route <ipv4-address>))$/;"	f
+find-mac-on-port	doc/port-usage-report.scm	/^(define (find-mac-on-port switch portid)$/;"	f
+find-mib-root-node	src/snmp/net-snmp.scm	/^(define-method (find-mib-root-node (root <oid>) mib)$/;"	f
+find-mib-root-node	src/snmp/net-snmp.scm	/^(define-method (find-mib-root-node (root <tree>) (mib <mib-module>))$/;"	f
+find-mib-root-node	src/snmp/net-snmp.scm	/^(define-method (find-mib-root-node (root <tree>) (mib-name <string>))$/;"	f
+find-mib-root-node	src/snmp/net-snmp.scm	/^(define-method (find-mib-root-node mib)$/;"	f
+fork	doc/agent.scm	/^(define fork #f)$/;"	f
+free_func	src/net-snmp_wrap_structs.h	/^  free_wrap_smob_f free_func;$/;"	m	struct:wrap_smob_typedef_s
+free_snmp_wrap_smob	src/net-snmp_wrap_structs.h	/^free_snmp_wrap_smob (SCM smob)$/;"	f
+free_wrap_smob_f	src/net-snmp_wrap_structs.h	/^typedef size_t (*free_wrap_smob_f)(SCM);$/;"	t
+func_append	config.status	/^func_append ()\\$/;"	f
+func_append	configure	/^func_append ()\\$/;"	f
+func_append	libtool	/^func_append ()$/;"	f
+func_append	ltmain.sh	/^func_append ()$/;"	f
+func_append_quoted	config.status	/^func_append_quoted ()\\$/;"	f
+func_append_quoted	configure	/^func_append_quoted ()\\$/;"	f
+func_append_quoted	libtool	/^func_append_quoted ()$/;"	f
+func_append_quoted	ltmain.sh	/^func_append_quoted ()$/;"	f
+func_arith	config.status	/^func_arith ()\\$/;"	f
+func_arith	configure	/^func_arith ()\\$/;"	f
+func_arith	libtool	/^func_arith ()$/;"	f
+func_arith	ltmain.sh	/^func_arith ()$/;"	f
+func_basename	config.status	/^func_basename ()\\$/;"	f
+func_basename	configure	/^func_basename ()\\$/;"	f
+func_basename	libtool	/^func_basename ()$/;"	f
+func_basename	ltmain.sh	/^func_basename ()$/;"	f
+func_check_version_match	libtool	/^func_check_version_match ()$/;"	f
+func_check_version_match	ltmain.sh	/^func_check_version_match ()$/;"	f
+func_cl_dashL	compile	/^func_cl_dashL ()$/;"	f
+func_cl_dashl	compile	/^func_cl_dashl ()$/;"	f
+func_cl_wrapper	compile	/^func_cl_wrapper ()$/;"	f
+func_config	libtool	/^func_config ()$/;"	f
+func_config	ltmain.sh	/^func_config ()$/;"	f
+func_convert_core_file_wine_to_w32	libtool	/^func_convert_core_file_wine_to_w32 ()$/;"	f
+func_convert_core_file_wine_to_w32	ltmain.sh	/^func_convert_core_file_wine_to_w32 ()$/;"	f
+func_convert_core_msys_to_w32	libtool	/^func_convert_core_msys_to_w32 ()$/;"	f
+func_convert_core_msys_to_w32	ltmain.sh	/^func_convert_core_msys_to_w32 ()$/;"	f
+func_convert_core_path_wine_to_w32	libtool	/^func_convert_core_path_wine_to_w32 ()$/;"	f
+func_convert_core_path_wine_to_w32	ltmain.sh	/^func_convert_core_path_wine_to_w32 ()$/;"	f
+func_convert_file_check	libtool	/^func_convert_file_check ()$/;"	f
+func_convert_file_check	ltmain.sh	/^func_convert_file_check ()$/;"	f
+func_convert_file_cygwin_to_w32	libtool	/^func_convert_file_cygwin_to_w32 ()$/;"	f
+func_convert_file_cygwin_to_w32	ltmain.sh	/^func_convert_file_cygwin_to_w32 ()$/;"	f
+func_convert_file_msys_to_cygwin	libtool	/^func_convert_file_msys_to_cygwin ()$/;"	f
+func_convert_file_msys_to_cygwin	ltmain.sh	/^func_convert_file_msys_to_cygwin ()$/;"	f
+func_convert_file_msys_to_w32	libtool	/^func_convert_file_msys_to_w32 ()$/;"	f
+func_convert_file_msys_to_w32	ltmain.sh	/^func_convert_file_msys_to_w32 ()$/;"	f
+func_convert_file_nix_to_cygwin	libtool	/^func_convert_file_nix_to_cygwin ()$/;"	f
+func_convert_file_nix_to_cygwin	ltmain.sh	/^func_convert_file_nix_to_cygwin ()$/;"	f
+func_convert_file_nix_to_w32	libtool	/^func_convert_file_nix_to_w32 ()$/;"	f
+func_convert_file_nix_to_w32	ltmain.sh	/^func_convert_file_nix_to_w32 ()$/;"	f
+func_convert_file_noop	libtool	/^func_convert_file_noop ()$/;"	f
+func_convert_file_noop	ltmain.sh	/^func_convert_file_noop ()$/;"	f
+func_convert_path_check	libtool	/^func_convert_path_check ()$/;"	f
+func_convert_path_check	ltmain.sh	/^func_convert_path_check ()$/;"	f
+func_convert_path_cygwin_to_w32	libtool	/^func_convert_path_cygwin_to_w32 ()$/;"	f
+func_convert_path_cygwin_to_w32	ltmain.sh	/^func_convert_path_cygwin_to_w32 ()$/;"	f
+func_convert_path_front_back_pathsep	libtool	/^func_convert_path_front_back_pathsep ()$/;"	f
+func_convert_path_front_back_pathsep	ltmain.sh	/^func_convert_path_front_back_pathsep ()$/;"	f
+func_convert_path_msys_to_cygwin	libtool	/^func_convert_path_msys_to_cygwin ()$/;"	f
+func_convert_path_msys_to_cygwin	ltmain.sh	/^func_convert_path_msys_to_cygwin ()$/;"	f
+func_convert_path_msys_to_w32	libtool	/^func_convert_path_msys_to_w32 ()$/;"	f
+func_convert_path_msys_to_w32	ltmain.sh	/^func_convert_path_msys_to_w32 ()$/;"	f
+func_convert_path_nix_to_cygwin	libtool	/^func_convert_path_nix_to_cygwin ()$/;"	f
+func_convert_path_nix_to_cygwin	ltmain.sh	/^func_convert_path_nix_to_cygwin ()$/;"	f
+func_convert_path_nix_to_w32	libtool	/^func_convert_path_nix_to_w32 ()$/;"	f
+func_convert_path_nix_to_w32	ltmain.sh	/^func_convert_path_nix_to_w32 ()$/;"	f
+func_convert_path_noop	libtool	/^func_convert_path_noop ()$/;"	f
+func_convert_path_noop	ltmain.sh	/^func_convert_path_noop ()$/;"	f
+func_cygming_dll_for_implib	libtool	/^func_cygming_dll_for_implib ()$/;"	f
+func_cygming_dll_for_implib	ltmain.sh	/^func_cygming_dll_for_implib ()$/;"	f
+func_cygming_dll_for_implib_fallback	libtool	/^func_cygming_dll_for_implib_fallback ()$/;"	f
+func_cygming_dll_for_implib_fallback	ltmain.sh	/^func_cygming_dll_for_implib_fallback ()$/;"	f
+func_cygming_dll_for_implib_fallback_core	libtool	/^func_cygming_dll_for_implib_fallback_core ()$/;"	f
+func_cygming_dll_for_implib_fallback_core	ltmain.sh	/^func_cygming_dll_for_implib_fallback_core ()$/;"	f
+func_cygming_gnu_implib_p	libtool	/^func_cygming_gnu_implib_p ()$/;"	f
+func_cygming_gnu_implib_p	ltmain.sh	/^func_cygming_gnu_implib_p ()$/;"	f
+func_cygming_ms_implib_p	libtool	/^func_cygming_ms_implib_p ()$/;"	f
+func_cygming_ms_implib_p	ltmain.sh	/^func_cygming_ms_implib_p ()$/;"	f
+func_cygpath	libtool	/^func_cygpath ()$/;"	f
+func_cygpath	ltmain.sh	/^func_cygpath ()$/;"	f
+func_dirname	config.status	/^func_dirname ()\\$/;"	f
+func_dirname	configure	/^func_dirname ()\\$/;"	f
+func_dirname	libtool	/^func_dirname ()$/;"	f
+func_dirname	ltmain.sh	/^func_dirname ()$/;"	f
+func_dirname_and_basename	config.status	/^func_dirname_and_basename ()\\$/;"	f
+func_dirname_and_basename	configure	/^func_dirname_and_basename ()\\$/;"	f
+func_dirname_and_basename	libtool	/^func_dirname_and_basename ()$/;"	f
+func_dirname_and_basename	ltmain.sh	/^func_dirname_and_basename ()$/;"	f
+func_echo	libtool	/^func_echo ()$/;"	f
+func_echo	ltmain.sh	/^func_echo ()$/;"	f
+func_echo_all	configure	/^func_echo_all ()$/;"	f
+func_echo_all	libtool	/^func_echo_all ()$/;"	f
+func_echo_all	ltmain.sh	/^func_echo_all ()$/;"	f
+func_emit_cwrapperexe_src	libtool	/^func_emit_cwrapperexe_src ()$/;"	f
+func_emit_cwrapperexe_src	ltmain.sh	/^func_emit_cwrapperexe_src ()$/;"	f
+func_emit_wrapper	libtool	/^func_emit_wrapper ()$/;"	f
+func_emit_wrapper	ltmain.sh	/^func_emit_wrapper ()$/;"	f
+func_enable_tag	libtool	/^func_enable_tag ()$/;"	f
+func_enable_tag	ltmain.sh	/^func_enable_tag ()$/;"	f
+func_error	libtool	/^func_error ()$/;"	f
+func_error	ltmain.sh	/^func_error ()$/;"	f
+func_exec_program	libtool	/^func_exec_program ()$/;"	f
+func_exec_program	ltmain.sh	/^func_exec_program ()$/;"	f
+func_exec_program_core	libtool	/^func_exec_program_core ()$/;"	f
+func_exec_program_core	ltmain.sh	/^func_exec_program_core ()$/;"	f
+func_execute_cmds	libtool	/^func_execute_cmds ()$/;"	f
+func_execute_cmds	ltmain.sh	/^func_execute_cmds ()$/;"	f
+func_extract_an_archive	libtool	/^func_extract_an_archive ()$/;"	f
+func_extract_an_archive	ltmain.sh	/^func_extract_an_archive ()$/;"	f
+func_extract_archives	libtool	/^func_extract_archives ()$/;"	f
+func_extract_archives	ltmain.sh	/^func_extract_archives ()$/;"	f
+func_fallback_echo	config.status	/^func_fallback_echo ()$/;"	f
+func_fallback_echo	configure	/^  func_fallback_echo ()$/;"	f
+func_fallback_echo	configure	/^func_fallback_echo ()$/;"	f
+func_fallback_echo	libtool	/^func_fallback_echo ()$/;"	f
+func_fallback_echo	ltmain.sh	/^func_fallback_echo ()$/;"	f
+func_fatal_configuration	libtool	/^func_fatal_configuration ()$/;"	f
+func_fatal_configuration	ltmain.sh	/^func_fatal_configuration ()$/;"	f
+func_fatal_error	libtool	/^func_fatal_error ()$/;"	f
+func_fatal_error	ltmain.sh	/^func_fatal_error ()$/;"	f
+func_fatal_help	libtool	/^func_fatal_help ()$/;"	f
+func_fatal_help	ltmain.sh	/^func_fatal_help ()$/;"	f
+func_features	libtool	/^func_features ()$/;"	f
+func_features	ltmain.sh	/^func_features ()$/;"	f
+func_file_conv	compile	/^func_file_conv ()$/;"	f
+func_generate_dlsyms	libtool	/^func_generate_dlsyms ()$/;"	f
+func_generate_dlsyms	ltmain.sh	/^func_generate_dlsyms ()$/;"	f
+func_grep	libtool	/^func_grep ()$/;"	f
+func_grep	ltmain.sh	/^func_grep ()$/;"	f
+func_help	libtool	/^func_help ()$/;"	f
+func_help	ltmain.sh	/^func_help ()$/;"	f
+func_infer_tag	libtool	/^func_infer_tag ()$/;"	f
+func_infer_tag	ltmain.sh	/^func_infer_tag ()$/;"	f
+func_init_to_host_path_cmd	libtool	/^func_init_to_host_path_cmd ()$/;"	f
+func_init_to_host_path_cmd	ltmain.sh	/^func_init_to_host_path_cmd ()$/;"	f
+func_lalib_p	libtool	/^func_lalib_p ()$/;"	f
+func_lalib_p	ltmain.sh	/^func_lalib_p ()$/;"	f
+func_lalib_unsafe_p	libtool	/^func_lalib_unsafe_p ()$/;"	f
+func_lalib_unsafe_p	ltmain.sh	/^func_lalib_unsafe_p ()$/;"	f
+func_len	config.status	/^func_len ()\\$/;"	f
+func_len	configure	/^func_len ()\\$/;"	f
+func_len	libtool	/^func_len ()$/;"	f
+func_len	ltmain.sh	/^func_len ()$/;"	f
+func_lo2o	config.status	/^func_lo2o ()\\$/;"	f
+func_lo2o	configure	/^func_lo2o ()\\$/;"	f
+func_lo2o	libtool	/^func_lo2o ()$/;"	f
+func_lo2o	ltmain.sh	/^func_lo2o ()$/;"	f
+func_lt_dump_args	libtool	/^func_lt_dump_args ()$/;"	f
+func_lt_dump_args	ltmain.sh	/^func_lt_dump_args ()$/;"	f
+func_ltwrapper_executable_p	libtool	/^func_ltwrapper_executable_p ()$/;"	f
+func_ltwrapper_executable_p	ltmain.sh	/^func_ltwrapper_executable_p ()$/;"	f
+func_ltwrapper_p	libtool	/^func_ltwrapper_p ()$/;"	f
+func_ltwrapper_p	ltmain.sh	/^func_ltwrapper_p ()$/;"	f
+func_ltwrapper_script_p	libtool	/^func_ltwrapper_script_p ()$/;"	f
+func_ltwrapper_script_p	ltmain.sh	/^func_ltwrapper_script_p ()$/;"	f
+func_ltwrapper_scriptname	libtool	/^func_ltwrapper_scriptname ()$/;"	f
+func_ltwrapper_scriptname	ltmain.sh	/^func_ltwrapper_scriptname ()$/;"	f
+func_missing_arg	libtool	/^func_missing_arg ()$/;"	f
+func_missing_arg	ltmain.sh	/^func_missing_arg ()$/;"	f
+func_mkdir_p	libtool	/^func_mkdir_p ()$/;"	f
+func_mkdir_p	ltmain.sh	/^func_mkdir_p ()$/;"	f
+func_mktempdir	libtool	/^func_mktempdir ()$/;"	f
+func_mktempdir	ltmain.sh	/^func_mktempdir ()$/;"	f
+func_mode_compile	libtool	/^func_mode_compile ()$/;"	f
+func_mode_compile	ltmain.sh	/^func_mode_compile ()$/;"	f
+func_mode_execute	libtool	/^func_mode_execute ()$/;"	f
+func_mode_execute	ltmain.sh	/^func_mode_execute ()$/;"	f
+func_mode_finish	libtool	/^func_mode_finish ()$/;"	f
+func_mode_finish	ltmain.sh	/^func_mode_finish ()$/;"	f
+func_mode_help	libtool	/^func_mode_help ()$/;"	f
+func_mode_help	ltmain.sh	/^func_mode_help ()$/;"	f
+func_mode_install	libtool	/^func_mode_install ()$/;"	f
+func_mode_install	ltmain.sh	/^func_mode_install ()$/;"	f
+func_mode_link	libtool	/^func_mode_link ()$/;"	f
+func_mode_link	ltmain.sh	/^func_mode_link ()$/;"	f
+func_mode_uninstall	libtool	/^func_mode_uninstall ()$/;"	f
+func_mode_uninstall	ltmain.sh	/^func_mode_uninstall ()$/;"	f
+func_normal_abspath	libtool	/^func_normal_abspath ()$/;"	f
+func_normal_abspath	ltmain.sh	/^func_normal_abspath ()$/;"	f
+func_parse_lt_options	libtool	/^func_parse_lt_options ()$/;"	f
+func_parse_lt_options	ltmain.sh	/^func_parse_lt_options ()$/;"	f
+func_quote_for_eval	libtool	/^func_quote_for_eval ()$/;"	f
+func_quote_for_eval	ltmain.sh	/^func_quote_for_eval ()$/;"	f
+func_quote_for_expand	libtool	/^func_quote_for_expand ()$/;"	f
+func_quote_for_expand	ltmain.sh	/^func_quote_for_expand ()$/;"	f
+func_relative_path	libtool	/^func_relative_path ()$/;"	f
+func_relative_path	ltmain.sh	/^func_relative_path ()$/;"	f
+func_replace_sysroot	libtool	/^func_replace_sysroot ()$/;"	f
+func_replace_sysroot	ltmain.sh	/^func_replace_sysroot ()$/;"	f
+func_resolve_sysroot	libtool	/^func_resolve_sysroot ()$/;"	f
+func_resolve_sysroot	ltmain.sh	/^func_resolve_sysroot ()$/;"	f
+func_show_eval	libtool	/^func_show_eval ()$/;"	f
+func_show_eval	ltmain.sh	/^func_show_eval ()$/;"	f
+func_show_eval_locale	libtool	/^func_show_eval_locale ()$/;"	f
+func_show_eval_locale	ltmain.sh	/^func_show_eval_locale ()$/;"	f
+func_source	libtool	/^func_source ()$/;"	f
+func_source	ltmain.sh	/^func_source ()$/;"	f
+func_split_long_opt	config.status	/^func_split_long_opt ()\\$/;"	f
+func_split_long_opt	configure	/^func_split_long_opt ()\\$/;"	f
+func_split_long_opt	libtool	/^func_split_long_opt ()$/;"	f
+func_split_long_opt	ltmain.sh	/^func_split_long_opt ()$/;"	f
+func_split_short_opt	config.status	/^func_split_short_opt ()\\$/;"	f
+func_split_short_opt	configure	/^func_split_short_opt ()\\$/;"	f
+func_split_short_opt	libtool	/^func_split_short_opt ()$/;"	f
+func_split_short_opt	ltmain.sh	/^func_split_short_opt ()$/;"	f
+func_stripname	config.status	/^func_stripname ()\\$/;"	f
+func_stripname	configure	/^func_stripname ()\\$/;"	f
+func_stripname	libtool	/^func_stripname ()$/;"	f
+func_stripname	ltmain.sh	/^func_stripname ()$/;"	f
+func_to_host_file	libtool	/^func_to_host_file ()$/;"	f
+func_to_host_file	ltmain.sh	/^func_to_host_file ()$/;"	f
+func_to_host_path	libtool	/^func_to_host_path ()$/;"	f
+func_to_host_path	ltmain.sh	/^func_to_host_path ()$/;"	f
+func_to_tool_file	libtool	/^func_to_tool_file ()$/;"	f
+func_to_tool_file	ltmain.sh	/^func_to_tool_file ()$/;"	f
+func_tr_sh	libtool	/^func_tr_sh ()$/;"	f
+func_tr_sh	ltmain.sh	/^func_tr_sh ()$/;"	f
+func_usage	libtool	/^func_usage ()$/;"	f
+func_usage	ltmain.sh	/^func_usage ()$/;"	f
+func_verbose	libtool	/^func_verbose ()$/;"	f
+func_verbose	ltmain.sh	/^func_verbose ()$/;"	f
+func_version	libtool	/^func_version ()$/;"	f
+func_version	ltmain.sh	/^func_version ()$/;"	f
+func_warning	libtool	/^func_warning ()$/;"	f
+func_warning	ltmain.sh	/^func_warning ()$/;"	f
+func_win32_import_lib_p	libtool	/^func_win32_import_lib_p ()$/;"	f
+func_win32_import_lib_p	ltmain.sh	/^func_win32_import_lib_p ()$/;"	f
+func_win32_libid	libtool	/^func_win32_libid ()$/;"	f
+func_win32_libid	ltmain.sh	/^func_win32_libid ()$/;"	f
+func_write_libtool_object	libtool	/^func_write_libtool_object ()$/;"	f
+func_write_libtool_object	ltmain.sh	/^func_write_libtool_object ()$/;"	f
+func_xform	config.status	/^func_xform ()\\$/;"	f
+func_xform	configure	/^func_xform ()\\$/;"	f
+func_xform	libtool	/^func_xform ()$/;"	f
+func_xform	ltmain.sh	/^func_xform ()$/;"	f
+get	src/snmp/reports.scm	/^(define (get . oid-terms)$/;"	f
+get-oid-type	src/snmp/oids.scm	/^(define (get-oid-type oid)$/;"	f
+get-or-fail	src/snmp/reports.scm	/^(define (get-or-fail . oid-terms)$/;"	f
+getbulk	src/snmp/reports.scm	/^(define-syntax getbulk $/;"	f
+getnext	src/snmp/reports.scm	/^(define (getnext . oid-terms)$/;"	f
+gfdp-proc	doc/agent.scm	/^(define (gfdp-proc a b c d) $/;"	f
+give_advice	missing	/^give_advice ()$/;"	f
+gndp-proc	doc/agent.scm	/^(define (gndp-proc a b c d) $/;"	f
+guileSnmp_Netsnmp_First_Data_Point	src/net-snmp_wrap_structs.h	/^guileSnmp_Netsnmp_First_Data_Point($/;"	f
+guileSnmp_Netsnmp_Next_Data_Point	src/net-snmp_wrap_structs.h	/^guileSnmp_Netsnmp_Next_Data_Point($/;"	f
+guile_snmp_Netsnmp_Node_Handler	src/net-snmp_wrap_funcs.h	/^guile_snmp_Netsnmp_Node_Handler (netsnmp_mib_handler *handler,$/;"	f
+guile_snmp_Netsnmp_Node_Handler_data_free	src/net-snmp_wrap_funcs.h	/^guile_snmp_Netsnmp_Node_Handler_data_free(void* p)$/;"	f
+guile_snmp_async_response	src/net-snmp_wrap_structs.h	/^int guile_snmp_async_response(int op, struct snmp_session *sess, int reqid, struct snmp_pdu *pdu, void *magic)$/;"	f
+guileprefix	src/Makefile	/^guileprefix = \/usr\/local$/;"	m
+guilereports_DATA	src/Makefile	/^guilereports_DATA = $(SCHEMESOURCES2) $(GOBJECTS2)$/;"	m
+guilereportsdir	src/Makefile	/^guilereportsdir = $(guilesnmpdir)\/reports$/;"	m
+guilesite	src/Makefile	/^guilesite = \/usr\/local\/share\/guile\/site\/2.2$/;"	m
+guilesitesuffix	src/Makefile	/^guilesitesuffix = `echo $(guilesite) | sed -e 's!^$(guileprefix)!!'`$/;"	m
+guilesnmp_DATA	src/Makefile	/^guilesnmp_DATA = $(SCHEMESOURCES) $(GOBJECTS)$/;"	m
+guilesnmpdir	src/Makefile	/^guilesnmpdir = $(exec_prefix)\/$(guilesitesuffix)\/snmp$/;"	m
+hex->number	src/asn1-tokenize.scm	/^(define (hex->number c)$/;"	f
+host	Makefile	/^host = x86_64-unknown-linux-gnu$/;"	m
+host	doc/Makefile	/^host = x86_64-unknown-linux-gnu$/;"	m
+host	meta/Makefile	/^host = x86_64-unknown-linux-gnu$/;"	m
+host	src/Makefile	/^host = x86_64-unknown-linux-gnu$/;"	m
+host	unit-tests/Makefile	/^host = x86_64-unknown-linux-gnu$/;"	m
+host_alias	Makefile	/^host_alias = $/;"	m
+host_alias	doc/Makefile	/^host_alias = $/;"	m
+host_alias	meta/Makefile	/^host_alias = $/;"	m
+host_alias	src/Makefile	/^host_alias = $/;"	m
+host_alias	unit-tests/Makefile	/^host_alias = $/;"	m
+host_cpu	Makefile	/^host_cpu = x86_64$/;"	m
+host_cpu	doc/Makefile	/^host_cpu = x86_64$/;"	m
+host_cpu	meta/Makefile	/^host_cpu = x86_64$/;"	m
+host_cpu	src/Makefile	/^host_cpu = x86_64$/;"	m
+host_cpu	unit-tests/Makefile	/^host_cpu = x86_64$/;"	m
+host_os	Makefile	/^host_os = linux-gnu$/;"	m
+host_os	doc/Makefile	/^host_os = linux-gnu$/;"	m
+host_os	meta/Makefile	/^host_os = linux-gnu$/;"	m
+host_os	src/Makefile	/^host_os = linux-gnu$/;"	m
+host_os	unit-tests/Makefile	/^host_os = linux-gnu$/;"	m
+host_triplet	Makefile	/^host_triplet = x86_64-unknown-linux-gnu$/;"	m
+host_triplet	doc/Makefile	/^host_triplet = x86_64-unknown-linux-gnu$/;"	m
+host_triplet	meta/Makefile	/^host_triplet = x86_64-unknown-linux-gnu$/;"	m
+host_triplet	src/Makefile	/^host_triplet = x86_64-unknown-linux-gnu$/;"	m
+host_triplet	unit-tests/Makefile	/^host_triplet = x86_64-unknown-linux-gnu$/;"	m
+host_vendor	Makefile	/^host_vendor = unknown$/;"	m
+host_vendor	doc/Makefile	/^host_vendor = unknown$/;"	m
+host_vendor	meta/Makefile	/^host_vendor = unknown$/;"	m
+host_vendor	src/Makefile	/^host_vendor = unknown$/;"	m
+host_vendor	unit-tests/Makefile	/^host_vendor = unknown$/;"	m
+htmldir	Makefile	/^htmldir = ${docdir}$/;"	m
+htmldir	doc/Makefile	/^htmldir = ${docdir}$/;"	m
+htmldir	meta/Makefile	/^htmldir = ${docdir}$/;"	m
+htmldir	src/Makefile	/^htmldir = ${docdir}$/;"	m
+htmldir	unit-tests/Makefile	/^htmldir = ${docdir}$/;"	m
+ident	autogen.sh	/^ident ( ) {$/;"	f
+iid	src/snmp/reports.scm	/^(define-method  (iid (var <snmp-reports-result>))$/;"	f
+iid	src/snmp/reports.scm	/^(define-method  (iid (varset <snmp-reports-result-set>) (item <oid>))$/;"	f
+iid	src/snmp/reports.scm	/^(define-method  (iid (varset <snmp-reports-result-set>))$/;"	f
+includedir	Makefile	/^includedir = ${prefix}\/include$/;"	m
+includedir	doc/Makefile	/^includedir = ${prefix}\/include$/;"	m
+includedir	meta/Makefile	/^includedir = ${prefix}\/include$/;"	m
+includedir	src/Makefile	/^includedir = ${prefix}\/include$/;"	m
+includedir	unit-tests/Makefile	/^includedir = ${prefix}\/include$/;"	m
+indexes	src/snmp/net-snmp.scm	/^(define-method (indexes (o <oid>)) (map snmp-parse-oid (indexes (get-tree o (get-tree-head))))) $/;"	f
+indicies	src/snmp/net-snmp.scm	/^(define indicies indexes) $/;"	f
+infodir	Makefile	/^infodir = ${datarootdir}\/info$/;"	m
+infodir	doc/Makefile	/^infodir = ${datarootdir}\/info$/;"	m
+infodir	meta/Makefile	/^infodir = ${datarootdir}\/info$/;"	m
+infodir	src/Makefile	/^infodir = ${datarootdir}\/info$/;"	m
+infodir	unit-tests/Makefile	/^infodir = ${datarootdir}\/info$/;"	m
+init-reports	src/snmp/reports.scm	/^(define (init-reports) $/;"	f
+init_oid_class	src/net-snmp_wrap_oid.h	/^init_oid_class()$/;"	f
+init_snmp_wrap	src/net-snmp_wrap.c	/^static void init_snmp_wrap(void *data)$/;"	f	file:
+init_snmp_wrap_classes	src/net-snmp_wrap_structs.h	/^init_snmp_wrap_classes(void)$/;"	f
+init_snmp_wrap_constants	src/net-snmp_wrap_constants.h	/^init_snmp_wrap_constants(void)$/;"	f
+init_snmp_wrap_funcs	src/net-snmp_wrap_funcs.h	/^init_snmp_wrap_funcs(void)$/;"	f
+init_snmp_wrap_smob_type	src/net-snmp_wrap_structs.h	/^init_snmp_wrap_smob_type (void)$/;"	f
+init_snmp_wrap_structs	src/net-snmp_wrap_structs.h	/^static void init_snmp_wrap_structs(void)$/;"	f
+initialize	autogen.sh	/^initialize ( ) {$/;"	f
+initialize	src/snmp/reports.scm	/^(define-method (initialize (result-set <snmp-reports-result-set>) initargs)$/;"	f
+inner_main	src/snmp-shell.c	/^inner_main (void *closure, int argc, char **argv)$/;"	f	file:
+install_sh	Makefile	/^install_sh = ${SHELL} \/home\/tristan\/install-sh$/;"	m
+install_sh	doc/Makefile	/^install_sh = ${SHELL} \/home\/tristan\/install-sh$/;"	m
+install_sh	meta/Makefile	/^install_sh = ${SHELL} \/home\/tristan\/install-sh$/;"	m
+install_sh	src/Makefile	/^install_sh = ${SHELL} \/home\/tristan\/install-sh$/;"	m
+install_sh	unit-tests/Makefile	/^install_sh = ${SHELL} \/home\/tristan\/install-sh$/;"	m
+install_sh_DATA	Makefile	/^install_sh_DATA = $(install_sh) -c -m 644$/;"	m
+install_sh_DATA	doc/Makefile	/^install_sh_DATA = $(install_sh) -c -m 644$/;"	m
+install_sh_DATA	meta/Makefile	/^install_sh_DATA = $(install_sh) -c -m 644$/;"	m
+install_sh_DATA	src/Makefile	/^install_sh_DATA = $(install_sh) -c -m 644$/;"	m
+install_sh_DATA	unit-tests/Makefile	/^install_sh_DATA = $(install_sh) -c -m 644$/;"	m
+install_sh_PROGRAM	Makefile	/^install_sh_PROGRAM = $(install_sh) -c$/;"	m
+install_sh_PROGRAM	doc/Makefile	/^install_sh_PROGRAM = $(install_sh) -c$/;"	m
+install_sh_PROGRAM	meta/Makefile	/^install_sh_PROGRAM = $(install_sh) -c$/;"	m
+install_sh_PROGRAM	src/Makefile	/^install_sh_PROGRAM = $(install_sh) -c$/;"	m
+install_sh_PROGRAM	unit-tests/Makefile	/^install_sh_PROGRAM = $(install_sh) -c$/;"	m
+install_sh_SCRIPT	Makefile	/^install_sh_SCRIPT = $(install_sh) -c$/;"	m
+install_sh_SCRIPT	doc/Makefile	/^install_sh_SCRIPT = $(install_sh) -c$/;"	m
+install_sh_SCRIPT	meta/Makefile	/^install_sh_SCRIPT = $(install_sh) -c$/;"	m
+install_sh_SCRIPT	src/Makefile	/^install_sh_SCRIPT = $(install_sh) -c$/;"	m
+install_sh_SCRIPT	unit-tests/Makefile	/^install_sh_SCRIPT = $(install_sh) -c$/;"	m
+ip-in-network?	doc/ipv4-router.scm	/^(define (ip-in-network? testip testnet)$/;"	f
+ipstr-to-str	src/snmp/oids.scm	/^(define (ipstr-to-str hexipaddr)$/;"	f
+ipv4-router	doc/ipv4-router.scm	/^(define-module (ipv4-router)$/;"	f
+ipv4str->ipv4int	doc/ipv4-router.scm	/^(define (ipv4str->ipv4int ipstr)$/;"	f
+lastAddrAge	src/net-snmp_wrap_oid.h	/^int      lastAddrAge;$/;"	v
+lib_LTLIBRARIES	src/Makefile	/^lib_LTLIBRARIES = libguile_snmp_net-snmp.la $/;"	m
+libdir	Makefile	/^libdir = ${exec_prefix}\/lib$/;"	m
+libdir	doc/Makefile	/^libdir = ${exec_prefix}\/lib$/;"	m
+libdir	meta/Makefile	/^libdir = ${exec_prefix}\/lib$/;"	m
+libdir	src/Makefile	/^libdir = ${exec_prefix}\/lib$/;"	m
+libdir	unit-tests/Makefile	/^libdir = ${exec_prefix}\/lib$/;"	m
+libexecdir	Makefile	/^libexecdir = ${exec_prefix}\/libexec$/;"	m
+libexecdir	doc/Makefile	/^libexecdir = ${exec_prefix}\/libexec$/;"	m
+libexecdir	meta/Makefile	/^libexecdir = ${exec_prefix}\/libexec$/;"	m
+libexecdir	src/Makefile	/^libexecdir = ${exec_prefix}\/libexec$/;"	m
+libexecdir	unit-tests/Makefile	/^libexecdir = ${exec_prefix}\/libexec$/;"	m
+libguile_snmp_net_snmp_la_CFLAGS	src/Makefile	/^libguile_snmp_net_snmp_la_CFLAGS = -pthread -I\/usr\/local\/include\/guile\/2.2 -I\/usr\/local\/include   $/;"	m
+libguile_snmp_net_snmp_la_LDFLAGS	src/Makefile	/^libguile_snmp_net_snmp_la_LDFLAGS = -version-info 0:2:0 -L\/usr\/local\/lib -lguile-2.2 -lgc   -module -Wl,-z,relro -Wl,-z,now -L\/usr\/lib\/x86_64-linux-gnu -lnetsnmp -lcrypto -lm -Wl,-z,relro -Wl,-z,now -L\/usr\/lib\/x86_64-linux-gnu -lnetsnmpmibs -lsensors -ldl -lnetsnmpagent -lwrap -Wl,-E -lnetsnmp -lcrypto -lm$/;"	m
+libguile_snmp_net_snmp_la_LIBADD	src/Makefile	/^libguile_snmp_net_snmp_la_LIBADD =$/;"	m
+libguile_snmp_net_snmp_la_LINK	src/Makefile	/^libguile_snmp_net_snmp_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \\$/;"	m
+libguile_snmp_net_snmp_la_OBJECTS	src/Makefile	/^libguile_snmp_net_snmp_la_OBJECTS =  \\$/;"	m
+libguile_snmp_net_snmp_la_SOURCES	src/Makefile	/^libguile_snmp_net_snmp_la_SOURCES = net-snmp_wrap.c net-snmp_wrap_oid.h net-snmp_wrap_constants.h net-snmp_wrap_structs.h net-snmp_wrap_funcs.h$/;"	m
+libtool_failure	autogen.sh	/^libtool_failure ( ) {$/;"	f
+libtoolize_needed	autogen.sh	/^libtoolize_needed () {$/;"	f
+localedir	Makefile	/^localedir = ${datarootdir}\/locale$/;"	m
+localedir	doc/Makefile	/^localedir = ${datarootdir}\/locale$/;"	m
+localedir	meta/Makefile	/^localedir = ${datarootdir}\/locale$/;"	m
+localedir	src/Makefile	/^localedir = ${datarootdir}\/locale$/;"	m
+localedir	unit-tests/Makefile	/^localedir = ${datarootdir}\/locale$/;"	m
+localstatedir	Makefile	/^localstatedir = ${prefix}\/var$/;"	m
+localstatedir	doc/Makefile	/^localstatedir = ${prefix}\/var$/;"	m
+localstatedir	meta/Makefile	/^localstatedir = ${prefix}\/var$/;"	m
+localstatedir	src/Makefile	/^localstatedir = ${prefix}\/var$/;"	m
+localstatedir	unit-tests/Makefile	/^localstatedir = ${prefix}\/var$/;"	m
+locate_configure_template	autogen.sh	/^locate_configure_template ( ) {$/;"	f
+longest-prefix-match	doc/ipv4-router.scm	/^(define-generic longest-prefix-match)$/;"	f
+longest-prefix-match	doc/ipv4-router.scm	/^(define-method (longest-prefix-match (root <trie-node>) (val <integer>) (len <integer>))$/;"	f
+mac-as-oid	src/snmp/oids.scm	/^(define (mac-as-oid mac)$/;"	f
+main	config.guess	/^		main()$/;"	f
+main	config.guess	/^	main ()$/;"	f
+main	config.guess	/^main ()$/;"	f
+main	doc/drawroute.scm	/^(define (main args)$/;"	f
+main	src/snmp-shell.c	/^main (int argc, char **argv)$/;"	f
+make-asn1-tokenizer	src/asn1-tokenize.scm	/^(define (make-asn1-tokenizer port)$/;"	f
+make_dummy_depfile	depcomp	/^make_dummy_depfile ()$/;"	f
+make_func	src/net-snmp_wrap.c	/^SCM make_func = SCM_EOL;$/;"	v
+make_tree_smob_from_ptr	src/net-snmp_wrap_structs.h	/^make_tree_smob_from_ptr(struct tree *ptr)$/;"	f
+make_wrapped_pointer	src/net-snmp_wrap_structs.h	/^make_wrapped_pointer (snmp_wrap_smob_subtypes_e type, void* wrapstruct)$/;"	f
+man1dir	src/Makefile	/^man1dir = $(mandir)\/man1$/;"	m
+mandir	Makefile	/^mandir = ${datarootdir}\/man$/;"	m
+mandir	doc/Makefile	/^mandir = ${datarootdir}\/man$/;"	m
+mandir	meta/Makefile	/^mandir = ${datarootdir}\/man$/;"	m
+mandir	src/Makefile	/^mandir = ${datarootdir}\/man$/;"	m
+mandir	unit-tests/Makefile	/^mandir = ${datarootdir}\/man$/;"	m
+manual_autogen	autogen.sh	/^manual_autogen ( ) {$/;"	f
+max_repeaters	src/net-snmp_wrap_structs.h	870;"	d
+mib-module	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct mib-module name file)$/;"	f
+mib-module	src/snmp/net-snmp.scm	/^(define-method (mib-module (o <oid>)) (mib-module (get-tree o (get-tree-head)))) $/;"	f
+mkdir_p	Makefile	/^mkdir_p = $(MKDIR_P)$/;"	m
+mkdir_p	doc/Makefile	/^mkdir_p = $(MKDIR_P)$/;"	m
+mkdir_p	meta/Makefile	/^mkdir_p = $(MKDIR_P)$/;"	m
+mkdir_p	src/Makefile	/^mkdir_p = $(MKDIR_P)$/;"	m
+mkdir_p	unit-tests/Makefile	/^mkdir_p = $(MKDIR_P)$/;"	m
+mkinstalldirs	Makefile	/^mkinstalldirs = $(install_sh) -d$/;"	m
+mkinstalldirs	doc/Makefile	/^mkinstalldirs = $(install_sh) -d$/;"	m
+mkinstalldirs	meta/Makefile	/^mkinstalldirs = $(install_sh) -d$/;"	m
+mkinstalldirs	src/Makefile	/^mkinstalldirs = $(install_sh) -d$/;"	m
+mkinstalldirs	unit-tests/Makefile	/^mkinstalldirs = $(install_sh) -d$/;"	m
+mytable	unit-tests/test-ipv4-route.scm	/^(define mytable (fold $/;"	f
+mytable	unit-tests/test-ipv4-route.scm	/^(define mytable (make <ipv4-table>))$/;"	f
+name	src/net-snmp_wrap_structs.h	/^  char *name;$/;"	m	struct:wrap_smob_typedef_s
+netsnmp-agent-request-info	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct netsnmp-agent-request-info mode)$/;"	f
+netsnmp-delegated-cache	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct netsnmp-delegated-cache)$/;"	f
+netsnmp-handler-args	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct netsnmp-handler-args)$/;"	f
+netsnmp-iterator-info	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct netsnmp-iterator-info get-first-data-point get-next-data-point table-reginfo)$/;"	f
+netsnmp-mib-handler	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct netsnmp-mib-handler)$/;"	f
+netsnmp-mib-handler-registration	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct netsnmp-mib-handler-registration)$/;"	f
+netsnmp-request-info	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct netsnmp-request-info requestvb next prev)$/;"	f
+netsnmp-table-registration-info	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct netsnmp-table-registration-info min-column max-column)$/;"	f
+netsnmp-table-request-info	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct netsnmp-table-request-info colnum)$/;"	f
+netsnmp-transport	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct netsnmp-transport)$/;"	f
+new-snmp-session	src/snmp/reports/session.scm	/^(define (new-snmp-session)$/;"	f
+next-token	src/asn1-tokenize.scm	/^(define (next-token port div?)$/;"	f
+nodes	doc/nodes.scm	/^(define nodes '())$/;"	f
+non_repeaters	src/net-snmp_wrap_structs.h	849;"	d
+nullnode	doc/ipv4-router.scm	/^(define nullnode)$/;"	f
+nullnode	doc/ipv4-router.scm	/^(set! nullnode (make <trie-node>))$/;"	s
+object-equal?	doc/ipv4-router.scm	/^(define-method (object-equal? (a <ipv4-address>) (b <ipv4-address>))$/;"	f
+object-equal?	doc/ipv4-router.scm	/^(define-method (object-equal? (a <ipv4-network>) (b <ipv4-network>))$/;"	f
+object-equal?	doc/ipv4-router.scm	/^(define-method (object-equal? (a <ipv4-route>) (b <ipv4-route>))$/;"	f
+oid	src/snmp/reports.scm	/^(define-method  (oid (var <snmp-reports-result>))$/;"	f
+oid	src/snmp/reports.scm	/^(define-method  (oid (varset <snmp-reports-result-set>) (item <oid>))$/;"	f
+oid	src/snmp/reports.scm	/^(define-method  (oid (varset <snmp-reports-result-set>))$/;"	f
+oid_from_tree_node	src/net-snmp_wrap_funcs.h	/^oid_from_tree_node(struct tree *tree_node, oid* objid, size_t* objidlen) {$/;"	f
+oidlist	src/snmp/reports.scm	/^(define-method  (oidlist (varset <snmp-reports-result-set>))$/;"	f
+oldincludedir	Makefile	/^oldincludedir = \/usr\/include$/;"	m
+oldincludedir	doc/Makefile	/^oldincludedir = \/usr\/include$/;"	m
+oldincludedir	meta/Makefile	/^oldincludedir = \/usr\/include$/;"	m
+oldincludedir	src/Makefile	/^oldincludedir = \/usr\/include$/;"	m
+oldincludedir	unit-tests/Makefile	/^oldincludedir = \/usr\/include$/;"	m
+one-of	src/snmp/reports.scm	/^(define (one-of itemlist)$/;"	f
+opt_defcommunity	src/snmp-shell.c	/^char* opt_defcommunity = "public";$/;"	v
+opt_defcontext	src/snmp-shell.c	/^char* opt_defcontext = "";$/;"	v
+opt_defhost	src/snmp-shell.c	/^char* opt_defhost = "localhost";$/;"	v
+opt_defversion	src/snmp-shell.c	/^char* opt_defversion = "2c";$/;"	v
+opt_eval	src/snmp-shell.c	/^char* opt_eval = NULL;$/;"	v
+opt_help	src/snmp-shell.c	/^int opt_help = 0;$/;"	v
+opt_mibdesc	src/snmp-shell.c	/^int opt_mibdesc = 0;$/;"	v
+opt_script	src/snmp-shell.c	/^char* opt_script = NULL;$/;"	v
+opt_version	src/snmp-shell.c	/^int opt_version = 0;$/;"	v
+output	doc/port-usage-report.scm	/^(define (output . args)$/;"	f
+outputmutex	doc/port-usage-report.scm	/^(define outputmutex (make-mutex))$/;"	f
+parent	src/snmp/net-snmp.scm	/^(define-method (parent (o <oid>)) (oid-from-tree-node (parent (get-tree o (get-tree-head))))) $/;"	f
+pdfdir	Makefile	/^pdfdir = ${docdir}$/;"	m
+pdfdir	doc/Makefile	/^pdfdir = ${docdir}$/;"	m
+pdfdir	meta/Makefile	/^pdfdir = ${docdir}$/;"	m
+pdfdir	src/Makefile	/^pdfdir = ${docdir}$/;"	m
+pdfdir	unit-tests/Makefile	/^pdfdir = ${docdir}$/;"	m
+pdu	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct pdu errstat variables non-repeaters max-repetitions)$/;"	f
+pdu-variable	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct pdu-variable variables name type value value-bytes)$/;"	f
+peers	src/snmp/net-snmp.scm	/^(define-method (peers (o <oid>)) (map oid-from-tree-node  (peers (get-tree o (get-tree-head))))) $/;"	f
+pkgdatadir	Makefile	/^pkgdatadir = $(datadir)\/guile-snmp$/;"	m
+pkgdatadir	doc/Makefile	/^pkgdatadir = $(datadir)\/guile-snmp$/;"	m
+pkgdatadir	meta/Makefile	/^pkgdatadir = $(datadir)\/guile-snmp$/;"	m
+pkgdatadir	src/Makefile	/^pkgdatadir = $(datadir)\/guile-snmp$/;"	m
+pkgdatadir	unit-tests/Makefile	/^pkgdatadir = $(datadir)\/guile-snmp$/;"	m
+pkgincludedir	Makefile	/^pkgincludedir = $(includedir)\/guile-snmp$/;"	m
+pkgincludedir	doc/Makefile	/^pkgincludedir = $(includedir)\/guile-snmp$/;"	m
+pkgincludedir	meta/Makefile	/^pkgincludedir = $(includedir)\/guile-snmp$/;"	m
+pkgincludedir	src/Makefile	/^pkgincludedir = $(includedir)\/guile-snmp$/;"	m
+pkgincludedir	unit-tests/Makefile	/^pkgincludedir = $(includedir)\/guile-snmp$/;"	m
+pkglibdir	Makefile	/^pkglibdir = $(libdir)\/guile-snmp$/;"	m
+pkglibdir	doc/Makefile	/^pkglibdir = $(libdir)\/guile-snmp$/;"	m
+pkglibdir	meta/Makefile	/^pkglibdir = $(libdir)\/guile-snmp$/;"	m
+pkglibdir	src/Makefile	/^pkglibdir = $(libdir)\/guile-snmp$/;"	m
+pkglibdir	unit-tests/Makefile	/^pkglibdir = $(libdir)\/guile-snmp$/;"	m
+pkglibexecdir	Makefile	/^pkglibexecdir = $(libexecdir)\/guile-snmp$/;"	m
+pkglibexecdir	doc/Makefile	/^pkglibexecdir = $(libexecdir)\/guile-snmp$/;"	m
+pkglibexecdir	meta/Makefile	/^pkglibexecdir = $(libexecdir)\/guile-snmp$/;"	m
+pkglibexecdir	src/Makefile	/^pkglibexecdir = $(libexecdir)\/guile-snmp$/;"	m
+pkglibexecdir	unit-tests/Makefile	/^pkglibexecdir = $(libexecdir)\/guile-snmp$/;"	m
+pointer_from_wrapped_smob	src/net-snmp_wrap_structs.h	/^pointer_from_wrapped_smob(snmp_wrap_smob_subtypes_e type, SCM obj)$/;"	f
+port-source-location	src/asn1-tokenize.scm	/^(define (port-source-location port)$/;"	f
+possible-rtrs	doc/port-usage-report.scm	/^(define (possible-rtrs hostname)$/;"	f
+prefix	Makefile	/^prefix = \/usr\/local$/;"	m
+prefix	doc/Makefile	/^prefix = \/usr\/local$/;"	m
+prefix	meta/Makefile	/^prefix = \/usr\/local$/;"	m
+prefix	src/Makefile	/^prefix = \/usr\/local$/;"	m
+prefix	unit-tests/Makefile	/^prefix = \/usr\/local$/;"	m
+prefixlen->intmask	doc/ipv4-router.scm	/^(define (prefixlen->intmask preflen)$/;"	f
+print-path	doc/drawroute.scm	/^(define (print-path color src srcgw dst dstgw netmap)$/;"	f
+print-paths	doc/drawroute.scm	/^(define (print-paths srcstr srcgwstr dststr dstgwstr netmap)$/;"	f
+print_func	src/net-snmp_wrap_structs.h	/^  print_wrap_smob_f print_func;$/;"	m	struct:wrap_smob_typedef_s
+print_help	src/snmp-shell.c	/^print_help(void)$/;"	f	file:
+print_snmp_wrap_smob	src/net-snmp_wrap_structs.h	/^print_snmp_wrap_smob (SCM smob, SCM port, scm_print_state *pstate)$/;"	f
+print_usage	test-driver	/^print_usage ()$/;"	f
+print_version	src/snmp-shell.c	/^print_version(void)$/;"	f	file:
+print_wrap_smob_f	src/net-snmp_wrap_structs.h	/^typedef int (*print_wrap_smob_f)(SCM,SCM,scm_print_state*);$/;"	t
+program_details	missing	/^program_details ()$/;"	f
+program_transform_name	Makefile	/^program_transform_name = s,x,x,$/;"	m
+program_transform_name	doc/Makefile	/^program_transform_name = s,x,x,$/;"	m
+program_transform_name	meta/Makefile	/^program_transform_name = s,x,x,$/;"	m
+program_transform_name	src/Makefile	/^program_transform_name = s,x,x,$/;"	m
+program_transform_name	unit-tests/Makefile	/^program_transform_name = s,x,x,$/;"	m
+protect_from_clobber	autogen.sh	/^protect_from_clobber ( ) {$/;"	f
+prototypes	configure	/^   function prototypes and stuff, but not '\\xHH' hex character constants.$/;"	f
+psdir	Makefile	/^psdir = ${docdir}$/;"	m
+psdir	doc/Makefile	/^psdir = ${docdir}$/;"	m
+psdir	meta/Makefile	/^psdir = ${docdir}$/;"	m
+psdir	src/Makefile	/^psdir = ${docdir}$/;"	m
+psdir	unit-tests/Makefile	/^psdir = ${docdir}$/;"	m
+ptrclass	src/net-snmp_wrap_structs.h	/^  SCM ptrclass;$/;"	m	struct:wrap_smob_typedef_s
+query-aggregate	src/snmp/reports.scm	/^(define query-aggregate (make-parameter #f))$/;"	f
+query-cache-enabled	src/snmp/reports/cache.scm	/^(define query-cache-enabled (make-parameter #t))$/;"	f
+query-cache-insert	src/snmp/reports/cache.scm	/^(define (query-cache-insert querytype oid answer nrs reps)$/;"	f
+query-cache-lookup	src/snmp/reports/cache.scm	/^(define (query-cache-lookup querytype oid nrs reps)$/;"	f
+query-cache-statistics	src/snmp/reports/cache.scm	/^(define (query-cache-statistics)$/;"	f
+race-each	src/snmp/reports.scm	/^(define-syntax race-each$/;"	f
+rawvarbind	src/snmp/reports.scm	/^(define-method  (rawvarbind (var <snmp-reports-result>))$/;"	f
+rawvarbind	src/snmp/reports.scm	/^(define-method  (rawvarbind (varset <snmp-reports-result-set>) (item <oid>))$/;"	f
+rawvarbind	src/snmp/reports.scm	/^(define-method  (rawvarbind (varset <snmp-reports-result-set>))$/;"	f
+re-export	src/snmp/net-snmp.scm	/^(define-macro (re-export name)$/;"	f
+read-asn1	src/asn1-parser.scm	/^(define (read-asn1 port)$/;"	f
+read-identifier	src/asn1-tokenize.scm	/^(define (read-identifier port loc)$/;"	f
+read-numeric	src/asn1-tokenize.scm	/^(define (read-numeric port loc)$/;"	f
+read-punctuation	src/asn1-tokenize.scm	/^(define read-punctuation$/;"	f
+read-string	src/asn1-tokenize.scm	/^(define (read-string port loc)$/;"	f
+read-until	src/asn1-tokenize.scm	/^(define (read-until delims port loc)$/;"	f
+read_only_setter	src/net-snmp_wrap_structs.h	/^read_only_setter(SCM s_0, SCM s_1)$/;"	f
+reader-	src/asn1-tokenize.scm	/^(define (reader- port loc)$/;"	f
+reader--	src/asn1-tokenize.scm	/^(define (reader-- port loc)$/;"	f
+recursive_manual_autogen	autogen.sh	/^recursive_manual_autogen ( ) {$/;"	f
+recursive_protect	autogen.sh	/^recursive_protect ( ) {$/;"	f
+recursive_restore	autogen.sh	/^recursive_restore ( ) {$/;"	f
+remove-ipv4-route	doc/ipv4-router.scm	/^(define-generic remove-ipv4-route)$/;"	f
+remove-ipv4-route	doc/ipv4-router.scm	/^(define-method (remove-ipv4-route (table <ipv4-table>)(route <ipv4-route>))$/;"	f
+remove-ipv4-route!	doc/ipv4-router.scm	/^(define-generic remove-ipv4-route!)$/;"	f
+remove-ipv4-route!	doc/ipv4-router.scm	/^(define-method (remove-ipv4-route! (table <ipv4-table>)(route <ipv4-route>))$/;"	f
+report-query-cache	src/snmp/reports/cache.scm	/^(define report-query-cache  (make-hash-table 1024))$/;"	f
+reports:autotranslate	src/snmp/reports.scm	/^(define reports:autotranslate #f)$/;"	f
+restore_clobbered	autogen.sh	/^restore_clobbered ( ) {$/;"	f
+rootnode	doc/ipv4-router.scm	/^(define rootnode (make <trie-node> #:l nullnode #:r nullnode))$/;"	f
+routes	unit-tests/test-ipv4-route.scm	/^(define routes (list $/;"	f
+sbindir	Makefile	/^sbindir = ${exec_prefix}\/sbin$/;"	m
+sbindir	doc/Makefile	/^sbindir = ${exec_prefix}\/sbin$/;"	m
+sbindir	meta/Makefile	/^sbindir = ${exec_prefix}\/sbin$/;"	m
+sbindir	src/Makefile	/^sbindir = ${exec_prefix}\/sbin$/;"	m
+sbindir	unit-tests/Makefile	/^sbindir = ${exec_prefix}\/sbin$/;"	m
+scm_class_oid	src/net-snmp_wrap_oid.h	/^SCM scm_class_oid;$/;"	v
+scm_constant_name_from_int	src/net-snmp_wrap_constants.h	/^scm_constant_name_from_int(const char* classname, int val)$/;"	f
+scm_from_oid	src/net-snmp_wrap_oid.h	/^SCM scm_from_oid(oid *oidarray, int oidlen)$/;"	f
+scm_goops_make	src/net-snmp_wrap_oid.h	/^SCM scm_goops_make;$/;"	v
+scm_init_snmp_net_snmp_module	src/net-snmp_wrap.c	/^scm_init_snmp_net_snmp_module (void)$/;"	f
+scm_int_from_constant	src/net-snmp_wrap_constants.h	/^scm_int_from_constant(const char* classname, SCM obj)$/;"	f
+scm_kw_value	src/net-snmp_wrap_oid.h	/^SCM scm_kw_value;$/;"	v
+scm_oid_vec_slot	src/net-snmp_wrap_oid.h	/^SCM scm_oid_vec_slot;$/;"	v
+scm_set_constant_name_from_value_hook_x	src/net-snmp_wrap_constants.h	/^scm_set_constant_name_from_value_hook_x(SCM func)$/;"	f
+scm_to_netsnmp_value_bytes	src/net-snmp_wrap_funcs.h	/^scm_to_netsnmp_value_bytes(SCM valscm, int typespec, void** bytes, size_t *byteslen)$/;"	f
+scm_to_oid	src/net-snmp_wrap_oid.h	/^scm_to_oid(SCM oidscm, oid** result, size_t *len)$/;"	f
+session	src/snmp/reports/session.scm	/^(define-syntax session$/;"	f
+set	src/snmp/reports.scm	/^(define-syntax set$/;"	f
+set-up-test	unit-tests/test-net-snmp-v3.scm	/^(define-method (set-up-test (self <test-net-snmp-v3>))$/;"	f
+set-up-test	unit-tests/test-net-snmp.scm	/^(define-method (set-up-test (self <test-net-snmp>))$/;"	f
+set_base_from	depcomp	/^set_base_from ()$/;"	f
+set_dir_from	depcomp	/^set_dir_from ()$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter gw) (this <ipv4-route>) (val <ipv4-address>))$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter gw) (this <ipv4-route>) val)$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter int-ip) (this <ipv4-address>) (ip-integer <integer>))$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter int-ip) (this <ipv4-address>) (ip-string <string>))$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter int-ip) (this <ipv4-address>) default)$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter left) (this <trie-node>) (l <trie-node>))$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter mask) (this <ipv4-network>) (value <integer>))$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter mask) (this <ipv4-network>) (value <string>))$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter net) (this <ipv4-route>) (val <ipv4-network>))$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter net) (this <ipv4-route>) val)$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter network) (this <ipv4-network>) (networkspec <pair>))$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter network) (this <ipv4-network>) (networkspec <string>))$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter prefix) (this <ipv4-network>) (value <ipv4-address>))$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter prefix) (this <ipv4-network>) value)$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter prefix-len) (this <ipv4-network>) (value <integer>))$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter right) (this <trie-node>) (r <trie-node>))$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter userdata) (this <trie-node>) ud)$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter value) (this <trie-node>) (val <integer>))$/;"	f
+setter	doc/ipv4-router.scm	/^(define-method ((setter value-length) (this <trie-node>) (len <integer>))$/;"	f
+setup-agent	doc/agent.scm	/^(define (setup-agent)$/;"	f
+shared-prefix	doc/ipv4-router.scm	/^(define (shared-prefix v1 l1 v2 l2)$/;"	f
+sharedstatedir	Makefile	/^sharedstatedir = ${prefix}\/com$/;"	m
+sharedstatedir	doc/Makefile	/^sharedstatedir = ${prefix}\/com$/;"	m
+sharedstatedir	meta/Makefile	/^sharedstatedir = ${prefix}\/com$/;"	m
+sharedstatedir	src/Makefile	/^sharedstatedir = ${prefix}\/com$/;"	m
+sharedstatedir	unit-tests/Makefile	/^sharedstatedir = ${prefix}\/com$/;"	m
+site-and-region-re	doc/port-usage-report.scm	/^(define site-and-region-re (make-regexp "...-.([0-2])-..([0-6]).."))$/;"	f
+smob_last	src/net-snmp_wrap_structs.h	/^  smob_last$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_mib_module	src/net-snmp_wrap_structs.h	/^  smob_mib_module,$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_netsnmp_agent_request_info	src/net-snmp_wrap_structs.h	/^  smob_netsnmp_agent_request_info,$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_netsnmp_delegated_cache	src/net-snmp_wrap_structs.h	/^  smob_netsnmp_delegated_cache,$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_netsnmp_handler_args	src/net-snmp_wrap_structs.h	/^  smob_netsnmp_handler_args,$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_netsnmp_handler_registration	src/net-snmp_wrap_structs.h	/^  smob_netsnmp_handler_registration,$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_netsnmp_iterator_info	src/net-snmp_wrap_structs.h	/^  smob_netsnmp_iterator_info,$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_netsnmp_mib_handler	src/net-snmp_wrap_structs.h	/^  smob_netsnmp_mib_handler,$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_netsnmp_request_info	src/net-snmp_wrap_structs.h	/^  smob_netsnmp_request_info,$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_netsnmp_table_registration_info	src/net-snmp_wrap_structs.h	/^  smob_netsnmp_table_registration_info,$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_netsnmp_table_request_info	src/net-snmp_wrap_structs.h	/^  smob_netsnmp_table_request_info,$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_netsnmp_transport	src/net-snmp_wrap_structs.h	/^  smob_netsnmp_transport,$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_pdu	src/net-snmp_wrap_structs.h	/^  smob_pdu,$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_pdu_variable	src/net-snmp_wrap_structs.h	/^  smob_pdu_variable,$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_snmp_fdinfo	src/net-snmp_wrap_structs.h	/^  smob_snmp_fdinfo,$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_snmp_session	src/net-snmp_wrap_structs.h	/^  smob_snmp_session = 0,$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_snmp_single_session	src/net-snmp_wrap_structs.h	/^  smob_snmp_single_session,$/;"	e	enum:snmp_wrap_smob_subtypes
+smob_tree	src/net-snmp_wrap_structs.h	/^  smob_tree,$/;"	e	enum:snmp_wrap_smob_subtypes
+snmp	src/snmp/agent.scm	/^(define-module (snmp angent)$/;"	f
+snmp	src/snmp/display-hint.scm	/^(define-module (snmp display-hint)$/;"	f
+snmp	src/snmp/net-snmp.scm	/^(define-module (snmp net-snmp))$/;"	f
+snmp	src/snmp/oids.scm	/^(define-module (snmp oids)$/;"	f
+snmp	src/snmp/reports.scm	/^(define-module (snmp reports)$/;"	f
+snmp	src/snmp/reports/cache.scm	/^(define-module (snmp reports cache)$/;"	f
+snmp	src/snmp/reports/session.scm	/^(define-module (snmp reports session)$/;"	f
+snmp-fdinfo	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct snmp-fdinfo fd-list)$/;"	f
+snmp-session	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct snmp-session community peername localname local-port $/;"	f
+snmp-single-session	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct snmp-single-session)$/;"	f
+snmp_fdinfo	src/net-snmp_wrap_structs.h	/^} snmp_fdinfo;$/;"	t	typeref:struct:snmp_fdinfo_s
+snmp_fdinfo_s	src/net-snmp_wrap_structs.h	/^typedef struct snmp_fdinfo_s {$/;"	s
+snmp_shell_CFLAGS	src/Makefile	/^snmp_shell_CFLAGS = $(GUILE_CFLAGS) $(AM_CFLAGS)$/;"	m
+snmp_shell_LDADD	src/Makefile	/^snmp_shell_LDADD = $(LDADD)$/;"	m
+snmp_shell_LDFLAGS	src/Makefile	/^snmp_shell_LDFLAGS = $(GUILE_LDFLAGS)$/;"	m
+snmp_shell_LINK	src/Makefile	/^snmp_shell_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \\$/;"	m
+snmp_shell_OBJECTS	src/Makefile	/^snmp_shell_OBJECTS = $(am_snmp_shell_OBJECTS)$/;"	m
+snmp_shell_SOURCES	src/Makefile	/^snmp_shell_SOURCES = snmp-shell.c$/;"	m
+snmp_shell_module	src/snmp-shell.c	/^snmp_shell_module (void* arguments)$/;"	f	file:
+snmp_wrap_smob_subtypes	src/net-snmp_wrap_structs.h	/^typedef enum snmp_wrap_smob_subtypes {$/;"	g
+snmp_wrap_smob_subtypes_e	src/net-snmp_wrap_structs.h	/^} snmp_wrap_smob_subtypes_e;$/;"	t	typeref:enum:snmp_wrap_smob_subtypes
+snmp_wrap_smob_tag	src/net-snmp_wrap_structs.h	/^static scm_t_bits snmp_wrap_smob_tag;$/;"	v
+split-varbinds	src/snmp/reports.scm	/^(define (split-varbinds input)$/;"	f
+srcdir	Makefile	/^srcdir = .$/;"	m
+srcdir	doc/Makefile	/^srcdir = .$/;"	m
+srcdir	meta/Makefile	/^srcdir = .$/;"	m
+srcdir	src/Makefile	/^srcdir = .$/;"	m
+srcdir	unit-tests/Makefile	/^srcdir = .$/;"	m
+status	src/snmp/net-snmp.scm	/^(define-method (status (o <oid>)) (status (get-tree o (get-tree-head)))) $/;"	f
+str-to-ipstr	src/snmp/oids.scm	/^(define (str-to-ipstr stripaddr)$/;"	f
+sub-objid	src/snmp/oids.scm	/^(define (sub-objid s e id)$/;"	f
+subdir	Makefile	/^subdir = .$/;"	m
+subdir	doc/Makefile	/^subdir = doc$/;"	m
+subdir	meta/Makefile	/^subdir = meta$/;"	m
+subdir	src/Makefile	/^subdir = src$/;"	m
+subdir	unit-tests/Makefile	/^subdir = unit-tests$/;"	m
+switchreport	doc/port-usage-report.scm	/^(define (switchreport switch)$/;"	f
+synch-query	src/snmp/reports.scm	/^(define* (synch-query querytype oids #:key (nrs 0) (reps 10))$/;"	f
+synch-set	src/snmp/reports.scm	/^(define (synch-set oid-value-pairs)$/;"	f
+syntax-error	src/asn1-parser.scm	/^(define (syntax-error message . args)$/;"	f
+syntax-error	src/asn1-tokenize.scm	/^(define (syntax-error what loc form . args)$/;"	f
+sysconfdir	Makefile	/^sysconfdir = ${prefix}\/etc$/;"	m
+sysconfdir	doc/Makefile	/^sysconfdir = ${prefix}\/etc$/;"	m
+sysconfdir	meta/Makefile	/^sysconfdir = ${prefix}\/etc$/;"	m
+sysconfdir	src/Makefile	/^sysconfdir = ${prefix}\/etc$/;"	m
+sysconfdir	unit-tests/Makefile	/^sysconfdir = ${prefix}\/etc$/;"	m
+syslog	doc/agent.scm	/^(define syslog #f)$/;"	f
+table-handfunc	doc/agent.scm	/^(define (table-handfunc handler reginfo reqinfo req)$/;"	f
+tag	src/snmp/reports.scm	/^(define-method  (tag (var <snmp-reports-result>))$/;"	f
+tag	src/snmp/reports.scm	/^(define-method  (tag (varset <snmp-reports-result-set>) (item <oid>))$/;"	f
+tag	src/snmp/reports.scm	/^(define-method  (tag (varset <snmp-reports-result-set>))$/;"	f
+tag-varbinds	src/snmp/reports.scm	/^(define (tag-varbinds data bases)$/;"	f
+tardir	Makefile	/^	tardir=$(distdir) && $(am__tar) | BZIP2=$${BZIP2--9} bzip2 -c >$(distdir).tar.bz2$/;"	m
+tardir	Makefile	/^	tardir=$(distdir) && $(am__tar) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz$/;"	m
+tardir	Makefile	/^	tardir=$(distdir) && $(am__tar) | XZ_OPT=$${XZ_OPT--e} xz -c >$(distdir).tar.xz$/;"	m
+tardir	Makefile	/^	tardir=$(distdir) && $(am__tar) | compress -c >$(distdir).tar.Z$/;"	m
+tardir	Makefile	/^	tardir=$(distdir) && $(am__tar) | lzip -c $${LZIP_OPT--9} >$(distdir).tar.lz$/;"	m
+target_alias	Makefile	/^target_alias = $/;"	m
+target_alias	doc/Makefile	/^target_alias = $/;"	m
+target_alias	meta/Makefile	/^target_alias = $/;"	m
+target_alias	src/Makefile	/^target_alias = $/;"	m
+target_alias	unit-tests/Makefile	/^target_alias = $/;"	m
+test-add-oids	unit-tests/test-oids.scm	/^(define-method (test-add-oids (self <test-oids>))$/;"	f
+test-ascii-string	unit-tests/test-display-hint.scm	/^(define-method (test-ascii-string (self <test-display-hint>))$/;"	f
+test-async-send-get-int32	unit-tests/test-net-snmp.scm	/^(define-method (test-async-send-get-int32 (self <test-net-snmp>))$/;"	f
+test-autoresolve	unit-tests/test-reports.scm	/^(define-method (test-autoresolve (self <test-reports>))$/;"	f
+test-basic-get-counter64	unit-tests/test-net-snmp-v3.scm	/^(define-method (test-basic-get-counter64 (self <test-net-snmp-v3>))$/;"	f
+test-basic-get-counter64	unit-tests/test-net-snmp.scm	/^(define-method (test-basic-get-counter64 (self <test-net-snmp>))$/;"	f
+test-basic-get-int32	unit-tests/test-net-snmp-v3.scm	/^(define-method (test-basic-get-int32 (self <test-net-snmp-v3>))$/;"	f
+test-basic-get-int32	unit-tests/test-net-snmp.scm	/^(define-method (test-basic-get-int32 (self <test-net-snmp>))$/;"	f
+test-basic-get-octetstr	unit-tests/test-net-snmp-v3.scm	/^(define-method (test-basic-get-octetstr (self <test-net-snmp-v3>))$/;"	f
+test-basic-get-octetstr	unit-tests/test-net-snmp.scm	/^(define-method (test-basic-get-octetstr (self <test-net-snmp>))$/;"	f
+test-basic-set	unit-tests/test-net-snmp-v3.scm	/^(define-method (test-basic-set (self <test-net-snmp-v3>))$/;"	f
+test-basic-set	unit-tests/test-net-snmp.scm	/^(define-method (test-basic-set (self <test-net-snmp>))$/;"	f
+test-bulkwalk-long	unit-tests/test-reports.scm	/^(define-method (test-bulkwalk-long (self <test-reports>))$/;"	f
+test-bulkwalk-short	unit-tests/test-reports.scm	/^(define-method (test-bulkwalk-short (self <test-reports>))$/;"	f
+test-callback-get-int32	unit-tests/test-net-snmp.scm	/^(define-method (test-callback-get-int32 (self <test-net-snmp>))$/;"	f
+test-compare	unit-tests/test-oids.scm	/^(define-method (test-compare (self <test-oids>))$/;"	f
+test-default-port	unit-tests/test-ipv4-route.scm	/^(define-method (test-default-port (self <test-md5>))$/;"	f
+test-empty-string	unit-tests/test-display-hint.scm	/^(define-method (test-empty-string (self <test-display-hint>))$/;"	f
+test-get	unit-tests/test-reports.scm	/^(define-method (test-get (self <test-reports>))$/;"	f
+test-get-error-Timeout	unit-tests/test-reports.scm	/^(define-method (test-get-error-Timeout (self <test-reports>))$/;"	f
+test-get-error-noInstance	unit-tests/test-reports.scm	/^(define-method (test-get-error-noInstance (self <test-reports>))$/;"	f
+test-get-error-noSuchName	unit-tests/test-reports.scm	/^(define-method (test-get-error-noSuchName (self <test-reports>))$/;"	f
+test-get-multiple	unit-tests/test-reports.scm	/^(define-method (test-get-multiple (self <test-reports>))$/;"	f
+test-getbulk	unit-tests/test-reports.scm	/^(define-method (test-getbulk (self <test-reports>))$/;"	f
+test-getnext	unit-tests/test-reports.scm	/^(define-method (test-getnext (self <test-reports>))$/;"	f
+test-getnext-error-endOfMibView	unit-tests/test-reports.scm	/^(define-method (test-getnext-error-endOfMibView (self <test-reports>))$/;"	f
+test-getnext-multiple	unit-tests/test-reports.scm	/^(define-method (test-getnext-multiple (self <test-reports>))$/;"	f
+test-given-port	unit-tests/test-ipv4-route.scm	/^(define-method (test-given-port (self <test-md5>))$/;"	f
+test-index1-oids	unit-tests/test-oids.scm	/^(define-method (test-index1-oids (self <test-oids>))$/;"	f
+test-index2-oids	unit-tests/test-oids.scm	/^(define-method (test-index2-oids (self <test-oids>))$/;"	f
+test-length	unit-tests/test-oids.scm	/^(define-method (test-length (self <test-oids>))$/;"	f
+test-minus-oids	unit-tests/test-oids.scm	/^(define-method (test-minus-oids (self <test-oids>))$/;"	f
+test-mixed-1	unit-tests/test-display-hint.scm	/^(define-method (test-mixed-1 (self <test-display-hint>))$/;"	f
+test-oid-resolve-oid	unit-tests/test-net-snmp-v3.scm	/^(define-method (test-oid-resolve-oid (self <test-net-snmp-v3>))$/;"	f
+test-oid-resolve-oid	unit-tests/test-net-snmp.scm	/^(define-method (test-oid-resolve-oid (self <test-net-snmp>))$/;"	f
+test-oid?-1	unit-tests/test-oids.scm	/^(define-method (test-oid?-1 (self <test-oids>))$/;"	f
+test-oid?-2	unit-tests/test-oids.scm	/^(define-method (test-oid?-2 (self <test-oids>))$/;"	f
+test-parse	unit-tests/test-asn1-parse.scm	/^(define-method (test-parse (self <test-asn1>))$/;"	f
+test-reports	unit-tests/test-reports.scm	/^(define-module (test-reports)$/;"	f
+test-sep-and-term	unit-tests/test-display-hint.scm	/^(define-method (test-sep-and-term (self <test-display-hint>))$/;"	f
+test-sess-async-send-get-int32	unit-tests/test-net-snmp.scm	/^(define-method (test-sess-async-send-get-int32 (self <test-net-snmp>))$/;"	f
+test-sess-callback-get-int32	unit-tests/test-net-snmp.scm	/^(define-method (test-sess-callback-get-int32 (self <test-net-snmp>))$/;"	f
+test-set	unit-tests/test-reports.scm	/^(define-method (test-set (self <test-reports>))$/;"	f
+test-set2	unit-tests/test-reports.scm	/^(define-method (test-set2 (self <test-reports>))$/;"	f
+test-set3	unit-tests/test-reports.scm	/^(define-method (test-set3 (self <test-reports>))$/;"	f
+test-short-ascii-string	unit-tests/test-display-hint.scm	/^(define-method (test-short-ascii-string (self <test-display-hint>))$/;"	f
+test-suboid-check1	unit-tests/test-oids.scm	/^(define-method (test-suboid-check1 (self <test-oids>))$/;"	f
+test-suboid-check2	unit-tests/test-oids.scm	/^(define-method (test-suboid-check2 (self <test-oids>))$/;"	f
+test-tokenize	unit-tests/test-asn1-parse.scm	/^(define-method (test-tokenize(self <test-asn1>))$/;"	f
+test-utf8-string	unit-tests/test-display-hint.scm	/^(define-method (test-utf8-string (self <test-display-hint>))$/;"	f
+test-v3-get	unit-tests/test-reports.scm	/^(define-method (test-v3-get (self <test-reports>))$/;"	f
+test-v3-get-error-failauth	unit-tests/test-reports.scm	/^(define-method (test-v3-get-error-failauth (self <test-reports>))$/;"	f
+test-v3-get-error-failpriv	unit-tests/test-reports.scm	/^(define-method (test-v3-get-error-failpriv (self <test-reports>))$/;"	f
+test-walk	unit-tests/test-reports.scm	/^(define-method (test-walk (self <test-reports>))$/;"	f
+test-walk-func	unit-tests/test-reports.scm	/^(define-method (test-walk-func (self <test-reports>))$/;"	f
+test-walk-on-fail	unit-tests/test-reports.scm	/^(define-method (test-walk-on-fail (self <test-reports>))$/;"	f
+timeout	src/net-snmp_wrap_structs.h	/^  struct timeval timeout;$/;"	m	struct:snmp_fdinfo_s	typeref:struct:snmp_fdinfo_s::timeval
+top_build_prefix	Makefile	/^top_build_prefix = $/;"	m
+top_build_prefix	doc/Makefile	/^top_build_prefix = ..\/$/;"	m
+top_build_prefix	meta/Makefile	/^top_build_prefix = ..\/$/;"	m
+top_build_prefix	src/Makefile	/^top_build_prefix = ..\/$/;"	m
+top_build_prefix	unit-tests/Makefile	/^top_build_prefix = ..\/$/;"	m
+top_builddir	Makefile	/^top_builddir = .$/;"	m
+top_builddir	doc/Makefile	/^top_builddir = ..$/;"	m
+top_builddir	meta/Makefile	/^top_builddir = ..$/;"	m
+top_builddir	src/Makefile	/^top_builddir = ..$/;"	m
+top_builddir	unit-tests/Makefile	/^top_builddir = ..$/;"	m
+top_distdir	Makefile	/^top_distdir = $(distdir)$/;"	m
+top_srcdir	Makefile	/^top_srcdir = .$/;"	m
+top_srcdir	doc/Makefile	/^top_srcdir = ..$/;"	m
+top_srcdir	meta/Makefile	/^top_srcdir = ..$/;"	m
+top_srcdir	src/Makefile	/^top_srcdir = ..$/;"	m
+top_srcdir	unit-tests/Makefile	/^top_srcdir = ..$/;"	m
+transform	Makefile	/^transform = $(program_transform_name)$/;"	m
+transform	doc/Makefile	/^transform = $(program_transform_name)$/;"	m
+transform	meta/Makefile	/^transform = $(program_transform_name)$/;"	m
+transform	src/Makefile	/^transform = $(program_transform_name)$/;"	m
+transform	unit-tests/Makefile	/^transform = $(program_transform_name)$/;"	m
+tree	src/snmp/net-snmp.scm	/^(define-class-wrapped-struct tree label description type access status display-hint $/;"	f
+trie-node->dot	doc/ipv4-router.scm	/^(define (trie-node->dot port start)$/;"	f
+type	src/snmp/net-snmp.scm	/^(define-method (type (o <oid>)) (mib-to-asn-type (type (get-tree o (get-tree-head))))) $/;"	f
+type	src/snmp/reports.scm	/^(define-method  (type (var <snmp-reports-result>))$/;"	f
+type	src/snmp/reports.scm	/^(define-method  (type (varset <snmp-reports-result-set>) (item <oid>))$/;"	f
+type	src/snmp/reports.scm	/^(define-method  (type (varset <snmp-reports-result-set>))$/;"	f
+units	src/snmp/net-snmp.scm	/^(define-method (units (o <oid>)) (units (get-tree o (get-tree-head)))) $/;"	f
+untrap_abnormal	autogen.sh	/^untrap_abnormal ( ) {$/;"	f
+usage	autogen.sh	/^usage ( ) {$/;"	f
+usage_error	test-driver	/^usage_error ()$/;"	f
+use-mibs	src/snmp/reports.scm	/^(define-syntax use-mibs$/;"	f
+value	src/snmp/reports.scm	/^(define-method  (value (var <snmp-reports-result>))$/;"	f
+value	src/snmp/reports.scm	/^(define-method  (value (varset <snmp-reports-result-set>) (item <oid>))$/;"	f
+value	src/snmp/reports.scm	/^(define-method  (value (varset <snmp-reports-result-set>))$/;"	f
+value-binstr	doc/ipv4-router.scm	/^(define-generic value-binstr)$/;"	f
+value-binstr	doc/ipv4-router.scm	/^(define-method (value-binstr (this <trie-node>))$/;"	f
+value-bytes	src/snmp/reports.scm	/^(define-method  (value-bytes (var <snmp-reports-result>))$/;"	f
+value-bytes	src/snmp/reports.scm	/^(define-method  (value-bytes (varset <snmp-reports-result-set>) (item <oid>))$/;"	f
+value-bytes	src/snmp/reports.scm	/^(define-method  (value-bytes (varset <snmp-reports-result-set>))$/;"	f
+varbinds	src/snmp/net-snmp.scm	/^(define-method (varbinds (o <oid>)) (map snmp-parse-oid (varbinds (get-tree o (get-tree-head))))) $/;"	f
+version_check	autogen.sh	/^version_check ( ) {$/;"	f
+version_error	autogen.sh	/^version_error ( ) {$/;"	f
+walk	src/snmp/reports.scm	/^(define (walk baseoid)$/;"	f
+walk-func	src/snmp/reports.scm	/^(define (walk-func baseoid)$/;"	f
+walk-on-fail	src/snmp/reports.scm	/^(define (walk-on-fail . baseoids)$/;"	f
+walk-trie	doc/ipv4-router.scm	/^(define (walk-trie root func)$/;"	f
+wrap_smob_typedef_s	src/net-snmp_wrap_structs.h	/^typedef struct wrap_smob_typedef_s {$/;"	s
+wrap_smob_typedef_t	src/net-snmp_wrap_structs.h	/^} wrap_smob_typedef_t;$/;"	t	typeref:struct:wrap_smob_typedef_s
+wrap_smob_types	src/net-snmp_wrap_structs.h	/^wrap_smob_typedef_t wrap_smob_types[] = {$/;"	v
+write	doc/ipv4-router.scm	/^(define-method (write (this <ipv4-address>) port)$/;"	f
+write	doc/ipv4-router.scm	/^(define-method (write (this <ipv4-network>) port)$/;"	f
+write	doc/ipv4-router.scm	/^(define-method (write (this <ipv4-route>) port)$/;"	f
+write	doc/ipv4-router.scm	/^(define-method (write (this <trie-node>) port)$/;"	f
+write	src/snmp/net-snmp.scm	/^(define-method (write (this <snmp-constant>) port)$/;"	f
+write	src/snmp/net-snmp.scm	/^(define-method (write (this <tree>) port)$/;"	f
+write	src/snmp/reports.scm	/^(define-method (write (this <snmp-reports-result-set>) port)$/;"	f
+write	src/snmp/reports.scm	/^(define-method (write (this <snmp-reports-result>) port)$/;"	f
