@@ -1,0 +1,19 @@
+Source: guile-snmp
+Section: lisp
+Priority: optional
+Maintainer: Tristan Colgate <tcolgate@gmail.com>
+Standards-Version: 3.9.1
+Build-Depends: cdbs, debhelper (>= 7)
+Build-Depends-Indep: guile-2.0 , guile-2.0-dev , libsnmp-dev , snmpd , help2man
+Homepage: https://github.com/tcolgate/guile-snmp
+
+Package: guile-snmp
+Architecture: all
+Depends: guile-2.0 , libsnmp , ${misc:Depends}
+Description: Guile biding for net-snmp
+  This library provides guile bindings for the net-snmp library:\
+  \
+  It includes:\
+  - Support for all versions for SNMP version 2, 2c and 3\
+  - A shell providing a conenient environment for writing SNMP reports\
+  - Support for creating SNMP agents, including support for AgentX

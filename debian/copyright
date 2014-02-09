@@ -1,0 +1,48 @@
+This package was debianized by Andreas Rottmann on
+Fri,  Apr 16 2004 22:25:21 CEST.
+
+It was downloaded from http://download.savannah.gnu.org/releases/guile-lib/.
+
+Copyright: 2003-2010, The guile-lib developers
+
+The original contents of the upstream COPYING follow:
+
+  The Guile-Lib package as a whole may be redistributed under the GNU
+  General Public License as published by the Free Software Foundation,
+  either version 3, or (at your option) any later version.
+
+  Each module contained in Guile-Lib has its own copying conditions,
+  specified in the comments at the beginning of the module's source file.
+
+  For example, src/apicheck.scm has the following header:
+
+      ;; (apicheck) -- check for API incompatibilities
+      ;; Copyright (C) 2007  Andy Wingo <wingo at pobox dot com>
+
+      ;; This program is free software: you can redistribute it and/or modify
+      ;; it under the terms of the GNU General Public License as published by
+      ;; the Free Software Foundation, either version 3 of the License, or
+      ;; (at your option) any later version.
+      ;;
+      ;; This program is distributed in the hope that it will be useful,
+      ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+      ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      ;; GNU General Public License for more details.
+      ;;
+      ;; You should have received a copy of the GNU General Public License
+      ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+  Thus this module may be redistributed in accordance with the terms of
+  the GNU GPL version 3 or higher. A copy of the GPL version 3 may be
+  found in COPYING.GPL.
+
+  There are some modules licensed under the Lesser GPL. A copy of the
+  Lesser GPL version 3 may be found in COPYING.LGPL.
+
+  Other modules are in the public domain, or have restrictions on them
+  that are compatible with the GPLv3 (e.g. src/math/primes.scm). Please
+  consult the modules in question for the exact conditions.
+
+On Debian systems, the text of the GPLv3 and LGPLv3 may be found under
+/usr/share/common-licenses/GPL-3 and
+/usr/share/common-licenses/LGPL-3, respectively.

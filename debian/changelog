@@ -1,0 +1,5 @@
+guile-snmp (0.2.3-1) UNRELEASED; urgency=medium
+
+  * Initial packaging. 
+
+ -- Tristan Colgate-McFarlane <tcolgate@gmail.com>  Mon, 30 Dec 2013 15:00:26 +0000
