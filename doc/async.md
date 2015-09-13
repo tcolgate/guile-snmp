@@ -1,0 +1,27 @@
+```scheme
+(let ((sess (make <snmp-session>)))
+  (slot-set! sess 'version SNMP-VERSION-2c)
+  (slot-set! sess 'timeout 100000)
+  (slot-set! sess 'peername "localhost:161")
+  (slot-set! sess 'community "public")
+  (slot-set! sess 'callback
+                  (lambda(op sess reqid pdu)
+                    (display "hello")(newline)
+                    (display op)(newline)
+                    (display sess)(newline)
+                    (display reqid)(newline)
+                    (display (value (car (variables pdu))))(newline)
+                    1))
+  (let ((sesso (snmp-open sess))
+        (pdu (snmp-pdu-create SNMP-MSG-GET)))
+    (snmp-add-null-var pdu sysName.0)
+    (snmp-send sesso pdu)
+    (let ((fdinfo (snmp-select-info)))
+      (let loop ((resops (snmp-select fdinfo)))
+        (display resops)(newline)
+        (if (> resops 0)
+          (snmp-read fdinfo)
+          (begin
+            (snmp-timeout)
+            (loop (snmp-select fdinfo))))))))
+```
