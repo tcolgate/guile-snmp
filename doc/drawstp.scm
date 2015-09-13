@@ -1,4 +1,4 @@
-#!/home/tcolgate/local/bin/snmp-shell -s
+#!/usr/bin/env snmp-shell -s
 !#
 
 ; draw a graph of the current spanning tree configuration for 
