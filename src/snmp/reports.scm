@@ -1,5 +1,5 @@
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009-2012 Tristan Colgate 
+;; Copyright (C) 2009-2012 Tristan Colgate
 ;;
 ;; reports.scm - This file defines classes and utilities to provide
 ;; a more expressive environment for SNMP reporting
@@ -21,11 +21,11 @@
 ;  #:re-export-syntax (session default-session)
   #:export (
     use-mibs
-    reports:autotranslate <snmp-reports-result> <snmp-reports-result-set> 
-    oidlist walk bulk-walk get getnext getbulk get-or-fail nextvar all 
-    walk-on-fail walk-func default-getbulk-repetitions bulk-walk-func 
+    reports:autotranslate <snmp-reports-result> <snmp-reports-result-set>
+    oidlist walk bulk-walk get getnext getbulk get-or-fail nextvar all
+    walk-on-fail walk-func default-getbulk-repetitions bulk-walk-func
     results fail old-fail one-of iid oid type tag value rawvarbind
-    make-varbind-func tag-varbinds split-varbinds 
+    make-varbind-func tag-varbinds split-varbinds
     filter-valid-next reach-each
     enable-reports-debug disable-reports-debug
     enable-query-aggregate disable-query-aggregate)
@@ -64,8 +64,8 @@
   (query-aggregate #t)
   (display "Query aggregation enabled") (newline))
 
-(define (disable-query-aggregate)  
-  (query-aggregate #f) 
+(define (disable-query-aggregate)
+  (query-aggregate #f)
   (display #t "Query aggregation disabled") (newline))
 
 (define aggregate-records '())
@@ -79,13 +79,13 @@
                      (define name (which-module (symbol->string (quote name)))))))
                 ((_ name names ...)
                  (begin
-                   (use-mibs name) 
+                   (use-mibs name)
                    (use-mibs names ...)))))
 
 (define reports:autotranslate #f)
-(define (init-reports) 
+(define (init-reports)
   (init-snmp (car (command-line)))
-  (let*((oidmodule (make-module 31 '())) 
+  (let*((oidmodule (make-module 31 '()))
         (snmpdupli (lambda(module name int1 val1 int2 val2 var val)
                      (if (equal? oidmodule
                                  int1)
@@ -98,22 +98,22 @@
                                     ; devlared in, including the current module
                                     (if (and reports:autotranslate (eq? def? #f))
                                       (if (let nextmodules ((mods (module-uses (current-module))))
-                                            (if(module-symbol-interned? (car mods) sym) 
+                                            (if(module-symbol-interned? (car mods) sym)
                                               #f
-                                              (if (equal? (cdr mods) '()) 
+                                              (if (equal? (cdr mods) '())
                                                 #t
-                                                (nextmodules (cdr mods)))) ) 
+                                                (nextmodules (cdr mods)))) )
                                         (let ((oid (snmp-parse-oid (symbol->string sym))))
                                           (if (unspecified? oid)
                                             #f
                                             (make-variable oid)))
-                                        #f) 
+                                        #f)
                                       #f)))
     (set-module-name! oidmodule "(snmp oidbinder)")
     (set-module-uses! (current-module)
                       (append (list oidmodule)  (module-uses (current-module))))
 
-    (module-define! duplicate-handlers 'snmpdupli snmpdupli) 
+    (module-define! duplicate-handlers 'snmpdupli snmpdupli)
     (set-module-duplicates-handlers! oidmodule
                                      (append (list snmpdupli)
                                              (if (eq? dh #f)
@@ -156,13 +156,13 @@
 (define-class <snmp-reports-result-set> (<applicable-struct>)
   (_results #:init-value '())
   (_delay_query #:init-value #f)
-  (results 
-    #:slot-ref (lambda(this) (let ((r (slot-ref this '_results))) 
-                               (if (promise? r) 
+  (results
+    #:slot-ref (lambda(this) (let ((r (slot-ref this '_results)))
+                               (if (promise? r)
                                  (force r)
                                  r)))
     #:slot-set! (lambda(this val)(slot-set! this '_results val))
-    #:init-keyword #:results 
+    #:init-keyword #:results
     #:allocation #:virtual
     #:accessor results))
 
@@ -175,31 +175,31 @@
         (will-delay (get-keyword #:reps initargs #f)))
     (next-method)
 
-    (if (not (eq? #f query)) 
+    (if (not (eq? #f query))
       (if (query-aggregate)
 	; This is ugly, probably should use let-syntax or something
-	; to not repeat ourselves 
+	; to not repeat ourselves
 	(slot-set! result-set 'results
-		   (delay 
-		     (let* ((qres  (synch-query (car query) (cdr query)  #:nrs nrs #:reps reps))) 
+		   (delay
+		     (let* ((qres  (synch-query (car query) (cdr query)  #:nrs nrs #:reps reps)))
 		       (tag-varbinds
-			 qres 
-			 (let ((base (if (eq? bases #f) 
+			 qres
+			 (let ((base (if (eq? bases #f)
 				       (cdr query )
 				       bases)))
 			   (if (eq? (car query) SNMP-MSG-GETBULK)
 			     (make-list (length qres) (car base))
-			     base)))))) 
+			     base))))))
 	(slot-set! result-set 'results
-		   (let* ((qres  (synch-query (car query) (cdr query)  #:nrs nrs #:reps reps))) 
+		   (let* ((qres  (synch-query (car query) (cdr query)  #:nrs nrs #:reps reps)))
 		     (tag-varbinds
-		       qres 
-		       (let ((base (if (eq? bases #f) 
+		       qres
+		       (let ((base (if (eq? bases #f)
 				     (cdr query )
 				     bases)))
 			 (if (eq? (car query) SNMP-MSG-GETBULK)
 			   (make-list (length qres) (car base))
-			   base)))))) 
+			   base))))))
       (set! (results result-set) res))
 
     (if (not (query-aggregate))
@@ -215,7 +215,7 @@
                 (if (not var)
                   (begin
                     (format #t "No such oid in result set~%") #f)
-                  (cond 
+                  (cond
                     ((equal? (cdr msg) '()) (slot-ref (cdr var) 'value))
                     ((equal? (cdr msg) (list 'oid))     (car var))
                     ((equal? (cdr msg) (list 'tag))     (slot-ref (cdr var) 'tag))
@@ -296,15 +296,15 @@
 
 (define (filter-valid-next results)
   (filter
-    (lambda(thisres)   
+    (lambda(thisres)
       (cond
         ((equal? (slot-ref (cdr thisres) 'type) SNMP-ENDOFMIBVIEW)
           #f)
-        ((equal? (slot-ref (cdr thisres) 'type) SNMP-NOSUCHOBJECT) 
+        ((equal? (slot-ref (cdr thisres) 'type) SNMP-NOSUCHOBJECT)
           #f)
-        ((equal? (slot-ref (cdr thisres) 'type) SNMP-NOSUCHINSTANCE) 
+        ((equal? (slot-ref (cdr thisres) 'type) SNMP-NOSUCHINSTANCE)
           #f)
-        ((null? (slot-ref (cdr thisres) 'base)) 
+        ((null? (slot-ref (cdr thisres) 'base))
           #f)
         (#t #t)))
     results))
@@ -336,18 +336,18 @@
 
 ; Perform an synchronous SNMP query
 (define* (synch-query querytype oids #:key (nrs 0) (reps 10))
-  (if (debug-reports) (format (current-error-port) 
+  (if (debug-reports) (format (current-error-port)
                                "Attempting to perform a ~a for ~a from host ~a using ~a ~%"
                               querytype
                               oids
                               (current-host)
-                              (current-community))) 
+                              (current-community)))
   (let ((crs (list))  ; records retrived from cache
         (cms (list))) ; records not in cache
-    (for-each 
+    (for-each
       (lambda(oid)
         (let ((cr (if (and (query-cache-enabled)
-                           (not (eq? querytype SNMP-MSG-GETBULK))) 
+                           (not (eq? querytype SNMP-MSG-GETBULK)))
                     (query-cache-lookup querytype oid nrs reps)
                     #f)))
           (if (not cr)
@@ -360,7 +360,7 @@
                  '() ; Don't do anything if we have nothing to do
                  (let ((newpdu (snmp-pdu-create querytype)))
 		   (if (eq? SNMP-MSG-GETBULK querytype)
-		     (begin 
+		     (begin
 		       (set! (non-repeaters newpdu) nrs)
 		       (set! (max-repetitions newpdu) reps)))
                    (let addoids ((qs cms))
@@ -369,13 +369,13 @@
                          (snmp-add-null-var newpdu (car qs))
                          (addoids (cdr qs)))))
                    (let ((response (snmp-sess-synch-response (current-session) newpdu)))
-                     (if (not (equal?  (class-of response) <pdu>)) 
+                     (if (not (equal?  (class-of response) <pdu>))
                       (throw 'snmperror (snmp-sess-error (current-session)))
                       (let ((results (slot-ref response 'variables)))
                         (split-varbinds results))))))))
        (if (and (query-cache-enabled)
                 (not (eq? querytype SNMP-MSG-GETBULK)))
-         (for-each 
+         (for-each
            (lambda(cm qr)
              (query-cache-insert querytype cm qr nrs reps))
            (reverse cms) qrs))
@@ -390,7 +390,7 @@
   (make <snmp-reports-result-set> #:query (cons SNMP-MSG-GETNEXT oid-terms)))
 
 (define default-getbulk-repetitions 10)
-(define-syntax getbulk 
+(define-syntax getbulk
   (syntax-rules ()
   "Performan an getbulk request. Several different forms of this request exist.
      (getbulk (oids ...)): A getnext is executed for each OID. This is repeated default-getbulk-repetitions times.
@@ -399,13 +399,13 @@
                 ((_ (oids-rep ...))
                  (getbulk () default-getbulk-repetitions (oids-rep ...)))
                 ((_ (oids-once ...) (oids-rep ...))
-                 (getbulk (oids-once ...) default-getbulk-repetitions (oids-rep ...))) 
+                 (getbulk (oids-once ...) default-getbulk-repetitions (oids-rep ...)))
                 ((_ (oids-once ...) n (oids-rep ...))
                  (let* ((getonce (list oids-once ...))
                         (getreps (list oids-rep ...))
                         (oid-terms (append getonce getreps)))
-                   (make <snmp-reports-result-set> 
-                         #:query (cons SNMP-MSG-GETBULK oid-terms) 
+                   (make <snmp-reports-result-set>
+                         #:query (cons SNMP-MSG-GETBULK oid-terms)
                                        #:nrs (length getonce) #:reps n )))))
 
 (define (synch-set oid-value-pairs)
@@ -421,17 +421,17 @@
                     (valspec (cdr so)))
                 (if (pair? valspec)
                   ; (type value)
-                  (begin 
+                  (begin
                     (let* ((ty       (car valspec))
                            (val      (cdr valspec)))
-                      (snmp-add-var newpdu 
-                                    var 
+                      (snmp-add-var newpdu
+                                    var
                                     (cons ty val)))
                     (addoids (cdr sos)))
                   ; (value) infer type from oid
                   (let ((type (mib-to-asn-type (get-oid-type var))))
                     ; need to lob an exception if we don't get an type back
-                    (if (not  (equal? (class-of type) <asn-type>)) 
+                    (if (not  (equal? (class-of type) <asn-type>))
                       (throw 'snmperror "Could not determine type in set")
                       (addoids (append (list (cons var (cons type valspec)))
                                        (cdr sos)))))))))))
@@ -470,11 +470,11 @@
         (currbase  baseoid))
     (lambda()
       (if (not (equal? curroid #f))
-        (let*((res          (make <snmp-reports-result-set> 
+        (let*((res          (make <snmp-reports-result-set>
                                    #:query (cons SNMP-MSG-GETNEXT (list curroid))
                                    #:bases (list currbase)))
-               (cleanres     (make <snmp-reports-result-set> 
-                                   #:results (filter-valid-next (slot-ref res 'results))))) 
+               (cleanres     (make <snmp-reports-result-set>
+                                   #:results (filter-valid-next (slot-ref res 'results)))))
           (if (equal? (slot-ref  cleanres 'results) '())
             (throw 'walkend '())
             (begin
@@ -493,10 +493,10 @@
     (lambda()
       (if (equal? '() prevres)
 	(if (not (equal? curroid #f))
-	  (let* ((res          (make <snmp-reports-result-set> 
-                                   #:query (cons SNMP-MSG-GETBULK (list curroid)) 
+	  (let* ((res          (make <snmp-reports-result-set>
+                                   #:query (cons SNMP-MSG-GETBULK (list curroid))
                                    #:bases (list currbase)))
-                 (cleanres     (make <snmp-reports-result-set> 
+                 (cleanres     (make <snmp-reports-result-set>
                                    #:results (filter-valid-next (slot-ref res 'results)))))
 	    (if (equal? (slot-ref  cleanres 'results) '())
 	      (throw 'walkend '())
@@ -505,7 +505,7 @@
 		(set! currbase (slot-ref (cdr (car (slot-ref cleanres 'results))) 'base))
 		; We want to divide this individual result set into lots of seperate ones
 		; we can dish out one by one
-		(let ((supset (map 
+		(let ((supset (map
 				(lambda (r)
 				  (make <snmp-reports-result-set> #:results (list r)))
 				(slot-ref  cleanres 'results))))
@@ -580,7 +580,7 @@
       (lambda (continuation)
         (define (try items)
           (if (null? items)
-            (begin 
+            (begin
               (set! fail old-fail2)
               (fail))
             (begin

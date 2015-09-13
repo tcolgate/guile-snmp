@@ -1,5 +1,5 @@
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009-2012 Tristan Colgate 
+;; Copyright (C) 2009-2012 Tristan Colgate
 ;;
 ;; session.scm - This file contains various bits of common state information
 ;; needed by other modules
@@ -15,10 +15,10 @@
     default-session)
   #:export (
     current-session
-    current-community 
-    current-port 
+    current-community
+    current-port
     current-host
-    current-version 
+    current-version
     current-context
     current-retries
     current-timeout
@@ -32,11 +32,11 @@
     PrivNone PrivDES PrivAES
     new-snmp-session))
 
-(define AuthNone (list->oid (list 1 3 6 1 6 3 10 1 1 1))) ; (snmp-parse-oid "usmNoAuthProtocol")) 
-(define AuthMD5  (list->oid (list 1 3 6 1 6 3 10 1 1 2))) ; (snmp-parse-oid "usmHMACMD5AuthProtocol")) 
-(define AuthSHA1 (list->oid (list 1 3 6 1 6 3 10 1 1 3))) ; (snmp-parse-oid "usmHMACSHA1AuthProtocol")) 
-(define PrivNone (list->oid (list 1 3 6 1 6 3 10 1 2 1))) ; (snmp-parse-oid "usmNoPrivProtocol")) 
-(define PrivDES  (list->oid (list 1 3 6 1 6 3 10 1 2 2))) ; (snmp-parse-oid "usmDESPrivProtocol")) 
+(define AuthNone (list->oid (list 1 3 6 1 6 3 10 1 1 1))) ; (snmp-parse-oid "usmNoAuthProtocol"))
+(define AuthMD5  (list->oid (list 1 3 6 1 6 3 10 1 1 2))) ; (snmp-parse-oid "usmHMACMD5AuthProtocol"))
+(define AuthSHA1 (list->oid (list 1 3 6 1 6 3 10 1 1 3))) ; (snmp-parse-oid "usmHMACSHA1AuthProtocol"))
+(define PrivNone (list->oid (list 1 3 6 1 6 3 10 1 2 1))) ; (snmp-parse-oid "usmNoPrivProtocol"))
+(define PrivDES  (list->oid (list 1 3 6 1 6 3 10 1 2 2))) ; (snmp-parse-oid "usmDESPrivProtocol"))
 (define PrivAES  (list->oid (list 1 3 6 1 6 3 10 1 2 4))) ; (snmp-parse-oid "usmAESPrivProtocol"))
 
 (define current-community (make-parameter "public"))
@@ -45,12 +45,12 @@
 (define current-context (make-parameter #f))
 (define current-retries (make-parameter 1))
 (define current-timeout (make-parameter 1000000))
-(define current-sec-level (make-parameter SNMP-SEC-LEVEL-NOAUTH)) 
-(define current-sec-auth-proto (make-parameter AuthNone)) 
-(define current-sec-priv-proto (make-parameter PrivNone)) 
-(define current-sec-name (make-parameter #f)) 
-(define current-sec-auth-key (make-parameter #f)) 
-(define current-sec-priv-key (make-parameter #f)) 
+(define current-sec-level (make-parameter SNMP-SEC-LEVEL-NOAUTH))
+(define current-sec-auth-proto (make-parameter AuthNone))
+(define current-sec-priv-proto (make-parameter PrivNone))
+(define current-sec-name (make-parameter #f))
+(define current-sec-auth-key (make-parameter #f))
+(define current-sec-priv-key (make-parameter #f))
 
 (define (new-snmp-session)
   "Create a new snmp session using the current session defauts options"
@@ -59,7 +59,7 @@
     (slot-set! bs 'peername (current-host))
     (slot-set! bs 'community (current-community))
     (if (not (equal? #f (current-context)))
-      (slot-set! bs 'context (current-context))) 
+      (slot-set! bs 'context (current-context)))
     (slot-set! bs 'retries (current-retries))
     (slot-set! bs 'timeout (current-timeout))
     (slot-set! bs 'securityLevel (current-sec-level))
@@ -104,7 +104,7 @@
                                                                    ,community))
                                               (current-context (if (eqv? ,context #f)
                                                                  (current-context)
-                                                                 ,context)) 
+                                                                 ,context))
                                               (current-retries (if (eqv? ,retries #f)
                                                                  (current-retries)
                                                                  ,retries))
@@ -119,16 +119,16 @@
                                                                   ,secname))
                                               (current-sec-auth-proto (if (eqv? ,authproto #f)
                                                                         (current-sec-auth-proto)
-                                                                        ,authproto)) 
+                                                                        ,authproto))
                                               (current-sec-auth-key (if (eqv? ,authkey #f)
                                                                       (current-sec-auth-key)
-                                                                      ,authkey))  
+                                                                      ,authkey))
                                               (current-sec-priv-proto (if (eqv? ,privproto #f)
                                                                         (current-sec-priv-proto)
-                                                                        ,privproto)) 
+                                                                        ,privproto))
                                               (current-sec-priv-key (if (eqv? ,privkey #f)
                                                                       (current-sec-priv-key)
-                                                                      ,privkey))  
+                                                                      ,privkey))
                                               (current-session (new-snmp-session)))))))
       (apply handler args))))
 
@@ -199,13 +199,13 @@
                                                                                  ,secname))
                                                              (current-sec-auth-proto (if (eqv? ,authproto #f)
                                                                                        (current-sec-auth-proto)
-                                                                                       ,authproto)) 
+                                                                                       ,authproto))
                                                              (current-sec-auth-key (if (eqv? ,authkey #f)
                                                                                      (current-sec-auth-key)
-                                                                                     ,authkey))  
+                                                                                     ,authkey))
                                                              (current-sec-priv-proto (if (eqv? ,privproto #f)
                                                                                        (current-sec-priv-proto)
-                                                                                       ,privproto)) 
+                                                                                       ,privproto))
                                                              (current-sec-priv-key (if (eqv? ,privkey #f)
                                                                                      (current-sec-priv-key)
                                                                                      ,privkey)))

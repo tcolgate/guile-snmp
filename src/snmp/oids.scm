@@ -1,5 +1,5 @@
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009-2012 Tristan Colgate 
+;; Copyright (C) 2009-2012 Tristan Colgate
 ;;
 ;; oids.scm - This file defines classes and utilities to provide
 ;; oid manipulation and conversion fucntions.
@@ -21,38 +21,38 @@
 
 (define-method (+ (id1 <oid>) (id2 <oid>))
   (list->oid
-    (append 
-      (oid->list id1) 
+    (append
+      (oid->list id1)
       (oid->list id2))))
 
 (define-method (+ (id1 <oid>) (id2 <uvec>))
   (list->oid
-    (append 
-      (oid->list id1) 
+    (append
+      (oid->list id1)
       (oidvector->list id2))))
 
 (define-method (+ (id1 <uvec>) (id2 <oid>))
   (list->oid
-    (append 
+    (append
       (oidvector->list id1)
       (oid->list id2))))
 
 (define-method (+ (id1 <uvec>) (id2 <uvec>))
-  (list->oidvector 
-    (append 
-      (oidvector->list id1) 
+  (list->oidvector
+    (append
+      (oidvector->list id1)
       (oidvector->list id2))))
 
 (define-method (+ (id1 <oid>) (id2 <integer>))
   (list->oid
-    (append 
-      (oid->list id1) 
-      (list id2)))) 
+    (append
+      (oid->list id1)
+      (list id2))))
 
 (define-method (+ (id1 <integer>) (id2 <oid>))
   (list->oid
-    (append 
-      (list id1) 
+    (append
+      (list id1)
       (oid->list id2))))
 
 (define-method (+ (id1 <oid>))
@@ -139,8 +139,8 @@
     (string-join iplist ".")))
 
 (define (str-to-ipstr stripaddr)
-  (list->string 
-    (map integer->char 
-         (map string->number 
+  (list->string
+    (map integer->char
+         (map string->number
               (string-split stripaddr #\.)))))
 

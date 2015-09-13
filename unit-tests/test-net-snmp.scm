@@ -2,7 +2,7 @@
 !#
 
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009 Tristan Colgate 
+;; Copyright (C) 2009 Tristan Colgate
 ;;
 ;; test.scm -  A simple example of the basic SNMP wrapper
 ;;
@@ -47,7 +47,7 @@
                     (slot-ref (car vals) 'value))
       (snmp-free-pdu status)
       (snmp-sess-close ss))))
-      
+
 (define-method (test-basic-get-octetstr (self <test-net-snmp>))
   (let* ((ss  (snmp-sess-open (testsess self)))
          (pdu (snmp-pdu-create SNMP-MSG-GET)))
@@ -82,7 +82,7 @@
   (let ((val 0))
     (slot-set! (testsess self) 'callback
 	       (lambda(op sess reqid pdu)
-		 (set! val (value (car (variables pdu)))) 
+		 (set! val (value (car (variables pdu))))
 		 1))
     (let* ((sesso (snmp-open (testsess self)))
 	   (pdu (snmp-pdu-create SNMP-MSG-GET)))
@@ -103,7 +103,7 @@
   (let ((val 0))
     (slot-set! (testsess self) 'callback
 	       (lambda(op sess reqid pdu)
-		 (set! val (value (car (variables pdu)))) 
+		 (set! val (value (car (variables pdu))))
 		 1))
     (let* ((sesso (snmp-sess-open (testsess self)))
 	   (pdu (snmp-pdu-create SNMP-MSG-GET)))
@@ -126,7 +126,7 @@
 	   (pdu (snmp-pdu-create SNMP-MSG-GET)))
       (snmp-add-null-var pdu (oid-gstTestInt320 self))
       (snmp-async-send sesso pdu (lambda(op sess reqid pdu)
-				   (set! val (value (car (variables pdu)))) 
+				   (set! val (value (car (variables pdu))))
 				   1))
       (let ((fdinfo (snmp-select-info)))
 	(let loop ((resops (snmp-select fdinfo))
@@ -145,7 +145,7 @@
 	   (pdu (snmp-pdu-create SNMP-MSG-GET)))
       (snmp-add-null-var pdu (oid-gstTestInt320 self))
       (snmp-sess-async-send sesso pdu (lambda(op sess reqid pdu)
-				  (set! val (value (car (variables pdu)))) 
+				  (set! val (value (car (variables pdu))))
 				  1))
       (let ((fdinfo (snmp-sess-select-info sesso)))
 	(let loop ((resops (snmp-select fdinfo))

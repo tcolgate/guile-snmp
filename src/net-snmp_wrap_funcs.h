@@ -23,7 +23,7 @@ _wrap_init_mib (void)
 static SCM
 _wrap_read_module (SCM s_0)
 {
-   char *name = scm_to_locale_string(s_0); 
+   char *name = scm_to_locale_string(s_0);
    read_module(name);
 
    scm_remember_upto_here_1(s_0);
@@ -33,7 +33,7 @@ _wrap_read_module (SCM s_0)
 static SCM
 _wrap_which_module (SCM s_0)
 {
-   char *name = scm_to_locale_string(s_0); 
+   char *name = scm_to_locale_string(s_0);
    int modid = which_module(name);
    struct module *p = find_module(modid);
    SCM obj =  make_wrapped_pointer(smob_mib_module ,(void*) p);
@@ -49,7 +49,7 @@ _wrap_snmp_set_save_descriptions (SCM s_0)
   } else {
     snmp_set_save_descriptions(0);
   };
-   
+
   scm_remember_upto_here_1(s_0);
   return SCM_UNSPECIFIED;
 }
@@ -117,7 +117,7 @@ _wrap_oid_from_tree_node (SCM s_0)
   size_t *arg3 = (size_t *) 0 ;
   SCM scmresult;
   int result;
-  
+
   {
     // allocate a new oid( of maximum length)
     arg3 = (size_t*)scm_calloc(sizeof(size_t));
@@ -130,12 +130,12 @@ _wrap_oid_from_tree_node (SCM s_0)
   }
   {
     scmresult = SCM_UNSPECIFIED;
-    
+
     if(result){
       int i = 0;
       SCM newoid = SCM_TAKE_OIDVECTOR((SCM_T_OID*) arg2, *arg3);
       scmresult = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,newoid),SCM_EOL);
-    } 
+    }
   }
 
   scm_remember_upto_here_1(s_0);
@@ -145,18 +145,18 @@ _wrap_oid_from_tree_node (SCM s_0)
 static SCM
 _wrap_snmp_parse_oid (SCM oidname)
 {
-	
+
    size_t *oidlen = (size_t*)scm_calloc(sizeof(size_t));
    *oidlen=MAX_OID_LEN;
    oid *oidstore = (oid*)scm_calloc(*oidlen * sizeof(oid));
    char *str = scm_to_locale_string(oidname);
    oid *result = snmp_parse_oid(str, oidstore, oidlen);
-  
-   SCM scmresult = SCM_UNSPECIFIED; 
+
+   SCM scmresult = SCM_UNSPECIFIED;
    if(result){
      scmresult = scm_from_oid(oidstore,*oidlen);
-   }; 
-     
+   };
+
    scm_remember_upto_here_1(oidname);
    return scmresult;
 }
@@ -324,7 +324,7 @@ _wrap_snmp_async_send (SCM s_0, SCM s_1, SCM s_2)
   SCM scmres;
   struct snmp_session *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
   netsnmp_pdu *pdu = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_1);
-  void* *callbackdata = (void*) s_2; 
+  void* *callbackdata = (void*) s_2;
 
   res = snmp_async_send(sessp, pdu, guile_snmp_async_response, callbackdata);
   scmres = scm_constant_name_from_int( "<snmp-status>", res);
@@ -343,7 +343,7 @@ _wrap_snmp_sess_async_send (SCM s_0, SCM s_1, SCM s_2)
   SCM scmres;
   void *sessp = (void*) pointer_from_wrapped_smob(smob_snmp_single_session, s_0);
   netsnmp_pdu *pdu = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_1);
-  void* *callbackdata = (void*) s_2; 
+  void* *callbackdata = (void*) s_2;
 
   res = snmp_sess_async_send(sessp, pdu, guile_snmp_async_response, callbackdata);
   scmres = scm_constant_name_from_int( "<snmp-status>", res);
@@ -525,14 +525,14 @@ void
 scm_to_netsnmp_value_bytes(SCM valscm, int typespec, void** bytes, size_t *byteslen)
 {
   scm_t_array_handle handle;
-  void* pointer = NULL; 
+  void* pointer = NULL;
   size_t len = 0;
   size_t iter = 0;
-  
+
   switch (typespec){
     case ASN_OPAQUE:
     case ASN_NSAP:
-    case ASN_OCTET_STR: 
+    case ASN_OCTET_STR:
     case ASN_BIT_STR:
     case ASN_IPADDRESS:
       {
@@ -543,7 +543,7 @@ scm_to_netsnmp_value_bytes(SCM valscm, int typespec, void** bytes, size_t *bytes
               scm_from_locale_string("Data is not a string"));
         };
         pointer = (void*) scm_to_latin1_stringn(valscm, &len);
-      }; 
+      };
       break;
 
     case ASN_INTEGER:
@@ -554,7 +554,7 @@ scm_to_netsnmp_value_bytes(SCM valscm, int typespec, void** bytes, size_t *bytes
                 scm_from_locale_string("snmperror")),
               scm_from_locale_string("Data is not a signed integer"));
         };
-        pointer =  (void*) (malloc(sizeof(long))); 
+        pointer =  (void*) (malloc(sizeof(long)));
         *((long*) pointer) = scm_to_long(valscm);
         len = sizeof(long);
       };
@@ -571,7 +571,7 @@ scm_to_netsnmp_value_bytes(SCM valscm, int typespec, void** bytes, size_t *bytes
                 scm_from_locale_string("snmperror")),
               scm_from_locale_string("Data is not an unsuigned integer"));
         };
-        pointer =  (void*) (malloc(sizeof(unsigned long))); 
+        pointer =  (void*) (malloc(sizeof(unsigned long)));
         *((unsigned long*) pointer) = scm_to_ulong(valscm);
         len = sizeof(unsigned long);
       };
@@ -585,7 +585,7 @@ scm_to_netsnmp_value_bytes(SCM valscm, int typespec, void** bytes, size_t *bytes
                 scm_from_locale_string("snmperror")),
               scm_from_locale_string("Data is not an unsuigned integer"));
         };
-        pointer =  (void*) (malloc(sizeof(struct counter64))); 
+        pointer =  (void*) (malloc(sizeof(struct counter64)));
         ((struct counter64*) pointer)->high = scm_to_ulong(scm_bit_extract(valscm, scm_from_int(31),scm_from_int(63)));
         ((struct counter64*) pointer)->low = scm_to_ulong(scm_bit_extract(valscm, scm_from_int(0),scm_from_int(31)));
         len = sizeof(struct counter64);
@@ -617,7 +617,7 @@ scm_to_netsnmp_value_bytes(SCM valscm, int typespec, void** bytes, size_t *bytes
     case ASN_FLOAT:
     case ASN_OPAQUE_FLOAT:
       {
-        pointer =  (void*) (malloc(sizeof(float))); 
+        pointer =  (void*) (malloc(sizeof(float)));
         *((float*) pointer) = (float) scm_to_double(valscm);
         len = sizeof(float);
       };
@@ -626,7 +626,7 @@ scm_to_netsnmp_value_bytes(SCM valscm, int typespec, void** bytes, size_t *bytes
     case ASN_DOUBLE:
     case ASN_OPAQUE_DOUBLE:
       {
-        pointer =  (double*) (malloc(sizeof(double))); 
+        pointer =  (double*) (malloc(sizeof(double)));
         *((double*) pointer) = scm_to_double(valscm);
         len = sizeof(double);
       };
@@ -653,7 +653,7 @@ static SCM
 _wrap_snmp_add_var (SCM s_0, SCM s_1, SCM s_2)
 {
   netsnmp_pdu *pdu = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
-  void* pointer = NULL; 
+  void* pointer = NULL;
   size_t len = 0;
 
   size_t oidlen = MAX_OID_LEN;
@@ -667,7 +667,7 @@ _wrap_snmp_add_var (SCM s_0, SCM s_1, SCM s_2)
         scm_from_locale_string("snmperror")),
       scm_from_locale_string("Malformed data passed to set"));
   };
-  
+
   int typespec = scm_int_from_constant("<asn-type>",SCM_CAR(s_2));
   SCM valscm = SCM_CDR(s_2);
 
@@ -715,7 +715,7 @@ static SCM
 _wrap_mib_to_asn_type (SCM s_0)
 {
   return scm_constant_name_from_int(
-		  "<asn-type>", 
+		  "<asn-type>",
 		  mib_to_asn_type(
 			  scm_int_from_constant("<mib-type>",s_0)));
 }
@@ -747,7 +747,7 @@ _wrap_snmp_set_agent_agentx (SCM s_0)
   } else {
     netsnmp_ds_set_boolean(NETSNMP_DS_APPLICATION_ID, NETSNMP_DS_AGENT_ROLE, 0);
   };
-   
+
   scm_remember_upto_here_1(s_0);
   return SCM_UNSPECIFIED;
 }
@@ -788,7 +788,7 @@ _wrap_agent_check_and_processs (SCM s_0)
   } else {
     agent_check_and_process(0);
   };
-   
+
   scm_remember_upto_here_1(s_0);
   return SCM_UNSPECIFIED;
 }
@@ -800,7 +800,7 @@ _wrap_snmp_shutdown (SCM s_0)
   return SCM_UNSPECIFIED;
 }
 
-int 
+int
 guile_snmp_Netsnmp_Node_Handler (netsnmp_mib_handler *handler,
   /** pointer to registration struct */
   netsnmp_handler_registration *reginfo,
@@ -859,7 +859,7 @@ _wrap_netsnmp_handler_registration_create(SCM s_0, SCM s_1, SCM s_2, SCM s_3)
   scm_to_oid(s_2,&temp_oid,&temp_oidlen);
   int mode = scm_int_from_constant("<mib-handler-cap>",s_3);
 
-  netsnmp_handler_registration* p = 
+  netsnmp_handler_registration* p =
     netsnmp_handler_registration_create(name, handler, temp_oid, temp_oidlen, mode);
   SCM obj = make_wrapped_pointer( smob_netsnmp_handler_registration , p);
 
@@ -1014,7 +1014,7 @@ _wrap_netsnmp_extract_iterator_context(SCM s_0)
   netsnmp_request_info *request = pointer_from_wrapped_smob(smob_netsnmp_request_info, s_0);
   ASSERT_NOT_NULL_PTR( s_0 , request )
   void* result = netsnmp_extract_iterator_context(request);
-   
+
   scm_remember_upto_here_1(s_0);
   return result != NULL ? (SCM) result : SCM_BOOL_F;
 };
@@ -1032,7 +1032,7 @@ _wrap_netsnmp_extract_table_info(SCM s_0)
   return obj;
 };
 
-static void 
+static void
 init_snmp_wrap_funcs(void)
 {
 
@@ -1131,7 +1131,7 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("snmp-select-info", 0, 0, 0, (void *) _wrap_snmp_select_info);
   scm_c_export("snmp-select-info" , NULL);
-  
+
   scm_c_define_gsubr("snmp-sess-select-info", 1, 0, 0, (void *) _wrap_snmp_sess_select_info);
   scm_c_export("snmp-sess-select-info" , NULL);
 
@@ -1188,7 +1188,7 @@ init_snmp_wrap_funcs(void)
 
   scm_c_define_gsubr("netsnmp-register-scalar", 1, 0, 0, (void *) _wrap_netsnmp_register_scalar);
   scm_c_export("netsnmp-register-scalar" , NULL);
-  
+
   scm_c_define_gsubr("netsnmp-check-vb-type", 2, 0, 0, (void *) _wrap_netsnmp_check_vb_type);
   scm_c_export("netsnmp-check-vb-type" , NULL);
 

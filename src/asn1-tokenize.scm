@@ -4,12 +4,12 @@
 ;;;; modify it under the terms of the GNU Lesser General Public
 ;;;; License as published by the Free Software Foundation; either
 ;;;; version 3 of the License, or (at your option) any later version.
-;;;; 
+;;;;
 ;;;; This library is distributed in the hope that it will be useful,
 ;;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;;;; Lesser General Public License for more details.
-;;;; 
+;;;;
 ;;;; You should have received a copy of the GNU Lesser General Public
 ;;;; License along with this library; if not, write to the Free Software
 ;;;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
@@ -35,7 +35,7 @@
                         #f))
 
 ; keyworkds
-(define *asn1-tokens*           
+(define *asn1-tokens*
   '(("ABSENT" . ABSENT)
     ("ENCODED" . ENCODED)
     ("INTEGER" . INTEGER)
@@ -100,30 +100,30 @@
     ("INSTANCE" . INSTANCE)
     ("REAL" . REAL)
     ("WITH" . WITH)
-    ("MACRO" . MACRO) 
-    ("TYPE" . TYPE) 
-    ("VALUE" . VALUE) 
-    ("NOTATION" . NOTATION) 
-    ("MODULE-IDENTITY" . MODULE-IDENTITY) 
-    ("OBJECT-TYPE" . OBJECT-TYPE) 
-    ("NOTIFICATION-TYPE" . NOTIFICATION-TYPE) 
-    ("TRAP-TYPE" . TRAP-TYPE) 
-    ("TEXTUAL-CONVENTION" . TEXTUAL-CONVENTION) 
-    ("MODULE-COMPLIANCE" . MODULE-COMPLIANCE) 
-    ("OBJECT-GROUP" . OBJECT-GROUP) 
-    ("NOTIFICATION-GROUP" . NOTIFICATION-GROUP) 
-    ("OBJECT-IDENTITY" . OBJECT-IDENTITY) 
-    ("MODULE" . MODULE) 
-    ("AGENT-CAPABILITIES" . AGENT-CAPABILITIES) 
+    ("MACRO" . MACRO)
+    ("TYPE" . TYPE)
+    ("VALUE" . VALUE)
+    ("NOTATION" . NOTATION)
+    ("MODULE-IDENTITY" . MODULE-IDENTITY)
+    ("OBJECT-TYPE" . OBJECT-TYPE)
+    ("NOTIFICATION-TYPE" . NOTIFICATION-TYPE)
+    ("TRAP-TYPE" . TRAP-TYPE)
+    ("TEXTUAL-CONVENTION" . TEXTUAL-CONVENTION)
+    ("MODULE-COMPLIANCE" . MODULE-COMPLIANCE)
+    ("OBJECT-GROUP" . OBJECT-GROUP)
+    ("NOTIFICATION-GROUP" . NOTIFICATION-GROUP)
+    ("OBJECT-IDENTITY" . OBJECT-IDENTITY)
+    ("MODULE" . MODULE)
+    ("AGENT-CAPABILITIES" . AGENT-CAPABILITIES)
     ("WRITE-SYNTAX" . WRITE-SYNTAX)))
 
-(define *asn1-punctuation*          
+(define *asn1-punctuation*
   '(("." . dot)
     (".." . dotdot)
     ("..." . dotdotdot)
     ("-" . minus)
     ("--" . minusminus)
-    ("|" . bar) 
+    ("|" . bar)
     (":" . colon)
     (";" . semicolon)
     ("::=" . ::=)
@@ -332,7 +332,7 @@
 
 
 (define (next-token port div?)
-  (let ((c (peek-char port)) 
+  (let ((c (peek-char port))
         (loc (port-source-location port)))
     (case c
       ((#\ht #\vt #\np #\space) ; whitespace

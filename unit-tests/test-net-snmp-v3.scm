@@ -2,7 +2,7 @@
 !#
 
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009 Tristan Colgate 
+;; Copyright (C) 2009 Tristan Colgate
 ;;
 ;; test.scm -  A simple example of the basic SNMP wrapper
 ;;
@@ -52,7 +52,7 @@
                     (slot-ref (car vals) 'value))
       (snmp-free-pdu status)
       (snmp-sess-close ss))))
-      
+
 (define-method (test-basic-get-octetstr (self <test-net-snmp-v3>))
   (let* ((ss  (snmp-sess-open (testsess self)))
          (pdu (snmp-pdu-create SNMP-MSG-GET)))

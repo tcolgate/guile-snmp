@@ -1,5 +1,5 @@
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009-2012 Tristan Colgate 
+;; Copyright (C) 2009-2012 Tristan Colgate
 ;;
 ;; agent.scm - This file defines routines for simple  agent support
 ;;

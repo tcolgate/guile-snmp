@@ -48,7 +48,7 @@ init_oid_class()
       scm_c_resolve_module("snmp net-snmp"),
       "<oid>"));
   scm_oid_vec_slot = scm_from_locale_symbol("_vec");
-  
+
   scm_variable_set_x(
     scm_c_module_lookup(
       scm_c_resolve_module("snmp net-snmp"),
@@ -59,10 +59,10 @@ init_oid_class()
     scm_make_u32vector(scm_from_int(0),SCM_EOL)
   #endif
     );
-  
+
   SCM netsnmp_module = scm_c_resolve_module("snmp net-snmp");
   SCM srfi4_module = scm_c_resolve_module("srfi srfi-4");
-  
+
 #if SIZEOF_OID == 8
   scm_variable_set_x( scm_c_module_lookup( netsnmp_module, "oidvector"),
   scm_variable_ref( scm_c_module_lookup( srfi4_module, "u64vector")));

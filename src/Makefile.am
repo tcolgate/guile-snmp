@@ -1,6 +1,6 @@
-lib_LTLIBRARIES=libguile_snmp_net-snmp.la 
+lib_LTLIBRARIES=libguile_snmp_net-snmp.la
 
-libguile_snmp_net_snmp_la_CFLAGS=@GUILE_CFLAGS@ 
+libguile_snmp_net_snmp_la_CFLAGS=@GUILE_CFLAGS@
 libguile_snmp_net_snmp_la_SOURCES=net-snmp_wrap.c net-snmp_wrap_oid.h net-snmp_wrap_constants.h net-snmp_wrap_structs.h net-snmp_wrap_funcs.h
 libguile_snmp_net_snmp_la_LDFLAGS=-version-info 0:2:0 @GUILE_LDFLAGS@ -module @NETSNMP_LDFLAGS@ @NETSNMPAGENT_LDFLAGS@
 
@@ -19,13 +19,13 @@ GOBJECTS =
 GOBJECTS2 =
 endif
 
-CLEANFILES = $(GOBJECTS) $(GOBJECTS2) 
+CLEANFILES = $(GOBJECTS) $(GOBJECTS2)
 
 SUFFIXES = .scm .go
 .scm.go:
 	$(top_srcdir)/build-environ $(GUILE_COMPILE) -o "$@" "$<"
 
-EXTRA_DIST = snmp $(SCHEMESOURCES) $(SCHEMESOURCES2) 
+EXTRA_DIST = snmp $(SCHEMESOURCES) $(SCHEMESOURCES2)
 guilesite = @GUILE_SITE@
 guileprefix = @GUILE_PREFIX@
 guilesitesuffix = `echo $(guilesite) | sed -e 's!^$(guileprefix)!!'`
@@ -38,8 +38,8 @@ guilereports_DATA = $(SCHEMESOURCES2) $(GOBJECTS2)
 bin_PROGRAMS = snmp-shell
 
 dist_man_MANS = snmp-shell.1
-snmp-shell.1: 
-	help2man -o snmp-shell.1 ../meta/snmp-shell; 
+snmp-shell.1:
+	help2man -o snmp-shell.1 ../meta/snmp-shell;
 CLEANFILES = snmp-shell.1
 
 snmp_shell_SOURCES=snmp-shell.c

@@ -1,7 +1,7 @@
 #!/usr/bin/env snmp-shell -s
 !#
 
-; draw a graph of the current spanning tree configuration for 
+; draw a graph of the current spanning tree configuration for
 ; a given vlan This example also uses getopt-long ot process
 ; command line arguments.
 
@@ -35,9 +35,9 @@
 (define (drawvlan vlan port)
   (format port "digraph STP {~%")
   (format port "rankdir=BT~%")
-  (session 
+  (session
     #:community "public"
-    (map 
+    (map
       (lambda(item)
         (let ((name (car item))
               (node (cdr item)))
@@ -74,13 +74,13 @@
                                            drprtspeed)
                                  (let ((dprtstatefunc (walk-func dot1dStpPortState)))
                                    (let dprtloop ((dprtstate (dprtstatefunc)))
-                                     (if (equal? 2 (dprtstate)) ; blocked port 
+                                     (if (equal? 2 (dprtstate)) ; blocked port
                                        (catch #t
                                               (lambda()
                                                 (let* ((blkprt (iid dprtstate))
                                                        (blkbrid (mac ((get (+ dot1dStpPortDesignatedBridge blkprt)))))
                                                        (blkprtifindex ((get (+ dot1dBasePortIfIndex blkprt)))))
-                                                  (format #t 
+                                                  (format #t
                                                           "\"~a\" -> \"~a\" [ label = \"~a\", style = dashed ] ;~%"
                                                           brid
                                                           blkbrid

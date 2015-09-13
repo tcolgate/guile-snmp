@@ -153,7 +153,7 @@ assert_smob_subtype(snmp_wrap_smob_subtypes_e type, SCM smob)
 	      strlen(wrap_smob_types[SCM_SMOB_FLAGS(smob)].name) + 1;
     char* temp = (char*)scm_calloc(16*(sizeof(char)));
 
-    snprintf(temp,len,"%s%s%s%s" 
+    snprintf(temp,len,"%s%s%s%s"
                      ,message1
 		     ,wrap_smob_types[type].name
 		     ,message2
@@ -231,7 +231,7 @@ _wrap_snmp_session_retries_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
   scm_remember_upto_here_1(s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   return scm_from_int(session->retries);
 }
 
@@ -240,7 +240,7 @@ _wrap_snmp_session_retries_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
 
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   session->retries = scm_to_int(s_1);
   scm_remember_upto_here_1(s_0);
 
@@ -251,7 +251,7 @@ static SCM
 _wrap_snmp_session_timeout_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   scm_remember_upto_here_1(s_0);
   return scm_from_long(session->timeout);
 }
@@ -260,7 +260,7 @@ static SCM
 _wrap_snmp_session_timeout_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   session->timeout = scm_to_long(s_1);
 
   scm_remember_upto_here_1(s_0);
@@ -271,7 +271,7 @@ static SCM
 _wrap_snmp_session_peername_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   scm_remember_upto_here_1(s_0);
   return scm_from_latin1_string(session->peername);
 }
@@ -280,7 +280,7 @@ static SCM
 _wrap_snmp_session_peername_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   session->peername = scm_to_latin1_string(s_1);
 
   scm_remember_upto_here_1(s_0);
@@ -291,7 +291,7 @@ static SCM
 _wrap_snmp_session_localname_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   scm_remember_upto_here_1(s_0);
   return scm_from_latin1_string(session->localname);
 }
@@ -300,7 +300,7 @@ static SCM
 _wrap_snmp_session_localname_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   session->localname = scm_to_latin1_string(s_1);
 
   scm_remember_upto_here_1(s_0);
@@ -311,7 +311,7 @@ static SCM
 _wrap_snmp_session_local_port_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   scm_remember_upto_here_1(s_0);
   return scm_from_ushort(session->local_port);
 }
@@ -320,7 +320,7 @@ static SCM
 _wrap_snmp_session_local_port_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   session->local_port = scm_to_ushort(s_1);
 
   scm_remember_upto_here_1(s_0);
@@ -332,7 +332,7 @@ static SCM
 _wrap_snmp_session_community_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   scm_remember_upto_here_1(s_0);
   return scm_from_utf8_string(session->community);
 }
@@ -341,7 +341,7 @@ static SCM
 _wrap_snmp_session_community_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   session->community = scm_to_utf8_string(s_1);
   session->community_len = strlen(session->community);
 
@@ -354,7 +354,7 @@ static SCM
 _wrap_snmp_session_context_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   scm_remember_upto_here_1(s_0);
   return scm_from_utf8_string(session->contextName);
 }
@@ -363,7 +363,7 @@ static SCM
 _wrap_snmp_session_context_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   session->contextName = scm_to_utf8_string(s_1);
   session->contextNameLen = strlen(session->contextName);
 
@@ -386,14 +386,14 @@ int guile_snmp_async_response(int op, struct snmp_session *sess, int reqid, stru
 SCM
 _wrap_snmp_session_callback_get(SCM s_0) {
   struct snmp_session *p = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
   return (SCM) p->callback_magic;
 };
 
 SCM
 _wrap_snmp_session_callback_set(SCM s_0, SCM s_1) {
   struct snmp_session *p = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
   if(s_1 == SCM_BOOL_F){
     p->callback = NULL;
     return SCM_UNSPECIFIED;
@@ -410,7 +410,7 @@ static SCM
 _wrap_snmp_session_securityName_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   scm_remember_upto_here_1(s_0);
   return scm_from_latin1_string(session->securityName);
 }
@@ -419,7 +419,7 @@ static SCM
 _wrap_snmp_session_securityName_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   session->securityName = scm_to_latin1_string(s_1);
   session->securityNameLen = strlen(session->securityName);
 
@@ -431,7 +431,7 @@ static SCM
 _wrap_snmp_session_securityLevel_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   scm_remember_upto_here_1(s_0);
   return scm_constant_name_from_int("<snmp-sec-level>", session->securityLevel);
 }
@@ -440,7 +440,7 @@ static SCM
 _wrap_snmp_session_securityLevel_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   session->securityLevel = scm_int_from_constant("<snmp-sec-level>",s_1);
 
   scm_remember_upto_here_1(s_0);
@@ -451,7 +451,7 @@ static SCM
 _wrap_snmp_session_securityAuthProto_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   scm_remember_upto_here_1(s_0);
   return scm_from_oid(session->securityAuthProto,session->securityAuthProtoLen);
 }
@@ -460,14 +460,14 @@ static SCM
 _wrap_snmp_session_securityAuthProto_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
 
   size_t oidlen = MAX_OID_LEN;
   oid* temp_oid = (oid*)scm_calloc(oidlen * sizeof(oid));
   scm_to_oid(s_1,&temp_oid,&oidlen);
 
-  session->securityAuthProto = temp_oid; 
-  session->securityAuthProtoLen = oidlen; 
+  session->securityAuthProto = temp_oid;
+  session->securityAuthProtoLen = oidlen;
 
   scm_remember_upto_here_1(s_0);
   scm_remember_upto_here_1(s_1);
@@ -478,7 +478,7 @@ static SCM
 _wrap_snmp_session_securityAuthKey_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   scm_remember_upto_here_1(s_0);
   return scm_from_latin1_string(session->securityAuthKey);
 }
@@ -487,7 +487,7 @@ static SCM
 _wrap_snmp_session_securityAuthKey_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
 
   u_char* passphrase = scm_to_locale_string(s_1);
   session->securityAuthKeyLen = USM_AUTH_KU_LEN;
@@ -512,7 +512,7 @@ static SCM
 _wrap_snmp_session_securityPrivProto_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   scm_remember_upto_here_1(s_0);
   return scm_from_oid(session->securityAuthProto,session->securityAuthProtoLen);
 }
@@ -521,14 +521,14 @@ static SCM
 _wrap_snmp_session_securityPrivProto_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
 
   size_t oidlen = MAX_OID_LEN;
   oid* temp_oid = (oid*)scm_calloc(oidlen * sizeof(oid));
   scm_to_oid(s_1,&temp_oid,&oidlen);
 
-  session->securityPrivProto = temp_oid; 
-  session->securityPrivProtoLen = oidlen; 
+  session->securityPrivProto = temp_oid;
+  session->securityPrivProtoLen = oidlen;
 
   scm_remember_upto_here_1(s_0);
   scm_remember_upto_here_1(s_1);
@@ -539,7 +539,7 @@ static SCM
 _wrap_snmp_session_securityPrivKey_get (SCM s_0)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   scm_remember_upto_here_1(s_0);
   return scm_from_latin1_string(session->securityPrivKey);
 }
@@ -548,7 +548,7 @@ static SCM
 _wrap_snmp_session_securityPrivKey_set (SCM s_0, SCM s_1)
 {
   struct snmp_session *session = (struct snmp_session*) pointer_from_wrapped_smob(smob_snmp_session, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , session ) 
+  ASSERT_NOT_NULL_PTR( s_0 , session )
   session->securityPrivKeyLen = USM_PRIV_KU_LEN;
 
   u_char* passphrase = scm_to_locale_string(s_1);
@@ -606,7 +606,7 @@ static SCM
 _wrap_tree_label_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
-  ASSERT_NOT_NULL_PTR( tree , node ) 
+  ASSERT_NOT_NULL_PTR( tree , node )
   scm_remember_upto_here_1(tree);
   return scm_from_utf8_string(node->label);
 }
@@ -615,7 +615,7 @@ static SCM
 _wrap_tree_description_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
-  ASSERT_NOT_NULL_PTR( tree , node ) 
+  ASSERT_NOT_NULL_PTR( tree , node )
   if(node->description){
     return scm_from_utf8_string(node->description);
   };
@@ -627,7 +627,7 @@ static SCM
 _wrap_tree_type_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
-  ASSERT_NOT_NULL_PTR( tree , node ) 
+  ASSERT_NOT_NULL_PTR( tree , node )
   scm_remember_upto_here_1(tree);
   return scm_constant_name_from_int("<mib-type>", node->type);
 }
@@ -636,7 +636,7 @@ static SCM
 _wrap_tree_access_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
-  ASSERT_NOT_NULL_PTR( tree , node ) 
+  ASSERT_NOT_NULL_PTR( tree , node )
   scm_remember_upto_here_1(tree);
   return scm_constant_name_from_int("<mib-access>", node->access);
 }
@@ -645,7 +645,7 @@ static SCM
 _wrap_tree_status_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
-  ASSERT_NOT_NULL_PTR( tree , node ) 
+  ASSERT_NOT_NULL_PTR( tree , node )
   scm_remember_upto_here_1(tree);
   return scm_constant_name_from_int("<mib-status>", node->status);
 }
@@ -654,7 +654,7 @@ static SCM
 _wrap_tree_units_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
-  ASSERT_NOT_NULL_PTR( tree , node ) 
+  ASSERT_NOT_NULL_PTR( tree , node )
   scm_remember_upto_here_1(tree);
   return node->units != NULL ? scm_from_utf8_string(node->units) : SCM_BOOL_F;
 }
@@ -663,7 +663,7 @@ static SCM
 _wrap_tree_hint_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
-  ASSERT_NOT_NULL_PTR( tree , node ) 
+  ASSERT_NOT_NULL_PTR( tree , node )
   scm_remember_upto_here_1(tree);
   return node->hint != NULL ? scm_from_utf8_string(node->hint) : SCM_BOOL_F;
 }
@@ -672,7 +672,7 @@ static SCM
 _wrap_tree_enums_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
-  ASSERT_NOT_NULL_PTR( tree , node ) 
+  ASSERT_NOT_NULL_PTR( tree , node )
   SCM result = SCM_EOL;
   struct enum_list* p = node->enums;
   while(p != NULL){
@@ -690,7 +690,7 @@ static SCM
 _wrap_tree_indexes_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
-  ASSERT_NOT_NULL_PTR( tree , node ) 
+  ASSERT_NOT_NULL_PTR( tree , node )
   SCM result = SCM_EOL;
   struct index_list* p = node->indexes;
   while(p != NULL){
@@ -706,7 +706,7 @@ static SCM
 _wrap_tree_varbinds_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
-  ASSERT_NOT_NULL_PTR( tree , node ) 
+  ASSERT_NOT_NULL_PTR( tree , node )
   SCM result = SCM_EOL;
   struct varbind_list* p = node->varbinds;
   while(p != NULL){
@@ -722,7 +722,7 @@ static SCM
 _wrap_tree_parent_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
-  ASSERT_NOT_NULL_PTR( tree , node ) 
+  ASSERT_NOT_NULL_PTR( tree , node )
   scm_remember_upto_here_1(tree);
   return make_wrapped_pointer(smob_tree ,node->parent);
 }
@@ -731,7 +731,7 @@ static SCM
 _wrap_tree_peers_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
-  ASSERT_NOT_NULL_PTR( tree , node ) 
+  ASSERT_NOT_NULL_PTR( tree , node )
   SCM result = SCM_EOL;
   struct tree* p = node->next_peer;
   while(p != NULL){
@@ -747,12 +747,12 @@ static SCM
 _wrap_tree_children_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
-  ASSERT_NOT_NULL_PTR( tree , node ) 
+  ASSERT_NOT_NULL_PTR( tree , node )
   SCM result = SCM_EOL;
   struct tree* p = node->child_list;
   while(p != NULL){
     result = scm_append(
-               scm_list_2(result, 
+               scm_list_2(result,
                          scm_list_1(
                            make_wrapped_pointer(smob_tree ,p))));
     p = p->next_peer;
@@ -766,7 +766,7 @@ static SCM
 _wrap_tree_module_get (SCM tree)
 {
   struct tree *node = (struct tree*) pointer_from_wrapped_smob(smob_tree, tree);
-  ASSERT_NOT_NULL_PTR( tree , node ) 
+  ASSERT_NOT_NULL_PTR( tree , node )
   scm_remember_upto_here_1(tree);
   return make_wrapped_pointer(smob_mib_module ,find_module(node->modid));
 }
@@ -785,7 +785,7 @@ static SCM
 _wrap_module_name_get (SCM s_0)
 {
   struct module *p = (struct module*) pointer_from_wrapped_smob(smob_mib_module, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
   scm_remember_upto_here_1(s_0);
   return p->name != NULL ? scm_from_utf8_string(p->name) : SCM_BOOL_F;
 }
@@ -794,13 +794,13 @@ static SCM
 _wrap_module_file_get (SCM s_0)
 {
   struct module *p = (struct module*) pointer_from_wrapped_smob(smob_mib_module, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
   scm_remember_upto_here_1(s_0);
   return p->file != NULL ? scm_from_utf8_string(p->file) : SCM_BOOL_F;
 }
 
 /*
- * Wrap netsnmp_pdu* as pdu 
+ * Wrap netsnmp_pdu* as pdu
  */
 
 static SCM
@@ -824,7 +824,7 @@ static SCM
 _wrap_pdu_errstat_get (SCM s_0)
 {
   netsnmp_pdu *p = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
   scm_remember_upto_here_1(s_0);
   return scm_constant_name_from_int("<snmp-err-status>", p->errstat);
 }
@@ -833,7 +833,7 @@ static SCM
 _wrap_pdu_variables_get (SCM s_0)
 {
   netsnmp_pdu *p = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
 
   SCM res = SCM_EOL;
   netsnmp_variable_list *curr = p->variables;
@@ -851,7 +851,7 @@ static SCM
 _wrap_pdu_non_repeaters_get (SCM s_0)
 {
   netsnmp_pdu *p = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
   scm_remember_upto_here_1(s_0);
   return scm_from_long(p->errstat);
 }
@@ -860,7 +860,7 @@ static SCM
 _wrap_pdu_non_repeaters_set (SCM s_0, SCM s_1)
 {
   netsnmp_pdu *p = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
   p->errstat = scm_to_long(s_1);
   scm_remember_upto_here_1(s_0);
   scm_remember_upto_here_1(s_1);
@@ -872,7 +872,7 @@ static SCM
 _wrap_pdu_max_repetitions_get (SCM s_0)
 {
   netsnmp_pdu *p = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
   scm_remember_upto_here_1(s_0);
   return scm_from_long(p->errindex);
 }
@@ -881,7 +881,7 @@ static SCM
 _wrap_pdu_max_repetitions_set (SCM s_0, SCM s_1)
 {
   netsnmp_pdu *p = (netsnmp_pdu*) pointer_from_wrapped_smob(smob_pdu, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
   p->errindex = scm_to_long(s_1);
   scm_remember_upto_here_1(s_0);
   scm_remember_upto_here_1(s_1);
@@ -911,7 +911,7 @@ static SCM
 _wrap_pdu_variable_variables_get (SCM s_0)
 {
   netsnmp_variable_list *p = (netsnmp_variable_list*) pointer_from_wrapped_smob(smob_pdu_variable, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
 
   netsnmp_variable_list *curr = p;
   SCM res = SCM_EOL;
@@ -923,27 +923,27 @@ _wrap_pdu_variable_variables_get (SCM s_0)
   scm_remember_upto_here_1(s_0);
   return res;
 }
-SCM 
+SCM
 _wrap_pdu_variable_name_get (SCM s_0)
 {
   netsnmp_variable_list *var = (netsnmp_variable_list*) pointer_from_wrapped_smob(smob_pdu_variable, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , var ) 
+  ASSERT_NOT_NULL_PTR( s_0 , var )
   scm_remember_upto_here_1(s_0);
   return scm_from_oid(var->name,var->name_length);
 }
 
-SCM 
+SCM
 _wrap_pdu_variable_type_get (SCM s_0)
 {
   netsnmp_variable_list *var = (netsnmp_variable_list*) pointer_from_wrapped_smob(smob_pdu_variable, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , var ) 
+  ASSERT_NOT_NULL_PTR( s_0 , var )
   scm_remember_upto_here_1(s_0);
   return scm_constant_name_from_int("<asn-type>", var->type);
 }
 
-SCM 
-_wrap_pdu_variable_value_get(SCM s_0) 
-{ 
+SCM
+_wrap_pdu_variable_value_get(SCM s_0)
+{
   SCM result = SCM_UNSPECIFIED;
   netsnmp_variable_list *p = (netsnmp_variable_list*) pointer_from_wrapped_smob(smob_pdu_variable, s_0);
   ASSERT_NOT_NULL_PTR( s_0 , p )
@@ -951,30 +951,30 @@ _wrap_pdu_variable_value_get(SCM s_0)
   switch(p->type){
     case ASN_OPAQUE:
     case ASN_NSAP:
-    case ASN_OCTET_STR: 
-    case ASN_BIT_STR: 
+    case ASN_OCTET_STR:
+    case ASN_BIT_STR:
       {
         // These should probably be handled differently
         result = scm_from_latin1_stringn((p->val).string,p->val_len);
       }
       break;
 
-    case ASN_INTEGER: 
+    case ASN_INTEGER:
       {
         result = scm_from_int(*((p->val).integer));
       }
       break;
 
-    case ASN_UINTEGER: 
-    case ASN_GAUGE: 
-    case ASN_COUNTER: 
-    case ASN_TIMETICKS: 
+    case ASN_UINTEGER:
+    case ASN_GAUGE:
+    case ASN_COUNTER:
+    case ASN_TIMETICKS:
       {
         result = scm_from_uint(*((p->val).integer));
       }
       break;
 
-    case ASN_COUNTER64: 
+    case ASN_COUNTER64:
       {
         SCM high = scm_from_int(((p->val).counter64)->high);
         SCM low = scm_from_int(((p->val).counter64)->low);
@@ -984,14 +984,14 @@ _wrap_pdu_variable_value_get(SCM s_0)
       };
       break;
 
-    case ASN_NULL: 
+    case ASN_NULL:
       {
         //lambda pdu: None,
         result = SCM_EOL;
       }
       break;
 
-    case ASN_OBJECT_ID: 
+    case ASN_OBJECT_ID:
       {
         // Guile wants to take ownership of the array
         // so we copy it first.
@@ -1000,10 +1000,10 @@ _wrap_pdu_variable_value_get(SCM s_0)
         result = scm_apply(scm_goops_make,scm_list_3(scm_class_oid,scm_kw_value,
               SCM_TAKE_OIDVECTOR((SCM_T_OID *)temp, (p->val_len)/sizeof(oid))
               ),SCM_EOL);
-      }; 
+      };
       break;
 
-    case ASN_IPADDRESS: 
+    case ASN_IPADDRESS:
       //Since snmp session takes a string we will rewturn
       // these as strings. would prefer a proper IP object
       {
@@ -1017,39 +1017,39 @@ _wrap_pdu_variable_value_get(SCM s_0)
       }
       break;
 
-    case ASN_FLOAT: 
-    case ASN_OPAQUE_FLOAT: 
+    case ASN_FLOAT:
+    case ASN_OPAQUE_FLOAT:
       {
         result = scm_from_double((double)*((p->val).floatVal));
       }
       break;
 
-    case ASN_DOUBLE: 
-    case ASN_OPAQUE_DOUBLE: 
+    case ASN_DOUBLE:
+    case ASN_OPAQUE_DOUBLE:
       {
         result = scm_from_double(*((p->val).doubleVal));
       }
       break;
 
-    case SNMP_NOSUCHOBJECT: 
+    case SNMP_NOSUCHOBJECT:
       {
         result = scm_string_to_symbol(scm_from_locale_string("noSuchObject"));
       }
       break;
 
-    case SNMP_NOSUCHINSTANCE: 
+    case SNMP_NOSUCHINSTANCE:
       {
         result = scm_string_to_symbol(scm_from_locale_string("noSuchInstance"));
       }
       break;
 
-    case SNMP_ENDOFMIBVIEW: 
+    case SNMP_ENDOFMIBVIEW:
       {
         result = scm_string_to_symbol(scm_from_locale_string("endOfMibView"));
       }
       break;
 
-    default: 
+    default:
       // use snprint_value to format the value as a string
       break;
   };
@@ -1057,12 +1057,12 @@ _wrap_pdu_variable_value_get(SCM s_0)
   return result;
 };
 
-SCM 
-_wrap_pdu_variable_value_bytes_get(SCM s_0) 
-{ 
+SCM
+_wrap_pdu_variable_value_bytes_get(SCM s_0)
+{
   SCM result = SCM_UNSPECIFIED;
   netsnmp_variable_list *p = (netsnmp_variable_list*) pointer_from_wrapped_smob(smob_pdu_variable, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
 
   int len = p->val_len;
   scm_t_uint8 *data = p->val.string;
@@ -1083,7 +1083,7 @@ _wrap_pdu_variable_value_bytes_get(SCM s_0)
 #include <sys/select.h>
 
 typedef struct snmp_fdinfo_s {
-  int fds; 
+  int fds;
   int block;
   fd_set fdss;
   struct timeval timeout;
@@ -1243,12 +1243,12 @@ _wrap_initialize_netsnmp_agent_request_info (SCM obj, SCM args)
   return SCM_UNSPECIFIED;
 }
 
-SCM 
-_wrap_netsnmp_agent_request_info_mode_get(SCM s_0) 
-{ 
+SCM
+_wrap_netsnmp_agent_request_info_mode_get(SCM s_0)
+{
   SCM result = SCM_UNSPECIFIED;
   netsnmp_agent_request_info *p = (netsnmp_agent_request_info*) pointer_from_wrapped_smob(smob_netsnmp_agent_request_info, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
 
   result = scm_constant_name_from_int("<mib-handler-mode>", p->mode);
 
@@ -1280,7 +1280,7 @@ _wrap_netsnmp_request_info_requestvb_get (SCM s_0)
 {
   SCM result = SCM_UNSPECIFIED;
   netsnmp_request_info *p = (netsnmp_request_info*) pointer_from_wrapped_smob(smob_netsnmp_request_info, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
 
   netsnmp_variable_list *res = p->requestvb;
   result = make_wrapped_pointer(smob_pdu_variable,res);
@@ -1294,7 +1294,7 @@ _wrap_netsnmp_request_info_next_get (SCM s_0)
 {
   SCM result = SCM_UNSPECIFIED;
   netsnmp_request_info *p = (netsnmp_request_info*) pointer_from_wrapped_smob(smob_netsnmp_request_info, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
 
   netsnmp_request_info *res = p->next;
   result = make_wrapped_pointer(smob_netsnmp_request_info,res);
@@ -1308,7 +1308,7 @@ _wrap_netsnmp_request_info_prev_get (SCM s_0)
 {
   SCM result = SCM_UNSPECIFIED;
   netsnmp_request_info *p = (netsnmp_request_info*) pointer_from_wrapped_smob(smob_netsnmp_request_info, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
 
   netsnmp_request_info *res = p->prev;
   result = make_wrapped_pointer(smob_netsnmp_request_info,res);
@@ -1376,9 +1376,9 @@ static SCM
 _wrap_netsnmp_iterator_info_get_first_data_point_get (SCM s_0)
 {
   SCM result = SCM_UNSPECIFIED;
-  netsnmp_iterator_info *p = 
+  netsnmp_iterator_info *p =
     (netsnmp_iterator_info*) pointer_from_wrapped_smob(smob_netsnmp_iterator_info, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
 
   SCM gfdp = scm_list_ref(p->myvoid,scm_from_int(0));
 
@@ -1389,9 +1389,9 @@ _wrap_netsnmp_iterator_info_get_first_data_point_get (SCM s_0)
 static SCM
 _wrap_netsnmp_iterator_info_get_first_data_point_set (SCM s_0, SCM s_1)
 {
-  netsnmp_iterator_info *p = 
+  netsnmp_iterator_info *p =
     (netsnmp_iterator_info*) pointer_from_wrapped_smob(smob_netsnmp_iterator_info, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
 
   SCM gfdp = scm_list_set_x(p->myvoid,scm_from_int(0),s_1);
 
@@ -1404,9 +1404,9 @@ static SCM
 _wrap_netsnmp_iterator_info_get_next_data_point_get (SCM s_0)
 {
   SCM result = SCM_UNSPECIFIED;
-  netsnmp_iterator_info *p = 
+  netsnmp_iterator_info *p =
     (netsnmp_iterator_info*) pointer_from_wrapped_smob(smob_netsnmp_iterator_info, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
 
   SCM gndp = scm_list_ref(p->myvoid,scm_from_int(1));
 
@@ -1417,9 +1417,9 @@ _wrap_netsnmp_iterator_info_get_next_data_point_get (SCM s_0)
 static SCM
 _wrap_netsnmp_iterator_info_get_next_data_point_set (SCM s_0, SCM s_1)
 {
-  netsnmp_iterator_info *p = 
+  netsnmp_iterator_info *p =
     (netsnmp_iterator_info*) pointer_from_wrapped_smob(smob_netsnmp_iterator_info, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
 
   SCM gndp = scm_list_set_x(p->myvoid,scm_from_int(1),s_1);
 
@@ -1432,9 +1432,9 @@ static SCM
 _wrap_netsnmp_iterator_info_table_reginfo_get (SCM s_0)
 {
   SCM result = SCM_UNSPECIFIED;
-  netsnmp_iterator_info *p = 
+  netsnmp_iterator_info *p =
     (netsnmp_iterator_info*) pointer_from_wrapped_smob(smob_netsnmp_iterator_info, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
 
   result = make_wrapped_pointer(smob_netsnmp_table_registration_info, p->table_reginfo);
 
@@ -1445,10 +1445,10 @@ _wrap_netsnmp_iterator_info_table_reginfo_get (SCM s_0)
 static SCM
 _wrap_netsnmp_iterator_info_table_reginfo_set (SCM s_0, SCM s_1)
 {
-  netsnmp_iterator_info *p = 
+  netsnmp_iterator_info *p =
     (netsnmp_iterator_info*) pointer_from_wrapped_smob(smob_netsnmp_iterator_info, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
-  netsnmp_table_registration_info *ptinfo = 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
+  netsnmp_table_registration_info *ptinfo =
     (netsnmp_table_registration_info*) pointer_from_wrapped_smob(smob_netsnmp_table_registration_info, s_1);
 
   p->table_reginfo = ptinfo;
@@ -1481,9 +1481,9 @@ static SCM
 _wrap_netsnmp_table_registration_info_min_column_get (SCM s_0)
 {
   SCM result = SCM_UNSPECIFIED;
-  netsnmp_table_registration_info *p = 
+  netsnmp_table_registration_info *p =
     (netsnmp_table_registration_info*) pointer_from_wrapped_smob(smob_netsnmp_table_registration_info, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
 
   unsigned int res = p->min_column;
   result = scm_from_uint(res);
@@ -1495,9 +1495,9 @@ _wrap_netsnmp_table_registration_info_min_column_get (SCM s_0)
 static SCM
 _wrap_netsnmp_table_registration_info_min_column_set (SCM s_0, SCM s_1)
 {
-  netsnmp_table_registration_info *p = 
+  netsnmp_table_registration_info *p =
     (netsnmp_table_registration_info*) pointer_from_wrapped_smob(smob_netsnmp_table_registration_info, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
   p->min_column = scm_to_uint(s_1);
   scm_remember_upto_here_1(s_0);
   scm_remember_upto_here_1(s_1);
@@ -1508,9 +1508,9 @@ static SCM
 _wrap_netsnmp_table_registration_info_max_column_get (SCM s_0)
 {
   SCM result = SCM_UNSPECIFIED;
-  netsnmp_table_registration_info *p = 
+  netsnmp_table_registration_info *p =
     (netsnmp_table_registration_info*) pointer_from_wrapped_smob(smob_netsnmp_table_registration_info, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
 
   unsigned int res = p->max_column;
   result = scm_from_uint(res);
@@ -1522,9 +1522,9 @@ _wrap_netsnmp_table_registration_info_max_column_get (SCM s_0)
 static SCM
 _wrap_netsnmp_table_registration_info_max_column_set (SCM s_0, SCM s_1)
 {
-  netsnmp_table_registration_info *p = 
+  netsnmp_table_registration_info *p =
     (netsnmp_table_registration_info*) pointer_from_wrapped_smob(smob_netsnmp_table_registration_info, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
   p->max_column = scm_to_uint(s_1);
   scm_remember_upto_here_1(s_0);
   scm_remember_upto_here_1(s_1);
@@ -1554,9 +1554,9 @@ static SCM
 _wrap_netsnmp_table_request_info_colnum_get (SCM s_0)
 {
   SCM result = SCM_UNSPECIFIED;
-  netsnmp_table_request_info *p = 
+  netsnmp_table_request_info *p =
     (netsnmp_table_request_info*) pointer_from_wrapped_smob(smob_netsnmp_table_request_info, s_0);
-  ASSERT_NOT_NULL_PTR( s_0 , p ) 
+  ASSERT_NOT_NULL_PTR( s_0 , p )
 
   unsigned int res = p->colnum;
   result = scm_from_uint(res);
@@ -1651,7 +1651,7 @@ static void init_snmp_wrap_structs(void)
 
   scm_c_define_gsubr ("initialize-netsnmp-mib-handler", 2, 0, 0, _wrap_initialize_netsnmp_mib_handler);
   scm_c_export("initialize-netsnmp-mib-handler" , NULL);
-  scm_c_define_gsubr ("initialize-netsnmp-mib-handler-registration", 2, 0, 0, 
+  scm_c_define_gsubr ("initialize-netsnmp-mib-handler-registration", 2, 0, 0,
       _wrap_initialize_netsnmp_handler_registration);
   scm_c_export("initialize-netsnmp-mib-handler-registration" , NULL);
   scm_c_define_gsubr ("initialize-netsnmp-handler-args", 2, 0, 0, _wrap_initialize_netsnmp_handler_args);

@@ -1,7 +1,7 @@
 #!/usr/bin/env snmp-shell -s
 !#
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009,2010 Tristan Colgate 
+;; Copyright (C) 2009,2010 Tristan Colgate
 ;;
 ;; find-host -  an example of using snmp-shell
 ;;
@@ -21,7 +21,7 @@
 (use-mibs ...)
 
 ; This is a list of all the layer3 routers to query
-(define l3list (list 
+(define l3list (list
                  "192.168.0.254" "192.168.0.254"))
 
 (define (find-host name)
@@ -52,7 +52,7 @@
                           (neighbourstr (ipstr-to-str (neighbour))))
                      (if (find-if (lambda(item)(equal? item neighbourstr)) l3list)
                        (fail) ; The neighbour is in the l3 list so we will check it anyway
-                       (session #:host neighbourstr 
+                       (session #:host neighbourstr
                          (let* ((peername (get sysName.0))
                                 (fdbport  (get (+ dot1dTpFdbPort (mac-as-oid mac))))
                                 (fdbif    (get (+ dot1dBasePortIfIndex (fdbport))))

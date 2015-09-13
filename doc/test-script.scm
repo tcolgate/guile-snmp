@@ -2,7 +2,7 @@
 !#
 
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009,2010 Tristan Colgate 
+;; Copyright (C) 2009,2010 Tristan Colgate
 ;;
 ;; test-script - a trivial script using the script interpreter
 ;;

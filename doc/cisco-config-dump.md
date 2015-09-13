@@ -2,18 +2,18 @@
 #!/usr/bin/snmp-shell -s
 !#
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009-2012 Tristan Colgate 
+;; Copyright (C) 2009-2012 Tristan Colgate
 ;;
-;; cisco-config-dump - 
-;;  
-;;  This script uses an snmp set to trigger a Cisco device into 
+;; cisco-config-dump -
+;;
+;;  This script uses an snmp set to trigger a Cisco device into
 ;; beginning a tftp transfer of it's current config
 ;;
 ;;-------------------------------------------------------------------
 
 ;;; Commentary:
 ;;
-;;  Useage: cisco-config-dump host1 
+;;  Useage: cisco-config-dump host1
 ;;
 ;;; Code:
 

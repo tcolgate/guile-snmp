@@ -359,7 +359,7 @@ init_snmp_wrap_constants(void)
   EXPORT_CONSTANT(HANDLER_CAN_RWRITE , "HANDLER-CAN-RWRITE" , scm_from_unsigned_integer)
   EXPORT_CONSTANT(HANDLER_CAN_SET_ONLY , "HANDLER-CAN-SET_ONLY" , scm_from_unsigned_integer)
   EXPORT_CONSTANT(HANDLER_CAN_DEFAULT , "HANDLER-CAN-DEFAULT" , scm_from_unsigned_integer)
- 
+
   EXPORT_CONSTANT(MODE_GET , "MODE-GET"  ,  scm_from_unsigned_integer)
   EXPORT_CONSTANT(MODE_GETNEXT , "MODE-GETNEXT"  ,  scm_from_unsigned_integer)
   EXPORT_CONSTANT(MODE_GETBULK , "MODE-GETBULK"  ,  scm_from_unsigned_integer)

@@ -1,8 +1,8 @@
 (define-module (ipv4-router)
   #:use-module (oop goops)
   #:use-module (srfi srfi-11)
-  #:export 
-    (<ipv4-address> ip 
+  #:export
+    (<ipv4-address> ip
      <ipv4-network> network prefix prefix-length mask
      prefixlen->intmask
      ip-in-network?
@@ -30,7 +30,7 @@
     (error "ipstr expects a string")))
 
 (define-class <ipv4-address> ()
-  (int-ip #:accessor int-ip 
+  (int-ip #:accessor int-ip
           #:init-value 0
           #:init-keyword #:int-ip)
   (ip #:init-keyword #:ip
@@ -60,18 +60,18 @@
 
 ; Class for representing a network
 (define-class <ipv4-network> ()
-  (prefix #:accessor prefix 
+  (prefix #:accessor prefix
           #:init-value (make <ipv4-address>)
           #:init-keyword #:prefix)
-  (prefix-length  #:accessor prefix-length 
+  (prefix-length  #:accessor prefix-length
                #:init-value 0
                #:init-keyword #:prefix-len)
-  (network #:allocation #:virtual 
+  (network #:allocation #:virtual
            #:accessor network
            #:slot-ref (lambda(this)(prefix this))
            #:slot-set! (lambda(this val)(set! (network this) val))
            #:init-keyword #:network)
-  (mask #:allocation #:virtual 
+  (mask #:allocation #:virtual
         #:accessor mask
         #:slot-ref (lambda(this)(inet-ntoa (prefixlen->intmask (prefix-length this))))
         #:slot-set! (lambda(this val)(set! (mask this) val))
@@ -99,7 +99,7 @@
 
 (define (prefixlen->intmask preflen)
   (ash (- (integer-expt 2 preflen) 1) (- 32 preflen )))
- 
+
 (define-method ((setter network) (this <ipv4-network>) (networkspec <string>))
   (if (string-index networkspec #\/)
     (let ((spec (string-split networkspec #\/)))
@@ -113,7 +113,7 @@
   (let ((net (car networkspec))
         (maskspec (cadr networkspec)))
     (set! (prefix this) net)
-    (cond 
+    (cond
        ((equal? (class-of maskspec) <string>)
         (set! (mask this) maskspec))
        ((equal? (class-of maskspec) <integer>)
@@ -142,12 +142,12 @@
         #:accessor misc
         #:init-keyword #:misc)
   (net  #:allocation #:virtual
-        #:accessor net 
+        #:accessor net
         #:slot-ref (lambda(this)(slot-ref this '_net))
         #:slot-set! (lambda(this val)(set! (net this) val))
         #:init-keyword #:net)
   (gw   #:allocation #:virtual
-        #:accessor gw 
+        #:accessor gw
         #:slot-ref (lambda(this)(slot-ref this '_gw))
         #:slot-set! (lambda(this val)(set! (gw this) val))
         #:init-keyword #:gw))
@@ -178,24 +178,24 @@
 (define-generic value-binstr)
 (define nullnode)
 (define-class <trie-node> ()
-  (value         #:accessor value         
-                 #:init-value  0 
+  (value         #:accessor value
+                 #:init-value  0
                  #:init-keyword #:val)
-  (value-binstr  #:allocation #:virtual   
-                 #:slot-ref value-binstr 
+  (value-binstr  #:allocation #:virtual
+                 #:slot-ref value-binstr
                  #:slot-set! value-binstr
                  #:init-keyword #:valbin)
-  (value-length  #:accessor value-length  
-                 #:init-value 0 
+  (value-length  #:accessor value-length
+                 #:init-value 0
                  #:init-keyword #:len)
-  (left          #:accessor left          
-                 #:init-value nullnode 
+  (left          #:accessor left
+                 #:init-value nullnode
                  #:init-keyword #:l)
-  (right         #:accessor right         
+  (right         #:accessor right
                  #:init-value nullnode
                  #:init-keyword #:r)
-  (userdata      #:accessor userdata      
-                 #:init-value #f 
+  (userdata      #:accessor userdata
+                 #:init-value #f
                  #:init-keyword #:udata))
 (set! nullnode (make <trie-node>))
 (define rootnode (make <trie-node> #:l nullnode #:r nullnode))
@@ -216,9 +216,9 @@
 (define-method (value-binstr (this <trie-node>))
   (with-output-to-string
     (lambda()
-      (format #t 
+      (format #t
         (string-append
-          (string-append "~" 
+          (string-append "~"
             (string-append (number->string (value-length this))))
           ",'0b")
         (value this)))))
@@ -226,7 +226,7 @@
 (define (shared-prefix v1 l1 v2 l2)
   "Takes two binary string (number and length) and returns, using multiple values
    the common prefix and its length"
-  (cond 
+  (cond
      ((= l1 l2)
       (let again ((rotv1  v1)
                   (rotv2  v2)
@@ -238,11 +238,11 @@
       (shared-prefix (ash v1 (- l2 l1)) l2 v2 l2))
      ((< l1 l2)
       (shared-prefix v1 l1 (ash v2 (- l1 l2)) l1))))
-  
+
 (define-generic add-trie-node)
-(define-method (add-trie-node (root <trie-node>) 
-                              (val <integer>) 
-                              (len <integer>) 
+(define-method (add-trie-node (root <trie-node>)
+                              (val <integer>)
+                              (len <integer>)
                               udata)
   (if (eq? root nullnode)
     ; We are being asked to add a new leaf
@@ -256,9 +256,9 @@
              ; We are an exact match for this node, just return
              root
              ; Userdata is different
-             (make <trie-node> #:val (value root) 
-                               #:len (value-length root) 
-                               #:l (left root) 
+             (make <trie-node> #:val (value root)
+                               #:len (value-length root)
+                               #:l (left root)
                                #:r (right root)
                                #:udata udata))
           (if (equal? common-len (value-length root))
@@ -270,42 +270,42 @@
                 (let ((nextnode (add-trie-node (left root) nextval nextlen udata)))
                   (if (eq? nextnode (left root))
                       root
-                      (make <trie-node> #:val (value root) 
-                                        #:len (value-length root) 
-                                        #:l nextnode 
+                      (make <trie-node> #:val (value root)
+                                        #:len (value-length root)
+                                        #:l nextnode
                                         #:r (right root)
                                         #:udata (userdata root))))
-                ;add to right for a one 
+                ;add to right for a one
                 (let ((nextnode (add-trie-node (right root) nextval nextlen udata)))
                   (if (eq? nextnode (right root))
                       root
-                      (make <trie-node> #:val (value root) 
-                                        #:len (value-length root) 
-                                        #:l (left root) 
+                      (make <trie-node> #:val (value root)
+                                        #:len (value-length root)
+                                        #:l (left root)
                                         #:r nextnode
                                         #:udata (userdata root))))))
             ; We need to split our current node
-            (let* ((common-remains (make <trie-node> 
+            (let* ((common-remains (make <trie-node>
                                       #:val
-                                      (logand (value root) 
-                                              (- (integer-expt 2 
+                                      (logand (value root)
+                                              (- (integer-expt 2
                                                                (- (value-length root)
-                                                                  common-len)) 
+                                                                  common-len))
                                                  1))
                                       #:len
                                       (- (value-length root) common-len)
                                       #:l (left root)
                                       #:r (right root)
                                       #:udata (userdata root)))
-                   (common-newdata 
+                   (common-newdata
                                    (if (equal? len common-len)
                                      nullnode
                                      (make <trie-node>
                                         #:val
                                         (logand val
-                                                (- (integer-expt 2 
-                                                                 (- len 
-                                                                    common-len)) 
+                                                (- (integer-expt 2
+                                                                 (- len
+                                                                    common-len))
                                                    1))
                                         #:len (- len common-len)
                                         #:l nullnode
@@ -334,27 +334,27 @@
                (prevmatch 0)
                (prevmatchlen 0)
                (prevnode nullnode)
-               (bestmatch 0) 
-               (bestmatchlen 0) 
-               (bestmatchnode nullnode)) 
+               (bestmatch 0)
+               (bestmatchlen 0)
+               (bestmatchnode nullnode))
    (if (eq? currnode nullnode)
      (values bestmatch bestmatchlen bestmatchnode)
      (let-values (((common-pref common-len) (shared-prefix (value currnode)(value-length currnode)
                                              currval currlen)))
-       (cond 
+       (cond
          ; We have gone as far as we can, prevmatch holds the longest full match
          ((< common-len (value-length currnode))
           (values bestmatch bestmatchlen bestmatchnode))
-         ; This node is an exact match))) 
-         ((equal? common-len currlen) 
+         ; This node is an exact match)))
+         ((equal? common-len currlen)
           (values
              (logand (ash prevmatch currlen) currval)
              (+ currlen prevmatchlen)
              currnode))
-         (else 
-           (letrec ((nextval (logand currval (- (integer-expt 2 (- currlen (value-length currnode))) 1))) 
+         (else
+           (letrec ((nextval (logand currval (- (integer-expt 2 (- currlen (value-length currnode))) 1)))
                     (nextlen (- currlen (value-length currnode))))
-             (again  
+             (again
                  (if (logbit? (- nextlen 1) nextval)
                    (right currnode)
                    (left currnode))
@@ -372,7 +372,7 @@
                  (if (equal? (userdata currnode) #f)
                     bestmatchnode
                     currnode)))))))))
-  
+
 
 ; Display methods
 (define-method (display (this <trie-node>) port)
@@ -387,7 +387,7 @@
 (define-method (write (this <trie-node>) port)
   (if (eq? this nullnode)
     (format port "null")
-    (format port "#:trie-node(val: ~b len: ~a l: ~a r: ~a ud: ~a)" 
+    (format port "#:trie-node(val: ~b len: ~a l: ~a r: ~a ud: ~a)"
                  (value this)
                  (value-length this)
                  (left this)
@@ -421,7 +421,7 @@
 
 ; Wrapper around compressed radix code to support ipv4 routing table.
 (define-class <ipv4-table> ()
-  (trie-root #:init-value rootnode 
+  (trie-root #:init-value rootnode
              #:accessor trie-root))
 `
 (define-generic add-ipv4-route)
@@ -437,7 +437,7 @@
 (define-method (add-ipv4-route! (table <ipv4-table>)(route <ipv4-route>))
   (let*((addr    (net route))
         (pref    (ip (prefix addr)))
-        (preflen (prefix-length addr))) 
+        (preflen (prefix-length addr)))
     (set! (trie-root table) (add-trie-node (trie-root table) (ash pref (- preflen 32)) preflen route))))
 
 (define-generic remove-ipv4-route)

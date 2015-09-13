@@ -10,7 +10,7 @@
                #:init-value (list->oid (list 1 2 3 4 5 6))))
 
 (define-method (test-compare (self <test-oids>))
-	       (assert-equal (list->oid (list 1 2 3 4 1 2 3 4 5 6)) 
+	       (assert-equal (list->oid (list 1 2 3 4 1 2 3 4 5 6))
 			     (list->oid (list 1 2 3 4 1 2 3 4 5 6))))
 
 (define-method (test-length (self <test-oids>))

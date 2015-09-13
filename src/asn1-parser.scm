@@ -15,21 +15,21 @@
 
 (define asn1-parser
   (lalr-parser
-   ; Terminal symbols                                                  
-   (dot dotdot dotdotdot  
-    comma 
-    semicolon 
+   ; Terminal symbols
+   (dot dotdot dotdotdot
+    comma
+    semicolon
     lbrace rbrace
-    lbracket rbrack 
-    lparen rparen 
+    lbracket rbrack
+    lparen rparen
     langle rangle
     minus bar ::= backslash
 
     ABSENT ENCODED INTEGER RELATIVE-OID
-    ABSTRACT-SYNTAX END INTERSECTION SEQUENCE 
+    ABSTRACT-SYNTAX END INTERSECTION SEQUENCE
     ALL ENUMERATED SET APPLICATION EXCEPT MAX SIZE
     AUTOMATIC EXPLICIT MIN STRING OF
-    BEGIN EXPORTS MINUS-INFINITY SYNTAX 
+    BEGIN EXPORTS MINUS-INFINITY SYNTAX
     BIT EXTENSIBILITY NULL EXTERNAL TAGS
     BOOLEAN FALSE OBJECT BY FROM TRUE
     CHARACTER OCTET TYPE-IDENTIFIER
@@ -48,10 +48,10 @@
 
     :id :number :string )
 
-  (%root 
+  (%root
     (%module-definition) : $1)
 
-  (%module-definition 
+  (%module-definition
     (:id DEFINITIONS %tag-default %extension-default ::= BEGIN %module-body END) : `(module ,$1 ,$7))
 
   (%tag-default
@@ -60,11 +60,11 @@
   (%extension-default
     () : (list))
 
-  (%module-body 
+  (%module-body
     (%exports %imports %assignment-list) : `(,$1 ,$2 ,$3)
     () : (list))
 
-  (%exports 
+  (%exports
     (EXPORTS ALL semicolon) : `(export :all)
     (EXPORTS %symbol* semicolon) : `(export ,@$2)
     () : (list))
@@ -121,7 +121,7 @@
   (%type-assignment
     (:id ::= %type) : `(:type-assignment ,$1 ,$3))
 
-  (%type 
+  (%type
     (%builtin-type) : $1
     (%tagged-type) : $1
     (:id) : $1
@@ -132,7 +132,7 @@
 
   (%named-type (:id %type) : `(,$1 ,$2))
 
-  (%builtin-type 
+  (%builtin-type
     (%object-identifier-type) : $1
     (%choice-type) : $1
     (%string-type) : $1
@@ -142,31 +142,31 @@
     (%textual-convention-type) : $1
     (NULL) : `(:null))
 
-  (%object-identifier-type 
+  (%object-identifier-type
     (OBJECT IDENTIFIER) : `(:object-identifier))
 
-  (%choice-type 
+  (%choice-type
     (CHOICE lbrace %alternative-type-lists rbrace) : `(:choice ,$3))
 
-  (%alternative-type-lists 
+  (%alternative-type-lists
     (%root-alternative-type-list) : $1)
-  
-  (%root-alternative-type-list 
+
+  (%root-alternative-type-list
     (%alternative-type-list) : $1)
 
-  (%alternative-type-list 
+  (%alternative-type-list
     (%named-type) : `(,$1)
     (%alternative-type-list comma %named-type) : `(,@$1 ,$3))
 
-  (%string-type 
+  (%string-type
     (OCTET STRING %string-options) : `(:octet-string ,$3))
 
-  (%string-options 
+  (%string-options
     (lparen SIZE lparen %numbers+ rparen rparen) : `(:size ,$4)
     (lparen %numbers+ rparen) : `(:size ,$2)
     () : (list))
 
-  (%numbers+ 
+  (%numbers+
     (%numbers+ bar %splited-numbers) : `(,@$1 ,$3)
     (%splited-numbers) : `(,$1))
 
@@ -178,108 +178,108 @@
   (%integer-type-name
      (INTEGER) : :integer)
 
-  (%splited-numbers 
+  (%splited-numbers
     (:number) : $1
     (:number dotdot :number) : `(,$1 ,$3))
 
-  (%named-number+ 
+  (%named-number+
     (%named-number) : `(,$1)
     (%named-number+ comma %named-number) : `(,@$1 ,$3))
 
-  (%named-number 
+  (%named-number
     (:id lparen :number rparen) : `(,$1 ,$3))
 
-  (%tagged-type 
+  (%tagged-type
     (%tag IMPLICIT %builtin-type) : `(:implicit ,$1 ,$3)
     (%tag EXPLICIT %builtin-type) : `(:explicit ,$1 ,$3)
     (%tag %builtin-type) : `(:tag ,$1 ,$2))
 
-  (%tag 
+  (%tag
     (lbracket %class :number lbracket) : `(,$2 ,$3))
 
-  (%class 
+  (%class
     (UNIVERSAL) : :universal
     (APPLICATION) : :application
     (PRIVATE) : :private
     () : (list))
 
-  (%value 
+  (%value
     (%object-identifier-value) : $1
     (:string) : $1
     (:number) : $1)
 
-  (%object-identifier-value 
+  (%object-identifier-value
     (lbrace %obj-id-component+ rbrace) : `(,@$2))
 
-  (%obj-id-component+ 
+  (%obj-id-component+
     (%obj-id-component+ %obj-id-component) : `(,@$1 ,$2)
     (%obj-id-component) : `(,$1))
 
-  (%obj-id-component 
+  (%obj-id-component
     (%name-and-number-form) : $1
     (:id) : $1
     (:number) : $1)
 
-  (%name-and-number-form 
+  (%name-and-number-form
     (:id lparen :number rparen) : `(,$1 ,$3))
 
-  (%sequence-of-type 
+  (%sequence-of-type
     (SEQUENCE OF %type) : `(:sequence-of ,$3))
 
-  (%sequence-type 
+  (%sequence-type
     (SEQUENCE lbrace rbrace) : `(:sequence)
     (SEQUENCE lbrace %component-type-lists rbrace) : `(:sequence ,@$3))
 
   (%component-type-lists
     (%root-component-type-list) : $1)
 
-  (%root-component-type-list 
+  (%root-component-type-list
     (%component-type-list) : $1)
 
-  (%component-type-list 
+  (%component-type-list
     (%component-type) : `(,$1)
     (%component-type-list comma %component-type) : `(,@$1 ,$3))
 
-  (%component-type 
+  (%component-type
     (%named-type OPTIONAL) : `(,$1 :optional)
     (%named-type DEFAULT %value) : `(,$1 :default ,$3)
     (%named-type) : $1
     (COMPONENTS OF %type) : `(:components-of ,$3))
 
-  (%textual-convention-type 
+  (%textual-convention-type
     (TEXTUAL-CONVENTION %tc-args SYNTAX %type) : `(:textual-convention ,$2 (:syntax ,$4)))
 
-  (%tc-args 
+  (%tc-args
     (%tc-arg) : `(,$1)
     (%tc-args %tc-arg) : `(,@$1 ,$2))
 
-  (%tc-arg 
+  (%tc-arg
     (:id :id) : `(,$1 ,$2)
     (:id :string) : `(,$1 ,$2))
-  
+
   ;; Symbol+ and Symbol*
-  (%symbol+ 
+  (%symbol+
     (%symbol) : `(,$1)
     (%symbol+ comma %symbol) : `(,@$1 ,$3))
 
-  (%implied-symbol+ 
+  (%implied-symbol+
     (%implied-symbol) : `(,$1)
     (%implied-symbol+ comma %implied-symbol) : `(,@$1 ,$3))
 
-  (%symbol* 
+  (%symbol*
     (%symbol) : `(,$1)
     (%symbol* comma %symbol) : `(,@$1 ,$3)
     () : (list))
 
-  (%symbol 
+  (%symbol
     (%macro-name) : $1
     (:id) : $1)
 
-  (%implied-symbol 
+  (%implied-symbol
     (:id) : $1
     (IMPLIED :id) : `(:implied ,$2))
 
-  (%macro-name 
+  (%macro-name
     (MODULE-IDENTITY) : $1
     (OBJECT-TYPE) : $1
     (NOTIFICATION-TYPE) : $1
@@ -292,7 +292,7 @@
     (TRAP-TYPE) : $1)
 
   ;;; Last Rules
-  (%general-list 
+  (%general-list
     (%general) : `(,$1)
     (%general-list comma %general) : `(,@$1 ,$2)
     (%general-list %general) : `(,@$1 ,$2))

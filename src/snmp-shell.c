@@ -15,7 +15,7 @@
 static void
 print_help(void)
 {
-  printf( "Usage: snmp-shell [OPTION] ... [FILE]\n" 
+  printf( "Usage: snmp-shell [OPTION] ... [FILE]\n"
           "A Guile Scheme based SNMP reporting environment\n"
           "Part of %s\n"
           "Mandatory arguments to long options are mandatory for short options too.\n"
@@ -27,7 +27,7 @@ print_help(void)
           " \n"
           "  If no script or expression are given, and interactive shell is run\n"
           " \n"
-          "Default SNMP session prameters\n" 
+          "Default SNMP session prameters\n"
           "  -h, --host HOSTNAME[:PORT]             Set the defuult session host nnd udp port\n"
           "                                         Default: localhost:161\n"
           "  -v, --snmp-version [2c|1]              Set the default SNMP version\n"
@@ -36,7 +36,7 @@ print_help(void)
           "                                         Default: public\n"
           "  -C, --context STRING                   Set the default v2c/v3 context\n"
           "                                         Default: (none)\n"
-          "Default MIB parsing options\n" 
+          "Default MIB parsing options\n"
           " \n"
           "  -D, --mib-descriptions                 Load and keep MIB textual descriptions when\n"
           "                                         reading MIBs. This can use large amounts of memory\n"
@@ -80,13 +80,13 @@ snmp_shell_module (void* arguments)
   scm_c_use_module("system repl common");
   scm_c_use_module("system repl repl");
 
-  scm_c_define("program-name", 
+  scm_c_define("program-name",
     scm_c_eval_string("(make-parameter  (symbol->string (car (module-name (current-module)))))"));
-  scm_c_define("program-version", 
+  scm_c_define("program-version",
     scm_c_eval_string ("(make-parameter  \"1\")"));
-  scm_c_define("program-help", 
+  scm_c_define("program-help",
     scm_c_eval_string("(make-parameter (string-append (program-name) \": version \" (program-version) \"\n\"))"));
-  scm_c_define("script-arguments", 
+  scm_c_define("script-arguments",
     scm_c_eval_string ("(make-parameter #f)"));
   putenv(
     scm_to_locale_string(
@@ -129,22 +129,22 @@ snmp_shell_module (void* arguments)
     SCM val;
     if(!strcmp(opt_defversion, "1")){
       val = scm_variable_ref(scm_c_lookup("SNMP-VERSION-1"));
-    } else if (!strcmp(opt_defversion, "2c")){ 
+    } else if (!strcmp(opt_defversion, "2c")){
       val = scm_variable_ref(scm_c_lookup("SNMP-VERSION-2c"));
     } else if (!strcmp(opt_defversion, "3")){
       val = scm_variable_ref(scm_c_lookup("SNMP-VERSION-3"));
     } else {
       val = scm_variable_ref(scm_c_lookup("SNMP-VERSION-2c"));
     };
-    
+
     scm_apply_1(
       scm_variable_ref(scm_c_lookup("current-version")), val, SCM_EOL);
   };
 
   scm_c_eval_string("(current-session (new-snmp-session))");
-  
+
   scm_apply_1(scm_variable_ref(scm_c_lookup("script-arguments")), (SCM) arguments, SCM_EOL);
-  
+
   SCM version_sym = scm_c_lookup("*version*");
   SCM versionstring = scm_from_locale_string( PACKAGE_STRING );
   scm_variable_set_x(version_sym, versionstring);
@@ -189,11 +189,11 @@ inner_main (void *closure, int argc, char **argv)
       {"context"                ,required_argument ,0             ,'C'},
       {"mib-descriptions"       ,no_argument       ,&opt_mibdesc  ,1},
       {0, 0, 0, 0}
-    }; 
+    };
     c = getopt_long (argc,argv,"VHDv:h:c:C:e:s:",long_options, &option_index);
 
     if (c == -1) break;
-    
+
     switch(c){
       case   0:
         break;
@@ -204,7 +204,7 @@ inner_main (void *closure, int argc, char **argv)
         break;
 
       case 'v':
-        opt_defversion = optarg; 
+        opt_defversion = optarg;
         break;
 
       case 'h':
@@ -231,22 +231,22 @@ inner_main (void *closure, int argc, char **argv)
 	opt_mibdesc=1;
         break;
 
-      default: 
+      default:
         abort();
     };
   };
- 
+
   if (opt_help){
     print_help();
     exit(0);
   };
 
-  if (opt_version){ 
+  if (opt_version){
     print_version();
     exit(0);
   };
 
-  if (opt_mibdesc){ 
+  if (opt_mibdesc){
     // This should be available to scheme too
     snmp_set_save_descriptions(1);
   };

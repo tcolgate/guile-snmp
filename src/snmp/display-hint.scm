@@ -1,7 +1,7 @@
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009-2012 Tristan Colgate 
+;; Copyright (C) 2009-2012 Tristan Colgate
 ;;
-;; display-hint.scm - This file provides routines for parsing and 
+;; display-hint.scm - This file provides routines for parsing and
 ;;                    formatting RFC2579 MIB display hints
 ;;
 ;;-------------------------------------------------------------------
@@ -42,19 +42,19 @@
 
 (define (apply-octet-str-display-hint bv formatstr)
   ; The last formatter
-  (let* ((formatter (dhint->formatter formatstr)) 
+  (let* ((formatter (dhint->formatter formatstr))
 	 (finalhint (list-ref formatter (- (length formatter) 1)))
   	 (wip "")
 	 (s 0)
-	 (len (bytevector-length bv)) 
+	 (len (bytevector-length bv))
 	 (consume (lambda (n)
 		    (if (> (+ s n)  len) (throw 'empty (list 'blah))
-		    (let* ((r (make-bytevector n))) 
+		    (let* ((r (make-bytevector n)))
 	  	      (bytevector-copy! bv s r 0 n)
 		      (set! s (+ s n))
-		      r)))) 
-		    
-	 (left    (lambda () (- len s))) 
+		      r))))
+
+	 (left    (lambda () (- len s)))
 	 (apply-subhint (lambda (h)
 			  (let* ((rep?    (list-ref h 0))
 				 (i       (list-ref h 1))
@@ -62,7 +62,7 @@
 				 (dispsep (list-ref h 3))
 				 (reptrm  (list-ref h 4))
 				 (reps    (if rep?
-					    (bytevector-u8-ref (consume 1) 0) 
+					    (bytevector-u8-ref (consume 1) 0)
 					    1))
 				 (use     (min i (left))))
 			    (let reploop ((r reps))
@@ -70,42 +70,42 @@
 				(begin
 				  (if (> use 0)
 				    (let ((bytes (consume use)))
-				      (set! wip 
-					(string-append 
-					  wip  
+				      (set! wip
+					(string-append
+					  wip
 					  (case radix
 					    ((#\a)
-					     (utf8->string bytes)) 
+					     (utf8->string bytes))
 					    ((#\t)
-					     (utf8->string bytes)) 
+					     (utf8->string bytes))
 					    (else
 					      (let ((num (bytevector-uint-ref bytes 0 (endianness big) use)))
-						(number->string num radix)))))))) 
+						(number->string num radix))))))))
 				  (if (and (not (eq? #f dispsep)); If a display seperator is provided
 					   (if(eq? #f reptrm)    ; AND we aren't about to display a repeat
 					     #t                  ; seperator, AND there is still stuff left to display
 					     (> r 1))
-					   (not (eq? (left) 0))) 
+					   (not (eq? (left) 0)))
 				    (set! wip (string-append wip dispsep)))
 				  (reploop (- r 1)))
-				(if (and  
-				      rep? 
-				      (not (eq? #f reptrm)) 
+				(if (and
+				      rep?
+				      (not (eq? #f reptrm))
 				      (not (eq? (left) 0)))
 				  (set! wip (string-append wip reptrm))))))
-			  wip))) 
+			  wip)))
 
     (let dhintloop ((f formatter))
       (if (not (eq? f '()))
-	(begin 
-	  (catch 'empty 
+	(begin
+	  (catch 'empty
 		 (lambda () (apply-subhint (car f)))
-		 (lambda (ex . args) 1)) 
-	  (dhintloop (cdr f))))) 
+		 (lambda (ex . args) 1))
+	  (dhintloop (cdr f)))))
 
-    (let finalloop ((l (left))) 
+    (let finalloop ((l (left)))
       (if(> (left) 0)
-	(begin 
+	(begin
 	  (apply-subhint finalhint)
 	  (finalloop (left)))))
     wip))

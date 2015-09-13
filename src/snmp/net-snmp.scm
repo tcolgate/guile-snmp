@@ -6,7 +6,7 @@
 ;;-------------------------------------------------------------------
 
 (define-module (snmp net-snmp))
- 
+
 (define-macro (re-export name)
   `(begin
      (define ,name ,(string->symbol
@@ -41,26 +41,26 @@
 
   (define-method (display (this <oid>) port)
 		 (if (oid-translate)
-		   (if (> (length (oid->list this)) 0) 
+		   (if (> (length (oid->list this)) 0)
 		    (let ((node (get-tree this (get-tree-head))))
 		       (if (eq? (class-of node) <tree>)
 			 (let* ((basename (slot-ref node 'label))
 				(diff     (- (oid-from-tree-node node) this)))
 			   (format port "~a~{.~d~}" basename (oid->list diff)))
-			 (format port "~{.~d~}" (oid->list this)))) 
+			 (format port "~{.~d~}" (oid->list this))))
 		     (format port "(empty-oid)" ))
 		   (format port "~{.~d~}" (oid->list this))))
 
   (define-method (write (this <oid>) port)
 		 (if (oid-translate)
-		   (if (> (length (oid->list this)) 0) 
+		   (if (> (length (oid->list this)) 0)
 		     (let ((node (get-tree this (get-tree-head))))
 		       (if (eq? (class-of node) <tree>)
 			 (let* ((basename (slot-ref node 'label))
 				(diff     (- (oid-from-tree-node node) this)))
 			   (format port "~a~{.~d~}" basename (oid->list diff)))
 			 (format port "~{.~d~}" (oid->list this))))
-		     (format port "#<oid: (empty-oid>#")) 
+		     (format port "#<oid: (empty-oid>#"))
 		   (format port "#<oid: ~{.~d~}>#" (oid->list this))))
 
   (define-method (equal? (a <oid>) (b <oid>))
@@ -87,19 +87,19 @@
   (define (oid? this)
     (eq?  (class-of this) <oid>))
 
-  (export 
-    <oid> 
+  (export
+    <oid>
     oid-translate
-    oidvector 
-    make-oidvector 
-    oidvector? 
+    oidvector
+    make-oidvector
+    oidvector?
     oidvector-length
-    list->oidvector 
+    list->oidvector
     oidvector->list
     oidvector-ref
     oidvector-set!
-    list->oid 
-    oid->list 
+    list->oid
+    oid->list
     oid-length
     oid?
     empty-oidvec)
@@ -113,8 +113,8 @@
 ;(define guile-snmp-async-response primitive:guile-snmp-async-response)
 
 (define-class <snmp-constant> ()
-  (value #:init-keyword #:value) 
-  (symbol #:init-keyword #:symbol)) 
+  (value #:init-keyword #:value)
+  (symbol #:init-keyword #:symbol))
 
 (define-method (display (this <snmp-constant>) port)
   (format port "~a" (slot-ref this 'symbol)))
@@ -129,22 +129,22 @@
     ((_ name)
      (begin
        (define-class name (<snmp-constant>))
-       (hashq-set! constant-classes name (make-hash-table 32))  
+       (hashq-set! constant-classes name (make-hash-table 32))
        (export name)))))
 
 (define-syntax define-constant
   (syntax-rules ()
     ((_ type name)
      (begin
-       (define name (make type 
-                          #:value (local-ref (list  
-                          (string->symbol (string-append "primitive:_wrap_" 
+       (define name (make type
+                          #:value (local-ref (list
+                          (string->symbol (string-append "primitive:_wrap_"
                                           (symbol->string (quote name))))))
 			  #:symbol (quote name)))
-       (hashq-set! (hashq-ref constant-classes type) 
-		   (local-ref (list  (string->symbol (string-append "primitive:_wrap_" 
-                                          (symbol->string (quote name)))))) 
-		   name) 
+       (hashq-set! (hashq-ref constant-classes type)
+		   (local-ref (list  (string->symbol (string-append "primitive:_wrap_"
+                                          (symbol->string (quote name))))))
+		   name)
        (export name)))))
 
 (define (constant-name-from-value class val)
@@ -152,13 +152,13 @@
 (primitive:set-constant-name-from-value-hook! constant-name-from-value)
 
 (define-constant-class <snmp-version>)
-(define-constant <snmp-version> SNMP-VERSION-1) 
-(define-constant <snmp-version> SNMP-VERSION-2c) 
-(define-constant <snmp-version> SNMP-VERSION-2u) 
-(define-constant <snmp-version> SNMP-VERSION-3) 
-(define-constant <snmp-version> SNMP-VERSION-sec) 
-(define-constant <snmp-version> SNMP-VERSION-2p) 
-(define-constant <snmp-version> SNMP-VERSION-2star) 
+(define-constant <snmp-version> SNMP-VERSION-1)
+(define-constant <snmp-version> SNMP-VERSION-2c)
+(define-constant <snmp-version> SNMP-VERSION-2u)
+(define-constant <snmp-version> SNMP-VERSION-3)
+(define-constant <snmp-version> SNMP-VERSION-sec)
+(define-constant <snmp-version> SNMP-VERSION-2p)
+(define-constant <snmp-version> SNMP-VERSION-2star)
 
 (define-constant-class <snmp-msg>)
 (define-constant <snmp-msg> SNMP-MSG-GET)
@@ -336,14 +336,14 @@
            (class (string->symbol (string-append "<"  (symbol->string type) ">")))
            (primname (string->symbol (string-append "primitive:"  (symbol->string class))))
            (initfunc (string->symbol (string-append "primitive:initialize-"  (symbol->string type))))
-	   (slotdefs (let* ((p "primitive:")) 
+	   (slotdefs (let* ((p "primitive:"))
 		       (map
 			 (lambda (slot)
-			   (let* ((pref  (string-append p 
-							(symbol->string type) 
+			   (let* ((pref  (string-append p
+							(symbol->string type)
 							"-"
 							(symbol->string slot)))
-				  (sget  (string->symbol (string-append pref "-get"))) 
+				  (sget  (string->symbol (string-append pref "-get")))
 				  (sset  (string->symbol (string-append pref "-set")))
 				  (sacc  (string->symbol (string-append p (symbol->string slot)))))
 			     `(,slot #:allocation #:virtual
@@ -355,8 +355,8 @@
 			(lambda (slot)
 			     `(re-export ,slot))
 			 slots)))
-      
-        (datum->syntax stx 
+
+        (datum->syntax stx
 		     `(begin
 			(define-class ,class()
 				      ptr
@@ -368,30 +368,30 @@
 	                (define-method (display (obj ,class) port)
 				       (format #t "#<~a : ~a >#" (quote ,type) (slot-ref obj 'ptr)))
 			(define-method (write (obj ,class) port)
-				       (format #t "#<~a : ~a >#" (quote ,type) (slot-ref obj 'ptr)))	
+				       (format #t "#<~a : ~a >#" (quote ,type) (slot-ref obj 'ptr)))
 			(export ,class)
 			,@slotexps)))))
 
-(define-class-wrapped-struct tree label description type access status display-hint 
-			     units enums indexes varbinds parent peers children mib-module) 
+(define-class-wrapped-struct tree label description type access status display-hint
+			     units enums indexes varbinds parent peers children mib-module)
 
 
 ; These provide a nicer interface to the tree structure when accessed as oids.
 ; When used with trees these return types consistent with the raw net-snmp structure
-(define-method (description (o <oid>)) (description (get-tree o (get-tree-head)))) 
-(define-method (mib-module (o <oid>)) (mib-module (get-tree o (get-tree-head)))) 
-(define-method (type (o <oid>)) (mib-to-asn-type (type (get-tree o (get-tree-head))))) 
-(define-method (access (o <oid>)) (access (get-tree o (get-tree-head)))) 
-(define-method (status (o <oid>)) (status (get-tree o (get-tree-head)))) 
-(define-method (display-hint (o <oid>)) (display-hint (get-tree o (get-tree-head)))) 
-(define-method (units (o <oid>)) (units (get-tree o (get-tree-head)))) 
-(define-method (enums (o <oid>)) (enums (get-tree o (get-tree-head)))) 
-(define-method (varbinds (o <oid>)) (map snmp-parse-oid (varbinds (get-tree o (get-tree-head))))) 
-(define-method (parent (o <oid>)) (oid-from-tree-node (parent (get-tree o (get-tree-head))))) 
-(define-method (peers (o <oid>)) (map oid-from-tree-node  (peers (get-tree o (get-tree-head))))) 
-(define-method (children (o <oid>)) (map oid-from-tree-node (children (get-tree o (get-tree-head))))) 
-(define-method (indexes (o <oid>)) (map snmp-parse-oid (indexes (get-tree o (get-tree-head))))) 
-(define indicies indexes) 
+(define-method (description (o <oid>)) (description (get-tree o (get-tree-head))))
+(define-method (mib-module (o <oid>)) (mib-module (get-tree o (get-tree-head))))
+(define-method (type (o <oid>)) (mib-to-asn-type (type (get-tree o (get-tree-head)))))
+(define-method (access (o <oid>)) (access (get-tree o (get-tree-head))))
+(define-method (status (o <oid>)) (status (get-tree o (get-tree-head))))
+(define-method (display-hint (o <oid>)) (display-hint (get-tree o (get-tree-head))))
+(define-method (units (o <oid>)) (units (get-tree o (get-tree-head))))
+(define-method (enums (o <oid>)) (enums (get-tree o (get-tree-head))))
+(define-method (varbinds (o <oid>)) (map snmp-parse-oid (varbinds (get-tree o (get-tree-head)))))
+(define-method (parent (o <oid>)) (oid-from-tree-node (parent (get-tree o (get-tree-head)))))
+(define-method (peers (o <oid>)) (map oid-from-tree-node  (peers (get-tree o (get-tree-head)))))
+(define-method (children (o <oid>)) (map oid-from-tree-node (children (get-tree o (get-tree-head)))))
+(define-method (indexes (o <oid>)) (map snmp-parse-oid (indexes (get-tree o (get-tree-head)))))
+(define indicies indexes)
 (export indicies)
 
 (define-method (display (this <tree>) port)
@@ -405,53 +405,53 @@
 (define-method (find-mib-root-node mib)
   (find-mib-root-node (snmp-parse-oid "iso") mib))
 
-(define-method (describe (obj <oid>)) 
-               (format #t "~%OID ~a (~{~d~^.~}) from ~a (~a):~%~%" 
-                       obj 
-                       (oid->list obj) 
+(define-method (describe (obj <oid>))
+               (format #t "~%OID ~a (~{~d~^.~}) from ~a (~a):~%~%"
+                       obj
+                       (oid->list obj)
                        (name (mib-module obj))
-                       (file (mib-module obj)))                           
+                       (file (mib-module obj)))
 
-               (format #t "~@[Status: ~a~%~]" (status obj)) 
-               (format #t "~@[Access: ~a~%~%~]" (access obj)) 
+               (format #t "~@[Status: ~a~%~]" (status obj))
+               (format #t "~@[Access: ~a~%~%~]" (access obj))
 
                (format #t "Description: ~a~%~%" (description obj))
 
-               (format #t "~@[Type: ~a~%~]" (if (eq? '() (varbinds obj)) 
+               (format #t "~@[Type: ~a~%~]" (if (eq? '() (varbinds obj))
                                               (type obj)
-                                              'NOTIFICATION-TYPE)) 
-               (format #t "~@[Display-Hint: ~a~%~]" (display-hint obj)) 
-               (format #t "~@[Units: ~a~%~]" (units obj)) 
-               (format #t "~@[Indicies:~%~{  ~a~%~}~]" 
+                                              'NOTIFICATION-TYPE))
+               (format #t "~@[Display-Hint: ~a~%~]" (display-hint obj))
+               (format #t "~@[Units: ~a~%~]" (units obj))
+               (format #t "~@[Indicies:~%~{  ~a~%~}~]"
                        (if (eq? '() (indexes obj))
-                         #f 
-                         (indexes obj))) 
-               (format #t "~@[Rows:~%~{  ~a~%~}~]" 
+                         #f
+                         (indexes obj)))
+               (format #t "~@[Rows:~%~{  ~a~%~}~]"
                        (if (eq? '() (indexes obj))
-                         #f 
-                         (children obj))) 
-               (format #t "~@[Enumerations:~%~:{  ~a(~a)~%~}~]" 
+                         #f
+                         (children obj)))
+               (format #t "~@[Enumerations:~%~:{  ~a(~a)~%~}~]"
                        (if (eq? '() (enums obj))
-                         #f 
-                         (map 
+                         #f
+                         (map
                            (lambda (e)
                              (list (cdr e) (car e)))
-                           (enums obj)))) 
-               (format #t "~@[Trap Varbinds:~%~{  ~a~%~}~]" 
+                           (enums obj))))
+               (format #t "~@[Trap Varbinds:~%~{  ~a~%~}~]"
                        (if (eq? '() (varbinds obj))
-                         #f 
+                         #f
                          (varbinds obj)))
-               (format #t "~@[Children:~%~{  ~a~%~}~]" 
+               (format #t "~@[Children:~%~{  ~a~%~}~]"
                        (if (or (not (eq? '() (indexes obj)))
-                               (eq? '() (children obj))) 
-                         #f 
+                               (eq? '() (children obj)))
+                         #f
                          (children obj)))
                (newline))
 (export describe)
 
-(define-class-wrapped-struct snmp-session community peername localname local-port 
-			     version context timeout retries callback securityName 
-			     securityLevel securityAuthProto securityAuthKey 
+(define-class-wrapped-struct snmp-session community peername localname local-port
+			     version context timeout retries callback securityName
+			     securityLevel securityAuthProto securityAuthKey
 			     securityPrivProto securityPrivKey)
 
 (define-class-wrapped-struct snmp-single-session)
@@ -551,8 +551,8 @@
 (re-export netsnmp-daemonize)
 (re-export agent-check-and-process)
 (re-export snmp-shutdown)
-(re-export netsnmp-create-handler) 
-(re-export netsnmp-handler-registration-create) 
+(re-export netsnmp-create-handler)
+(re-export netsnmp-handler-registration-create)
 (re-export netsnmp-register-handler)
 (re-export netsnmp-unregister-handler)
 (re-export netsnmp-register-scalar)

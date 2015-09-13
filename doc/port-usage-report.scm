@@ -1,7 +1,7 @@
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009,2010 Tristan Colgate 
+;; Copyright (C) 2009,2010 Tristan Colgate
 ;;
-;; port-usage-reprot: this is a monolithic version of the switch 
+;; port-usage-reprot: this is a monolithic version of the switch
 ;; report using threading and other features of the guile-snmp
 ;;
 ;;-------------------------------------------------------------------
@@ -19,7 +19,7 @@
 (use-modules (snmp reports))
 (init-reports)
 
-; This is needed as "format", even with a ~! isn't atomic, so the 
+; This is needed as "format", even with a ~! isn't atomic, so the
 ; output was all getting jumbled up
 (current-output-port (open-output-file "allports-report.txt"))
 (define outputmutex (make-mutex))
@@ -34,7 +34,7 @@
 (define site-and-region-re (make-regexp "...-.([0-2])-..([0-6]).."))
 (define (possible-rtrs hostname)
   (let ((match (regexp-exec site-and-region-re hostname)))
-    (list 
+    (list
       (regexp-substitute #f match "xxx-d" 1 "-rt" 2 "00")
       (regexp-substitute #f match "xxx-d" 1 "-rt" 2 "01"))))
 
@@ -58,10 +58,10 @@
   	    #f
   	    (routerloop therest))
   	  res))))
-		  
+
 (define (find-mac-on-port switch portid)
-  "This finds the mac address seen on a given switch and portid" 
-  (session 
+  "This finds the mac address seen on a given switch and portid"
+  (session
     (let* ((intvlan (get (+ vmVlan portid)))
            (vlancomm (if (eq? (intvlan) 'noSuchInstance)
 		         (current-community)
@@ -80,7 +80,7 @@
                             (let* ((mac  (iid bportmac))
                                    (lmac (array->list mac)))
                               (if (equal? (bportmac) (% 1 bportid))
-				(let ((lip  (find-ip-from-mac "mycommunity" mac))) 
+				(let ((lip  (find-ip-from-mac "mycommunity" mac)))
 		  	          (with-output-to-string
 			            (lambda()
 				      (if (equal? lip #f)
@@ -93,7 +93,7 @@
 
 (define (switchreport switch)
   " Report the port useage information for a given switch"
-  (session #:host switch 
+  (session #:host switch
     (let* ((switchname    ((get sysName.0)))
            (switchloc     ((get sysLocation.0)))
            (fporttype     (walk-func ifType)))
@@ -106,7 +106,7 @@
     	           (portastat ((get (+ ifAdminStatus  portid))))
     	           (portostat ((get (+ ifOperStatus   portid))))
     	           (cdpneighq (getnext  (+ CISCO-CDP-MIB::cdpCacheAddress portid)))
-  	           (cdpneigh  (if (equal? (+ CISCO-CDP-MIB::cdpCacheAddress 
+  	           (cdpneigh  (if (equal? (+ CISCO-CDP-MIB::cdpCacheAddress
   	                                     portid)
   	  		                (tag cdpneighq))
   	                        (ipstr-to-str (cdpneighq))

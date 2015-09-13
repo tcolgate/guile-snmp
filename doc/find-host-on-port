@@ -1,9 +1,9 @@
 #!/usr/bin/guile -s
 !#
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009,2010 Tristan Colgate 
+;; Copyright (C) 2009,2010 Tristan Colgate
 ;;
-;; find-host-on-port: a more complicated example script 
+;; find-host-on-port: a more complicated example script
 ;;
 ;;-------------------------------------------------------------------
 
@@ -30,9 +30,9 @@
 
 (define community "public")
 
-; list of l3 routers, this has been removed for confidentiality 
+; list of l3 routers, this has been removed for confidentiality
 ; reasons
-(define l3list (list 
+(define l3list (list
                  "192.168.0.254"))
 
 
@@ -69,12 +69,12 @@
 ; main
 (let ((oplist (list)))
   (args-fold (cdr (program-arguments))
-    (let ((display-and-exit-proc (lambda (msg) 
-  				 (lambda (opt name arg) 
+    (let ((display-and-exit-proc (lambda (msg)
+  				 (lambda (opt name arg)
   				   (display msg)(newline) (quit) (values)))))
-      (list (option '(#\v "version") #f #f 
+      (list (option '(#\v "version") #f #f
 		  (display-and-exit-proc "find-host: version 0.1\n"))
-      	    (option '(#\h "help") #f #f 
+      	    (option '(#\h "help") #f #f
 		  (display-and-exit-proc "Usage: find-host hostname ..."))))
     (lambda (opt name arg)
       (error (format "Unrecognized option `~A'" name)))

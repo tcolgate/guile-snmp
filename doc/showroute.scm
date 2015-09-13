@@ -2,7 +2,7 @@
 !#
 
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009-2012 Tristan Colgate 
+;; Copyright (C) 2009-2012 Tristan Colgate
 ;;
 ;; showroute -  an example of using snmp-shell
 ;;
@@ -29,30 +29,30 @@
 (primitive-load "./nodes-l3.scm")
 
 (define (print-path src srcgw dst dstgw netmap)
-  (let loop ((rtinfo (misc  (find-ipv4-route netmap srcgw)))) 
-    (let* ((name (car rtinfo)) 
+  (let loop ((rtinfo (misc  (find-ipv4-route netmap srcgw))))
+    (let* ((name (car rtinfo))
            (rtr  (cdr rtinfo))
-           (next (find-ipv4-route rtr dst))        
-           (nextgw (find-ipv4-route netmap (gw next)))) 
+           (next (find-ipv4-route rtr dst))
+           (nextgw (find-ipv4-route netmap (gw next))))
 
       (if nextgw
         (let ((gwname (car (misc nextgw)))
               (gwinfo (cdr (misc nextgw))))
-          (if (equal? name gwname) 
-            (format #t "end~%") 
+          (if (equal? name gwname)
+            (format #t "end~%")
             (begin
               (format #t "~a routes ~a via ~a using ~a~%" name dst gwname next)
-              (loop (misc nextgw))))) 
+              (loop (misc nextgw)))))
         (format #t "~a routes ~a via unknown gateway ~a~%" name dst (gw next))))))
 
 (define (print-route srcstr srcgwstr dststr dstgwstr)
-  ; pervert the ipv4 routing table to give us a hash of 
+  ; pervert the ipv4 routing table to give us a hash of
   ; interfaces to the routing table that supports them
   (let ((src (make <ipv4-address> #:ip srcstr))
-        (srcgw (make <ipv4-address> #:ip srcgwstr))        
-        (dst (make <ipv4-address> #:ip dststr))       
+        (srcgw (make <ipv4-address> #:ip srcgwstr))
+        (dst (make <ipv4-address> #:ip dststr))
         (dstgw (make <ipv4-address> #:ip dstgwstr))
-        (netmap (session 
+        (netmap (session
                   #:community "public"
                   (fold
                     (lambda(item table)
@@ -61,19 +61,19 @@
                         (catch
                           #t
                           (lambda()
-                            (session 
+                            (session
                               #:host (slot-ref node 'ip)
                               #:community (slot-ref node 'community)
                               #:version (slot-ref node 'version)
                               (let ((name     ((get sysName.0)))
                                     (ints     (walk ipAdEntAddr))
-                                    (rdests   (walk ipRouteDest)) 
-                                    (rmasks   (walk ipRouteMask)) 
+                                    (rdests   (walk ipRouteDest))
+                                    (rmasks   (walk ipRouteMask))
                                     (rhops    (walk ipRouteNextHop)))
                                 (let ((routes (fold
                                                 (lambda (rdest rmask rhop rtable)
-                                                  (add-ipv4-route 
-                                                    rtable 
+                                                  (add-ipv4-route
+                                                    rtable
                                                     (make <ipv4-route>
                                                           #:net (make <ipv4-network>
                                                                       #:prefix (make <ipv4-address> #:ip (rdest))
@@ -83,17 +83,17 @@
                                                 (make <ipv4-table>)
                                                 rdests
                                                 rmasks
-                                                rhops))) 
+                                                rhops)))
                                   (fold
                                     (lambda (int table2)
-                                      (add-ipv4-route 
-                                        table2 
+                                      (add-ipv4-route
+                                        table2
                                         (make <ipv4-route>
                                               #:net (make <ipv4-network>
                                                           #:prefix (make <ipv4-address> #:ip (int))
                                                           #:prefix-len 32)
                                               #:misc (cons name routes))))
-                                    table 
+                                    table
                                     ints)))))
                           (lambda (key . args)
                             (format #t "failednode ~a ~%" (slot-ref node 'ip))

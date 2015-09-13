@@ -27,6 +27,6 @@ SNMP reporting.
 ```
 
   Far more interesting things are possible, like visualizing
-OSPF or Spanning tree, or making your [[Cisco devices dump 
+OSPF or Spanning tree, or making your [[Cisco devices dump
 their config|cisco-config-dump]]
 

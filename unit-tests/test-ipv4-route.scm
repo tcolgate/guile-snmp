@@ -21,7 +21,7 @@
 
 (define mytable (make <ipv4-table>))
 
-(define routes (list 
+(define routes (list
   (make <ipv4-route> #:net "0.0.0.0 0.0.0.0" "10.0.0.1")
   (make <ipv4-route> #:net "10.0.0.0 255.255.0.0" "10.0.0.12")
   (make <ipv4-route> #:net "192.168.4.0 255.255.255.128" "10.0.0.3")
@@ -35,12 +35,12 @@
   (make <ipv4-route> #:net "10.0.1.128 255.255.255.128" "10.0.0.9")
   (make <ipv4-route> #:net "10.0.2.0 255.255.255.0" "10.0.0.10")
   ))
-                  
-(define mytable (fold 
+
+(define mytable (fold
                   (lambda(r t)
                     (let ((result (add-ipv4-route t r)))
-                     result)) 
-                (make <ipv4-ipv4-table>) 
+                     result))
+                (make <ipv4-ipv4-table>)
                 routes))
 
 (display (find-ipv4-route mytable (make <ipv4-ip> "10.0.1.1")))(newline)

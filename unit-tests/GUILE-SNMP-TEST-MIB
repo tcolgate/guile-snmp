@@ -16,7 +16,7 @@ guileSnmpTestMIB MODULE-IDENTITY
                             London
                             UK
 
-		  email:    tcolgate@gmail.com 
+		  email:    tcolgate@gmail.com
                  "
 	DESCRIPTION  "A simple mib for testing guile-snmp"
 	::= { experimental 1977 }
@@ -37,7 +37,7 @@ gstTestInt32  OBJECT-TYPE
 	::= { gstMibObjects 1 }
 
 gstTestString  OBJECT-TYPE
-	SYNTAX     DisplayString 
+	SYNTAX     DisplayString
 	MAX-ACCESS  read-write
 	STATUS      current
 	DESCRIPTION

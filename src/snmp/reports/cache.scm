@@ -1,5 +1,5 @@
 ;;-------------------------------------------------------------------
-;; Copyright (C) 2009-2012 Tristan Colgate 
+;; Copyright (C) 2009-2012 Tristan Colgate
 ;;
 ;; cache.scm - This file defines classes and utilities to maintain
 ;; a cache of snmp queries
@@ -14,8 +14,8 @@
   #:use-module (snmp reports session)
   #:export (
     query-cache-enabled
-    enable-query-cache 
-    disable-query-cache 
+    enable-query-cache
+    disable-query-cache
     query-cache-lookup
     query-cache-insert
     clear-query-cache
@@ -54,12 +54,12 @@
       (acons (slot-ref rt 'oid) rt '()))))
 
 (define (query-cache-insert querytype oid answer nrs reps)
-  (hash-set! report-query-cache 
+  (hash-set! report-query-cache
              (cache-key querytype oid nrs reps)
              (cdr answer)))
 
 (define (query-cache-statistics)
-  
+
 
   (format (current-output-port) ""))
 
