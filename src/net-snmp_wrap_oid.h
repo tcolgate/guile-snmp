@@ -17,7 +17,7 @@ SCM scm_oid_vec_slot;
 int      lastAddrAge;
 
 #if SIZEOF_OID == 8
-#define SCM_T_OID scm_t_uint64
+#define SCM_T_OID uint64_t
 #define SCM_TAKE_OIDVECTOR  scm_take_u64vector
 #define SCM_OIDVECTOR_ELEMENTS scm_u64vector_elements
 #define SCM_OIDVECTOR_P scm_u64vector_p

@@ -1065,7 +1065,7 @@ _wrap_pdu_variable_value_bytes_get(SCM s_0)
   ASSERT_NOT_NULL_PTR( s_0 , p )
 
   int len = p->val_len;
-  scm_t_uint8 *data = p->val.string;
+  uint8_t *data = p->val.string;
   result = scm_c_make_bytevector (len);
   int i;
   for(i = 0; i < len ; i++){
