@@ -9,8 +9,11 @@
 #include <libguile.h>
 #include <getopt.h>
 #include <libgen.h>
+#include <net-snmp/net-snmp-config.h>
+#include <net-snmp/mib_api.h>
 
 #include "config.h"
+
 
 static void
 print_help(void)

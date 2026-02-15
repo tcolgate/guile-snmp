@@ -20,6 +20,7 @@
   (use-modules (oop goops))
   (use-modules (srfi srfi-39))
   (use-modules (ice-9 pretty-print))
+  (use-modules (ice-9 format))
 
   ; The module will hook these up with architecture specific
   ; srfi-4 routines
@@ -546,7 +547,7 @@
 (re-export init-agent)
 (re-export init-master-agent)
 (re-export snmp-set-agent-agentx)
-(re-export init-vacm-vars)
+(re-export init-vacm)
 (re-export init-usm)
 (re-export netsnmp-daemonize)
 (re-export agent-check-and-process)

@@ -753,9 +753,9 @@ _wrap_snmp_set_agent_agentx (SCM s_0)
 }
 
 static SCM
-_wrap_init_vacm_vars ()
+_wrap_init_vacm ()
 {
-  init_vacm_vars();
+  init_vacm();
   return SCM_UNSPECIFIED;
 }
 
@@ -1159,8 +1159,8 @@ init_snmp_wrap_funcs(void)
   scm_c_define_gsubr("snmp-set-agent-agentx", 1, 0, 0, (void *) _wrap_snmp_set_agent_agentx);
   scm_c_export("snmp-set-agent-agentx" , NULL);
 
-  scm_c_define_gsubr("init-vacm-vars", 0, 0, 0, (void *) _wrap_init_vacm_vars);
-  scm_c_export("init-vacm-vars" , NULL);
+  scm_c_define_gsubr("init-vacm", 0, 0, 0, (void *) _wrap_init_vacm);
+  scm_c_export("init-vacm" , NULL);
 
   scm_c_define_gsubr("init-usm", 0, 0, 0, (void *) _wrap_init_usm);
   scm_c_export("init-usm" , NULL);

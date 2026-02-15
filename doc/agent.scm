@@ -81,7 +81,7 @@
 
 (if (not agentx)
   (begin
-    (init-vacm-vars)
+    (init-vacm)
     (init-usm)))
 
 (init-snmp "snmpd")
