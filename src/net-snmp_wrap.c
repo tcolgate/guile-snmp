@@ -43,7 +43,6 @@ SCM make_func = SCM_EOL;
 
 static void init_snmp_wrap(void *data)
 {
-
   init_oid_class();
   init_snmp_wrap_classes();
   init_snmp_wrap_constants();

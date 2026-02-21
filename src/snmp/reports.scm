@@ -85,7 +85,7 @@
 (define reports:autotranslate #f)
 (define (init-reports)
   (init-snmp (car (command-line)))
-  (let*((oidmodule (make-module 31 '()))
+  (let*((oidmodule (make-module))
         (snmpdupli (lambda(module name int1 val1 int2 val2 var val)
                      (if (equal? oidmodule
                                  int1)

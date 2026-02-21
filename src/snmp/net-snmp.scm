@@ -16,23 +16,23 @@
      (export! ,name)))
 
 (eval-when (eval load compile)
-
   (use-modules (oop goops))
+  (use-modules (srfi srfi-4))
   (use-modules (srfi srfi-39))
   (use-modules (ice-9 pretty-print))
   (use-modules (ice-9 format))
 
   ; The module will hook these up with architecture specific
   ; srfi-4 routines
-  (define empty-oidvec #f)
-  (define oidvector #f)
-  (define make-oidvector #f)
-  (define oidvector? #f)
-  (define oidvector-length #f)
-  (define list->oidvector #f)
-  (define oidvector->list #f)
-  (define oidvector-ref #f)
-  (define oidvector-set! #f)
+  (define empty-oidvec (make-u64vector 0))
+  (define oidvector u64vector)
+  (define make-oidvector make-u64vector)
+  (define oidvector? u64vector?)
+  (define oidvector-length u64vector-length)
+  (define list->oidvector list->u64vector)
+  (define oidvector->list u64vector->list)
+  (define oidvector-ref u64vector-ref)
+  (define oidvector-set! u64vector-set!)
 
   (define-class <oid> ()
 		(_vec #:init-form empty-oidvec
